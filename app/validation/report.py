@@ -41,7 +41,8 @@ def write_report(result: WorkflowResult, reports_dir: str | Path) -> tuple[Path,
     if validation:
         lines.extend(["", "## 验证结果", "", f"- 算法：{validation.algorithm}", f"- 耗时：{validation.runtime_seconds:.3f}s", f"- 指标：`{validation.metrics}`", "", "| 检查项 | 结果 | 说明 |", "|---|---:|---|"])
         for key, value in validation.checks.items():
-            lines.append(f"| {key} | {'通过' if value.get('passed') else '失败'} | {value.get('message', value)} |")
+            detail = value.get('message', value)
+            lines.append(f"| {key} | {'通过' if value.get('passed') else '失败'} | {detail} |")
         if validation.errors:
             lines.extend(["", "### 错误/修复反馈", "", *[f"- {error}" for error in validation.errors]])
     if result.repair_history:

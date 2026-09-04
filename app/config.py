@@ -6,6 +6,15 @@ from pathlib import Path
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
+try:
+    from dotenv import load_dotenv
+
+    load_dotenv(PROJECT_ROOT / ".env", override=False)
+except Exception:
+    # python-dotenv is optional for the offline path.
+    pass
+
+DEFAULT_SECRET_FILE = Path("/data/xiaotianqi/gen_eval/eval/secret.txt")
 
 
 @dataclass(frozen=True)
@@ -20,7 +29,7 @@ class Settings:
     openai_base_url: str | None = os.getenv("OPENAI_BASE_URL")
     openai_api_key: str | None = os.getenv("OPENAI_API_KEY")
     openai_model: str = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
-    secret_file: Path | None = Path(os.environ["AI_FACTORY_SECRET_FILE"]) if os.getenv("AI_FACTORY_SECRET_FILE") else None
+    secret_file: Path | None = Path(os.environ["AI_FACTORY_SECRET_FILE"]) if os.getenv("AI_FACTORY_SECRET_FILE") else (DEFAULT_SECRET_FILE if DEFAULT_SECRET_FILE.exists() else None)
     local_model_path: str | None = os.getenv("LOCAL_MODEL_PATH")
     validation_timeout_seconds: int = int(os.getenv("VALIDATION_TIMEOUT_SECONDS", "90"))
     max_repair_rounds: int = int(os.getenv("MAX_REPAIR_ROUNDS", "3"))
@@ -34,4 +43,3 @@ def get_settings() -> Settings:
     settings = Settings()
     settings.ensure_dirs()
     return settings
-
