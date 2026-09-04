@@ -80,6 +80,15 @@
       <data key="d10">2.060498222708702</data>
       <data key="d11">0</data>
     </node>
+    <node id="0ab21a8f8fba">
+      <data key="d0">ValidationRun</data>
+      <data key="d6">0ab21a8f8fba</data>
+      <data key="d7">cap_churn_prediction_v1</data>
+      <data key="d8">algorithm_logistic_regression</data>
+      <data key="d9">passed</data>
+      <data key="d10">1.8323539942502975</data>
+      <data key="d11">0</data>
+    </node>
     <node id="experience_263ffbd0db13">
       <data key="d0">FailureExperience</data>
       <data key="d1">experience_263ffbd0db13</data>
@@ -94,7 +103,7 @@
       <data key="d12">failure</data>
       <data key="d13">roc_auc=0.7211 &lt; 0.7500</data>
     </node>
-    <node id="0ab21a8f8fba">
+    <node id="6a19e45050a9">
       <data key="d0">ValidationRun</data>
       <data key="d9">passed</data>
       <data key="d8">algorithm_logistic_regression</data>
@@ -143,6 +152,14 @@
       <data key="d14">RELATED_TO</data>
       <data key="d15">{}</data>
     </edge>
+    <edge source="0ab21a8f8fba" target="cap_churn_prediction_v1" id="0">
+      <data key="d14">VALIDATES</data>
+      <data key="d15">{}</data>
+    </edge>
+    <edge source="0ab21a8f8fba" target="algorithm_logistic_regression" id="0">
+      <data key="d14">RELATED_TO</data>
+      <data key="d15">{}</data>
+    </edge>
     <edge source="experience_263ffbd0db13" target="algorithm_logistic_regression" id="0">
       <data key="d14">RELATED_TO</data>
       <data key="d15">{}</data>
@@ -151,11 +168,11 @@
       <data key="d14">RELATED_TO</data>
       <data key="d15">{}</data>
     </edge>
-    <edge source="0ab21a8f8fba" target="cap_churn_prediction_v1" id="0">
+    <edge source="6a19e45050a9" target="cap_churn_prediction_v1" id="0">
       <data key="d14">VALIDATES</data>
       <data key="d15">{}</data>
     </edge>
-    <edge source="0ab21a8f8fba" target="algorithm_logistic_regression" id="0">
+    <edge source="6a19e45050a9" target="algorithm_logistic_regression" id="0">
       <data key="d14">RELATED_TO</data>
       <data key="d15">{}</data>
     </edge>
