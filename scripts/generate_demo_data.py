@@ -17,7 +17,7 @@ def generate(path: str | Path, n_rows: int = 1200, seed: int = 42) -> Path:
     membership = rng.choice(["basic", "silver", "gold", "platinum"], n_rows, p=[0.35, 0.30, 0.23, 0.12])
     tenure = rng.integers(1, 73, n_rows)
     logit = (
-        0.9
+        3.5
         - 0.24 * login_count
         - 0.0035 * total_spend
         + 0.82 * complaint_count

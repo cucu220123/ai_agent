@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import ast
-import importlib.util
 import time
 from pathlib import Path
 
@@ -45,12 +44,9 @@ def import_check(path: str | Path) -> dict:
     path = Path(path)
     started = time.perf_counter()
     try:
-        spec = importlib.util.spec_from_file_location("generated_algorithm", path)
-        if spec is None or spec.loader is None:
-            raise ImportError("cannot create import spec")
-        module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
-        missing = [name for name in ("train", "predict", "evaluate") if not hasattr(module, name)]
-        return {"passed": not missing, "message": "import and interface checks passed" if not missing else f"missing interface: {missing}", "module": module, "duration": time.perf_counter() - started}
+        tree = ast.parse(path.read_text(encoding="utf-8"))
+        functions = {node.name for node in ast.walk(tree) if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))}
+        missing = [name for name in ("train", "predict", "evaluate") if name not in functions]
+        return {"passed": not missing, "message": "static interface checks passed; runtime import deferred to isolated process" if not missing else f"missing interface: {missing}", "duration": time.perf_counter() - started}
     except Exception as exc:
         return {"passed": False, "message": f"import error: {type(exc).__name__}: {exc}", "duration": time.perf_counter() - started}

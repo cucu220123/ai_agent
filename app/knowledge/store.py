@@ -152,6 +152,21 @@ class KnowledgeStore:
         with self._connect() as conn:
             return [json.loads(row["payload"]) for row in conn.execute("SELECT payload FROM experiences ORDER BY created_at DESC LIMIT ?", (limit,))]
 
+    def list_validation_runs(self, limit: int = 50) -> list[dict[str, Any]]:
+        with self._connect() as conn:
+            return [json.loads(row["payload"]) for row in conn.execute("SELECT payload FROM validation_runs ORDER BY created_at DESC LIMIT ?", (limit,))]
+
+    def graph_summary(self) -> dict[str, Any]:
+        node_counts: dict[str, int] = {}
+        for _, attrs in self.graph.nodes(data=True):
+            node_type = attrs.get("type", "Unknown")
+            node_counts[node_type] = node_counts.get(node_type, 0) + 1
+        relation_counts: dict[str, int] = {}
+        for _, _, attrs in self.graph.edges(data=True):
+            relation = attrs.get("relation", "Unknown")
+            relation_counts[relation] = relation_counts.get(relation, 0) + 1
+        return {"nodes": self.graph.number_of_nodes(), "edges": self.graph.number_of_edges(), "node_types": node_counts, "relations": relation_counts}
+
     def search(self, query: str, limit: int = 8) -> dict[str, list[dict[str, Any]]]:
         tokens = {t.lower() for t in query.replace("，", " ").replace(",", " ").split() if len(t) > 1}
 
@@ -167,4 +182,3 @@ class KnowledgeStore:
     def export_graph(self) -> None:
         self.graphml_path.parent.mkdir(parents=True, exist_ok=True)
         nx.write_graphml(self.graph, self.graphml_path)
-

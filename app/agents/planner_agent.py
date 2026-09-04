@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from app.models import AlgorithmPlan, CapabilitySpec, KnowledgeContext
+from app.plugins.registry import DEFAULT_REGISTRY
 
 
 class PlannerAgent:
@@ -11,15 +12,11 @@ class PlannerAgent:
     }
 
     def run(self, spec: CapabilitySpec, knowledge: KnowledgeContext) -> list[AlgorithmPlan]:
-        historical = {}
-        for item in knowledge.algorithms:
-            key = item.get("id", "").replace("algorithm_", "")
-            historical[key] = item.get("historical_metrics", {})
-        names = spec.candidate_algorithms or list(self._defaults)
+        historical = {item.get("id", "").replace("algorithm_", ""): item.get("historical_metrics", {}) for item in knowledge.algorithms}
+        supported = {p.id for p in DEFAULT_REGISTRY.algorithms_for(spec.task_type)}
+        names = [name for name in (spec.candidate_algorithms or list(self._defaults)) if name in supported]
         plans = []
         for priority, key in enumerate(names):
-            if key not in self._defaults:
-                continue
             name, preprocessing, params = self._defaults[key]
             expected = historical.get(key, {})
             rationale = {
@@ -29,10 +26,6 @@ class PlannerAgent:
             }[key]
             if "prefer_interpretable" in spec.constraints and key == "logistic_regression":
                 priority -= 2
-            plans.append(AlgorithmPlan(
-                algorithm_id=f"algorithm_{key}", algorithm_name=name, rationale=rationale,
-                preprocessing=preprocessing, hyperparameters=params, expected_metrics=expected,
-                priority=priority,
-            ))
+            plans.append(AlgorithmPlan(f"algorithm_{key}", name, rationale, preprocessing, params, expected, priority))
         return sorted(plans, key=lambda p: (p.priority, -p.expected_metrics.get("roc_auc", 0.0)))
 

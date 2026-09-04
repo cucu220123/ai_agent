@@ -15,6 +15,8 @@ def main() -> int:
     run.add_argument("--description", required=True)
     run.add_argument("--data", dest="data_path", required=True)
     run.add_argument("--provider", choices=["mock", "openai", "local"], default=None)
+    sub.add_parser("knowledge", help="list graph knowledge summary")
+    sub.add_parser("plugins", help="list registered task and algorithm plugins")
     args = parser.parse_args()
     if args.command == "run":
         settings = get_settings()
@@ -23,6 +25,15 @@ def main() -> int:
         result = AlgorithmFactoryWorkflow(settings).run(args.description, args.data_path)
         print(json.dumps({"run_id": result.run_id, "status": result.validation.status if result.validation else None, "algorithm": result.selected_plan.algorithm_name if result.selected_plan else None, "metrics": result.validation.metrics if result.validation else {}, "report": result.report_markdown, "generated": result.generated_files}, ensure_ascii=False, indent=2))
         return 0 if result.validation and result.validation.status == "passed" else 1
+    if args.command == "knowledge":
+        workflow = AlgorithmFactoryWorkflow(get_settings())
+        print(json.dumps({"summary": workflow.store.graph_summary(), "capabilities": workflow.store.list_capabilities(), "algorithms": workflow.store.list_algorithms(), "recent_runs": workflow.store.list_validation_runs(10)}, ensure_ascii=False, indent=2))
+        return 0
+    if args.command == "plugins":
+        from app.plugins.registry import DEFAULT_REGISTRY
+
+        print(json.dumps(DEFAULT_REGISTRY.describe(), ensure_ascii=False, indent=2))
+        return 0
     return 2
 
 

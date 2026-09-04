@@ -61,7 +61,7 @@ class ParserAgent:
             metrics = ["f1", *[m for m in metrics if m != "f1"]]
 
         thresholds: dict[str, float] = {}
-        for metric_alias, metric in (("roc[- ]?auc|auc", "roc_auc"), ("f1", "f1"), ("准确率|accuracy", "accuracy"), ("召回率|recall", "recall")):
+        for metric_alias, metric in (("roc[- ]?auc|auc", "roc_auc"), ("pr[- ]?auc|average precision", "pr_auc"), ("f1", "f1"), ("准确率|accuracy", "accuracy"), ("召回率|recall", "recall")):
             match = re.search(rf"(?:{metric_alias})\s*(?:不低于|至少|>=|大于等于|不少于|为)?\s*([01](?:\.\d+)?)", lowered, re.I)
             if match:
                 thresholds[metric] = float(match.group(1))
@@ -99,4 +99,3 @@ class ParserAgent:
             candidate_algorithms=candidates,
             dataset_path=dataset_path,
         )
-

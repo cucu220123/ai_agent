@@ -9,6 +9,8 @@
 
 项目默认使用离线 Mock/模板模式，因此无网络、无 API 额度时也能完整复现；同时提供 OpenAI-compatible API 和本地 Transformers 适配器。
 
+增强版还支持结构化 LLM 建议（JSON 合约和调用轨迹）、插件注册表、多个候选算法自动比较、PR-AUC/最佳 F1 阈值、真实子进程隔离与超时、知识查询 API 和内置极简 Web 页面。
+
 ## 快速开始
 
 建议使用已有的 Python 3.10 环境：
@@ -39,6 +41,8 @@ cd /data/xiaotianqi/ai_algorithm_factory
 ```bash
 /data/xiaotianqi/miniconda3/envs/ada_qwen/bin/uvicorn app.api:app --host 0.0.0.0 --port 8000
 ```
+
+可用接口：`/health`、`/run`、`/capabilities`、`/algorithms`、`/plugins`、`/knowledge/search?q=客户流失`、`/graph/summary`、`/runs`、`/ui`。API 只允许读取项目目录内的数据文件。
 
 API 示例：
 
@@ -113,11 +117,12 @@ export LOCAL_MODEL_PATH=/data/public_checkpoints/huggingface_models/Qwen2.5-1.5B
 
 验证器检查 Python 编译、危险 AST 节点、导入白名单、统一接口、训练预测功能、输出列和概率范围、指标阈值、固定随机种子稳定性及运行时间。生成代码只在项目运行目录中执行；这是原型级防护，生产部署建议使用 Docker/gVisor、只读挂载、禁网和资源配额。
 
+运行验证会先在父进程做静态检查，再使用 `python -I` 启动独立子进程执行生成代码，并设置硬超时；父进程只接收带标记的 JSON 结果。该隔离仍不是生产级容器沙箱，但已经避免了生成模块直接污染服务进程。
+
 ## 已验证结果
 
-在 `data/churn_demo.csv`（1200 行模拟数据）上已实测端到端成功：Logistic Regression ROC-AUC 约 0.879，Gradient Boosting 约 0.853，Random Forest 约 0.793；自动选择 Logistic Regression。每次运行会在 `generated/<run_id>/`、`reports/<run_id>.json` 和 `reports/<run_id>.md` 中保存产物，并回写知识库/GraphML。
+在 `data/churn_demo.csv`（1200 行模拟数据）上已实测端到端成功：Logistic Regression ROC-AUC 约 0.879，Gradient Boosting 约 0.853，Random Forest 约 0.793；自动选择 Logistic Regression。每次运行会在 `generated/<run_id>/`、`reports/<run_id>.json` 和 `reports/<run_id>.md` 中保存产物，并把胜者、候选失败和修复经验回写知识库/GraphML。
 
 ## 扩展方向
 
 可继续加入文本分类、异常检测、库存预测插件；向量检索和 Beam Search/MCTS；真实代码仓库抽取；人工审批和版本管理；模型注册、部署配置生成及 Docker 强隔离执行。
-

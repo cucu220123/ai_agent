@@ -20,4 +20,5 @@ def test_end_to_end(tmp_path):
     assert result.validation is not None
     assert result.validation.status == "passed", result.validation.errors
     assert result.report_markdown
-
+    assert result.llm_trace["structured_advice"]["status"] in {"ok", "fallback"}
+    assert result.candidate_results

@@ -25,3 +25,6 @@
 - GraphML：导出 `knowledge.graphml`，可用 Gephi/Cytoscape 查看；
 - JSON：`app/knowledge/seed_data/knowledge.json` 作为可版本管理的种子知识。
 
+## 插件注册
+
+`app/plugins/registry.py` 提供 `TaskPlugin` 和 `AlgorithmPlugin`，新任务可以注册目标类型、默认指标、输出契约和可用算法；新算法可以注册资源画像、默认参数和任务兼容性。Planner 会对白名单进行过滤，未经注册的算法不会进入生成和执行环节。

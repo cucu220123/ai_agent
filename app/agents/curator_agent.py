@@ -29,3 +29,18 @@ class CuratorAgent:
                 "repair_history": repair_history,
             })
 
+    def record_candidates(self, run_id: str, candidate_results: list[dict]) -> None:
+        """Persist failed alternatives and repaired candidate experience."""
+        for item in candidate_results:
+            validation = item.get("validation", {})
+            plan = item.get("plan", {})
+            if validation.get("status") == "passed" and not item.get("repair_history"):
+                continue
+            self.store.add_experience({
+                "id": f"experience_{run_id}_{plan.get('algorithm_id', 'unknown')}",
+                "algorithm_id": plan.get("algorithm_id"),
+                "kind": "candidate_failure" if validation.get("status") != "passed" else "candidate_repaired",
+                "summary": "; ".join(validation.get("errors", [])) or "candidate required repair",
+                "metrics": validation.get("metrics", {}),
+                "repair_history": item.get("repair_history", []),
+            })
