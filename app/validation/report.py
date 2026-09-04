@@ -1,0 +1,51 @@
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+from app.models import WorkflowResult
+
+
+def write_report(result: WorkflowResult, reports_dir: str | Path) -> tuple[Path, Path]:
+    reports_dir = Path(reports_dir)
+    reports_dir.mkdir(parents=True, exist_ok=True)
+    json_path = reports_dir / f"{result.run_id}.json"
+    md_path = reports_dir / f"{result.run_id}.md"
+    json_path.write_text(json.dumps(result.to_dict(), ensure_ascii=False, indent=2), encoding="utf-8")
+    validation = result.validation
+    lines = [
+        f"# 算法能力工厂验证报告：{result.run_id}",
+        "",
+        f"- 能力：{result.spec.capability_name}",
+        f"- 任务类型：{result.spec.task_type}",
+        f"- 目标列：`{result.spec.target_column}`",
+        f"- 选中方案：{result.selected_plan.algorithm_name if result.selected_plan else 'None'}",
+        f"- 最终状态：**{validation.status if validation else 'unknown'}**",
+        "",
+        "## 需求解析",
+        "",
+        "```json",
+        json.dumps(result.spec.to_dict(), ensure_ascii=False, indent=2),
+        "```",
+        "",
+        "## 候选方案",
+        "",
+    ]
+    for plan in result.plans:
+        lines.append(f"- **{plan.algorithm_name}**：{plan.rationale}；历史预期指标 `{plan.expected_metrics}`")
+    if result.candidate_results:
+        lines.extend(["", "## 候选算法自动比较", "", "| 算法 | 状态 | ROC-AUC | F1 | 耗时(s) |", "|---|---|---:|---:|---:|"])
+        for item in result.candidate_results:
+            v = item["validation"]
+            lines.append(f"| {v['algorithm']} | {v['status']} | {v['metrics'].get('roc_auc', 0.0):.4f} | {v['metrics'].get('f1', 0.0):.4f} | {v['runtime_seconds']:.3f} |")
+    if validation:
+        lines.extend(["", "## 验证结果", "", f"- 算法：{validation.algorithm}", f"- 耗时：{validation.runtime_seconds:.3f}s", f"- 指标：`{validation.metrics}`", "", "| 检查项 | 结果 | 说明 |", "|---|---:|---|"])
+        for key, value in validation.checks.items():
+            lines.append(f"| {key} | {'通过' if value.get('passed') else '失败'} | {value.get('message', value)} |")
+        if validation.errors:
+            lines.extend(["", "### 错误/修复反馈", "", *[f"- {error}" for error in validation.errors]])
+    if result.repair_history:
+        lines.extend(["", "## 修复历史", "", *[f"- 第 {h.get('round')} 轮：{'; '.join(h.get('changes', []))}" for h in result.repair_history]])
+    lines.extend(["", "## 知识沉淀", "", "本次验证结果和经验已写入 SQLite 知识库及 GraphML 图谱。"])
+    md_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return json_path, md_path

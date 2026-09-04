@@ -1,0 +1,25 @@
+{
+  "capabilities": [
+    {
+      "id": "cap_churn_prediction_v1",
+      "name": "客户流失预测",
+      "task_type": "binary_classification",
+      "input_schema": {"age": "float", "region": "category", "login_count_30d": "int", "total_spend": "float", "complaint_count": "int", "membership_level": "category"},
+      "output_schema": {"prediction": "int", "probability": "float"},
+      "recommended_metrics": ["roc_auc", "f1", "precision", "recall"],
+      "applicable_conditions": ["目标变量为二分类", "同时包含数值和类别特征", "需要输出概率"],
+      "dependencies": ["pandas", "numpy", "scikit-learn"]
+    }
+  ],
+  "algorithms": [
+    {"id": "algorithm_logistic_regression", "name": "Logistic Regression", "task_types": ["binary_classification"], "preprocessing": ["median imputation", "most-frequent imputation", "one-hot encoding", "standard scaling"], "interpretability": "high", "historical_metrics": {"roc_auc": 0.80, "f1": 0.70}, "resource_profile": "low"},
+    {"id": "algorithm_random_forest", "name": "Random Forest", "task_types": ["binary_classification"], "preprocessing": ["median imputation", "most-frequent imputation", "one-hot encoding"], "interpretability": "medium", "historical_metrics": {"roc_auc": 0.84, "f1": 0.75}, "resource_profile": "medium"},
+    {"id": "algorithm_gradient_boosting", "name": "Gradient Boosting", "task_types": ["binary_classification"], "preprocessing": ["median imputation", "most-frequent imputation", "one-hot encoding"], "interpretability": "medium", "historical_metrics": {"roc_auc": 0.85, "f1": 0.76}, "resource_profile": "medium"}
+  ],
+  "edges": [
+    {"source": "cap_churn_prediction_v1", "target": "algorithm_logistic_regression", "relation": "USES_ALGORITHM"},
+    {"source": "cap_churn_prediction_v1", "target": "algorithm_random_forest", "relation": "USES_ALGORITHM"},
+    {"source": "cap_churn_prediction_v1", "target": "algorithm_gradient_boosting", "relation": "USES_ALGORITHM"}
+  ]
+}
+

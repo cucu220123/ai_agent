@@ -1,0 +1,163 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+  <key id="d15" for="edge" attr.name="payload" attr.type="string" />
+  <key id="d14" for="edge" attr.name="relation" attr.type="string" />
+  <key id="d13" for="node" attr.name="summary" attr.type="string" />
+  <key id="d12" for="node" attr.name="kind" attr.type="string" />
+  <key id="d11" for="node" attr.name="repair_round" attr.type="string" />
+  <key id="d10" for="node" attr.name="runtime_seconds" attr.type="string" />
+  <key id="d9" for="node" attr.name="status" attr.type="string" />
+  <key id="d8" for="node" attr.name="algorithm_id" attr.type="string" />
+  <key id="d7" for="node" attr.name="capability_id" attr.type="string" />
+  <key id="d6" for="node" attr.name="run_id" attr.type="string" />
+  <key id="d5" for="node" attr.name="resource_profile" attr.type="string" />
+  <key id="d4" for="node" attr.name="interpretability" attr.type="string" />
+  <key id="d3" for="node" attr.name="task_type" attr.type="string" />
+  <key id="d2" for="node" attr.name="name" attr.type="string" />
+  <key id="d1" for="node" attr.name="id" attr.type="string" />
+  <key id="d0" for="node" attr.name="type" attr.type="string" />
+  <graph edgedefault="directed">
+    <node id="cap_churn_prediction_v1">
+      <data key="d0">Capability</data>
+      <data key="d1">cap_churn_prediction_v1</data>
+      <data key="d2">客户流失预测</data>
+      <data key="d3">binary_classification</data>
+    </node>
+    <node id="algorithm_logistic_regression">
+      <data key="d0">Algorithm</data>
+      <data key="d1">algorithm_logistic_regression</data>
+      <data key="d2">Logistic Regression</data>
+      <data key="d4">high</data>
+      <data key="d5">low</data>
+    </node>
+    <node id="algorithm_random_forest">
+      <data key="d0">Algorithm</data>
+      <data key="d1">algorithm_random_forest</data>
+      <data key="d2">Random Forest</data>
+      <data key="d4">medium</data>
+      <data key="d5">medium</data>
+    </node>
+    <node id="algorithm_gradient_boosting">
+      <data key="d0">Algorithm</data>
+      <data key="d1">algorithm_gradient_boosting</data>
+      <data key="d2">Gradient Boosting</data>
+      <data key="d4">medium</data>
+      <data key="d5">medium</data>
+    </node>
+    <node id="263ffbd0db13">
+      <data key="d0">ValidationRun</data>
+      <data key="d6">263ffbd0db13</data>
+      <data key="d7">cap_churn_prediction_v1</data>
+      <data key="d8">algorithm_logistic_regression</data>
+      <data key="d9">failed</data>
+      <data key="d10">0.0007641464471817017</data>
+      <data key="d11">3</data>
+    </node>
+    <node id="658240416858">
+      <data key="d0">ValidationRun</data>
+      <data key="d6">658240416858</data>
+      <data key="d7">cap_churn_prediction_v1</data>
+      <data key="d8">algorithm_logistic_regression</data>
+      <data key="d9">failed</data>
+      <data key="d10">1.970391646027565</data>
+      <data key="d11">3</data>
+    </node>
+    <node id="116eedc944ea">
+      <data key="d0">ValidationRun</data>
+      <data key="d6">116eedc944ea</data>
+      <data key="d7">cap_churn_prediction_v1</data>
+      <data key="d8">algorithm_logistic_regression</data>
+      <data key="d9">passed</data>
+      <data key="d10">1.9851694703102112</data>
+      <data key="d11">0</data>
+    </node>
+    <node id="b4257ac2b488">
+      <data key="d0">ValidationRun</data>
+      <data key="d6">b4257ac2b488</data>
+      <data key="d7">cap_churn_prediction_v1</data>
+      <data key="d8">algorithm_logistic_regression</data>
+      <data key="d9">passed</data>
+      <data key="d10">2.060498222708702</data>
+      <data key="d11">0</data>
+    </node>
+    <node id="experience_263ffbd0db13">
+      <data key="d0">FailureExperience</data>
+      <data key="d1">experience_263ffbd0db13</data>
+      <data key="d8">algorithm_logistic_regression</data>
+      <data key="d12">failure</data>
+      <data key="d13">syntax error: unexpected indent (&lt;unknown&gt;, line 25)</data>
+    </node>
+    <node id="experience_658240416858">
+      <data key="d0">FailureExperience</data>
+      <data key="d1">experience_658240416858</data>
+      <data key="d8">algorithm_logistic_regression</data>
+      <data key="d12">failure</data>
+      <data key="d13">roc_auc=0.7211 &lt; 0.7500</data>
+    </node>
+    <node id="0ab21a8f8fba">
+      <data key="d0">ValidationRun</data>
+      <data key="d9">passed</data>
+      <data key="d8">algorithm_logistic_regression</data>
+    </node>
+    <edge source="cap_churn_prediction_v1" target="algorithm_logistic_regression" id="0">
+      <data key="d14">USES_ALGORITHM</data>
+      <data key="d15">{}</data>
+    </edge>
+    <edge source="cap_churn_prediction_v1" target="algorithm_random_forest" id="0">
+      <data key="d14">USES_ALGORITHM</data>
+      <data key="d15">{}</data>
+    </edge>
+    <edge source="cap_churn_prediction_v1" target="algorithm_gradient_boosting" id="0">
+      <data key="d14">USES_ALGORITHM</data>
+      <data key="d15">{}</data>
+    </edge>
+    <edge source="263ffbd0db13" target="cap_churn_prediction_v1" id="0">
+      <data key="d14">VALIDATES</data>
+      <data key="d15">{}</data>
+    </edge>
+    <edge source="263ffbd0db13" target="algorithm_logistic_regression" id="0">
+      <data key="d14">RELATED_TO</data>
+      <data key="d15">{}</data>
+    </edge>
+    <edge source="658240416858" target="cap_churn_prediction_v1" id="0">
+      <data key="d14">VALIDATES</data>
+      <data key="d15">{}</data>
+    </edge>
+    <edge source="658240416858" target="algorithm_logistic_regression" id="0">
+      <data key="d14">RELATED_TO</data>
+      <data key="d15">{}</data>
+    </edge>
+    <edge source="116eedc944ea" target="cap_churn_prediction_v1" id="0">
+      <data key="d14">VALIDATES</data>
+      <data key="d15">{}</data>
+    </edge>
+    <edge source="116eedc944ea" target="algorithm_logistic_regression" id="0">
+      <data key="d14">RELATED_TO</data>
+      <data key="d15">{}</data>
+    </edge>
+    <edge source="b4257ac2b488" target="cap_churn_prediction_v1" id="0">
+      <data key="d14">VALIDATES</data>
+      <data key="d15">{}</data>
+    </edge>
+    <edge source="b4257ac2b488" target="algorithm_logistic_regression" id="0">
+      <data key="d14">RELATED_TO</data>
+      <data key="d15">{}</data>
+    </edge>
+    <edge source="experience_263ffbd0db13" target="algorithm_logistic_regression" id="0">
+      <data key="d14">RELATED_TO</data>
+      <data key="d15">{}</data>
+    </edge>
+    <edge source="experience_658240416858" target="algorithm_logistic_regression" id="0">
+      <data key="d14">RELATED_TO</data>
+      <data key="d15">{}</data>
+    </edge>
+    <edge source="0ab21a8f8fba" target="cap_churn_prediction_v1" id="0">
+      <data key="d14">VALIDATES</data>
+      <data key="d15">{}</data>
+    </edge>
+    <edge source="0ab21a8f8fba" target="algorithm_logistic_regression" id="0">
+      <data key="d14">RELATED_TO</data>
+      <data key="d15">{}</data>
+    </edge>
+  </graph>
+</graphml>
