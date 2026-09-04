@@ -51,13 +51,16 @@ class PluginRegistry:
 def build_default_registry() -> PluginRegistry:
     registry = PluginRegistry()
     registry.register_task(TaskPlugin("binary_classification", "二分类", "binary", ["roc_auc", "pr_auc", "f1", "balanced_accuracy"], ["prediction", "probability"], ["logistic_regression", "random_forest", "gradient_boosting"]))
-    registry.register_task(TaskPlugin("regression", "回归", "continuous", ["rmse", "mae", "r2"], ["prediction"], []))
-    registry.register_task(TaskPlugin("anomaly_detection", "异常检测", "unsupervised", ["precision", "recall", "f1"], ["prediction", "anomaly_score"], []))
+    registry.register_task(TaskPlugin("text_classification", "文本分类", "binary_or_multiclass", ["f1", "accuracy"], ["prediction", "probability"], ["tfidf_logistic_regression"]))
+    registry.register_task(TaskPlugin("regression", "回归", "continuous", ["rmse", "mae", "r2"], ["prediction"], ["random_forest_regressor"]))
+    registry.register_task(TaskPlugin("anomaly_detection", "异常检测", "unsupervised", ["precision", "recall", "f1"], ["prediction", "anomaly_score"], ["isolation_forest"]))
     registry.register_algorithm(AlgorithmPlugin("logistic_regression", "Logistic Regression", ["binary_classification"], "线性、可解释的二分类基线", "low", {"C": 1.0, "max_iter": 500}))
     registry.register_algorithm(AlgorithmPlugin("random_forest", "Random Forest", ["binary_classification"], "适合混合特征和非线性关系", "medium", {"n_estimators": 180, "max_depth": 8, "random_state": 42}))
     registry.register_algorithm(AlgorithmPlugin("gradient_boosting", "Gradient Boosting", ["binary_classification"], "通常具有较好的排序能力", "medium", {"n_estimators": 120, "learning_rate": 0.05, "max_depth": 3, "random_state": 42}))
+    registry.register_algorithm(AlgorithmPlugin("random_forest_regressor", "Random Forest Regressor", ["regression"], "稳健的非线性回归", "medium", {"n_estimators": 160, "max_depth": 10, "random_state": 42}))
+    registry.register_algorithm(AlgorithmPlugin("isolation_forest", "Isolation Forest", ["anomaly_detection"], "无监督异常检测", "medium", {"n_estimators": 160, "contamination": "auto", "random_state": 42}))
+    registry.register_algorithm(AlgorithmPlugin("tfidf_logistic_regression", "TF-IDF Logistic Regression", ["text_classification"], "轻量、可解释的文本分类基线", "low", {"max_features": 5000, "ngram_range": [1, 2], "max_iter": 500}))
     return registry
 
 
 DEFAULT_REGISTRY = build_default_registry()
-

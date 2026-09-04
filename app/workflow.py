@@ -16,6 +16,7 @@ from app.knowledge.store import KnowledgeStore
 from app.llm.factory import build_llm
 from app.llm.contracts import complete_with_trace
 from app.plugins.registry import DEFAULT_REGISTRY
+from app.search.beam import BeamSearchPlanner
 from app.models import WorkflowResult
 from app.validation.report import write_report
 from app.validation.runner import ValidationRunner
@@ -29,15 +30,17 @@ class AlgorithmFactoryWorkflow:
         seed = Path(__file__).parent / "knowledge" / "seed_data" / "knowledge.json"
         if not self.store.list_capabilities():
             self.store.seed_from_json(seed)
+        self.store.ensure_catalog_nodes()
         self.parser = ParserAgent()
         self.retriever = RetrieverAgent(self.store)
         self.planner = PlannerAgent()
-        self.generator = GeneratorAgent()
-        self.repair = RepairAgent()
+        self.llm = build_llm(self.settings)
+        self.generator = GeneratorAgent(self.llm, self.settings.llm_provider)
+        self.repair = RepairAgent(self.llm, self.settings.llm_provider)
         self.validator = ValidationRunner(self.settings.validation_timeout_seconds)
         self.curator = CuratorAgent(self.store)
-        self.llm = build_llm(self.settings)
         self.advisor = AdvisorAgent(self.llm)
+        self.searcher = BeamSearchPlanner()
 
     def run(self, description: str, data_path: str | Path, provider_note: str | None = None) -> WorkflowResult:
         run_id = uuid.uuid4().hex[:12]
@@ -65,6 +68,8 @@ class AlgorithmFactoryWorkflow:
         plans = self.planner.run(spec, knowledge)
         if not plans:
             raise ValueError(f"no compatible algorithm plan for task type {spec.task_type}")
+        beam_width = min(len(plans), max(1, int(__import__("os").getenv("BEAM_WIDTH", "3"))))
+        plans, search_trace = self.searcher.search(plans, spec, beam_width)
         # Code generation remains constrained by templates; the structured response is retained only as advice/trace.
         llm_trace = advisor_trace
         llm_note = advice_response or "LLM 未返回可用说明，已使用确定性模板。"
@@ -88,10 +93,11 @@ class AlgorithmFactoryWorkflow:
                 history.append(self.repair.repair(generated_path, feedback, round_no + 1))
             candidate_validation.repair_round = len(history)
             candidate_validation.warnings.append(llm_note[:500])
-            candidate_results.append({"plan": plan.to_dict(), "validation": candidate_validation.to_dict(), "repair_history": history, "algorithm_path": str(generated_path)})
+            candidate_results.append({"plan": plan.to_dict(), "validation": candidate_validation.to_dict(), "repair_history": history, "algorithm_path": str(generated_path), "artifact_sha256_16": self.store.artifact_fingerprint(generated_path)})
         passed = [x for x in candidate_results if x["validation"]["status"] == "passed"]
         ranking = passed or candidate_results
-        ranking.sort(key=lambda x: (x["validation"]["metrics"].get("roc_auc", -1.0), -x["validation"].get("runtime_seconds", 1e9)), reverse=True)
+        primary_metric = "roc_auc" if spec.task_type == "binary_classification" else ("r2" if spec.task_type == "regression" else "anomaly_rate")
+        ranking.sort(key=lambda x: (x["validation"]["metrics"].get(primary_metric, -1.0), -x["validation"].get("runtime_seconds", 1e9)), reverse=True)
         winner = ranking[0]
         selected = next(p for p in plans if p.algorithm_id == winner["plan"]["algorithm_id"])
         # Preserve the exact candidate result, including warnings and repair details.
@@ -99,7 +105,7 @@ class AlgorithmFactoryWorkflow:
         repair_history = winner["repair_history"]
         self.curator.run(run_id, spec, selected, validation, repair_history)
         self.curator.record_candidates(run_id, candidate_results)
-        result = WorkflowResult(run_id=run_id, spec=spec, knowledge=knowledge, plans=plans, selected_plan=selected, generated_files=generated_files, validation=validation, repair_history=repair_history, candidate_results=candidate_results, llm_trace={"structured_advice": advisor_trace.to_dict() if advisor_trace else None})
+        result = WorkflowResult(run_id=run_id, spec=spec, knowledge=knowledge, plans=plans, selected_plan=selected, generated_files=generated_files, validation=validation, repair_history=repair_history, candidate_results=candidate_results, llm_trace={"structured_advice": advisor_trace.to_dict() if advisor_trace else None}, search_trace=search_trace.to_dict())
         json_path, md_path = write_report(result, self.settings.reports_dir)
         result.report_json, result.report_markdown = str(json_path), str(md_path)
         # Rewrite JSON after adding report paths.

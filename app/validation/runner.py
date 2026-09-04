@@ -33,25 +33,32 @@ class ValidationRunner:
         metrics: dict[str, float] = {}
         try:
             df = pd.read_csv(data_path)
-            if spec.target_column not in df.columns:
+            if spec.target_column and spec.target_column not in df.columns:
                 raise ValueError(f"target column '{spec.target_column}' not found in dataset")
-            if df[spec.target_column].nunique() < 2:
+            if spec.task_type == "binary_classification" and df[spec.target_column].nunique() < 2:
                 raise ValueError("target must contain at least two classes")
-            _, test_df = train_test_split(df, test_size=0.25, random_state=42, stratify=df[spec.target_column])
+            if spec.target_column:
+                stratify = df[spec.target_column] if spec.task_type == "binary_classification" else None
+                _, test_df = train_test_split(df, test_size=0.25, random_state=42, stratify=stratify)
+            else:
+                test_df = df
             isolated = run_isolated(algorithm_path, data_path, spec.target_column, self.timeout_seconds)
             stdout, stderr = isolated.get("stdout", ""), isolated.get("stderr", "")
             checks["isolated_execution"] = {k: v for k, v in isolated.items() if k not in {"stdout", "stderr", "metrics", "metrics2"}}
+            checks["resource_usage"] = {"max_rss_kb": isolated.get("max_rss_kb"), "runtime_seconds_child": isolated.get("runtime_seconds")}
             if not isolated["passed"]:
                 raise RuntimeError(isolated["message"] + (f": {stderr[-1000:]}" if stderr else ""))
             metrics = {k: float(v) for k, v in isolated.get("metrics", {}).items()}
             checks["functional"] = {"passed": True, "message": "isolated train/predict/evaluate completed", "prediction_rows": isolated.get("prediction_rows")}
             checks["output_contract"] = {"passed": True, "message": "output schema and probability range passed"}
-            checks["metrics"] = {"passed": all(metrics.get(k, 0.0) >= threshold for k, threshold in spec.metric_thresholds.items()), "thresholds": spec.metric_thresholds, "actual": metrics}
-            failed_metrics = [f"{k}={metrics.get(k, 0.0):.4f} < {threshold:.4f}" for k, threshold in spec.metric_thresholds.items() if metrics.get(k, 0.0) < threshold]
+            lower_is_better = {"rmse", "mae", "mape", "log_loss"}
+            metric_pass = {k: ((metrics.get(k, float("inf")) <= threshold) if k in lower_is_better else (metrics.get(k, 0.0) >= threshold)) for k, threshold in spec.metric_thresholds.items()}
+            checks["metrics"] = {"passed": all(metric_pass.values()), "per_metric": metric_pass, "thresholds": spec.metric_thresholds, "actual": metrics}
+            failed_metrics = [f"{k}={metrics.get(k, 0.0):.4f} {'>' if k in lower_is_better else '<'} {threshold:.4f}" for k, threshold in spec.metric_thresholds.items() if not metric_pass.get(k, False)]
             if failed_metrics:
                 errors.extend(failed_metrics)
-            positive_rate = float(isolated.get("positive_rate", test_df[spec.target_column].mean()))
-            checks["class_balance"] = {"positive_rate": positive_rate, "train_rows": int(len(df) - len(test_df)), "test_rows": int(len(test_df)), "warning": "positive class is below 10%; consider threshold tuning" if positive_rate < 0.1 else "class balance acceptable"}
+            positive_rate = float(isolated.get("positive_rate", test_df[spec.target_column].mean() if spec.target_column else 0.0))
+            checks["class_balance"] = {"positive_rate": positive_rate, "train_rows": int(len(df) - len(test_df)), "test_rows": int(len(test_df)), "warning": "positive class is below 10%; consider threshold tuning" if spec.target_column and positive_rate < 0.1 else ("unsupervised task; no target balance check" if not spec.target_column else "class balance acceptable")}
             drift = float(isolated.get("drift", 0.0))
             checks["stability"] = {"passed": drift <= 1e-9, "max_metric_drift": drift}
             if drift > 1e-9:

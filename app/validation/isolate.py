@@ -12,6 +12,7 @@ import importlib.util
 import json
 import sys
 import time
+import resource
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
@@ -23,22 +24,26 @@ if spec is None or spec.loader is None:
 module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(module)
 df = pd.read_csv(data_path)
-if target_col not in df.columns:
-    raise ValueError(f"target column '{target_col}' not found")
-train_df, test_df = train_test_split(df, test_size=0.25, random_state=42, stratify=df[target_col])
+has_target = bool(target_col) and target_col in df.columns
+if has_target and df[target_col].nunique() >= 2:
+    train_df, test_df = train_test_split(df, test_size=0.25, random_state=42, stratify=df[target_col] if df[target_col].nunique() < 10 else None)
+else:
+    train_df, test_df = df, df
 model = module.train(train_df, target_col, {"random_state": 42, "threshold": 0.5})
-predictions = module.predict(model, test_df.drop(columns=[target_col]))
+prediction_frame = test_df.drop(columns=[target_col]) if target_col and target_col in test_df.columns else test_df
+predictions = module.predict(model, prediction_frame)
 metrics = {str(k): float(v) for k, v in module.evaluate(model, test_df, target_col).items()}
 if len(predictions) != len(test_df):
     raise ValueError("prediction row count does not match test rows")
-if not {"prediction", "probability"}.issubset(set(predictions.columns)):
-    raise ValueError("prediction output must contain prediction and probability")
-if predictions["probability"].isna().any() or ((predictions["probability"] < 0) | (predictions["probability"] > 1)).any():
+if "prediction" not in predictions.columns:
+    raise ValueError("prediction output must contain prediction")
+if "probability" in predictions.columns and (predictions["probability"].isna().any() or ((predictions["probability"] < 0) | (predictions["probability"] > 1)).any()):
     raise ValueError("probability must be finite and in [0, 1]")
 model2 = module.train(train_df, target_col, {"random_state": 42, "threshold": 0.5})
 metrics2 = {str(k): float(v) for k, v in module.evaluate(model2, test_df, target_col).items()}
 drift = max((abs(metrics.get(k, 0.0) - metrics2.get(k, 0.0)) for k in metrics), default=0.0)
-print("AI_FACTORY_RESULT=" + json.dumps({"metrics": metrics, "metrics2": metrics2, "drift": drift, "prediction_rows": len(predictions), "positive_rate": float(test_df[target_col].mean()), "runtime_seconds": time.perf_counter() - started}))
+positive_rate = float(test_df[target_col].mean()) if has_target and pd.api.types.is_numeric_dtype(test_df[target_col]) else 0.0
+print("AI_FACTORY_RESULT=" + json.dumps({"metrics": metrics, "metrics2": metrics2, "drift": drift, "prediction_rows": len(predictions), "positive_rate": positive_rate, "runtime_seconds": time.perf_counter() - started, "max_rss_kb": resource.getrusage(resource.RUSAGE_SELF).ru_maxrss}))
 '''
 
 

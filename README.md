@@ -11,6 +11,8 @@
 
 增强版还支持结构化 LLM 建议（JSON 合约和调用轨迹）、插件注册表、多个候选算法自动比较、PR-AUC/最佳 F1 阈值、真实子进程隔离与超时、知识查询 API 和内置极简 Web 页面。
 
+方案规划使用轻量 Beam Search：根据历史指标、可解释性、低延迟约束和资源画像筛选候选分支，并在报告中保留搜索轨迹。
+
 ## 快速开始
 
 建议使用已有的 Python 3.10 环境：
@@ -36,13 +38,22 @@ cd /data/xiaotianqi/ai_algorithm_factory
 /data/xiaotianqi/miniconda3/envs/ada_qwen/bin/python -m pytest -q
 ```
 
+按原题验收矩阵运行四个示例：
+
+```bash
+/data/xiaotianqi/miniconda3/envs/ada_qwen/bin/python -m app.cli run --description "根据客户年龄、登录频率和投诉次数预测客户是否流失，要求 ROC-AUC 不低于 0.75" --data data/churn_demo.csv
+/data/xiaotianqi/miniconda3/envs/ada_qwen/bin/python -m app.cli run --description "对文本评论进行文本分类，预测正面或负面" --data data/text_demo.csv
+/data/xiaotianqi/miniconda3/envs/ada_qwen/bin/python -m app.cli run --description "根据年龄、访问次数预测消费金额，做回归预测，要求 MAE 不高于 100" --data data/regression_demo.csv
+/data/xiaotianqi/miniconda3/envs/ada_qwen/bin/python -m app.cli run --description "对设备温度、振动和压力数据进行异常检测" --data data/anomaly_demo.csv
+```
+
 启动 API：
 
 ```bash
 /data/xiaotianqi/miniconda3/envs/ada_qwen/bin/uvicorn app.api:app --host 0.0.0.0 --port 8000
 ```
 
-可用接口：`/health`、`/run`、`/capabilities`、`/algorithms`、`/plugins`、`/knowledge/search?q=客户流失`、`/graph/summary`、`/runs`、`/ui`。API 只允许读取项目目录内的数据文件。
+可用接口：`/health`、`/run`、`/capabilities`、`/algorithms`、`/plugins`、`/tasks`、`/sources`、`/catalog`、`/knowledge/search?q=客户流失`、`/graph/summary`、`/runs`、`/ui`。API 只允许读取项目目录内的数据文件。
 
 API 示例：
 
@@ -73,6 +84,14 @@ tests/            单元测试和端到端测试
 
 示例数据包含年龄、地区、近 30 天登录次数、消费金额、投诉次数、会员等级、使用时长和 `churn` 标签。系统自动比较 Logistic Regression、Random Forest、Gradient Boosting，优先选择满足指标门槛的方案，再按 ROC-AUC 和运行时间排序。生成算法统一提供：
 
+除客户流失表格分类外，项目还提供可运行的文本分类（TF-IDF + Logistic Regression）、回归（Random Forest Regressor）和无监督异常检测（Isolation Forest）模板：
+
+```bash
+python -m app.cli run --description "对文本评论进行文本分类，预测正面或负面" --data data/text_demo.csv
+python -m app.cli run --description "根据年龄、访问次数预测消费金额，做回归预测" --data data/regression_demo.csv
+python -m app.cli run --description "对设备温度、振动和压力数据进行异常检测" --data data/anomaly_demo.csv
+```
+
 ```python
 train(train_df, target_col, config=None)
 predict(model, test_df)
@@ -84,6 +103,8 @@ evaluate(model, test_df, target_col)
 节点包括 `Capability`、`Algorithm`、`Dataset`、`FeatureStrategy`、`Metric`、`Environment`、`ValidationRun`、`FailureExperience`、`Constraint`；关系包括 `USES_ALGORITHM`、`VALIDATED_ON`、`REQUIRES_FEATURE`、`EVALUATED_BY`、`REQUIRES`、`VALIDATES`、`RELATED_TO`、`FIXED_BY`。
 
 种子知识在 `app/knowledge/seed_data/knowledge.json`，Schema 说明在 `docs/schema.md`，运行后产生 `knowledge.sqlite` 和 `knowledge.graphml`。
+
+原题要求逐项对应关系见 [验收矩阵](docs/acceptance_matrix.md)，LLM 和安全策略见 [安全说明](docs/llm_and_security.md)。
 
 ## LLM 配置
 
@@ -113,6 +134,8 @@ export LOCAL_MODEL_PATH=/data/public_checkpoints/huggingface_models/Qwen2.5-1.5B
 
 较大的本地模型需要空闲 GPU 和显存；项目不会自动下载模型。
 
+如果要使用你提供的 secret 文件，可设置 `AI_FACTORY_SECRET_FILE=/data/xiaotianqi/gen_eval/eval/secret.txt`；项目也会自动识别该默认路径，但不会把密钥内容写入日志、报告或 Git。
+
 ## 验证与安全
 
 验证器检查 Python 编译、危险 AST 节点、导入白名单、统一接口、训练预测功能、输出列和概率范围、指标阈值、固定随机种子稳定性及运行时间。生成代码只在项目运行目录中执行；这是原型级防护，生产部署建议使用 Docker/gVisor、只读挂载、禁网和资源配额。
@@ -125,4 +148,4 @@ export LOCAL_MODEL_PATH=/data/public_checkpoints/huggingface_models/Qwen2.5-1.5B
 
 ## 扩展方向
 
-可继续加入文本分类、异常检测、库存预测插件；向量检索和 Beam Search/MCTS；真实代码仓库抽取；人工审批和版本管理；模型注册、部署配置生成及 Docker 强隔离执行。
+当前已提供目录级 Markdown/Python 能力抽取入口：`python -m app.cli ingest data/`。二分类和异常检测已有可运行模板，回归插件已提供 Random Forest Regressor 模板；后续可继续加入完整文本分类、库存预测算法模板、向量检索和 MCTS。

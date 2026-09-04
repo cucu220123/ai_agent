@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import sqlite3
 from datetime import datetime, timezone
 from pathlib import Path
@@ -49,6 +50,9 @@ class KnowledgeStore:
                     source TEXT, target TEXT, relation TEXT, payload TEXT,
                     PRIMARY KEY(source, target, relation)
                 );
+                CREATE TABLE IF NOT EXISTS knowledge_items (
+                    id TEXT PRIMARY KEY, node_type TEXT NOT NULL, payload TEXT NOT NULL, created_at TEXT NOT NULL
+                );
                 """
             )
 
@@ -58,6 +62,10 @@ class KnowledgeStore:
 
     def _load_graph(self) -> None:
         with self._connect() as conn:
+            for row in conn.execute("SELECT * FROM knowledge_items").fetchall():
+                payload = json.loads(row["payload"])
+                attrs = {k: str(v) for k, v in payload.items() if isinstance(v, (str, int, float, bool))}
+                self.graph.add_node(row["id"], type=row["node_type"], **attrs)
             for table, node_type in (
                 ("capabilities", "Capability"),
                 ("algorithms", "Algorithm"),
@@ -82,6 +90,28 @@ class KnowledgeStore:
             self.add_edge(edge["source"], edge["target"], edge["relation"], edge.get("payload", {}))
         self.export_graph()
 
+    def ensure_catalog_nodes(self) -> None:
+        """Materialize metric, environment, dataset and feature strategy entities."""
+        capability_id = "cap_churn_prediction_v1"
+        for metric_id, name, direction in (("metric_roc_auc", "ROC-AUC", "max"), ("metric_pr_auc", "PR-AUC", "max"), ("metric_f1", "F1", "max"), ("metric_precision", "Precision", "max"), ("metric_recall", "Recall", "max")):
+            self.upsert_knowledge_item(metric_id, "Metric", {"id": metric_id, "name": name, "direction": direction})
+            self.add_edge(capability_id, metric_id, "EVALUATED_BY")
+        env_id = "environment_python_sklearn"
+        self.upsert_knowledge_item(env_id, "Environment", {"id": env_id, "python": "3.10+", "dependencies": ["pandas", "numpy", "scikit-learn"]})
+        for algorithm in self.list_algorithms():
+            self.add_edge(algorithm["id"], env_id, "REQUIRES")
+        dataset_id = "dataset_churn_demo"
+        self.upsert_knowledge_item(dataset_id, "Dataset", {"id": dataset_id, "path": "data/churn_demo.csv", "target": "churn", "task_type": "binary_classification"})
+        self.add_edge(capability_id, dataset_id, "VALIDATED_ON")
+        for name in ("numeric_imputation", "categorical_imputation", "one_hot_encoding", "standard_scaling"):
+            sid = "feature_" + name
+            self.upsert_knowledge_item(sid, "FeatureStrategy", {"id": sid, "name": name})
+            self.add_edge(capability_id, sid, "REQUIRES_FEATURE")
+        self.export_graph()
+
+    def artifact_fingerprint(self, path: str | Path) -> str:
+        return hashlib.sha256(Path(path).read_bytes()).hexdigest()[:16]
+
     def upsert_capability(self, item: dict[str, Any]) -> None:
         payload = dict(item)
         node_id = str(payload["id"])
@@ -102,6 +132,16 @@ class KnowledgeStore:
             )
         self.graph.add_node(node_id, type="Algorithm", name=payload.get("name", node_id))
 
+    def upsert_knowledge_item(self, item_id: str, node_type: str, payload: dict[str, Any]) -> None:
+        with self._connect() as conn:
+            conn.execute("INSERT OR REPLACE INTO knowledge_items(id,node_type,payload,created_at) VALUES (?,?,?,?)", (item_id, node_type, json.dumps(payload, ensure_ascii=False), self._now()))
+        attrs = {k: str(v) for k, v in payload.items() if isinstance(v, (str, int, float, bool))}
+        self.graph.add_node(item_id, type=node_type, **attrs)
+
+    def list_knowledge_items(self, limit: int = 50) -> list[dict[str, Any]]:
+        with self._connect() as conn:
+            return [json.loads(row["payload"]) for row in conn.execute("SELECT payload FROM knowledge_items ORDER BY created_at DESC LIMIT ?", (limit,))]
+
     def add_edge(self, source: str, target: str, relation: str, payload: dict[str, Any] | None = None) -> None:
         payload = payload or {}
         serialized = json.dumps(payload, ensure_ascii=False)
@@ -110,6 +150,9 @@ class KnowledgeStore:
                 "INSERT OR REPLACE INTO graph_edges(source,target,relation,payload) VALUES (?,?,?,?)",
                 (source, target, relation, serialized),
             )
+        for key, attrs in list(self.graph.get_edge_data(source, target, default={}).items()):
+            if attrs.get("relation") == relation:
+                self.graph.remove_edge(source, target, key=key)
         self.graph.add_edge(source, target, relation=relation, payload=serialized)
 
     def add_validation_run(self, item: dict[str, Any]) -> None:

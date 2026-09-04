@@ -39,6 +39,8 @@ class ParserAgent:
             target = target_match.group(1)
         if "流失" in text or "churn" in lowered:
             target = "churn"
+        elif task_type == "anomaly_detection":
+            target = ""
 
         features: list[str] = []
         for canonical, aliases in self._known_features.items():
@@ -49,20 +51,28 @@ class ParserAgent:
                 import pandas as pd
 
                 columns = list(pd.read_csv(dataset_path, nrows=0).columns)
-                if target in columns:
+                if target and target in columns:
                     features = [c for c in columns if c != target]
+                elif task_type == "regression" and columns:
+                    target = columns[-1]
+                    features = [c for c in columns if c != target]
+                elif task_type == "text_classification" and columns:
+                    target = columns[-1]
+                    features = [c for c in columns if c != target]
+                elif task_type == "anomaly_detection":
+                    features = columns
             except Exception:
                 pass
 
-        metrics = ["roc_auc", "f1", "precision", "recall"] if task_type == "binary_classification" else ["rmse", "mae"]
+        metrics = ["roc_auc", "f1", "precision", "recall"] if task_type == "binary_classification" else (["rmse", "mae", "r2"] if task_type == "regression" else ["precision", "recall", "f1"])
         if "auc" in lowered or "roc" in lowered:
             metrics = ["roc_auc", *[m for m in metrics if m != "roc_auc"]]
         if "f1" in lowered:
             metrics = ["f1", *[m for m in metrics if m != "f1"]]
 
         thresholds: dict[str, float] = {}
-        for metric_alias, metric in (("roc[- ]?auc|auc", "roc_auc"), ("pr[- ]?auc|average precision", "pr_auc"), ("f1", "f1"), ("准确率|accuracy", "accuracy"), ("召回率|recall", "recall")):
-            match = re.search(rf"(?:{metric_alias})\s*(?:不低于|至少|>=|大于等于|不少于|为)?\s*([01](?:\.\d+)?)", lowered, re.I)
+        for metric_alias, metric in (("roc[- ]?auc|auc", "roc_auc"), ("pr[- ]?auc|average precision", "pr_auc"), ("f1", "f1"), ("准确率|accuracy", "accuracy"), ("召回率|recall", "recall"), ("rmse", "rmse"), ("mae", "mae"), ("r2|r²", "r2")):
+            match = re.search(rf"(?:{metric_alias})\s*(?:不低于|至少|>=|大于等于|不少于|不高于|最多|<=|小于等于|为)?\s*(\d+(?:\.\d+)?)", lowered, re.I)
             if match:
                 thresholds[metric] = float(match.group(1))
         if not thresholds and task_type == "binary_classification":
@@ -79,6 +89,12 @@ class ParserAgent:
                 candidates.append(name)
         if not candidates and task_type == "binary_classification":
             candidates = ["logistic_regression", "random_forest", "gradient_boosting"]
+        if task_type == "regression" and not candidates:
+            candidates = ["random_forest_regressor"]
+        if task_type == "anomaly_detection" and not candidates:
+            candidates = ["isolation_forest"]
+        if task_type == "text_classification" and not candidates:
+            candidates = ["tfidf_logistic_regression"]
 
         constraints = []
         if "可解释" in text or "explain" in lowered:

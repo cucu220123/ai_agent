@@ -42,6 +42,23 @@ def plugins() -> dict:
     return DEFAULT_REGISTRY.describe()
 
 
+@app.get("/tasks")
+def tasks() -> dict:
+    return {"items": DEFAULT_REGISTRY.describe()["tasks"]}
+
+
+@app.get("/sources")
+def sources(limit: int = Query(default=50, ge=1, le=200)) -> dict:
+    workflow = AlgorithmFactoryWorkflow()
+    return {"items": workflow.store.list_knowledge_items(limit)}
+
+
+@app.get("/catalog")
+def catalog() -> dict:
+    workflow = AlgorithmFactoryWorkflow()
+    return {"summary": workflow.store.graph_summary(), "items": workflow.store.list_knowledge_items(200)}
+
+
 @app.get("/knowledge/search")
 def knowledge_search(q: str = Query(min_length=1), limit: int = Query(default=8, ge=1, le=50)) -> dict:
     workflow = AlgorithmFactoryWorkflow()

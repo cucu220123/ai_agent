@@ -38,6 +38,8 @@ def write_report(result: WorkflowResult, reports_dir: str | Path) -> tuple[Path,
         for item in result.candidate_results:
             v = item["validation"]
             lines.append(f"| {v['algorithm']} | {v['status']} | {v['metrics'].get('roc_auc', 0.0):.4f} | {v['metrics'].get('f1', 0.0):.4f} | {v['runtime_seconds']:.3f} |")
+    if result.search_trace:
+        lines.extend(["", "## 方案搜索", "", f"- 策略：`{result.search_trace.get('strategy')}`", f"- Beam width：`{result.search_trace.get('beam_width')}`", f"- 扩展候选数：`{result.search_trace.get('expanded')}`", f"- 入选：`{result.search_trace.get('selected')}`"])
     if validation:
         lines.extend(["", "## 验证结果", "", f"- 算法：{validation.algorithm}", f"- 耗时：{validation.runtime_seconds:.3f}s", f"- 指标：`{validation.metrics}`", "", "| 检查项 | 结果 | 说明 |", "|---|---:|---|"])
         for key, value in validation.checks.items():
@@ -47,6 +49,6 @@ def write_report(result: WorkflowResult, reports_dir: str | Path) -> tuple[Path,
             lines.extend(["", "### 错误/修复反馈", "", *[f"- {error}" for error in validation.errors]])
     if result.repair_history:
         lines.extend(["", "## 修复历史", "", *[f"- 第 {h.get('round')} 轮：{'; '.join(h.get('changes', []))}" for h in result.repair_history]])
-    lines.extend(["", "## 知识沉淀", "", "本次验证结果和经验已写入 SQLite 知识库及 GraphML 图谱。"])
+        lines.extend(["", "## 知识沉淀", "", "本次验证结果、候选方案经验和源材料已写入 SQLite 知识库及 GraphML 图谱。", "", f"## LLM/搜索轨迹", "", f"- LLM：`{result.llm_trace}`", f"- 搜索：`{result.search_trace}`"])
     md_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
     return json_path, md_path

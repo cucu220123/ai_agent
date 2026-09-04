@@ -17,6 +17,9 @@ def main() -> int:
     run.add_argument("--provider", choices=["mock", "openai", "local"], default=None)
     sub.add_parser("knowledge", help="list graph knowledge summary")
     sub.add_parser("plugins", help="list registered task and algorithm plugins")
+    sub.add_parser("tasks", help="list registered task plugins")
+    ingest = sub.add_parser("ingest", help="extract capability knowledge from Markdown/Python")
+    ingest.add_argument("path")
     args = parser.parse_args()
     if args.command == "run":
         settings = get_settings()
@@ -33,6 +36,16 @@ def main() -> int:
         from app.plugins.registry import DEFAULT_REGISTRY
 
         print(json.dumps(DEFAULT_REGISTRY.describe(), ensure_ascii=False, indent=2))
+        return 0
+    if args.command == "tasks":
+        from app.plugins.registry import DEFAULT_REGISTRY
+
+        print(json.dumps(DEFAULT_REGISTRY.describe()["tasks"], ensure_ascii=False, indent=2))
+        return 0
+    if args.command == "ingest":
+        from app.knowledge.extractor import CapabilityExtractor
+        workflow = AlgorithmFactoryWorkflow(get_settings())
+        print(json.dumps(CapabilityExtractor().ingest_path(args.path, workflow.store), ensure_ascii=False, indent=2))
         return 0
     return 2
 

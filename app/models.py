@@ -76,6 +76,7 @@ class WorkflowResult:
     repair_history: list[dict[str, Any]]
     candidate_results: list[dict[str, Any]] = field(default_factory=list)
     llm_trace: dict[str, Any] = field(default_factory=dict)
+    search_trace: dict[str, Any] = field(default_factory=dict)
     report_json: str | None = None
     report_markdown: str | None = None
 
@@ -91,6 +92,7 @@ class WorkflowResult:
             "repair_history": self.repair_history,
             "candidate_results": self.candidate_results,
             "llm_trace": self.llm_trace,
+            "search_trace": self.search_trace,
             "report_json": self.report_json,
             "report_markdown": self.report_markdown,
         }

@@ -44,6 +44,24 @@ def extract_json_object(text: str) -> dict[str, Any] | None:
     return None
 
 
+def extract_python_code(text: str) -> str | None:
+    """Extract a Python program from a fenced or plain model response."""
+    text = (text or "").strip()
+    if not text:
+        return None
+    if "```" in text:
+        parts = text.split("```")
+        for idx in range(1, len(parts), 2):
+            block = parts[idx].strip()
+            if block.startswith("python"):
+                block = block[6:].lstrip("\n ")
+            if "def train" in block and "def predict" in block:
+                return block
+    if "def train" in text and "def predict" in text and "def evaluate" in text:
+        return text[text.find("from ") if "from " in text else 0 :]
+    return None
+
+
 def complete_with_trace(provider: Any, provider_name: str, model: str | None, purpose: str, system: str, user: str) -> tuple[str, LLMTrace]:
     trace = LLMTrace(provider=provider_name, model=model, purpose=purpose, status="started")
     try:
@@ -55,4 +73,3 @@ def complete_with_trace(provider: Any, provider_name: str, model: str | None, pu
         trace.status = "fallback"
         trace.error = f"{type(exc).__name__}: {exc}"[:1000]
         return "", trace
-
