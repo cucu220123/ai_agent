@@ -25,7 +25,7 @@
 | AlgorithmVersion | code_hash, version, parent_version, source, timestamp | 不可变源码谱系 |
 | SourceDocument | path, content hash, chunks, extraction trace | 证据出处 |
 
-旧的 FeatureStrategy / RELATED_TO 保留兼容旧数据；新主流程使用规范关系。OptimizationExperience 以带 reusable_lesson 的 Failure/RepairExperience 和来源属性表达；适用条件用 Task/Constraint/Preprocessing 及实体属性表达，不为每种文本短语无限新增节点。
+FeatureStrategy 保留兼容旧数据；新主流程使用下列规范关系，同时保留 FailureExperience → RELATED_TO → Algorithm 作为直接检索连接。失败的具体运行归属仍由 OCCURRED_IN 表达，RELATED_TO 不替代测量来源。OptimizationExperience 以带 reusable_lesson 的 Failure/RepairExperience 和来源属性表达；适用条件用 Task/Constraint/Preprocessing 及实体属性表达，不为每种文本短语无限新增节点。
 
 ## 关系与方向
 
