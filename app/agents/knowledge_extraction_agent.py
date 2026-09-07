@@ -9,7 +9,7 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 from app.llm.contracts import extract_json_object
 
 
-EntityType = Literal["Capability", "Task", "Algorithm", "Dataset", "Feature", "PreprocessingStrategy", "Metric", "Constraint", "Dependency", "Environment", "HyperparameterConfig", "ValidationRun", "FailureExperience", "RepairExperience", "AlgorithmVersion"]
+EntityType = Literal["Capability", "Task", "Algorithm", "Dataset", "Feature", "Target", "InputSchema", "OutputSchema", "PreprocessingStrategy", "Metric", "Constraint", "Dependency", "Environment", "HyperparameterConfig", "ValidationRun", "FailureExperience", "RepairExperience", "AlgorithmVersion"]
 
 
 class ExtractedEntity(BaseModel):
@@ -76,7 +76,7 @@ class KnowledgeExtractionAgent:
                         payload = {
                             "source": source_path, "chunk": chunk,
                             "ast_facts": {k: v for k, v in deterministic_facts.items() if k not in {"content_chunks", "functions", "classes"}},
-                            "allowed_entity_types_exact": ["Capability", "Task", "Algorithm", "Dataset", "Feature", "PreprocessingStrategy", "Metric", "Constraint", "Dependency", "Environment", "HyperparameterConfig", "ValidationRun", "FailureExperience", "RepairExperience", "AlgorithmVersion"],
+                            "allowed_entity_types_exact": ["Capability", "Task", "Algorithm", "Dataset", "Feature", "Target", "InputSchema", "OutputSchema", "PreprocessingStrategy", "Metric", "Constraint", "Dependency", "Environment", "HyperparameterConfig", "ValidationRun", "FailureExperience", "RepairExperience", "AlgorithmVersion"],
                             "required_schema": {"entities": [{"id": "feature_age", "type": "Feature", "name": "age", "properties": {"dtype": "numeric"}, "evidence_span": "age | 数值 | 客户年龄", "confidence": 0.9}], "relations": [{"source": "capability_id", "relation": "USES_ALGORITHM", "target": "algorithm_id", "evidence_span": "exact source fragment", "confidence": 0.9}], "summary": "grounded chunk summary"},
                             "top_level_keys_exact": ["entities", "relations", "summary"],
                             "rules": ["top-level JSON must contain exactly entities, relations, summary; do not add metrics/features keys", "put every metric and feature inside entities", "type must use an exact English value from allowed_entity_types_exact", "confidence is required for every entity and relation", "relation endpoints must reference ids from entities", "evidence_span must be copied from the chunk", "return empty relations if no relation is stated"],

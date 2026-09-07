@@ -25,19 +25,24 @@ class PlannerAgent:
         primary_metric = METRIC_REGISTRY.primary(spec.task_type, spec.metrics, bool(spec.target_column))
         plans = []
         for priority, key in enumerate(names):
-            name, preprocessing, params = self._defaults[key]
+            plugin = DEFAULT_REGISTRY.algorithms.get(key)
+            if plugin and key not in self._defaults:
+                name, preprocessing, params = plugin.name, plugin.preprocessing, dict(plugin.default_params)
+                rationale = plugin.description
+            else:
+                name, preprocessing, params = self._defaults[key]
+                rationale = {
+                    "logistic_regression": "类别和数值特征经过统一预处理后，逻辑回归提供高可解释性和低资源消耗。",
+                    "random_forest": "随机森林对非线性关系和特征尺度不敏感，适合混合类型客户行为特征。",
+                    "gradient_boosting": "梯度提升通常具有较高的排序能力，作为性能优先候选方案。",
+                    "random_forest_regressor": "随机森林回归对非线性数值关系鲁棒，作为无需缩放的稳健回归方案。",
+                    "isolation_forest": "Isolation Forest 通过随机划分识别稀有样本，适合无监督异常检测。",
+                    "tfidf_logistic_regression": "TF-IDF 与逻辑回归组合轻量、稳定，适合作为文本分类基线。",
+                }.get(key, plugin.description if plugin else "registered algorithm plugin")
             expected = dict(historical.get(key, {}))
             real_prior = priors.get(f"algorithm_{key}", {})
             if real_prior:
                 expected[primary_metric] = float(real_prior.get("historical_score", expected.get(primary_metric, 0.0)))
-            rationale = {
-                "logistic_regression": "类别和数值特征经过统一预处理后，逻辑回归提供高可解释性和低资源消耗。",
-                "random_forest": "随机森林对非线性关系和特征尺度不敏感，适合混合类型客户行为特征。",
-                "gradient_boosting": "梯度提升通常具有较高的排序能力，作为性能优先候选方案。",
-                "random_forest_regressor": "随机森林回归对非线性数值关系鲁棒，作为无需缩放的稳健回归方案。",
-                "isolation_forest": "Isolation Forest 通过随机划分识别稀有样本，适合无监督异常检测。",
-                "tfidf_logistic_regression": "TF-IDF 与逻辑回归组合轻量、稳定，适合作为文本分类和跨场景迁移基线。",
-            }[key]
             if "prefer_interpretable" in spec.constraints and key == "logistic_regression":
                 priority -= 2
             prior_value = float(real_prior.get("historical_score", expected.get(primary_metric, 0.5)))

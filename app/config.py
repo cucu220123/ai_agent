@@ -42,6 +42,7 @@ class Settings:
     max_repair_rounds: int = int(os.getenv("MAX_REPAIR_ROUNDS", "3"))
     planning_context_max_chars: int = int(os.getenv("PLANNING_CONTEXT_MAX_CHARS", "12000"))
     llm_code_candidate_budget: int = int(os.getenv("LLM_CODE_CANDIDATE_BUDGET", "2"))
+    codegen_mode: str = os.getenv("CODEGEN_MODE", "free_form_llm")
 
     def ensure_dirs(self) -> None:
         for path in (self.data_dir, self.generated_dir, self.reports_dir):

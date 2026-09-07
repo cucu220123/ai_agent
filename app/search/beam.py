@@ -5,6 +5,7 @@ from dataclasses import dataclass, field
 from typing import Any
 
 from app.models import AlgorithmPlan, CapabilitySpec
+from app.plugins.registry import DEFAULT_REGISTRY
 
 
 @dataclass
@@ -28,6 +29,7 @@ class BeamSearchPlanner:
         states: list[AlgorithmPlan] = []
         expansions: list[dict[str, Any]] = []
         for parent in plans:
+            plugin = DEFAULT_REGISTRY.algorithms.get((parent.base_algorithm_id or parent.algorithm_id).replace("algorithm_", ""))
             for action in self._actions(parent, spec):
                 params = {**parent.hyperparameters, **action["parameters"]}
                 state_id = parent.algorithm_id + "__" + self._slug(action["name"])
@@ -65,6 +67,10 @@ class BeamSearchPlanner:
 
     def _actions(self, plan: AlgorithmPlan, spec: CapabilitySpec) -> list[dict[str, Any]]:
         key = (plan.base_algorithm_id or plan.algorithm_id).replace("algorithm_", "")
+        plugin = DEFAULT_REGISTRY.algorithms.get(key)
+        if plugin and plugin.search_space and key not in {"logistic_regression", "random_forest", "gradient_boosting", "random_forest_regressor", "isolation_forest", "tfidf_logistic_regression"}:
+            actions = [{"name": f"{key}_{index}", "parameters": {key: value}, "preprocessing_variant": ";".join(plugin.preprocessing), "preprocessing": plugin.preprocessing} for index, (key, value) in enumerate((item, value) for item, values in plugin.search_space.items() for value in values)]
+            return actions or [self._action("default", {})]
         imbalance = bool(spec.class_imbalance.get("is_imbalanced") or spec.class_imbalance.get("positive_rate", 1.0) < 0.25)
         if key == "logistic_regression":
             return [
@@ -120,4 +126,3 @@ class BeamSearchPlanner:
     @staticmethod
     def _slug(value: str) -> str:
         return "".join(ch if ch.isalnum() else "_" for ch in value).strip("_")
-

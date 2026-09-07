@@ -1281,5 +1281,6 @@
       "executable_code_rate": 0.0,
       "repair_success_rate": 1.0
     }
-  ]
+  ],
+  "git_commit": "267cbcc72569bfe004673b61e36d2f395e551e1e"
 }

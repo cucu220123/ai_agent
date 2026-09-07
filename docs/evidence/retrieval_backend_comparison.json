@@ -90,5 +90,7 @@
         "model": "/data/public_checkpoints/huggingface_models/shibing624-text2vec-base-chinese"
       }
     ]
-  }
+  },
+  "git_commit": "267cbcc72569bfe004673b61e36d2f395e551e1e",
+  "generated_at": "2026-09-07T08:45:29Z"
 }

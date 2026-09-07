@@ -74,7 +74,7 @@ class AlgorithmFactoryWorkflow:
         generated_files: list[str] = []
         for plan_index, plan in enumerate(plans):
             run_dir = self.settings.generated_dir / run_id / plan.algorithm_id
-            generated_path = self.generator.run(run_dir, spec, plan, allow_llm=plan_index < self.settings.llm_code_candidate_budget)
+            generated_path = self.generator.run(run_dir, spec, plan, allow_llm=plan_index < self.settings.llm_code_candidate_budget, mode=self.settings.codegen_mode)
             generation_meta = json.loads((generated_path.parent / "algorithm_meta.json").read_text(encoding="utf-8")).get("generation", {})
             code_source = "llm" if generation_meta.get("status") == "llm_code_accepted" else generation_meta.get("status", "template_fallback")
             event_log.append({"agent": "CoderAgent", "status": "generated", "algorithm": plan.algorithm_id, "path": str(generated_path)})

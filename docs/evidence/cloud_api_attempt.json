@@ -5,5 +5,7 @@
   "http_status": 401,
   "server_reason": "token quota exhausted",
   "secret_logged": false,
-  "fallback_policy": "auto provider circuit-breaks cloud failure and uses local model or deterministic template"
+  "fallback_policy": "auto provider circuit-breaks cloud failure and uses local model or deterministic template",
+  "git_commit": "267cbcc72569bfe004673b61e36d2f395e551e1e",
+  "generated_at": "2026-09-07T08:45:29Z"
 }

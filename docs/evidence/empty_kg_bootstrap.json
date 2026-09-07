@@ -1,0 +1,1318 @@
+{
+  "nodes_before": 0,
+  "edges_before": 0,
+  "nodes_after": 13,
+  "edges_after": 12,
+  "extracted_sources": [
+    {
+      "id": "feature_churn",
+      "name": "churn",
+      "confidence": 0.7,
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+        "evidence_span": "churn"
+      }
+    },
+    {
+      "id": "feature_tenure_months",
+      "name": "tenure_months",
+      "confidence": 0.7,
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+        "evidence_span": "tenure_months"
+      }
+    },
+    {
+      "id": "feature_membership_level",
+      "name": "membership_level",
+      "confidence": 0.7,
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+        "evidence_span": "membership_level"
+      }
+    },
+    {
+      "id": "feature_complaint_count",
+      "name": "complaint_count",
+      "confidence": 0.7,
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+        "evidence_span": "complaint_count"
+      }
+    },
+    {
+      "id": "feature_total_spend",
+      "name": "total_spend",
+      "confidence": 0.7,
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+        "evidence_span": "total_spend"
+      }
+    },
+    {
+      "id": "feature_login_count_30d",
+      "name": "login_count_30d",
+      "confidence": 0.7,
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+        "evidence_span": "login_count_30d"
+      }
+    },
+    {
+      "id": "feature_region",
+      "name": "region",
+      "confidence": 0.7,
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+        "evidence_span": "region"
+      }
+    },
+    {
+      "id": "feature_age",
+      "name": "age",
+      "confidence": 0.7,
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+        "evidence_span": "age"
+      }
+    },
+    {
+      "id": "metric_recall",
+      "name": "Recall",
+      "confidence": 0.7,
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+        "evidence_span": "Recall"
+      }
+    },
+    {
+      "id": "metric_roc_auc",
+      "name": "ROC-AUC",
+      "confidence": 0.7,
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+        "evidence_span": "ROC-AUC"
+      }
+    },
+    {
+      "id": "metric_precision",
+      "name": "Precision",
+      "confidence": 0.7,
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+        "evidence_span": "Precision"
+      }
+    },
+    {
+      "id": "metric_f1",
+      "name": "F1",
+      "confidence": 0.7,
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+        "evidence_span": "F1"
+      }
+    },
+    {
+      "entities": [
+        {
+          "id": "metric_f1",
+          "type": "Metric",
+          "name": "F1",
+          "properties": {},
+          "evidence_span": "F1",
+          "confidence": 0.7,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+            "evidence_span": "F1"
+          }
+        },
+        {
+          "id": "metric_precision",
+          "type": "Metric",
+          "name": "Precision",
+          "properties": {},
+          "evidence_span": "Precision",
+          "confidence": 0.7,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+            "evidence_span": "Precision"
+          }
+        },
+        {
+          "id": "metric_roc_auc",
+          "type": "Metric",
+          "name": "ROC-AUC",
+          "properties": {},
+          "evidence_span": "ROC-AUC",
+          "confidence": 0.7,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+            "evidence_span": "ROC-AUC"
+          }
+        },
+        {
+          "id": "metric_recall",
+          "type": "Metric",
+          "name": "Recall",
+          "properties": {},
+          "evidence_span": "Recall",
+          "confidence": 0.7,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+            "evidence_span": "Recall"
+          }
+        },
+        {
+          "id": "feature_age",
+          "type": "Feature",
+          "name": "age",
+          "properties": {},
+          "evidence_span": "age",
+          "confidence": 0.7,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+            "evidence_span": "age"
+          }
+        },
+        {
+          "id": "feature_region",
+          "type": "Feature",
+          "name": "region",
+          "properties": {},
+          "evidence_span": "region",
+          "confidence": 0.7,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+            "evidence_span": "region"
+          }
+        },
+        {
+          "id": "feature_login_count_30d",
+          "type": "Feature",
+          "name": "login_count_30d",
+          "properties": {},
+          "evidence_span": "login_count_30d",
+          "confidence": 0.7,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+            "evidence_span": "login_count_30d"
+          }
+        },
+        {
+          "id": "feature_total_spend",
+          "type": "Feature",
+          "name": "total_spend",
+          "properties": {},
+          "evidence_span": "total_spend",
+          "confidence": 0.7,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+            "evidence_span": "total_spend"
+          }
+        },
+        {
+          "id": "feature_complaint_count",
+          "type": "Feature",
+          "name": "complaint_count",
+          "properties": {},
+          "evidence_span": "complaint_count",
+          "confidence": 0.7,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+            "evidence_span": "complaint_count"
+          }
+        },
+        {
+          "id": "feature_membership_level",
+          "type": "Feature",
+          "name": "membership_level",
+          "properties": {},
+          "evidence_span": "membership_level",
+          "confidence": 0.7,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+            "evidence_span": "membership_level"
+          }
+        },
+        {
+          "id": "feature_tenure_months",
+          "type": "Feature",
+          "name": "tenure_months",
+          "properties": {},
+          "evidence_span": "tenure_months",
+          "confidence": 0.7,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+            "evidence_span": "tenure_months"
+          }
+        },
+        {
+          "id": "feature_churn",
+          "type": "Feature",
+          "name": "churn",
+          "properties": {},
+          "evidence_span": "churn",
+          "confidence": 0.7,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+            "evidence_span": "churn"
+          }
+        }
+      ],
+      "relations": [],
+      "summary": "# 客户流失预测业务材料（模拟）\n\n业务目标：根据客户近 30 天行为预测未来 30 天是否流失，用于客户召回活动排序。模型必须输出二分类标签和流失概率，重点关注 ROC-AUC，同时保留 F1、Precision、Recall 供运营团队分析。\n\n字段说明：\n\n| 字段 | 类型 | 含义 |\n|---|---|---|\n| age | 数值 | 客户年龄 |\n| region | 类别 | 客户所在区域 |\n| login_count_30d | 数值 | 近 30 天登录次数 |\n| total_spend | 数值 | 历史累计消费金额 |\n| complaint_count | 数值 | 历史投诉次数 |\n| membership_level | 类别 | 会员等级 |\n| tenure_months | 数值 | 使用时长（月） |\n| churn | 0/1 | 未来 30 天是否流失 |\n\n历史经验：登录较少、投诉较多、低会员等级和较短使用时长通常对应较高流失风险；类别字段需要未知值兼容，数值字段需要缺失值填充。\n\n",
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md"
+      },
+      "deterministic_facts": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+        "kind": "markdown",
+        "headings": [
+          "客户流失预测业务材料（模拟）"
+        ],
+        "heading_hierarchy": [
+          {
+            "level": 1,
+            "title": "客户流失预测业务材料（模拟）"
+          }
+        ],
+        "metrics": [
+          "F1",
+          "Precision",
+          "ROC-AUC",
+          "Recall"
+        ],
+        "fields": [
+          "age",
+          "region",
+          "login_count_30d",
+          "total_spend",
+          "complaint_count",
+          "membership_level",
+          "tenure_months",
+          "churn"
+        ],
+        "character_count": 473,
+        "summary": "# 客户流失预测业务材料（模拟）\n\n业务目标：根据客户近 30 天行为预测未来 30 天是否流失，用于客户召回活动排序。模型必须输出二分类标签和流失概率，重点关注 ROC-AUC，同时保留 F1、Precision、Recall 供运营团队分析。\n\n字段说明：\n\n| 字段 | 类型 | 含义 |\n|---|---|---|\n| age | 数值 | 客户年龄 |\n| region | 类别 | 客户所在区域 |\n| login_count_30d | 数值 | 近 30 天登录次数 |\n| total_spend | 数值 | 历史累计消费金额 |\n| complaint_count | 数值 | 历史投诉次数 |\n| membership_level | 类别 | 会员等级 |\n| tenure_months | 数值 | 使用时长（月） |\n| churn | 0/1 | 未来 30 天是否流失 |\n\n历史经验：登录较少、投诉较多、低会员等级和较短使用时长通常对应较高流失风险；类别字段需要未知值兼容，数值字段需要缺失值填充。\n\n"
+      },
+      "extraction_trace": {
+        "provider": "mock",
+        "status": "deterministic_fallback",
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+        "chunk_count": 1,
+        "chunks": [],
+        "fallback_reason": "no chunk passed strict extraction contract"
+      },
+      "id": "source_business_material_cef5e946"
+    }
+  ],
+  "retrieval_trace": {
+    "strategy": "hybrid_graph_rag",
+    "graph_anchors": 4,
+    "graph_nodes": 13,
+    "graph_edges": 12,
+    "semantic_documents": 8,
+    "semantic_backend": "tfidf",
+    "semantic_fallback_error": null,
+    "historical_cases": 0
+  },
+  "retrieved_subgraph": {
+    "query": "客户流失预测 customer_churn binary_classification tabular churn age login_count_30d roc_auc",
+    "anchors": [
+      {
+        "id": "source_business_material_cef5e946",
+        "score": 3.0
+      },
+      {
+        "id": "feature_age",
+        "score": 1.0
+      },
+      {
+        "id": "feature_login_count_30d",
+        "score": 1.0
+      },
+      {
+        "id": "feature_churn",
+        "score": 1.0
+      }
+    ],
+    "hops": 2,
+    "nodes": [
+      {
+        "id": "source_business_material_cef5e946",
+        "score": 3.0,
+        "type": "SourceDocument",
+        "summary": "# 客户流失预测业务材料（模拟）\n\n业务目标：根据客户近 30 天行为预测未来 30 天是否流失，用于客户召回活动排序。模型必须输出二分类标签和流失概率，重点关注 ROC-AUC，同时保留 F1、Precision、Recall 供运营团队分析。\n\n字段说明：\n\n| 字段 | 类型 | 含义 |\n|---|---|---|\n| age | 数值 | 客户年龄 |\n| region | 类别 | 客户所在区域 |\n| login_count_30d | 数值 | 近 30 天登录次数 |\n| total_spend | 数值 | 历史累计消费金额 |\n| complaint_count | 数值 | 历史投诉次数 |\n| membership_level | 类别 | 会员等级 |\n| tenure_months | 数值 | 使用时长（月） |\n| churn | 0/1 | 未来 30 天是否流失 |\n\n历史经验：登录较少、投诉较多、低会员等级和较短使用时长通常对应较高流失风险；类别字段需要未知值兼容，数值字段需要缺失值填充。\n\n",
+        "entities": [
+          {
+            "id": "metric_f1",
+            "type": "Metric",
+            "name": "F1",
+            "properties": {},
+            "evidence_span": "F1",
+            "confidence": 0.7,
+            "provenance": {
+              "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+              "evidence_span": "F1"
+            }
+          },
+          {
+            "id": "metric_precision",
+            "type": "Metric",
+            "name": "Precision",
+            "properties": {},
+            "evidence_span": "Precision",
+            "confidence": 0.7,
+            "provenance": {
+              "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+              "evidence_span": "Precision"
+            }
+          },
+          {
+            "id": "metric_roc_auc",
+            "type": "Metric",
+            "name": "ROC-AUC",
+            "properties": {},
+            "evidence_span": "ROC-AUC",
+            "confidence": 0.7,
+            "provenance": {
+              "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+              "evidence_span": "ROC-AUC"
+            }
+          },
+          {
+            "id": "metric_recall",
+            "type": "Metric",
+            "name": "Recall",
+            "properties": {},
+            "evidence_span": "Recall",
+            "confidence": 0.7,
+            "provenance": {
+              "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+              "evidence_span": "Recall"
+            }
+          },
+          {
+            "id": "feature_age",
+            "type": "Feature",
+            "name": "age",
+            "properties": {},
+            "evidence_span": "age",
+            "confidence": 0.7,
+            "provenance": {
+              "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+              "evidence_span": "age"
+            }
+          },
+          {
+            "id": "feature_region",
+            "type": "Feature",
+            "name": "region",
+            "properties": {},
+            "evidence_span": "region",
+            "confidence": 0.7,
+            "provenance": {
+              "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+              "evidence_span": "region"
+            }
+          },
+          {
+            "id": "feature_login_count_30d",
+            "type": "Feature",
+            "name": "login_count_30d",
+            "properties": {},
+            "evidence_span": "login_count_30d",
+            "confidence": 0.7,
+            "provenance": {
+              "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+              "evidence_span": "login_count_30d"
+            }
+          },
+          {
+            "id": "feature_total_spend",
+            "type": "Feature",
+            "name": "total_spend",
+            "properties": {},
+            "evidence_span": "total_spend",
+            "confidence": 0.7,
+            "provenance": {
+              "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+              "evidence_span": "total_spend"
+            }
+          },
+          {
+            "id": "feature_complaint_count",
+            "type": "Feature",
+            "name": "complaint_count",
+            "properties": {},
+            "evidence_span": "complaint_count",
+            "confidence": 0.7,
+            "provenance": {
+              "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+              "evidence_span": "complaint_count"
+            }
+          },
+          {
+            "id": "feature_membership_level",
+            "type": "Feature",
+            "name": "membership_level",
+            "properties": {},
+            "evidence_span": "membership_level",
+            "confidence": 0.7,
+            "provenance": {
+              "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+              "evidence_span": "membership_level"
+            }
+          },
+          {
+            "id": "feature_tenure_months",
+            "type": "Feature",
+            "name": "tenure_months",
+            "properties": {},
+            "evidence_span": "tenure_months",
+            "confidence": 0.7,
+            "provenance": {
+              "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+              "evidence_span": "tenure_months"
+            }
+          },
+          {
+            "id": "feature_churn",
+            "type": "Feature",
+            "name": "churn",
+            "properties": {},
+            "evidence_span": "churn",
+            "confidence": 0.7,
+            "provenance": {
+              "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+              "evidence_span": "churn"
+            }
+          }
+        ],
+        "relations": [],
+        "provenance": {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md"
+        },
+        "deterministic_facts": {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+          "kind": "markdown",
+          "headings": [
+            "客户流失预测业务材料（模拟）"
+          ],
+          "heading_hierarchy": [
+            {
+              "level": 1,
+              "title": "客户流失预测业务材料（模拟）"
+            }
+          ],
+          "metrics": [
+            "F1",
+            "Precision",
+            "ROC-AUC",
+            "Recall"
+          ],
+          "fields": [
+            "age",
+            "region",
+            "login_count_30d",
+            "total_spend",
+            "complaint_count",
+            "membership_level",
+            "tenure_months",
+            "churn"
+          ],
+          "character_count": 473,
+          "summary": "# 客户流失预测业务材料（模拟）\n\n业务目标：根据客户近 30 天行为预测未来 30 天是否流失，用于客户召回活动排序。模型必须输出二分类标签和流失概率，重点关注 ROC-AUC，同时保留 F1、Precision、Recall 供运营团队分析。\n\n字段说明：\n\n| 字段 | 类型 | 含义 |\n|---|---|---|\n| age | 数值 | 客户年龄 |\n| region | 类别 | 客户所在区域 |\n| login_count_30d | 数值 | 近 30 天登录次数 |\n| total_spend | 数值 | 历史累计消费金额 |\n| complaint_count | 数值 | 历史投诉次数 |\n| membership_level | 类别 | 会员等级 |\n| tenure_months | 数值 | 使用时长（月） |\n| churn | 0/1 | 未来 30 天是否流失 |\n\n历史经验：登录较少、投诉较多、低会员等级和较短使用时长通常对应较高流失风险；类别字段需要未知值兼容，数值字段需要缺失值填充。\n\n"
+        },
+        "extraction_trace": {
+          "provider": "mock",
+          "status": "deterministic_fallback",
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+          "chunk_count": 1,
+          "chunks": [],
+          "fallback_reason": "no chunk passed strict extraction contract"
+        }
+      },
+      {
+        "id": "metric_f1",
+        "score": 1.5,
+        "type": "Metric",
+        "name": "F1",
+        "confidence": 0.7,
+        "provenance": {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+          "evidence_span": "F1"
+        }
+      },
+      {
+        "id": "metric_precision",
+        "score": 1.5,
+        "type": "Metric",
+        "name": "Precision",
+        "confidence": 0.7,
+        "provenance": {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+          "evidence_span": "Precision"
+        }
+      },
+      {
+        "id": "metric_roc_auc",
+        "score": 1.5,
+        "type": "Metric",
+        "name": "ROC-AUC",
+        "confidence": 0.7,
+        "provenance": {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+          "evidence_span": "ROC-AUC"
+        }
+      },
+      {
+        "id": "metric_recall",
+        "score": 1.5,
+        "type": "Metric",
+        "name": "Recall",
+        "confidence": 0.7,
+        "provenance": {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+          "evidence_span": "Recall"
+        }
+      },
+      {
+        "id": "feature_age",
+        "score": 1.5,
+        "type": "Feature",
+        "name": "age",
+        "confidence": 0.7,
+        "provenance": {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+          "evidence_span": "age"
+        }
+      },
+      {
+        "id": "feature_region",
+        "score": 1.5,
+        "type": "Feature",
+        "name": "region",
+        "confidence": 0.7,
+        "provenance": {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+          "evidence_span": "region"
+        }
+      },
+      {
+        "id": "feature_login_count_30d",
+        "score": 1.5,
+        "type": "Feature",
+        "name": "login_count_30d",
+        "confidence": 0.7,
+        "provenance": {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+          "evidence_span": "login_count_30d"
+        }
+      },
+      {
+        "id": "feature_total_spend",
+        "score": 1.5,
+        "type": "Feature",
+        "name": "total_spend",
+        "confidence": 0.7,
+        "provenance": {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+          "evidence_span": "total_spend"
+        }
+      },
+      {
+        "id": "feature_complaint_count",
+        "score": 1.5,
+        "type": "Feature",
+        "name": "complaint_count",
+        "confidence": 0.7,
+        "provenance": {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+          "evidence_span": "complaint_count"
+        }
+      },
+      {
+        "id": "feature_membership_level",
+        "score": 1.5,
+        "type": "Feature",
+        "name": "membership_level",
+        "confidence": 0.7,
+        "provenance": {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+          "evidence_span": "membership_level"
+        }
+      },
+      {
+        "id": "feature_tenure_months",
+        "score": 1.5,
+        "type": "Feature",
+        "name": "tenure_months",
+        "confidence": 0.7,
+        "provenance": {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+          "evidence_span": "tenure_months"
+        }
+      },
+      {
+        "id": "feature_churn",
+        "score": 1.5,
+        "type": "Feature",
+        "name": "churn",
+        "confidence": 0.7,
+        "provenance": {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+          "evidence_span": "churn"
+        }
+      }
+    ],
+    "edges": [
+      {
+        "source": "source_business_material_cef5e946",
+        "target": "metric_f1",
+        "relation": "SUPPORTS",
+        "key": 0,
+        "provenance": {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+          "evidence_span": "F1",
+          "confidence": 0.7
+        }
+      },
+      {
+        "source": "source_business_material_cef5e946",
+        "target": "metric_precision",
+        "relation": "SUPPORTS",
+        "key": 0,
+        "provenance": {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+          "evidence_span": "Precision",
+          "confidence": 0.7
+        }
+      },
+      {
+        "source": "source_business_material_cef5e946",
+        "target": "metric_roc_auc",
+        "relation": "SUPPORTS",
+        "key": 0,
+        "provenance": {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+          "evidence_span": "ROC-AUC",
+          "confidence": 0.7
+        }
+      },
+      {
+        "source": "source_business_material_cef5e946",
+        "target": "metric_recall",
+        "relation": "SUPPORTS",
+        "key": 0,
+        "provenance": {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+          "evidence_span": "Recall",
+          "confidence": 0.7
+        }
+      },
+      {
+        "source": "source_business_material_cef5e946",
+        "target": "feature_age",
+        "relation": "SUPPORTS",
+        "key": 0,
+        "provenance": {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+          "evidence_span": "age",
+          "confidence": 0.7
+        }
+      },
+      {
+        "source": "source_business_material_cef5e946",
+        "target": "feature_region",
+        "relation": "SUPPORTS",
+        "key": 0,
+        "provenance": {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+          "evidence_span": "region",
+          "confidence": 0.7
+        }
+      },
+      {
+        "source": "source_business_material_cef5e946",
+        "target": "feature_login_count_30d",
+        "relation": "SUPPORTS",
+        "key": 0,
+        "provenance": {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+          "evidence_span": "login_count_30d",
+          "confidence": 0.7
+        }
+      },
+      {
+        "source": "source_business_material_cef5e946",
+        "target": "feature_total_spend",
+        "relation": "SUPPORTS",
+        "key": 0,
+        "provenance": {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+          "evidence_span": "total_spend",
+          "confidence": 0.7
+        }
+      },
+      {
+        "source": "source_business_material_cef5e946",
+        "target": "feature_complaint_count",
+        "relation": "SUPPORTS",
+        "key": 0,
+        "provenance": {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+          "evidence_span": "complaint_count",
+          "confidence": 0.7
+        }
+      },
+      {
+        "source": "source_business_material_cef5e946",
+        "target": "feature_membership_level",
+        "relation": "SUPPORTS",
+        "key": 0,
+        "provenance": {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+          "evidence_span": "membership_level",
+          "confidence": 0.7
+        }
+      },
+      {
+        "source": "source_business_material_cef5e946",
+        "target": "feature_tenure_months",
+        "relation": "SUPPORTS",
+        "key": 0,
+        "provenance": {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+          "evidence_span": "tenure_months",
+          "confidence": 0.7
+        }
+      },
+      {
+        "source": "source_business_material_cef5e946",
+        "target": "feature_churn",
+        "relation": "SUPPORTS",
+        "key": 0,
+        "provenance": {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+          "evidence_span": "churn",
+          "confidence": 0.7
+        }
+      }
+    ],
+    "serialized": {
+      "user_requirement": {
+        "raw_description": "客户流失预测",
+        "domain": "customer_churn",
+        "capability_name": "客户流失预测",
+        "task_type": "binary_classification",
+        "data_type": "tabular",
+        "target_column": "churn",
+        "feature_columns": [
+          "age",
+          "login_count_30d"
+        ],
+        "input_schema": {},
+        "output_schema": {
+          "prediction": "int",
+          "probability": "float"
+        },
+        "dataset_profile": {},
+        "metrics": [
+          "roc_auc"
+        ],
+        "metric_thresholds": {
+          "roc_auc": 0.75
+        },
+        "output_columns": [
+          "prediction",
+          "probability"
+        ],
+        "constraints": [],
+        "latency_requirement_ms": null,
+        "interpretability_requirement": null,
+        "resource_constraints": {},
+        "probability_output_required": true,
+        "class_imbalance": {},
+        "candidate_hints": [],
+        "uncertainty": [],
+        "understanding_confidence": 0.0,
+        "candidate_algorithms": [],
+        "dataset_path": null
+      },
+      "task": {
+        "task_type": "binary_classification",
+        "domain": "customer_churn",
+        "target": "churn"
+      },
+      "candidate_algorithms": [],
+      "nodes": [
+        {
+          "id": "source_business_material_cef5e946",
+          "score": 3.0,
+          "type": "SourceDocument",
+          "summary": "# 客户流失预测业务材料（模拟）\n\n业务目标：根据客户近 30 天行为预测未来 30 天是否流失，用于客户召回活动排序。模型必须输出二分类标签和流失概率，重点关注 ROC-AUC，同时保留 F1、Precision、Recall 供运营团队分析。\n\n字段说明：\n\n| 字段 | 类型 | 含义 |\n|---|---|---|\n| age | 数值 | 客户年龄 |\n| region | 类别 | 客户所在区域 |\n| login_count_30d | 数值 | 近 30 天登录次数 |\n| total_spend | 数值 | 历史累计消费金额 |\n| complaint_count | 数值 | 历史投诉次数 |\n| membership_level | 类别 | 会员等级 |\n| tenure_months | 数值 | 使用时长（月） |\n| churn | 0/1 | 未来 30 天是否流失 |\n\n历史经验：登录较少、投诉较多、低会员等级和较短使用时长通常对应较高流失风险；类别字段需要未知值兼容，数值字段需要缺失值填充。\n\n",
+          "entities": [
+            {
+              "id": "metric_f1",
+              "type": "Metric",
+              "name": "F1",
+              "properties": {},
+              "evidence_span": "F1",
+              "confidence": 0.7,
+              "provenance": {
+                "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+                "evidence_span": "F1"
+              }
+            },
+            {
+              "id": "metric_precision",
+              "type": "Metric",
+              "name": "Precision",
+              "properties": {},
+              "evidence_span": "Precision",
+              "confidence": 0.7,
+              "provenance": {
+                "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+                "evidence_span": "Precision"
+              }
+            },
+            {
+              "id": "metric_roc_auc",
+              "type": "Metric",
+              "name": "ROC-AUC",
+              "properties": {},
+              "evidence_span": "ROC-AUC",
+              "confidence": 0.7,
+              "provenance": {
+                "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+                "evidence_span": "ROC-AUC"
+              }
+            },
+            {
+              "id": "metric_recall",
+              "type": "Metric",
+              "name": "Recall",
+              "properties": {},
+              "evidence_span": "Recall",
+              "confidence": 0.7,
+              "provenance": {
+                "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+                "evidence_span": "Recall"
+              }
+            },
+            {
+              "id": "feature_age",
+              "type": "Feature",
+              "name": "age",
+              "properties": {},
+              "evidence_span": "age",
+              "confidence": 0.7,
+              "provenance": {
+                "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+                "evidence_span": "age"
+              }
+            },
+            {
+              "id": "feature_region",
+              "type": "Feature",
+              "name": "region",
+              "properties": {},
+              "evidence_span": "region",
+              "confidence": 0.7,
+              "provenance": {
+                "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+                "evidence_span": "region"
+              }
+            },
+            {
+              "id": "feature_login_count_30d",
+              "type": "Feature",
+              "name": "login_count_30d",
+              "properties": {},
+              "evidence_span": "login_count_30d",
+              "confidence": 0.7,
+              "provenance": {
+                "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+                "evidence_span": "login_count_30d"
+              }
+            },
+            {
+              "id": "feature_total_spend",
+              "type": "Feature",
+              "name": "total_spend",
+              "properties": {},
+              "evidence_span": "total_spend",
+              "confidence": 0.7,
+              "provenance": {
+                "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+                "evidence_span": "total_spend"
+              }
+            },
+            {
+              "id": "feature_complaint_count",
+              "type": "Feature",
+              "name": "complaint_count",
+              "properties": {},
+              "evidence_span": "complaint_count",
+              "confidence": 0.7,
+              "provenance": {
+                "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+                "evidence_span": "complaint_count"
+              }
+            },
+            {
+              "id": "feature_membership_level",
+              "type": "Feature",
+              "name": "membership_level",
+              "properties": {},
+              "evidence_span": "membership_level",
+              "confidence": 0.7,
+              "provenance": {
+                "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+                "evidence_span": "membership_level"
+              }
+            },
+            {
+              "id": "feature_tenure_months",
+              "type": "Feature",
+              "name": "tenure_months",
+              "properties": {},
+              "evidence_span": "tenure_months",
+              "confidence": 0.7,
+              "provenance": {
+                "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+                "evidence_span": "tenure_months"
+              }
+            },
+            {
+              "id": "feature_churn",
+              "type": "Feature",
+              "name": "churn",
+              "properties": {},
+              "evidence_span": "churn",
+              "confidence": 0.7,
+              "provenance": {
+                "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+                "evidence_span": "churn"
+              }
+            }
+          ],
+          "relations": [],
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md"
+          },
+          "deterministic_facts": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+            "kind": "markdown",
+            "headings": [
+              "客户流失预测业务材料（模拟）"
+            ],
+            "heading_hierarchy": [
+              {
+                "level": 1,
+                "title": "客户流失预测业务材料（模拟）"
+              }
+            ],
+            "metrics": [
+              "F1",
+              "Precision",
+              "ROC-AUC",
+              "Recall"
+            ],
+            "fields": [
+              "age",
+              "region",
+              "login_count_30d",
+              "total_spend",
+              "complaint_count",
+              "membership_level",
+              "tenure_months",
+              "churn"
+            ],
+            "character_count": 473,
+            "summary": "# 客户流失预测业务材料（模拟）\n\n业务目标：根据客户近 30 天行为预测未来 30 天是否流失，用于客户召回活动排序。模型必须输出二分类标签和流失概率，重点关注 ROC-AUC，同时保留 F1、Precision、Recall 供运营团队分析。\n\n字段说明：\n\n| 字段 | 类型 | 含义 |\n|---|---|---|\n| age | 数值 | 客户年龄 |\n| region | 类别 | 客户所在区域 |\n| login_count_30d | 数值 | 近 30 天登录次数 |\n| total_spend | 数值 | 历史累计消费金额 |\n| complaint_count | 数值 | 历史投诉次数 |\n| membership_level | 类别 | 会员等级 |\n| tenure_months | 数值 | 使用时长（月） |\n| churn | 0/1 | 未来 30 天是否流失 |\n\n历史经验：登录较少、投诉较多、低会员等级和较短使用时长通常对应较高流失风险；类别字段需要未知值兼容，数值字段需要缺失值填充。\n\n"
+          },
+          "extraction_trace": {
+            "provider": "mock",
+            "status": "deterministic_fallback",
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+            "chunk_count": 1,
+            "chunks": [],
+            "fallback_reason": "no chunk passed strict extraction contract"
+          }
+        },
+        {
+          "id": "metric_f1",
+          "score": 1.5,
+          "type": "Metric",
+          "name": "F1",
+          "confidence": 0.7,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+            "evidence_span": "F1"
+          }
+        },
+        {
+          "id": "metric_precision",
+          "score": 1.5,
+          "type": "Metric",
+          "name": "Precision",
+          "confidence": 0.7,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+            "evidence_span": "Precision"
+          }
+        },
+        {
+          "id": "metric_roc_auc",
+          "score": 1.5,
+          "type": "Metric",
+          "name": "ROC-AUC",
+          "confidence": 0.7,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+            "evidence_span": "ROC-AUC"
+          }
+        },
+        {
+          "id": "metric_recall",
+          "score": 1.5,
+          "type": "Metric",
+          "name": "Recall",
+          "confidence": 0.7,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+            "evidence_span": "Recall"
+          }
+        },
+        {
+          "id": "feature_age",
+          "score": 1.5,
+          "type": "Feature",
+          "name": "age",
+          "confidence": 0.7,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+            "evidence_span": "age"
+          }
+        },
+        {
+          "id": "feature_region",
+          "score": 1.5,
+          "type": "Feature",
+          "name": "region",
+          "confidence": 0.7,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+            "evidence_span": "region"
+          }
+        },
+        {
+          "id": "feature_login_count_30d",
+          "score": 1.5,
+          "type": "Feature",
+          "name": "login_count_30d",
+          "confidence": 0.7,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+            "evidence_span": "login_count_30d"
+          }
+        },
+        {
+          "id": "feature_total_spend",
+          "score": 1.5,
+          "type": "Feature",
+          "name": "total_spend",
+          "confidence": 0.7,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+            "evidence_span": "total_spend"
+          }
+        },
+        {
+          "id": "feature_complaint_count",
+          "score": 1.5,
+          "type": "Feature",
+          "name": "complaint_count",
+          "confidence": 0.7,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+            "evidence_span": "complaint_count"
+          }
+        },
+        {
+          "id": "feature_membership_level",
+          "score": 1.5,
+          "type": "Feature",
+          "name": "membership_level",
+          "confidence": 0.7,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+            "evidence_span": "membership_level"
+          }
+        },
+        {
+          "id": "feature_tenure_months",
+          "score": 1.5,
+          "type": "Feature",
+          "name": "tenure_months",
+          "confidence": 0.7,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+            "evidence_span": "tenure_months"
+          }
+        },
+        {
+          "id": "feature_churn",
+          "score": 1.5,
+          "type": "Feature",
+          "name": "churn",
+          "confidence": 0.7,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+            "evidence_span": "churn"
+          }
+        }
+      ],
+      "edges": [
+        {
+          "source": "source_business_material_cef5e946",
+          "target": "metric_f1",
+          "relation": "SUPPORTS",
+          "key": 0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+            "evidence_span": "F1",
+            "confidence": 0.7
+          }
+        },
+        {
+          "source": "source_business_material_cef5e946",
+          "target": "metric_precision",
+          "relation": "SUPPORTS",
+          "key": 0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+            "evidence_span": "Precision",
+            "confidence": 0.7
+          }
+        },
+        {
+          "source": "source_business_material_cef5e946",
+          "target": "metric_roc_auc",
+          "relation": "SUPPORTS",
+          "key": 0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+            "evidence_span": "ROC-AUC",
+            "confidence": 0.7
+          }
+        },
+        {
+          "source": "source_business_material_cef5e946",
+          "target": "metric_recall",
+          "relation": "SUPPORTS",
+          "key": 0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+            "evidence_span": "Recall",
+            "confidence": 0.7
+          }
+        },
+        {
+          "source": "source_business_material_cef5e946",
+          "target": "feature_age",
+          "relation": "SUPPORTS",
+          "key": 0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+            "evidence_span": "age",
+            "confidence": 0.7
+          }
+        },
+        {
+          "source": "source_business_material_cef5e946",
+          "target": "feature_region",
+          "relation": "SUPPORTS",
+          "key": 0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+            "evidence_span": "region",
+            "confidence": 0.7
+          }
+        },
+        {
+          "source": "source_business_material_cef5e946",
+          "target": "feature_login_count_30d",
+          "relation": "SUPPORTS",
+          "key": 0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+            "evidence_span": "login_count_30d",
+            "confidence": 0.7
+          }
+        },
+        {
+          "source": "source_business_material_cef5e946",
+          "target": "feature_total_spend",
+          "relation": "SUPPORTS",
+          "key": 0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+            "evidence_span": "total_spend",
+            "confidence": 0.7
+          }
+        },
+        {
+          "source": "source_business_material_cef5e946",
+          "target": "feature_complaint_count",
+          "relation": "SUPPORTS",
+          "key": 0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+            "evidence_span": "complaint_count",
+            "confidence": 0.7
+          }
+        },
+        {
+          "source": "source_business_material_cef5e946",
+          "target": "feature_membership_level",
+          "relation": "SUPPORTS",
+          "key": 0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+            "evidence_span": "membership_level",
+            "confidence": 0.7
+          }
+        },
+        {
+          "source": "source_business_material_cef5e946",
+          "target": "feature_tenure_months",
+          "relation": "SUPPORTS",
+          "key": 0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+            "evidence_span": "tenure_months",
+            "confidence": 0.7
+          }
+        },
+        {
+          "source": "source_business_material_cef5e946",
+          "target": "feature_churn",
+          "relation": "SUPPORTS",
+          "key": 0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
+            "evidence_span": "churn",
+            "confidence": 0.7
+          }
+        }
+      ]
+    },
+    "text": "Task: binary_classification / customer_churn"
+  },
+  "candidate_algorithms": [],
+  "git_commit": "267cbcc72569bfe004673b61e36d2f395e551e1e",
+  "generated_at": "2026-09-07T08:45:29Z"
+}

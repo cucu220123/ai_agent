@@ -31,7 +31,7 @@ class CuratorAgent:
             "dataset_profile": result.dataset_profile,
             "resource_usage": result.resource_usage,
             "timestamp": self.store._now(),
-            "dataset_id": "dataset_churn_demo" if spec.target_column == "churn" else None,
+            "dataset_id": result.dataset_profile.get("dataset_id"),
             "config_id": config_id,
         })
         if result.status != "passed" or repair_history:

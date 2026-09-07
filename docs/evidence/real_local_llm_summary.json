@@ -6,7 +6,9 @@
   "requirement_agent": {
     "status": "ok",
     "schema_valid": true,
-    "semantic_corrections": ["metric thresholds filled from deterministic fallback"]
+    "semantic_corrections": [
+      "metric thresholds filled from deterministic fallback"
+    ]
   },
   "advisor_agent": {
     "status": "ok",
@@ -31,5 +33,7 @@
       "critic_and_repair": "real local LLM CriticAgent and RepairAgent were invoked; the final gate rejected the revised code"
     }
   ],
-  "safety": "No API key, token, or secret value is included. Full raw traces remain local under reports/ and are ignored by Git."
+  "safety": "No API key, token, or secret value is included. Full raw traces remain local under reports/ and are ignored by Git.",
+  "git_commit": "267cbcc72569bfe004673b61e36d2f395e551e1e",
+  "generated_at": "2026-09-07T08:45:29Z"
 }

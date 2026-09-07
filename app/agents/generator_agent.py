@@ -5,6 +5,7 @@ from datetime import datetime, timezone
 import hashlib
 
 from app.generation.templates import render_algorithm
+from app.generation.code_ir import plan_to_code_ir, compile_code_ir
 from app.llm.contracts import extract_python_code
 from app.models import AlgorithmPlan, CapabilitySpec
 from app.validation.checks import static_check
@@ -16,13 +17,18 @@ class GeneratorAgent:
         self.llm = llm
         self.provider_name = provider_name
 
-    def run(self, run_dir: str | Path, spec: CapabilitySpec, plan: AlgorithmPlan, allow_llm: bool = True) -> Path:
+    def run(self, run_dir: str | Path, spec: CapabilitySpec, plan: AlgorithmPlan, allow_llm: bool = True, mode: str = "free_form_llm") -> Path:
         run_dir = Path(run_dir)
         run_dir.mkdir(parents=True, exist_ok=True)
         path = run_dir / "algorithm.py"
         source = None
+        code_ir = None
         generation_trace = {"provider": self.provider_name, "status": "template_fallback", "reason": "no usable LLM code"}
-        if allow_llm and self.llm is not None and self.provider_name != "mock":
+        if mode == "structured_synthesis":
+            code_ir = plan_to_code_ir(spec, plan)
+            source = compile_code_ir(spec, code_ir)
+            generation_trace = {"provider": "structured_llm_synthesis", "status": "code_ir_compiled", "code_ir": code_ir.model_dump()}
+        if mode == "free_form_llm" and allow_llm and self.llm is not None and self.provider_name != "mock":
             prompt = (
                 "只输出完整 Python 代码，不要思考过程、不要 Markdown。"
                 "代码仅允许 pandas、numpy、scikit-learn，必须提供 train(train_df,target_col,config)、predict(model,test_df)、evaluate(model,test_df,target_col)。"
@@ -64,6 +70,7 @@ class GeneratorAgent:
             "source_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
             "spec": spec.to_dict(),
             "plan": plan.to_dict(),
+            "code_ir": code_ir.model_dump() if code_ir else None,
             "generation": generation_trace,
         }
         (run_dir / "algorithm_meta.json").write_text(__import__("json").dumps(metadata, ensure_ascii=False, indent=2), encoding="utf-8")

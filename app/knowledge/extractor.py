@@ -123,6 +123,15 @@ class CapabilityExtractor:
             if source and target:
                 store.add_edge(source, target, str(relation.get("relation", "RELATED_TO")).upper(), {"source": result.get("provenance", {}).get("source"), "evidence_span": relation.get("evidence_span"), "confidence": relation.get("confidence")})
 
+        # Normalize semantically distinct field roles if an extracted document identifies them.
+        for entity in result.get("entities", []):
+            name = str(entity.get("name", ""))
+            properties = entity.get("properties", {})
+            if properties.get("role") == "target" or name.lower() in {"churn", "target", "label"}:
+                entity_id = self._node_id("Target", name)
+                store.upsert_knowledge_item(entity_id, "Target", {"id": entity_id, "name": name, "source": result.get("provenance", {}).get("source")})
+                store.add_source_support(source_id, entity_id)
+
     def ingest_path(self, path: str | Path, store: KnowledgeStore) -> list[dict[str, Any]]:
         path = Path(path)
         if path.is_file():
@@ -167,4 +176,3 @@ class CapabilityExtractor:
 
     def _node_id(self, node_type: str, name: str) -> str:
         return f"{node_type.lower()}_{self._slug(name)}"
-

@@ -91,14 +91,18 @@ class KnowledgeStore:
         self.export_graph()
 
     def ensure_catalog_nodes(self) -> None:
-        """Materialize metric, environment, dataset and feature strategy entities."""
-        capability_id = "cap_churn_prediction_v1"
-        task_id = "task_binary_classification"
-        self.upsert_knowledge_item(task_id, "Task", {"id": task_id, "name": "binary classification", "task_type": "binary_classification"})
-        self.add_edge(capability_id, task_id, "SOLVES")
-        for metric_id, name, direction in (("metric_roc_auc", "ROC-AUC", "max"), ("metric_pr_auc", "PR-AUC", "max"), ("metric_f1", "F1", "max"), ("metric_precision", "Precision", "max"), ("metric_recall", "Recall", "max")):
-            self.upsert_knowledge_item(metric_id, "Metric", {"id": metric_id, "name": name, "direction": direction})
-            self.add_edge(capability_id, metric_id, "EVALUATED_BY")
+        """Materialize only generic catalog entities; domain data comes from seed/extraction/ingestion."""
+        from app.metrics.registry import METRIC_REGISTRY
+        from app.plugins.registry import DEFAULT_REGISTRY
+
+        for task_id, task in DEFAULT_REGISTRY.tasks.items():
+            node_id = f"task_{task_id}"
+            self.upsert_knowledge_item(node_id, "Task", {"id": node_id, "name": task.name, "task_type": task_id, "target_kind": task.target_kind})
+            for metric_name in task.default_metrics:
+                definition = METRIC_REGISTRY.metrics.get(metric_name)
+                metric_id = f"metric_{metric_name}"
+                self.upsert_knowledge_item(metric_id, "Metric", {"id": metric_id, "name": metric_name, "direction": "max" if not definition or definition.maximize else "min", "task_types": list(definition.tasks) if definition else [task_id]})
+                self.add_edge(node_id, metric_id, "EVALUATED_BY")
         env_id = "environment_python_sklearn"
         self.upsert_knowledge_item(env_id, "Environment", {"id": env_id, "python": "3.10+", "dependencies": ["pandas", "numpy", "scikit-learn"]})
         for algorithm in self.list_algorithms():
@@ -110,13 +114,6 @@ class KnowledgeStore:
             dependency_id = "dependency_scikit_learn"
             self.upsert_knowledge_item(dependency_id, "Dependency", {"id": dependency_id, "name": "scikit-learn", "version": ">=1.2"})
             self.add_edge(algorithm["id"], dependency_id, "REQUIRES")
-        dataset_id = "dataset_churn_demo"
-        self.upsert_knowledge_item(dataset_id, "Dataset", {"id": dataset_id, "path": "data/churn_demo.csv", "target": "churn", "task_type": "binary_classification"})
-        self.add_edge(capability_id, dataset_id, "VALIDATED_ON")
-        for name in ("numeric_imputation", "categorical_imputation", "one_hot_encoding", "standard_scaling"):
-            sid = "feature_" + name
-            self.upsert_knowledge_item(sid, "FeatureStrategy", {"id": sid, "name": name})
-            self.add_edge(capability_id, sid, "REQUIRES_FEATURE")
         self.export_graph()
 
     def artifact_fingerprint(self, path: str | Path) -> str:

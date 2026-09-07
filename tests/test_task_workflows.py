@@ -31,3 +31,13 @@ def test_text_workflow(tmp_path):
     result = AlgorithmFactoryWorkflow(_settings(tmp_path)).run("对文本评论进行文本分类，预测正面或负面", data)
     assert result.validation.status == "passed", result.validation.errors
     assert "f1" in result.validation.metrics
+
+
+def test_structured_codegen_mode(tmp_path):
+    data = tmp_path / "churn.csv"
+    generate(data, n_rows=180)
+    settings = _settings(tmp_path)
+    settings = settings.__class__(**{**settings.__dict__, "codegen_mode": "structured_synthesis"})
+    result = AlgorithmFactoryWorkflow(settings).run("预测客户是否流失，要求 ROC-AUC >= 0.65", data)
+    assert result.validation.status == "passed", result.validation.errors
+    assert any(item["validation"]["status"] == "passed" and item.get("generation_trace", {}).get("status") == "code_ir_compiled" for item in result.candidate_results)
