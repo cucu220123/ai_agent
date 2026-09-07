@@ -5,7 +5,7 @@ import json
 import os
 from pathlib import Path
 from typing import Any
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 from app.llm.contracts import extract_json_object
 from app.llm.security import sanitize
 from app.generation.task_contracts import executable_api_rules
@@ -15,7 +15,18 @@ class RepairContract(BaseModel):
     model_config = ConfigDict(extra="forbid")
     failure_diagnosis: str = Field(min_length=5)
     repair_strategy: str = Field(min_length=5)
-    revised_code: str = Field(min_length=80)
+    revised_code: str = Field(default="", max_length=60000)
+    code_lines: list[str] = Field(default_factory=list, max_length=1200)
+
+    @model_validator(mode="after")
+    def assemble_source(self):
+        if self.revised_code and self.code_lines:
+            raise ValueError("provide code_lines or revised_code, not both")
+        if self.code_lines:
+            self.revised_code = "\n".join(self.code_lines) + "\n"
+        if len(self.revised_code) < 80:
+            raise ValueError("a complete revised implementation is required")
+        return self
 
 
 class RepairAgent:
@@ -30,11 +41,11 @@ class RepairAgent:
         experiences = retrieved_experiences or []
         event: dict[str, Any] = {"round": round_no, "before_sha256": before_hash, "changes": [], "retrieved_experience_ids": [e.get("id") for e in experiences if e.get("id")], "error": error_text[-4000:], "attempts": []}
         if self.llm is not None and self.provider_name != "mock":
-            payload = {"original_code": code, "validation_and_critic": error_text[-16000:], "retrieved_failure_and_repair_experience": experiences[:5], "task_type": task_type, "target": target_column, "json_schema": RepairContract.model_json_schema(), "rules": ["Return diagnosis, strategy and the complete revised_code in JSON.", "Preserve metadata() and exact train(train_df,target_col,config=None), predict(model,test_df), evaluate(model,test_df,target_col), predict_proba(model,test_df) if probability is required.", "predict receives features only. Exclude target before discovering training features.", "Never fake metrics: the trusted parent recomputes them.", "No I/O, network, processes or unsafe imports. Honor random_state from config."]}
+            payload = {"original_code": code, "validation_and_critic": error_text[-16000:], "retrieved_failure_and_repair_experience": experiences[:5], "task_type": task_type, "target": target_column, "json_schema": RepairContract.model_json_schema(), "rules": ["Return failure_diagnosis, repair_strategy and code_lines: an array with ONE exact Python source line per string. Preserve all indentation spaces; blank lines are empty strings. Do not collapse lines. Omit revised_code when using code_lines. No Markdown fences.", "Preserve metadata() and exact train(train_df,target_col,config=None), predict(model,test_df), evaluate(model,test_df,target_col), predict_proba(model,test_df) if probability is required.", "predict receives features only. Exclude target before discovering training features.", "Never fake metrics: the trusted parent recomputes them.", "No I/O, network, processes or unsafe imports. Honor random_state from config."]}
             for attempt in range(2):
                 try:
                     payload["current_requirement_and_plan"] = context or {}
-                    raw = self.llm.complete("Diagnose the observed failure and return a complete minimal corrected implementation as strict JSON. " + executable_api_rules(task_type), json.dumps(payload, ensure_ascii=False), purpose="repair", generation_config={"json_schema": RepairContract.model_json_schema()})
+                    raw = self.llm.complete("Diagnose the observed failure and return a complete minimal corrected implementation as strict JSON using code_lines, one Python line per array string with indentation preserved. " + executable_api_rules(task_type), json.dumps(payload, ensure_ascii=False), purpose="repair", generation_config={"json_schema": RepairContract.model_json_schema()})
                     path.with_name(f"repair_round_{round_no}_attempt_{attempt + 1}.json").write_text(json.dumps({"raw_response": sanitize(raw)}, ensure_ascii=False, indent=2), encoding="utf-8")
                     repair = RepairContract.model_validate(extract_json_object(raw))
                     gate = static_check_text(repair.revised_code, task_type, target_column)

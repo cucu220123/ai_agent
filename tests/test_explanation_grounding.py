@@ -22,3 +22,4 @@ def test_explanation_metric_direction_and_unmeasured_comparison():
     validate_comparative_claims({'limitations': ['Ridge has better MAE than Forest.']}, candidates)
     with pytest.raises(ValueError, match='unmeasured comparison'):
         validate_comparative_claims({'limitations': ['Ridge has higher ROC-AUC than Forest.']}, candidates)
+

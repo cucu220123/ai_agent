@@ -86,9 +86,20 @@ CUDA_VISIBLE_DEVICES=1,2 python -m vllm.entrypoints.openai.api_server \
 export OPENAI_CODER_BASE_URL=http://127.0.0.1:18088/v1
 ```
 
+指令模型也可使用同一 vLLM 环境（独立终端）：
+
+```bash
+CUDA_VISIBLE_DEVICES=3 python -m vllm.entrypoints.openai.api_server \
+  --model /path/to/Qwen2.5-14B-Instruct \
+  --served-model-name Qwen2.5-14B-Instruct --dtype bfloat16 \
+  --max-model-len 32768 --gpu-memory-utilization 0.48 \
+  --max-num-seqs 1 --max-num-batched-tokens 1024 --enforce-eager \
+  --host 127.0.0.1 --port 18086 --no-enable-log-requests
+```
+
 两种服务都保留 OpenAI-compatible 接口；应用不依赖 vLLM 才能运行。验收保留了 NF4 慢速推理、超时与切换到 vLLM 后继续修复的真实记录。
 
-服务仅绑定 loopback、串行推理，不应直接暴露公网。本地权重必须预先存在；加载关闭 trust_remote_code，不自动下载模型。
+示例服务仅绑定 loopback，不应直接暴露公网。轻量 Transformers 适配器串行推理，vLLM 使用有界调度。本地权重必须预先存在；加载关闭 trust_remote_code，不自动下载模型。
 
 ## 4. Agent 与架构
 
