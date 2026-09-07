@@ -5,6 +5,7 @@ from app.knowledge.store import KnowledgeStore
 from app.models import CapabilitySpec, KnowledgeContext
 from app.retrieval.graph import GraphRetriever
 from app.retrieval.semantic import HybridSemanticRetriever
+from app.retrieval.fusion import rerank_evidence
 
 
 class RetrieverAgent:
@@ -18,9 +19,10 @@ class RetrieverAgent:
 
     def run(self, spec: CapabilitySpec) -> KnowledgeContext:
         query = " ".join([spec.capability_name, spec.domain, spec.task_type, spec.data_type, spec.target_column, *spec.feature_columns, *spec.metrics, *spec.constraints])
-        graph_evidence = self.graph.retrieve(spec, hops=2, limit=48)
+        graph_evidence = self.graph.retrieve(spec, hops=3, limit=64)
         documents = self.store.list_knowledge_items(200) + self.store.recent_experiences(100) + self.store.list_validation_runs(100)
         semantic_evidence = self.semantic.retrieve(spec, documents, limit=8)
+        semantic_evidence = rerank_evidence(spec, semantic_evidence, graph_evidence)
         historical_cases = self.experience.retrieve(spec, self.store.list_validation_runs(100), limit=12)
         algorithms = self.store.list_algorithms()
         relevant_experiences = self.experience.retrieve_failures(spec, self.store.recent_experiences(100), limit=8)
@@ -45,5 +47,6 @@ class RetrieverAgent:
                 "semantic_backend": self.semantic.last_backend,
                 "semantic_fallback_error": self.semantic.last_error,
                 "historical_cases": len(historical_cases),
+                "fusion": "semantic+graph_distance+task+recency+validation_quality",
             },
         )

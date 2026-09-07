@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import os
+import hashlib
 from typing import Any
 
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -37,6 +38,7 @@ class EmbeddingRetriever:
         self.device = device or os.getenv("EMBEDDING_DEVICE", "cpu")
         self._tokenizer = None
         self._model = None
+        self._vector_cache: dict[str, Any] = {}
 
     def _load(self) -> None:
         if self._model is not None:
@@ -47,8 +49,8 @@ class EmbeddingRetriever:
             return
         from transformers import AutoModel, AutoTokenizer
 
-        self._tokenizer = AutoTokenizer.from_pretrained(self.model_path, trust_remote_code=True)
-        self._model = AutoModel.from_pretrained(self.model_path, trust_remote_code=True).to(self.device)
+        self._tokenizer = AutoTokenizer.from_pretrained(self.model_path, trust_remote_code=False, local_files_only=True)
+        self._model = AutoModel.from_pretrained(self.model_path, trust_remote_code=False, local_files_only=True).to(self.device)
         self._model.eval()
         self._MODEL_CACHE[cache_key] = (self._tokenizer, self._model)
 
@@ -59,18 +61,25 @@ class EmbeddingRetriever:
         import torch.nn.functional as F
 
         self._load()
-        texts = [json.dumps(spec.to_dict(), ensure_ascii=False), *[json.dumps(item, ensure_ascii=False) for item in documents]]
+        query = " ".join([spec.raw_description, spec.domain, spec.task_type, *spec.metrics])
+        texts = [query, *[json.dumps(item, ensure_ascii=False, sort_keys=True) for item in documents]]
+        keys = [hashlib.sha256(text.encode()).hexdigest() for text in texts]
+        missing = list(dict.fromkeys(key for key in keys if key not in self._vector_cache))
+        by_key = dict(zip(keys, texts))
+        missing_texts = [by_key[key] for key in missing]
         vectors = []
         batch_size = 16
         with torch.inference_mode():
-            for index in range(0, len(texts), batch_size):
-                encoded = self._tokenizer(texts[index : index + batch_size], padding=True, truncation=True, max_length=512, return_tensors="pt").to(self.device)
+            for index in range(0, len(missing_texts), batch_size):
+                encoded = self._tokenizer(missing_texts[index : index + batch_size], padding=True, truncation=True, max_length=512, return_tensors="pt").to(self.device)
                 output = self._model(**encoded)
                 hidden = output.last_hidden_state
                 mask = encoded["attention_mask"].unsqueeze(-1).expand(hidden.size()).float()
                 pooled = (hidden * mask).sum(1) / mask.sum(1).clamp(min=1e-9)
                 vectors.append(F.normalize(pooled, p=2, dim=1).cpu())
-        matrix = torch.cat(vectors)
+        if vectors:
+            self._vector_cache.update(zip(missing, torch.cat(vectors)))
+        matrix = torch.stack([self._vector_cache[key] for key in keys])
         scores = (matrix[1:] @ matrix[0]).tolist()
         ranked = sorted(zip(scores, documents), key=lambda item: item[0], reverse=True)[:limit]
         return [{"score": round(float(score), 6), "source": item, "backend": "embedding", "model": self.model_path} for score, item in ranked]
