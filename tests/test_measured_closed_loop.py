@@ -13,6 +13,12 @@ def settings(root):
 
 def test_measured_task_a_writeback_enters_task_b_planner_and_failure_retrieval(tmp_path):
     factory = AlgorithmFactoryWorkflow(settings(tmp_path))
+    received_contexts = []
+    original_repair = factory.repair.repair
+    def observe_repair(*args, **kwargs):
+        received_contexts.append(kwargs["context"])
+        return original_repair(*args, **kwargs)
+    factory.repair.repair = observe_repair
     assert not factory.store.list_validation_runs()
     data_a = generate(tmp_path / "a.csv", n_rows=240, seed=42)
     a = factory.run("预测客户流失，ROC-AUC 不低于 0.60，输出概率", data_a, inject_repair_failure=True)
@@ -20,6 +26,9 @@ def test_measured_task_a_writeback_enters_task_b_planner_and_failure_retrieval(t
     assert len(a.writeback["validation_run_ids"]) >= len(a.candidate_results)
     assert a.writeback["failure_experience_ids"]
     repaired = next(c for c in a.candidate_results if len(c["attempts"]) > 1)
+    assert received_contexts[0]["requirement"]["target_column"] == a.spec.target_column
+    assert received_contexts[0]["execution_plan"]["algorithm_id"] == repaired["plan"]["algorithm_id"]
+    assert received_contexts[0]["requirement"]["dataset_profile"]["rows"] == 240
     assert repaired["attempts"][0]["validation"]["status"] == "failed"
     assert repaired["attempts"][1]["validation"]["status"] == "passed"
     assert repaired["attempts"][1]["parent_version"] == repaired["attempts"][0]["version_id"]

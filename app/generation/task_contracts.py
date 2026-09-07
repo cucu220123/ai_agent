@@ -47,6 +47,8 @@ def executable_api_rules(task_type: str) -> str:
         "Avoid feature-name introspection inside predict: let the fitted Pipeline validate the feature frame. "
         "The prediction column contains discrete class labels for classification, never probabilities. "
         "Binary F1/precision/recall use average='binary'; text classification uses average='weighted'. "
+        "If reporting pr_auc, use sklearn.metrics.average_precision_score(y_true, positive_class_probability), matching the trusted evaluator's definition. "
+        + ("Text preprocessing must fill missing strings before vectorization. " if task_type == "text_classification" else "Tabular preprocessing must impute missing numeric and categorical values; OneHotEncoder must use handle_unknown='ignore'. ")
         + ("Also define module-level def predict_proba(model, test_df): returning model.predict_proba(test_df)[:, 1]. " if task_type == "binary_classification" else "")
         + "Implement every function fully. Do not create CoderAgent, RepairAgent or Algorithm classes."
     )

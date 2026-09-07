@@ -73,6 +73,21 @@ export OPENAI_CODER_MODEL=Qwen3-Coder-30B-A3B-Instruct
 
 NF4 是可选的真实权重量化推理，需要 CUDA 与 bitsandbytes；不是 Mock。服务 `/health` 报告实际模型和量化状态。
 
+有独立 GPU 推理环境时，可使用实测的 vLLM 后端。建议单独安装 `requirements-serving.txt`，避免改动应用的依赖环境；以下显存比例和 GPU 编号应按机器空闲资源调整：
+
+```bash
+CUDA_VISIBLE_DEVICES=1,2 python -m vllm.entrypoints.openai.api_server \
+  --model /path/to/Qwen3-Coder-30B-A3B-Instruct \
+  --served-model-name Qwen3-Coder-30B-A3B-Instruct \
+  --tensor-parallel-size 2 --dtype bfloat16 --max-model-len 16384 \
+  --gpu-memory-utilization 0.46 --max-num-seqs 2 \
+  --max-num-batched-tokens 2048 --enforce-eager \
+  --host 127.0.0.1 --port 18088 --no-enable-log-requests
+export OPENAI_CODER_BASE_URL=http://127.0.0.1:18088/v1
+```
+
+两种服务都保留 OpenAI-compatible 接口；应用不依赖 vLLM 才能运行。验收保留了 NF4 慢速推理、超时与切换到 vLLM 后继续修复的真实记录。
+
 服务仅绑定 loopback、串行推理，不应直接暴露公网。本地权重必须预先存在；加载关闭 trust_remote_code，不自动下载模型。
 
 ## 4. Agent 与架构
@@ -228,6 +243,8 @@ tests/             确定性软件回归
 真实调用会遇到 provider 额度、JSON 格式/语义不一致、生成接口错误和资源问题；系统保留失败而不伪装成功，并在同一 gate 下重试。精确来源验证与有限上下文使知识可以追踪，但实体归一化/文本解释仍可能有语义错误。可检查的数值与引用校验不能证明自由文本完全无幻觉。
 
 当前是合成小数据、有限 sklearn 插件、同步单用户图存储、启发式 reranking 和有限 beam。未实现 MCTS、分布式自治 agent、全量仓库跨文件语义分析、生产隔离、自动部署或任意多模态任务。
+
+已注册的指标、概率、延迟和资源约束会执行检查；任意自由文本业务约束仍需补充专用验证插件。可解释性目前参与规划先验，尚不是独立的解释质量评估器。
 
 后续优先级：独立最终测试集和统计置信区间、经验权重学习与消融实验、并发事务与作业队列、生产 sandbox、跨仓库版本/来源追踪、大规模图索引与实体链接评测。
 

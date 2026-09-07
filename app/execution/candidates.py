@@ -12,6 +12,7 @@ from app.config import Settings
 from app.models import AlgorithmPlan, CapabilitySpec, KnowledgeContext
 from app.validation.runner import ValidationRunner
 from app.agents.protocol import AgentRuntime
+from app.generation.task_contracts import build_codegen_prompt
 
 
 class CandidateExecutor:
@@ -58,7 +59,7 @@ class CandidateExecutor:
             if round_no == self.settings.max_repair_rounds:
                 break
             feedback = json.dumps({"validation": validation.to_dict(), "diagnosis": diagnosis, "metric_thresholds": spec.metric_thresholds, "resource_constraints": spec.resource_constraints}, ensure_ascii=False)
-            repair = runtime.call("RepairAgent", "repair", self.repair.repair, path, feedback, round_no + 1, knowledge.experiences, spec.task_type, spec.target_column)
+            repair = runtime.call("RepairAgent", "repair", self.repair.repair, path, feedback, round_no + 1, knowledge.experiences, spec.task_type, spec.target_column, context={"requirement": spec.to_dict(), "execution_plan": plan.to_dict(), "host_contract": build_codegen_prompt(spec, plan)})
             repair["diagnosis"] = diagnosis
             repair["from_version"] = version
             repairs.append(repair)
