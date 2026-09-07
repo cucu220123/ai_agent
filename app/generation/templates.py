@@ -6,6 +6,28 @@ from app.models import AlgorithmPlan, CapabilitySpec
 
 
 def render_algorithm(spec: CapabilitySpec, plan: AlgorithmPlan) -> str:
+    from app.plugins.registry import DEFAULT_REGISTRY
+    key = (plan.base_algorithm_id or plan.algorithm_id).removeprefix("algorithm_").split("__")[0]
+    plugin = DEFAULT_REGISTRY.algorithms.get(key)
+    if plugin and plugin.renderer:
+        source = plugin.renderer(spec, plan)
+    else:
+        if key not in {"logistic_regression", "random_forest", "gradient_boosting", "random_forest_regressor", "isolation_forest", "tfidf_logistic_regression"}:
+            raise ValueError(f"plugin {key} needs a registered renderer for deterministic fallback")
+        source = _render_algorithm(spec, plan)
+    if "def metadata(" not in source:
+        metadata = {"protocol_version": "1.1", "algorithm": plan.algorithm_name, "rationale": plan.rationale, "evidence_ids": plan.evidence_ids, "parameters": plan.hyperparameters, "source": "deterministic_template"}
+        source += "\n\ndef metadata():\n    return " + repr(metadata) + "\n"
+    if spec.task_type in {"binary_classification", "text_classification", "multiclass_classification"} and "def predict_proba(" not in source:
+        source += "\n\ndef predict_proba(model, test_df):\n    return predict(model, test_df)['probability'].to_numpy()\n"
+    if not (plugin and plugin.renderer):
+        # All built-in estimators consume the worker's seed; variance checks
+        # must exercise independent seeds instead of repeating a hardcoded 42.
+        source = source.replace("random_state=42", "random_state=(config or {}).get('random_state', 42)")
+    return source
+
+
+def _render_algorithm(spec: CapabilitySpec, plan: AlgorithmPlan) -> str:
     """Render a safe, deterministic sklearn module constrained by the task contract."""
     if spec.task_type == "regression":
         return render_regression_algorithm(spec, plan)
@@ -27,7 +49,7 @@ def render_algorithm(spec: CapabilitySpec, plan: AlgorithmPlan) -> str:
     else:
         estimator = f"GradientBoostingClassifier(n_estimators={params.get('n_estimators', 120)!r}, learning_rate={params.get('learning_rate', 0.05)!r}, max_depth={params.get('max_depth', 3)!r}, random_state=42)"
         scale = ""
-    return f'''"""Generated algorithm for: {spec.capability_name}."""
+    return f'''"""Generated tabular classification algorithm."""
 from __future__ import annotations
 
 from typing import Optional
@@ -106,7 +128,7 @@ def evaluate(model, test_df: pd.DataFrame, target_col: str) -> dict:
 
 def render_regression_algorithm(spec: CapabilitySpec, plan: AlgorithmPlan) -> str:
     params = plan.hyperparameters
-    return f'''"""Generated regression algorithm for: {spec.capability_name}."""
+    return f'''"""Generated regression algorithm."""
 from __future__ import annotations
 from typing import Optional
 import numpy as np
@@ -120,7 +142,7 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 
 ALGORITHM_NAME = {plan.algorithm_name!r}
 
-def _build_pipeline(train_df: pd.DataFrame, target_col: str):
+def _build_pipeline(train_df: pd.DataFrame, target_col: str, config=None):
     X = train_df.drop(columns=[target_col])
     numeric = X.select_dtypes(include=[np.number]).columns.tolist()
     categorical = [c for c in X.columns if c not in numeric]
@@ -135,7 +157,7 @@ def _build_pipeline(train_df: pd.DataFrame, target_col: str):
 
 def train(train_df: pd.DataFrame, target_col: str, config: Optional[dict] = None):
     if target_col not in train_df.columns: raise ValueError(f"target column '{{target_col}}' not found")
-    model = _build_pipeline(train_df, target_col)
+    model = _build_pipeline(train_df, target_col, config)
     model.fit(train_df.drop(columns=[target_col]), train_df[target_col].astype(float))
     return model
 
@@ -151,7 +173,7 @@ def evaluate(model, test_df: pd.DataFrame, target_col: str) -> dict:
 
 def render_anomaly_algorithm(spec: CapabilitySpec, plan: AlgorithmPlan) -> str:
     params = plan.hyperparameters
-    return f'''"""Generated anomaly detection algorithm for: {spec.capability_name}."""
+    return f'''"""Generated anomaly detection algorithm."""
 from __future__ import annotations
 from typing import Optional
 import numpy as np
@@ -189,7 +211,7 @@ def evaluate(model, test_df: pd.DataFrame, target_col: str) -> dict:
 def render_text_algorithm(spec: CapabilitySpec, plan: AlgorithmPlan) -> str:
     text_column = spec.feature_columns[0] if spec.feature_columns else "text"
     params = plan.hyperparameters
-    return f'''"""Generated text classification algorithm for: {spec.capability_name}."""
+    return f'''"""Generated text classification algorithm."""
 from __future__ import annotations
 from typing import Optional
 import numpy as np
@@ -211,7 +233,7 @@ def predict(model, test_df: pd.DataFrame) -> pd.DataFrame:
     text = test_df[TEXT_COLUMN].fillna("").astype(str)
     prediction = model.predict(text)
     probabilities = model.predict_proba(text)
-    probability = probabilities.max(axis=1)
+    probability = probabilities[:, 1] if probabilities.shape[1] == 2 else probabilities.max(axis=1)
     return pd.DataFrame({{"prediction": prediction, "probability": probability.astype(float)}})
 
 def evaluate(model, test_df: pd.DataFrame, target_col: str) -> dict:

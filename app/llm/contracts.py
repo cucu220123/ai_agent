@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import json
 import time
+import io
+import tokenize
 from dataclasses import asdict, dataclass, field
 from typing import Any
 
@@ -45,7 +47,20 @@ def extract_json_object(text: str) -> dict[str, Any] | None:
                     if isinstance(value, dict):
                         return value
                 except json.JSONDecodeError:
-                    continue
+                    # Bounded syntax correction: some compatible models emit
+                    # Python None/True/False inside otherwise valid JSON.
+                    # Tokenization preserves quoted strings; nothing executes.
+                    try:
+                        tokens = []
+                        for token in tokenize.generate_tokens(io.StringIO(candidate[start:end + 1]).readline):
+                            if token.type == tokenize.NAME and token.string in {"None", "True", "False"}:
+                                token = token._replace(string={"None": "null", "True": "true", "False": "false"}[token.string])
+                            tokens.append(token)
+                        value = json.loads(tokenize.untokenize(tokens))
+                        if isinstance(value, dict):
+                            return value
+                    except (ValueError, tokenize.TokenError, IndentationError):
+                        continue
     return None
 
 
@@ -63,7 +78,7 @@ def extract_python_code(text: str) -> str | None:
             if "def train" in block and "def predict" in block:
                 return block
     if "def train" in text and "def predict" in text and "def evaluate" in text:
-        return text[text.find("from ") if "from " in text else 0 :]
+        return text
     return None
 
 

@@ -1,72 +1,38 @@
+"""Typed failure analysis with immutable observed evidence and reusable lessons."""
 from __future__ import annotations
-
 import json
-from typing import Any
-
+from typing import Any, Literal
+from pydantic import BaseModel, ConfigDict, Field
 from app.llm.contracts import extract_json_object
+from app.llm.security import sanitize
 from app.models import AlgorithmPlan, CapabilitySpec, ValidationResult
 
 
-class CriticAgent:
-    """Turn raw validation failures into structured, reusable diagnostics."""
+class DiagnosisContract(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    failure_type: str = Field(min_length=3)
+    root_cause: str = Field(min_length=3)
+    triggering_condition: str = Field(min_length=3)
+    repair_strategy: str = Field(min_length=3)
+    reusable_lesson: str = Field(min_length=3)
 
+
+class CriticAgent:
     def __init__(self, llm=None, provider_name: str = "mock"):
-        self.llm = llm
-        self.provider_name = provider_name
+        self.llm, self.provider_name = llm, provider_name
 
     def run(self, spec: CapabilitySpec, plan: AlgorithmPlan, result: ValidationResult, source_code: str = "", retrieved_experiences: list[dict[str, Any]] | None = None) -> dict[str, Any]:
-        retrieved_experiences = retrieved_experiences or []
-        failure_type = self._classify(result)
-        diagnosis = {
-            "failure_type": failure_type,
-            "root_cause": result.errors[0] if result.errors else "none",
-            "triggering_condition": self._trigger(spec, result),
-            "observed_error": "\n".join(result.errors + [result.stderr])[-4000:],
-            "repair_strategy": self._strategy(failure_type),
-            "reusable_lesson": self._lesson(failure_type),
-            "provider": self.provider_name,
-            "retrieved_experience_ids": [item.get("id") for item in retrieved_experiences[:5] if item.get("id")],
-        }
-        if self.llm is not None and self.provider_name != "mock" and result.status != "passed":
+        experiences = retrieved_experiences or []
+        kind = result.failure_type or ("interface_failure" if "missing function" in " ".join(result.errors) else "validation_failure")
+        diagnosis = {"failure_type": kind, "root_cause": result.root_cause or (result.errors[0] if result.errors else "none"), "triggering_condition": f"{spec.task_type}: {kind}", "repair_strategy": "Inspect the failed check, restore the protocol and correct preprocessing/parameters; rerun independent validation.", "reusable_lesson": "Current measured validation, including failed attempts, must guide repair.", "provider": "deterministic_fallback", "status": "fallback"}
+        if self.llm is not None and self.provider_name != "mock":
             try:
-                raw = self.llm.complete(
-                    "你是 CriticAgent。只输出 JSON：failure_type, root_cause, triggering_condition, repair_strategy, reusable_lesson。",
-                    json.dumps({"spec": spec.to_dict(), "plan": plan.to_dict(), "validation": result.to_dict(), "source_code": source_code[-12000:], "similar_failures_and_successful_repairs": retrieved_experiences[:5], "instruction": "Prefer historically validated repairs when triggering conditions match, but do not blindly copy them."}, ensure_ascii=False),
-                    purpose="critique",
-                )
-                parsed = extract_json_object(raw)
-                if parsed:
-                    diagnosis.update({k: parsed[k] for k in diagnosis if k in parsed and parsed[k]})
-                    diagnosis["provider"] = self.provider_name
+                payload = {"requirement": spec.to_dict(), "plan": plan.to_dict(), "validation": result.to_dict(), "original_code": source_code, "historical_failure_experiences": experiences[:5], "json_schema": DiagnosisContract.model_json_schema()}
+                raw = self.llm.complete("You are CriticAgent. Explain the observed failure using only evidence. Return strict JSON. Do not claim a repair succeeded before revalidation.", json.dumps(payload, ensure_ascii=False), purpose="critique", generation_config={"json_schema": DiagnosisContract.model_json_schema()})
+                contract = DiagnosisContract.model_validate(extract_json_object(raw))
+                diagnosis.update(contract.model_dump(), provider=getattr(self.llm, "last_provider", self.provider_name), status="ok")
             except Exception as exc:
-                diagnosis["llm_error"] = f"{type(exc).__name__}: {exc}"
-        return diagnosis
+                diagnosis["llm_error"] = sanitize(str(exc))
+        diagnosis.update(observed_failure_type=kind, observed_error="\n".join(result.errors)[-4000:], retrieved_experience_ids=[x["id"] for x in experiences if x.get("id")])
+        return sanitize(diagnosis)
 
-    @staticmethod
-    def _classify(result: ValidationResult) -> str:
-        text = (" ".join(result.errors) + " " + result.stderr).lower()
-        if "syntax" in text or "indent" in text:
-            return "syntax_failure"
-        if "missing" in text or "interface" in text or "output" in text:
-            return "interface_failure"
-        if "timeout" in text or "runtime" in text or "traceback" in text or "typeerror" in text or "keyerror" in text:
-            return "runtime_failure"
-        if "<" in text or "metric" in text:
-            return "metric_underperformance"
-        return "validation_failure"
-
-    @staticmethod
-    def _trigger(spec: CapabilitySpec, result: ValidationResult) -> str:
-        if spec.class_imbalance:
-            return "class imbalance or threshold-sensitive evaluation"
-        if result.checks.get("output_contract", {}).get("passed") is False:
-            return "generated output contract mismatch"
-        return "validation feedback"
-
-    @staticmethod
-    def _strategy(failure_type: str) -> str:
-        return {"syntax_failure": "repair syntax and rerun AST checks", "interface_failure": "restore strict algorithm protocol", "runtime_failure": "inspect traceback and harden preprocessing", "metric_underperformance": "try threshold/config/preprocessing variant", "validation_failure": "inspect failed check and rerun"}.get(failure_type, "inspect failed check")
-
-    @staticmethod
-    def _lesson(failure_type: str) -> str:
-        return {"syntax_failure": "LLM code must pass AST compilation before execution", "interface_failure": "all algorithms must expose the versioned protocol", "runtime_failure": "test missing values and unseen categories", "metric_underperformance": "historical priors are not a substitute for current validation", "validation_failure": "persist the exact check and evidence"}.get(failure_type, "retain validation evidence")

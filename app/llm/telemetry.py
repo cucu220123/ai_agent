@@ -3,6 +3,8 @@ from __future__ import annotations
 
 import hashlib
 import time
+import os
+import json
 from datetime import datetime, timezone
 from typing import Any
 
@@ -35,4 +37,8 @@ class TracedLLM:
         finally:
             record.update(provider=getattr(self.provider, "last_provider", self.provider_name), model=getattr(self.provider, "model", None), latency_ms=round((time.perf_counter() - started) * 1000, 2), token_usage=getattr(self.provider, "last_usage", {}), retry_count=getattr(self.provider, "last_retry_count", 0), generation=getattr(self.provider, "last_generation", {}))
             self.calls.append(sanitize(record))
+            if getattr(self.provider, "fallback_reason", None):
+                self.calls[-1]["fallback_reason"] = self.provider.fallback_reason
+            if os.getenv("AI_FACTORY_TRACE", "0") == "1":
+                print("[LLM] " + json.dumps({k: self.calls[-1].get(k) for k in ("call_id", "purpose", "status", "provider", "model", "latency_ms", "token_usage", "retry_count")}), flush=True)
 

@@ -69,5 +69,5 @@ class LocalTransformersLLM:
         eos_id = self._tokenizer.eos_token_id
         eos_reached = bool(eos_id is not None and generated_tokens.numel() and int(generated_tokens[-1]) == int(eos_id))
         truncated = int(generated_tokens.shape[0]) >= config.max_new_tokens and not eos_reached
-        self.last_generation = {"purpose": purpose, "max_new_tokens": config.max_new_tokens, "context_length": context_length, "finish_reason": "length" if truncated else "eos", "truncated": truncated, "eos_reached": eos_reached, "input_truncated": len(user) > max_chars or token_input_truncated}
+        self.last_generation = {"purpose": purpose, "max_new_tokens": config.max_new_tokens, "context_length": context_length, "finish_reason": "length" if truncated else "eos", "truncated": truncated, "eos_reached": eos_reached, "input_truncated": char_truncated or token_input_truncated}
         return self._tokenizer.decode(generated_tokens, skip_special_tokens=True)

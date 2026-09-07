@@ -56,13 +56,12 @@ def plan_to_code_ir(spec: CapabilitySpec, plan: AlgorithmPlan) -> AlgorithmImple
 
 def compile_code_ir(spec: CapabilitySpec, implementation: AlgorithmImplementationSpec) -> str:
     plan = AlgorithmPlan(
-        algorithm_id=f"algorithm_{implementation.algorithm}", algorithm_name=implementation.algorithm,
+        algorithm_id=implementation.algorithm if implementation.algorithm.startswith("algorithm_") else f"algorithm_{implementation.algorithm}", algorithm_name=implementation.algorithm,
         rationale=implementation.rationale,
         preprocessing=[implementation.feature_handling.numeric_imputer, implementation.feature_handling.categorical_imputer, implementation.feature_handling.encoder, implementation.feature_handling.scaler],
         hyperparameters=implementation.estimator_params,
-        base_algorithm_id=f"algorithm_{implementation.algorithm}",
+        base_algorithm_id=implementation.algorithm if implementation.algorithm.startswith("algorithm_") else f"algorithm_{implementation.algorithm}",
         preprocessing_variant=f"imputer={implementation.feature_handling.numeric_imputer};scaler={implementation.feature_handling.scaler}",
         config_variant="code_ir",
     )
     return render_algorithm(spec, plan)
-

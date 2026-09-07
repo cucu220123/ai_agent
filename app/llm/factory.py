@@ -3,6 +3,7 @@ from __future__ import annotations
 from app.config import Settings
 from app.llm.mock import MockLLM
 from app.llm.openai_compatible import OpenAICompatibleLLM, load_openai_settings
+from app.llm.security import sanitize
 
 
 class AutoFallbackLLM:
@@ -17,18 +18,21 @@ class AutoFallbackLLM:
         self.last_generation = {}
         self.model = getattr(primary, "model", None)
         self._primary_failed = False
+        self.fallback_reason = None
 
     def complete(self, system: str, user: str, purpose: str = "general", generation_config=None) -> str:
         try:
             if self._primary_failed:
                 raise RuntimeError("primary provider circuit breaker open")
             result = self.primary.complete(system, user, purpose=purpose, generation_config=generation_config)
-            self.last_provider = "openai"
+            self.last_provider = getattr(self.primary, "last_provider", "openai")
             self.last_usage = getattr(self.primary, "last_usage", {})
             self.last_generation = getattr(self.primary, "last_generation", {})
             return result
         except Exception as primary_error:
             self._primary_failed = True
+            if self.fallback_reason is None:
+                self.fallback_reason = sanitize(f"{type(primary_error).__name__}: {primary_error}")
             if self.fallback is None:
                 raise primary_error
             result = self.fallback.complete(system, user, purpose=purpose, generation_config=generation_config)

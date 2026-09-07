@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import time
+from urllib.parse import urlsplit
 from typing import Any
 
 from app.llm.generation import resolve_generation_config
@@ -16,7 +17,7 @@ class OpenAICompatibleLLM:
         from openai import OpenAI
         register_secret(api_key)
         self.model = model
-        self.last_provider = "openai_compatible"
+        self.last_provider = "local_openai_compatible" if urlsplit(base_url).hostname in {"localhost", "127.0.0.1", "::1"} else "openai_compatible"
         self.client = OpenAI(api_key=api_key, base_url=base_url, timeout=timeout, max_retries=0)
         self.last_usage: dict[str, int] = {}
         self.last_retry_count = 0

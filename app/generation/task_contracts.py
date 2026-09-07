@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Any
+import json
 
 
 @dataclass(frozen=True)
@@ -35,9 +36,14 @@ def build_codegen_prompt(spec: Any, plan: Any) -> str:
         f"Task type: {contract.task_type}. Required prediction outputs: {outputs}. Metrics: {metrics}. "
         f"Target column is passed dynamically as target_col='{spec.target_column}'. Features: {spec.feature_columns}. "
         f"Algorithm: {plan.algorithm_name}; parameters: {plan.hyperparameters}. "
-        "Exact API: train(train_df, target_col, config=None), predict(model, test_df), evaluate(model, test_df, target_col). "
+        "Exact API: train(train_df, target_col, config=None), predict(model, test_df), evaluate(model, test_df, target_col), metadata(). "
+        "metadata() returns a dict including algorithm, rationale and evidence_ids. predict returns a pandas DataFrame with the requested columns. "
+        "For classification with probability output, also implement predict_proba(model,test_df) returning a 1D positive-class probability vector; predict probability column must match it. "
+        "Use config=config or {} and honor config.get('random_state',42) for estimator seeds. For binary classification F1 uses binary average; text classification uses weighted F1. "
+        "Fit preprocessing only on training features, with numeric imputation and categorical imputation + OneHotEncoder(handle_unknown='ignore', sparse_output=False). "
+        "predict must handle missing values, unseen categories and a one-row batch. Empty/invalid input may raise ValueError. No target column is supplied to predict. "
         + " ".join(contract.prompt_requirements)
         + " Never hard-code a target column in predict/evaluate. Never pass prediction threshold to an estimator constructor. "
-        "Only use pandas, numpy and scikit-learn; no files, network or system calls."
+        "Only use pandas, numpy and scikit-learn; no files, network or system calls.\n"
+        + json.dumps({"requirement": spec.to_dict(), "execution_plan": plan.to_dict()}, ensure_ascii=False)
     )
-
