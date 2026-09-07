@@ -25,3 +25,9 @@ def test_fabricated_source_span_is_rejected():
 def test_metrics_are_chunk_local():
     errors = KnowledgeExtractionAgent._quality_gate(contract(), {"metrics": ["ROC-AUC"]}, {"text": "forecast uses linear"})
     assert not errors
+
+
+def test_weighted_f1_qualifier_is_not_discarded_or_falsely_rejected():
+    extracted = KnowledgeExtractionContract.model_validate({"entities": [{"id": "m", "type": "Metric", "name": "weighted F1", "evidence_span": "weighted F1", "confidence": 1}], "relations": [], "summary": "weighted F1"})
+    assert not KnowledgeExtractionAgent._quality_gate(extracted, {"metrics": ["f1"]}, {"text": "Report weighted F1"})
+    assert extracted.entities[0].name == "weighted F1"

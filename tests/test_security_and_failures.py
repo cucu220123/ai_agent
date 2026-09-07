@@ -41,7 +41,7 @@ def evaluate(model,test_df,target_col): return {'roc_auc':0.5}
 
 def test_metric_failure_is_explicit(tmp_path):
     data = generate(tmp_path / "data.csv", n_rows=180)
-    source = __import__("pathlib").Path(__file__).parents[1] / "generated" / "0ab21a8f8fba" / "algorithm_logistic_regression" / "algorithm.py"
+    source = tmp_path / "algorithm.py"
     if not source.exists():
         from app.agents.generator_agent import GeneratorAgent
         from app.agents.planner_agent import PlannerAgent
@@ -53,4 +53,3 @@ def test_metric_failure_is_explicit(tmp_path):
     result = ValidationRunner(30).run(source, data, CapabilitySpec(raw_description="x", metric_thresholds={"roc_auc": 0.9999}), "test")
     assert result.status == "failed"
     assert any("roc_auc" in error for error in result.errors)
-

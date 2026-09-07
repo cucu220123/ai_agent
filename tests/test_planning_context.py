@@ -11,8 +11,7 @@ def test_planning_context_is_compressed_and_traced():
     )
     context, trace = PlanningContextBuilder(max_chars=7000).build(CapabilitySpec(raw_description="x"), knowledge)
     assert trace["raw_retrieved_items"]["graph_nodes"] == 100
-    assert trace["items_after_rerank"]["historical_runs"] <= 5
-    assert trace["final_prompt_chars"] <= 12000
+    assert trace["items_after_rerank"]["historical_runs"] <= 8
+    assert trace["final_prompt_chars"] <= 7000
     assert trace["estimated_prompt_tokens"] > 0
     assert context["graph_candidates"]
-

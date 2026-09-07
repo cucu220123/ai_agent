@@ -1,0 +1,12 @@
+# CPU/API regression environment used by the 2026-09-07 acceptance.
+# Local-model CUDA dependencies are separately recorded in environment.json.
+numpy==1.26.4
+pandas==2.2.3
+scikit-learn==1.2.2
+networkx==3.4.2
+fastapi==0.115.12
+uvicorn==0.34.2
+pydantic==2.11.10
+openai==1.77.0
+pytest==9.1.1
+httpx==0.28.1

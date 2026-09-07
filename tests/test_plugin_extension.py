@@ -4,7 +4,8 @@ from app.plugins.registry import AlgorithmPlugin, DEFAULT_REGISTRY
 from app.search.beam import BeamSearchPlanner
 
 
-def test_toy_plugin_enters_planner_and_beam_without_core_changes():
+def test_toy_plugin_enters_planner_and_beam_without_core_changes(monkeypatch):
+    monkeypatch.setattr(DEFAULT_REGISTRY, "algorithms", dict(DEFAULT_REGISTRY.algorithms))
     plugin_id = "toy_classifier"
     DEFAULT_REGISTRY.register_algorithm(AlgorithmPlugin(plugin_id, "Toy Classifier", ["binary_classification"], "test-only plugin", "low", {"alpha": 1.0}, ["none"], {"alpha": [0.1, 1.0]}, ["f1"], {"protocol": "tabular_binary"}))
     spec = CapabilitySpec(raw_description="toy", candidate_algorithms=[plugin_id], task_type="binary_classification")
