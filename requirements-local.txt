@@ -1,6 +1,6 @@
 -r requirements.txt
 torch>=2.2
-transformers>=4.45,<5
+transformers>=4.57,<5
 accelerate>=0.30
 safetensors>=0.4
 bitsandbytes>=0.45,<0.50; platform_system == "Linux"
