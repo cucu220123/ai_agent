@@ -1,0 +1,22 @@
+[Acceptance] retained completed stage first
+[Acceptance] retained completed stage second
+[RequirementAgent] started {"tool": "understand"}
+[LLM] {"call_id": "llm_0001", "purpose": "requirement", "status": "ok", "provider": "local_openai_compatible", "model": "Qwen2.5-14B-Instruct", "latency_ms": 30598.11, "token_usage": {"prompt_tokens": 1075, "completion_tokens": 519, "total_tokens": 1594}, "retry_count": 1}
+[RequirementAgent] completed {"tool": "understand"}
+[KnowledgeExtractionAgent] started {"tool": "ingest"}
+[KnowledgeExtractionAgent] completed {"tool": "ingest"}
+[RetrievalAgent] started {"tool": "retrieve"}
+[RetrievalAgent] completed {"tool": "retrieve"}
+[GraphSearch] ok {}
+[PlannerAgent] started {"tool": "advise"}
+[LLM] {"call_id": "llm_0002", "purpose": "planning", "status": "ok", "provider": "local_openai_compatible", "model": "Qwen2.5-14B-Instruct", "latency_ms": 33880.75, "token_usage": {"prompt_tokens": 7989, "completion_tokens": 516, "total_tokens": 8505}, "retry_count": 0}
+[LLM] {"call_id": "llm_0003", "purpose": "planning", "status": "ok", "provider": "local_openai_compatible", "model": "Qwen2.5-14B-Instruct", "latency_ms": 39218.5, "token_usage": {"prompt_tokens": 8623, "completion_tokens": 516, "total_tokens": 9139}, "retry_count": 0}
+[PlannerAgent] completed {"tool": "advise"}
+Traceback (most recent call last):
+  File "/data3/xiaotianqi/ai_algorithm_factory/scripts/run_acceptance.py", line 160, in <module>
+    print(json.dumps(run(Path(args.output), args.stage, args.provider)))
+  File "/data3/xiaotianqi/ai_algorithm_factory/scripts/run_acceptance.py", line 106, in run
+    result = repair_workflow.run(description, work / "data/churn_first.csv", inject_repair_failure=True).to_dict()
+  File "/data3/xiaotianqi/ai_algorithm_factory/app/workflow.py", line 81, in run
+    raise RuntimeError("Real LLM planning failed; refusing to call deterministic advice real planning")
+RuntimeError: Real LLM planning failed; refusing to call deterministic advice real planning

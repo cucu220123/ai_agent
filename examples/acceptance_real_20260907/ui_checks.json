@@ -1,0 +1,33 @@
+{
+  "checks": [
+    "History selector loads actual passed report",
+    "ROC-AUC 0.9289 displayed first; all measured metrics visible",
+    "Generated Gradient Boosting source fetched and displayed",
+    "Relevant subgraph includes typed graph edges",
+    "Current writeback subgraph is fetched from API",
+    "FailureExperience filtering shows v1-v4 failures and REPAIRS/OCCURRED_IN relations",
+    "Version, failure category and validation status labels visible",
+    "Unified validation page displays safety, metric integrity, robustness, stability and resource evidence"
+  ],
+  "method": "Interactive browser inspection through SSH tunnel; existing real report; no new workflow submitted",
+  "run_id": "6bde3f2c39b8",
+  "limitations": [
+    "Manual desktop inspection, not an automated browser regression suite",
+    "No claim that a new expensive run was submitted through the browser"
+  ],
+  "status": "passed",
+  "final_manual_checks": {
+    "timestamp": "2026-09-07T17:59:03.519663+00:00",
+    "method": "CUA browser accessibility tree over SSH tunnel; existing reports only; no new POST run submitted",
+    "second_run": "9364e416a38a",
+    "second_review_label_visible": true,
+    "second_roc_auc_display": "0.8656",
+    "repair_run": "53ac387cea5c",
+    "repair_versions_visible": [
+      "v1 failed",
+      "v2 passed with v1 parent"
+    ],
+    "repair_hashes_match_proof": true,
+    "scope": "Manual evidence display check; not a browser test suite"
+  }
+}

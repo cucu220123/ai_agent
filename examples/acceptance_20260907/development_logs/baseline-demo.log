@@ -1,0 +1,9 @@
+Traceback (most recent call last):
+  File "/data3/xiaotianqi/ai_algorithm_factory/scripts/run_demo.py", line 11, in <module>
+    from app.workflow import AlgorithmFactoryWorkflow
+  File "/data3/xiaotianqi/ai_algorithm_factory/app/workflow.py", line 10, in <module>
+    from app.agents.generator_agent import GeneratorAgent
+  File "/data3/xiaotianqi/ai_algorithm_factory/app/agents/generator_agent.py", line 43
+    gate = static_check_text(proposed, spec.task_type, spec.target_column) if proposed else {"passed": False, "message": "no complete Python module extracted"}
+    ^^^^
+SyntaxError: expected 'except' or 'finally' block

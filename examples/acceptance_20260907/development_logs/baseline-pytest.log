@@ -1,0 +1,159 @@
+
+==================================== ERRORS ====================================
+______________________ ERROR collecting tests/test_api.py ______________________
+/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/_pytest/python.py:508: in importtestmodule
+    mod = import_path(
+/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/_pytest/pathlib.py:596: in import_path
+    importlib.import_module(module_name)
+/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+<frozen importlib._bootstrap>:1050: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1027: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1006: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:688: in _load_unlocked
+    ???
+/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/_pytest/assertion/rewrite.py:188: in exec_module
+    exec(co, module.__dict__)
+tests/test_api.py:3: in <module>
+    from app.api import app
+app/api.py:10: in <module>
+    from app.workflow import AlgorithmFactoryWorkflow
+app/workflow.py:10: in <module>
+    from app.agents.generator_agent import GeneratorAgent
+E     File "/data3/xiaotianqi/ai_algorithm_factory/app/agents/generator_agent.py", line 43
+E       gate = static_check_text(proposed, spec.task_type, spec.target_column) if proposed else {"passed": False, "message": "no complete Python module extracted"}
+E       ^^^^
+E   SyntaxError: expected 'except' or 'finally' block
+___________________ ERROR collecting tests/test_isolation.py ___________________
+/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/_pytest/python.py:508: in importtestmodule
+    mod = import_path(
+/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/_pytest/pathlib.py:596: in import_path
+    importlib.import_module(module_name)
+/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+<frozen importlib._bootstrap>:1050: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1027: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1006: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:688: in _load_unlocked
+    ???
+/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/_pytest/assertion/rewrite.py:188: in exec_module
+    exec(co, module.__dict__)
+tests/test_isolation.py:4: in <module>
+    from app.agents.generator_agent import GeneratorAgent
+E     File "/data3/xiaotianqi/ai_algorithm_factory/app/agents/generator_agent.py", line 43
+E       gate = static_check_text(proposed, spec.task_type, spec.target_column) if proposed else {"passed": False, "message": "no complete Python module extracted"}
+E       ^^^^
+E   SyntaxError: expected 'except' or 'finally' block
+__________________ ERROR collecting tests/test_self_repair.py __________________
+/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/_pytest/python.py:508: in importtestmodule
+    mod = import_path(
+/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/_pytest/pathlib.py:596: in import_path
+    importlib.import_module(module_name)
+/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+<frozen importlib._bootstrap>:1050: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1027: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1006: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:688: in _load_unlocked
+    ???
+/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/_pytest/assertion/rewrite.py:188: in exec_module
+    exec(co, module.__dict__)
+tests/test_self_repair.py:1: in <module>
+    from app.experience.self_repair import run_self_repair_demo
+app/experience/self_repair.py:8: in <module>
+    from app.agents.generator_agent import GeneratorAgent
+E     File "/data3/xiaotianqi/ai_algorithm_factory/app/agents/generator_agent.py", line 43
+E       gate = static_check_text(proposed, spec.task_type, spec.target_column) if proposed else {"passed": False, "message": "no complete Python module extracted"}
+E       ^^^^
+E   SyntaxError: expected 'except' or 'finally' block
+________________ ERROR collecting tests/test_task_workflows.py _________________
+/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/_pytest/python.py:508: in importtestmodule
+    mod = import_path(
+/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/_pytest/pathlib.py:596: in import_path
+    importlib.import_module(module_name)
+/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+<frozen importlib._bootstrap>:1050: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1027: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1006: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:688: in _load_unlocked
+    ???
+/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/_pytest/assertion/rewrite.py:188: in exec_module
+    exec(co, module.__dict__)
+tests/test_task_workflows.py:2: in <module>
+    from app.workflow import AlgorithmFactoryWorkflow
+app/workflow.py:10: in <module>
+    from app.agents.generator_agent import GeneratorAgent
+E     File "/data3/xiaotianqi/ai_algorithm_factory/app/agents/generator_agent.py", line 43
+E       gate = static_check_text(proposed, spec.task_type, spec.target_column) if proposed else {"passed": False, "message": "no complete Python module extracted"}
+E       ^^^^
+E   SyntaxError: expected 'except' or 'finally' block
+__________________ ERROR collecting tests/test_validation.py ___________________
+/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/_pytest/python.py:508: in importtestmodule
+    mod = import_path(
+/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/_pytest/pathlib.py:596: in import_path
+    importlib.import_module(module_name)
+/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+<frozen importlib._bootstrap>:1050: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1027: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1006: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:688: in _load_unlocked
+    ???
+/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/_pytest/assertion/rewrite.py:188: in exec_module
+    exec(co, module.__dict__)
+tests/test_validation.py:3: in <module>
+    from app.agents.generator_agent import GeneratorAgent
+E     File "/data3/xiaotianqi/ai_algorithm_factory/app/agents/generator_agent.py", line 43
+E       gate = static_check_text(proposed, spec.task_type, spec.target_column) if proposed else {"passed": False, "message": "no complete Python module extracted"}
+E       ^^^^
+E   SyntaxError: expected 'except' or 'finally' block
+___________________ ERROR collecting tests/test_workflow.py ____________________
+/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/_pytest/python.py:508: in importtestmodule
+    mod = import_path(
+/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/_pytest/pathlib.py:596: in import_path
+    importlib.import_module(module_name)
+/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+<frozen importlib._bootstrap>:1050: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1027: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1006: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:688: in _load_unlocked
+    ???
+/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/_pytest/assertion/rewrite.py:188: in exec_module
+    exec(co, module.__dict__)
+tests/test_workflow.py:2: in <module>
+    from app.workflow import AlgorithmFactoryWorkflow
+app/workflow.py:10: in <module>
+    from app.agents.generator_agent import GeneratorAgent
+E     File "/data3/xiaotianqi/ai_algorithm_factory/app/agents/generator_agent.py", line 43
+E       gate = static_check_text(proposed, spec.task_type, spec.target_column) if proposed else {"passed": False, "message": "no complete Python module extracted"}
+E       ^^^^
+E   SyntaxError: expected 'except' or 'finally' block
+=========================== short test summary info ============================
+ERROR tests/test_api.py
+ERROR tests/test_isolation.py
+ERROR tests/test_self_repair.py
+ERROR tests/test_task_workflows.py
+ERROR tests/test_validation.py
+ERROR tests/test_workflow.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 6 errors during collection !!!!!!!!!!!!!!!!!!!!
+6 errors in 3.48s

@@ -1,0 +1,51 @@
+[Acceptance] retained completed stage first
+[Acceptance] retained completed stage second
+[RequirementAgent] started {"tool": "understand"}
+[LLM] {"call_id": "llm_0001", "purpose": "requirement", "status": "ok", "provider": "local_openai_compatible", "model": "Qwen2.5-14B-Instruct", "latency_ms": 32602.49, "token_usage": {"prompt_tokens": 1075, "completion_tokens": 519, "total_tokens": 1594}, "retry_count": 1}
+[RequirementAgent] completed {"tool": "understand"}
+[KnowledgeExtractionAgent] started {"tool": "ingest"}
+[KnowledgeExtractionAgent] completed {"tool": "ingest"}
+[RetrievalAgent] started {"tool": "retrieve"}
+[RetrievalAgent] completed {"tool": "retrieve"}
+[GraphSearch] ok {}
+[PlannerAgent] started {"tool": "advise"}
+[LLM] {"call_id": "llm_0002", "purpose": "planning", "status": "ok", "provider": "local_openai_compatible", "model": "Qwen2.5-14B-Instruct", "latency_ms": 34266.35, "token_usage": {"prompt_tokens": 8769, "completion_tokens": 455, "total_tokens": 9224}, "retry_count": 0}
+[PlannerAgent] completed {"tool": "advise"}
+[PlannerAgent] started {"tool": "plan"}
+[PlannerAgent] completed {"tool": "plan"}
+[PlannerAgent] started {"tool": "search"}
+[PlannerAgent] completed {"tool": "search"}
+[CoderAgent] started {"tool": "generate"}
+[LLM] {"call_id": "llm_0003", "purpose": "code_generation", "status": "ok", "provider": "local_openai_compatible", "model": "Qwen3-Coder-30B-A3B-Instruct", "latency_ms": 78656.97, "token_usage": {"prompt_tokens": 9853, "completion_tokens": 803, "total_tokens": 10656}, "retry_count": 0}
+[CoderAgent] completed {"tool": "generate"}
+[CoderAgent] llm_code_accepted {"algorithm": "algorithm_logistic_regression__llm_proposed"}
+[DemoFaultInjection] applied {}
+[Sandbox] started {"algorithm": "algorithm_logistic_regression__llm_proposed", "version_id": "2b2a3d8a9bac_algorithm_logistic_regression__llm_proposed_v1"}
+[ValidatorAgent] started {"tool": "validate"}
+[ValidatorAgent] completed {"tool": "validate"}
+[ValidatorAgent] failed {"algorithm": "algorithm_logistic_regression__llm_proposed", "round": 0, "version_id": "2b2a3d8a9bac_algorithm_logistic_regression__llm_proposed_v1", "metrics": {}}
+[CriticAgent] started {"tool": "critique"}
+[LLM] {"call_id": "llm_0004", "purpose": "critique", "status": "ok", "provider": "local_openai_compatible", "model": "Qwen2.5-14B-Instruct", "latency_ms": 13321.04, "token_usage": {"prompt_tokens": 17006, "completion_tokens": 93, "total_tokens": 17099}, "retry_count": 0}
+[CriticAgent] completed {"tool": "critique"}
+[CriticAgent] ok {"algorithm": "algorithm_logistic_regression__llm_proposed"}
+[RepairAgent] started {"tool": "repair"}
+[LLM] {"call_id": "llm_0005", "purpose": "repair", "status": "error", "provider": "local_openai_compatible", "model": "Qwen3-Coder-30B-A3B-Instruct", "latency_ms": 257.58, "token_usage": {}, "retry_count": 2}
+[RepairAgent] gate rejected: LLMInvocationError: RuntimeError: BadRequestError: Error code: 400 - {'error': {'message': "You passed 10243 input tokens and requested 6142 output tokens. However, the model's context length is only 16384 tokens, resulting in a maximum input length of 10242 tokens. Please reduce the length of the input prompt. (parameter=input_tokens, value=10243)", 'type': 'BadRequestError', 'param': 'input_tokens', 'code': 400}}
+[LLM] {"call_id": "llm_0006", "purpose": "repair", "status": "error", "provider": "local_openai_compatible", "model": "Qwen3-Coder-30B-A3B-Instruct", "latency_ms": 198.62, "token_usage": {}, "retry_count": 2}
+[RepairAgent] gate rejected: LLMInvocationError: RuntimeError: BadRequestError: Error code: 400 - {'error': {'message': "You passed 10243 input tokens and requested 6142 output tokens. However, the model's context length is only 16384 tokens, resulting in a maximum input length of 10242 tokens. Please reduce the length of the input prompt. (parameter=input_tokens, value=10243)", 'type': 'BadRequestError', 'param': 'input_tokens', 'code': 400}}
+[RepairAgent] completed {"tool": "repair"}
+[RepairAgent] repair_rejected {"algorithm": "algorithm_logistic_regression__llm_proposed", "round": 1}
+[CuratorAgent] started {"tool": "curate"}
+[CuratorAgent] completed {"tool": "curate"}
+[ExplanationAgent] started {"tool": "explain"}
+[LLM] {"call_id": "llm_0007", "purpose": "explanation", "status": "error", "provider": "local_openai_compatible", "model": "Qwen2.5-14B-Instruct", "latency_ms": 4296.22, "token_usage": {}, "retry_count": 0}
+[LLM] {"call_id": "llm_0008", "purpose": "explanation", "status": "error", "provider": "local_openai_compatible", "model": "Qwen2.5-14B-Instruct", "latency_ms": 2.53, "token_usage": {}, "retry_count": 0}
+[ExplanationAgent] completed {"tool": "explain"}
+Traceback (most recent call last):
+  File "/data3/xiaotianqi/ai_algorithm_factory/scripts/run_acceptance.py", line 160, in <module>
+    print(json.dumps(run(Path(args.output), args.stage, args.provider)))
+  File "/data3/xiaotianqi/ai_algorithm_factory/scripts/run_acceptance.py", line 106, in run
+    result = repair_workflow.run(description, work / "data/churn_first.csv", inject_repair_failure=True).to_dict()
+  File "/data3/xiaotianqi/ai_algorithm_factory/app/workflow.py", line 100, in run
+    raise RuntimeError(f"No passing real-LLM candidate. Failure report retained: {json_path}")
+RuntimeError: No passing real-LLM candidate. Failure report retained: /data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/reports/2b2a3d8a9bac.json

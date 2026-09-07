@@ -1,0 +1,40 @@
+{
+  "status": "passed",
+  "run_id": "6bde3f2c39b8",
+  "source_report_semantic_sha256": "afe7cc00371c18da51ae41efcaf7301d8ab2fd7060a1a1d6ce0d7a31074e99b8",
+  "original_comparison_error": null,
+  "explanation": {
+    "selected_candidate": "algorithm_logistic_regression__llm_proposed",
+    "why_this_plan": "Logistic Regression was selected due to its simplicity, interpretability, and satisfactory performance metrics. It passed validation with a ROC-AUC of 0.9288, meeting the requirement of ROC-AUC >= 0.80.",
+    "historical_evidence_used": [
+      "source_reference_preprocessing_56f7c1fe",
+      "source_business_material_1c1a6f4d",
+      "preprocessingstrategy_build_preprocessor"
+    ],
+    "candidate_comparison": {
+      "algorithm_gradient_boosting__llm_proposed": "Passed validation with high ROC-AUC (0.8928) but has lower interpretability compared to Logistic Regression.",
+      "algorithm_random_forest__llm_proposed": "Failed during validation due to an import error related to 'MostFrequentImputer'."
+    },
+    "metric_claims": [
+      {
+        "candidate_id": "algorithm_logistic_regression__llm_proposed",
+        "metric": "roc_auc",
+        "score": 0.9288770968846285
+      },
+      {
+        "candidate_id": "algorithm_gradient_boosting__llm_proposed",
+        "metric": "roc_auc",
+        "score": 0.8928449161246148
+      }
+    ],
+    "limitations": [
+      "Gradient Boosting, while performing well, lacks interpretability compared to Logistic Regression.",
+      "Random Forest failed validation due to an import error, preventing a fair comparison."
+    ],
+    "status": "ok",
+    "provider": "local_openai_compatible",
+    "attempts": 1
+  },
+  "llm_calls": [],
+  "scope": "Structured numeric/ID checks and supported metric comparison patterns; other free prose still requires review. Original measured report is unchanged."
+}

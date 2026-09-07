@@ -1,0 +1,43 @@
+{
+  "status": "passed",
+  "run_id": "a054aaacecab",
+  "source_report_semantic_sha256": "76ac036b726bd74829fe4529b68680181b7c506b05e1fd8c3c0c7aa14746593e",
+  "original_comparison_error": null,
+  "explanation": {
+    "selected_candidate": "algorithm_tfidf_logistic_regression__tfidf_unigram",
+    "why_this_plan": "The plan was selected because it uses TF-IDF with unigrams, which is a simpler configuration compared to bigrams or the LLM-proposed variant. It passed validation with acceptable metrics, while the LLM-proposed variant failed due to an error.",
+    "historical_evidence_used": [
+      "algorithm_tfidf_logistic_regression",
+      "source_reference_preprocessing_56f7c1fe",
+      "source_text_material_84554427"
+    ],
+    "candidate_comparison": {
+      "algorithm_tfidf_logistic_regression__llm_proposed": "Failed during validation due to an AttributeError related to the preprocessing step.",
+      "algorithm_tfidf_logistic_regression__tfidf_unigram": "Passed validation with accuracy of 0.5 and f1 score of 0.3333333333333333.",
+      "algorithm_tfidf_logistic_regression__tfidf_bigram": "Passed validation with identical metrics to the unigram variant."
+    },
+    "metric_claims": [
+      {
+        "candidate_id": "algorithm_tfidf_logistic_regression__tfidf_unigram",
+        "metric": "accuracy",
+        "score": 0.5
+      },
+      {
+        "candidate_id": "algorithm_tfidf_logistic_regression__tfidf_unigram",
+        "metric": "f1",
+        "score": 0.3333333333333333
+      }
+    ],
+    "limitations": [
+      "The model's performance is limited by the small dataset size and class imbalance.",
+      "The chosen configuration may not capture complex interactions between words as effectively as bigrams or more advanced models.",
+      "Validation results indicate room for improvement in terms of accuracy and F1 score."
+    ],
+    "status": "ok",
+    "comparison_check": "passed",
+    "provider": "local_openai_compatible",
+    "attempts": 1
+  },
+  "llm_calls": [],
+  "scope": "Structured numeric/ID checks and supported metric comparison patterns; other free prose still requires review. Original measured report is unchanged."
+}

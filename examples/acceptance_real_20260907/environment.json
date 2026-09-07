@@ -1,0 +1,108 @@
+{
+  "python": "3.10.19",
+  "platform": "Linux-5.4.0-144-generic-x86_64-with-glibc2.31",
+  "packages": {
+    "numpy": "1.26.4",
+    "pandas": "2.2.3",
+    "scikit-learn": "1.2.2",
+    "networkx": "3.4.2",
+    "fastapi": "0.115.12",
+    "uvicorn": "0.34.2",
+    "pydantic": "2.11.10",
+    "python-dotenv": "not installed (optional at runtime)",
+    "openai": "1.77.0",
+    "pytest": "9.1.1",
+    "httpx": "0.28.1",
+    "torch": "2.6.0",
+    "transformers": "4.57.6",
+    "accelerate": "1.12.0",
+    "safetensors": "0.7.0"
+  },
+  "code_model_inference_history": [
+    {
+      "phase": "first run before backend transition",
+      "backend": "Transformers",
+      "details": {
+        "model": "Qwen3-Coder-30B-A3B-Instruct",
+        "quantization": "NF4 double quantization",
+        "compute_dtype": "bfloat16",
+        "bitsandbytes": "0.45.3",
+        "server_bind": "loopback",
+        "gpu_index": 5
+      },
+      "evidence": "coder_model_health.json",
+      "note": "Initial gradient boosting code; random forest generation timed out. The same model was subsequently served by vLLM."
+    },
+    {
+      "phase": "First run after transition; second run; initial failed dedicated repair attempt",
+      "backend": "vLLM 0.17.1",
+      "model": "Qwen3-Coder-30B-A3B-Instruct",
+      "dtype": "bfloat16",
+      "quantization": null,
+      "tensor_parallel_size": 2,
+      "gpu_indices": [
+        1,
+        2
+      ],
+      "gpu_memory_utilization": 0.46,
+      "max_model_len": 16384,
+      "enforce_eager": true,
+      "serving_environment": "llava (isolated from ada_qwen application runtime)",
+      "torch": "2.10.0",
+      "transformers": "4.57.6",
+      "server_bind": "loopback",
+      "evidence": [
+        "backend_transition.json",
+        "vllm_probe.json"
+      ],
+      "note": "Temporary loopback relay preserved the first run client connection; later stages use the vLLM endpoint directly."
+    },
+    {
+      "phase": "Resumed dedicated self-repair and cross-task acceptance",
+      "backend": "vLLM 0.17.1",
+      "model": "Qwen3-Coder-30B-A3B-Instruct",
+      "dtype": "bfloat16",
+      "quantization": null,
+      "tensor_parallel_size": 2,
+      "gpu_indices": [
+        1,
+        2
+      ],
+      "gpu_memory_utilization": 0.46,
+      "max_model_len": 32768,
+      "enforce_eager": true,
+      "reason": "Full repair evidence exceeded the original serving context reservation. Original failed calls retained.",
+      "evidence": "serving_32k_probe.json"
+    }
+  ],
+  "instruction_model_inference_history": [
+    {
+      "model": "Qwen2.5-14B-Instruct",
+      "backend": "Transformers",
+      "gpu_index": 4,
+      "server_bind": "loopback",
+      "roles": [
+        "requirement",
+        "extraction",
+        "planning",
+        "critique",
+        "explanation"
+      ],
+      "note": "OpenAI-compatible transport, real local weights; json_object plus application schema validation, not constrained decoding.",
+      "phase": "first, second and initial dedicated repair attempt"
+    },
+    {
+      "phase": "Resumed dedicated self-repair and cross-task acceptance",
+      "backend": "vLLM 0.17.1",
+      "model": "Qwen2.5-14B-Instruct",
+      "dtype": "bfloat16",
+      "gpu_index": 3,
+      "gpu_memory_utilization": 0.48,
+      "max_model_len": 32768,
+      "max_num_seqs": 1,
+      "max_num_batched_tokens": 1024,
+      "reason": "Original Transformers process exited during a large explanation request; root cause not proven. Restarted same weights under chunked prefill and FlashAttention.",
+      "evidence": "serving_32k_probe.json"
+    }
+  ]
+}

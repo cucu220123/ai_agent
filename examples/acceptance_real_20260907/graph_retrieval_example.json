@@ -1,0 +1,258 @@
+{
+  "source_report": "second.json",
+  "run_id": "9364e416a38a",
+  "note": "Selected fields for presentation; full original subgraph and exact Planner input remain in second.json and closed_loop_proof.json.",
+  "query": "Build customer churn prediction for mixed numeric/categorical tabular customer data. Target column churn, binary 0/1. Exclude churn from features. Require ROC-AUC >= 0.80 and positive-class probability. Report F1, precision, recall; handle missing values, unseen categories and class imbalance. Compare logistic regression, random forest and gradient boosting. This is a new customer cohort; prefer interpretable models when their current metric is competitive. Prediction latency per row must be below 500 ms.",
+  "entities": [
+    {
+      "id": "capability_fe3d4b64611b254d",
+      "score": 13.0,
+      "reasons": [
+        "task_type",
+        "domain",
+        "name_alias"
+      ],
+      "type": "Capability"
+    },
+    {
+      "id": "algorithm_gradient_boosting",
+      "score": 7.0,
+      "reasons": [
+        "name_alias",
+        "explicit_algorithm_hint"
+      ],
+      "type": "Algorithm"
+    },
+    {
+      "id": "algorithm_logistic_regression",
+      "score": 7.0,
+      "reasons": [
+        "name_alias",
+        "explicit_algorithm_hint"
+      ],
+      "type": "Algorithm"
+    },
+    {
+      "id": "algorithm_random_forest",
+      "score": 7.0,
+      "reasons": [
+        "name_alias",
+        "explicit_algorithm_hint"
+      ],
+      "type": "Algorithm"
+    },
+    {
+      "id": "task_binary_classification",
+      "score": 5.0,
+      "reasons": [
+        "task_type",
+        "name_alias"
+      ],
+      "type": "Task"
+    },
+    {
+      "id": "cap_churn_prediction_v1",
+      "score": 4.0,
+      "reasons": [
+        "task_type"
+      ],
+      "type": "Capability"
+    }
+  ],
+  "retrieval_summary": {
+    "strategy": "hybrid_graph_rag",
+    "graph_anchors": 6,
+    "graph_nodes": 60,
+    "graph_edges": 149,
+    "semantic_documents": 8,
+    "semantic_backend": "embedding",
+    "semantic_fallback_error": null,
+    "historical_cases": 6,
+    "fusion": "semantic+graph_distance+task+recency+validation_quality"
+  },
+  "traversal_examples": [
+    {
+      "target": "6bde3f2c39b8",
+      "score": 8.892,
+      "distance": 1,
+      "anchor": "capability_fe3d4b64611b254d",
+      "node_path": [
+        "capability_fe3d4b64611b254d",
+        "6bde3f2c39b8"
+      ],
+      "edge_path": [
+        {
+          "source": "6bde3f2c39b8",
+          "target": "capability_fe3d4b64611b254d",
+          "relation": "VALIDATES",
+          "direction": "in"
+        }
+      ]
+    },
+    {
+      "target": "failure_6bde3f2c39b8_algorithm_random_forest__llm_proposed_v4",
+      "score": 5.054399999999999,
+      "distance": 2,
+      "anchor": "capability_fe3d4b64611b254d",
+      "node_path": [
+        "capability_fe3d4b64611b254d",
+        "algorithm_random_forest",
+        "failure_6bde3f2c39b8_algorithm_random_forest__llm_proposed_v4"
+      ],
+      "edge_path": [
+        {
+          "source": "capability_fe3d4b64611b254d",
+          "target": "algorithm_random_forest",
+          "relation": "USES_ALGORITHM",
+          "direction": "out"
+        },
+        {
+          "source": "failure_6bde3f2c39b8_algorithm_random_forest__llm_proposed_v4",
+          "target": "algorithm_random_forest",
+          "relation": "RELATED_TO",
+          "direction": "in"
+        }
+      ]
+    },
+    {
+      "target": "repair_6bde3f2c39b8_algorithm_random_forest__llm_proposed_v3",
+      "score": 3.6391679999999993,
+      "distance": 3,
+      "anchor": "capability_fe3d4b64611b254d",
+      "node_path": [
+        "capability_fe3d4b64611b254d",
+        "algorithm_random_forest",
+        "failure_6bde3f2c39b8_algorithm_random_forest__llm_proposed_v3",
+        "repair_6bde3f2c39b8_algorithm_random_forest__llm_proposed_v3"
+      ],
+      "edge_path": [
+        {
+          "source": "capability_fe3d4b64611b254d",
+          "target": "algorithm_random_forest",
+          "relation": "USES_ALGORITHM",
+          "direction": "out"
+        },
+        {
+          "source": "failure_6bde3f2c39b8_algorithm_random_forest__llm_proposed_v3",
+          "target": "algorithm_random_forest",
+          "relation": "RELATED_TO",
+          "direction": "in"
+        },
+        {
+          "source": "repair_6bde3f2c39b8_algorithm_random_forest__llm_proposed_v3",
+          "target": "failure_6bde3f2c39b8_algorithm_random_forest__llm_proposed_v3",
+          "relation": "REPAIRS",
+          "direction": "in"
+        }
+      ]
+    }
+  ],
+  "serialized_algorithm_evidence": [
+    {
+      "algorithm": "Gradient Boosting",
+      "algorithm_id": "algorithm_gradient_boosting",
+      "historical_runs": [
+        {
+          "run_id": "6bde3f2c39b8:algorithm_gradient_boosting__llm_proposed:v1",
+          "origin": "measured_workflow",
+          "status": "passed",
+          "metrics": {
+            "accuracy": 0.87,
+            "f1": 0.43478260869565216,
+            "precision": 0.6521739130434783,
+            "recall": 0.32608695652173914,
+            "balanced_accuracy": 0.6472954467648065,
+            "roc_auc": 0.8928449161246148,
+            "pr_auc": 0.6062631643618916
+          }
+        }
+      ],
+      "failure_ids": [],
+      "repair_ids": []
+    },
+    {
+      "algorithm": "Logistic Regression",
+      "algorithm_id": "algorithm_logistic_regression",
+      "historical_runs": [
+        {
+          "run_id": "6bde3f2c39b8",
+          "origin": "measured_workflow",
+          "status": "passed",
+          "metrics": {
+            "accuracy": 0.8766666666666667,
+            "f1": 0.39344262295081966,
+            "precision": 0.8,
+            "recall": 0.2608695652173913,
+            "balanced_accuracy": 0.6245292707976721,
+            "roc_auc": 0.9288770968846285,
+            "pr_auc": 0.7114689013236358
+          }
+        },
+        {
+          "run_id": "validationrun_validation_run",
+          "origin": "llm_extracted",
+          "status": "passed",
+          "metrics": {
+            "accuracy": 0.8766666666666667,
+            "f1": 0.39344262295081966,
+            "precision": 0.8,
+            "recall": 0.2608695652173913,
+            "balanced_accuracy": 0.6245292707976721,
+            "roc_auc": 0.9288770968846285,
+            "pr_auc": 0.7114689013236358
+          }
+        }
+      ],
+      "failure_ids": [],
+      "repair_ids": []
+    },
+    {
+      "algorithm": "Random Forest",
+      "algorithm_id": "algorithm_random_forest",
+      "historical_runs": [
+        {
+          "run_id": "6bde3f2c39b8:algorithm_random_forest__llm_proposed:v1",
+          "origin": "measured_workflow",
+          "status": "failed",
+          "metrics": {}
+        },
+        {
+          "run_id": "6bde3f2c39b8:algorithm_random_forest__llm_proposed:v2",
+          "origin": "measured_workflow",
+          "status": "failed",
+          "metrics": {}
+        },
+        {
+          "run_id": "6bde3f2c39b8:algorithm_random_forest__llm_proposed:v3",
+          "origin": "measured_workflow",
+          "status": "failed",
+          "metrics": {}
+        },
+        {
+          "run_id": "6bde3f2c39b8:algorithm_random_forest__llm_proposed:v4",
+          "origin": "measured_workflow",
+          "status": "failed",
+          "metrics": {}
+        }
+      ],
+      "failure_ids": [
+        "failure_6bde3f2c39b8_algorithm_random_forest__llm_proposed_v1",
+        "failure_6bde3f2c39b8_algorithm_random_forest__llm_proposed_v2",
+        "failure_6bde3f2c39b8_algorithm_random_forest__llm_proposed_v3",
+        "failure_6bde3f2c39b8_algorithm_random_forest__llm_proposed_v4"
+      ],
+      "repair_ids": [
+        "repair_6bde3f2c39b8_algorithm_random_forest__llm_proposed_v1",
+        "repair_6bde3f2c39b8_algorithm_random_forest__llm_proposed_v2",
+        "repair_6bde3f2c39b8_algorithm_random_forest__llm_proposed_v3"
+      ]
+    },
+    {
+      "algorithm": "Dummy Classifier",
+      "algorithm_id": "algorithm_dummy_classifier",
+      "historical_runs": [],
+      "failure_ids": [],
+      "repair_ids": []
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+[Acceptance] retained completed stage first
+[LLM] {"call_id": "llm_0001", "purpose": "extraction", "status": "ok", "provider": "local_openai_compatible", "model": "Qwen2.5-14B-Instruct", "latency_ms": 199499.27, "token_usage": {"prompt_tokens": 2775, "completion_tokens": 1125, "total_tokens": 3900}, "retry_count": 1}
+[LLM] {"call_id": "llm_0002", "purpose": "extraction", "status": "ok", "provider": "local_openai_compatible", "model": "Qwen2.5-14B-Instruct", "latency_ms": 230177.83, "token_usage": {"prompt_tokens": 4273, "completion_tokens": 3709, "total_tokens": 7982}, "retry_count": 0}
+[LLM] {"call_id": "llm_0003", "purpose": "extraction", "status": "ok", "provider": "local_openai_compatible", "model": "Qwen2.5-14B-Instruct", "latency_ms": 256144.89, "token_usage": {"prompt_tokens": 7647, "completion_tokens": 3752, "total_tokens": 11399}, "retry_count": 0}
+Traceback (most recent call last):
+  File "/data3/xiaotianqi/ai_algorithm_factory/scripts/run_acceptance.py", line 160, in <module>
+    print(json.dumps(run(Path(args.output), args.stage, args.provider)))
+  File "/data3/xiaotianqi/ai_algorithm_factory/scripts/run_acceptance.py", line 92, in run
+    assert extraction["extraction_trace"]["status"] == "ok"
+AssertionError

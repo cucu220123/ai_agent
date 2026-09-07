@@ -1,0 +1,57 @@
+[RequirementAgent] started {"tool": "understand"}
+[LLM] {"call_id": "llm_0001", "purpose": "requirement", "status": "ok", "provider": "local_openai_compatible", "model": "Qwen2.5-14B-Instruct", "latency_ms": 31060.1, "token_usage": {"prompt_tokens": 1075, "completion_tokens": 519, "total_tokens": 1594}, "retry_count": 1}
+[RequirementAgent] completed {"tool": "understand"}
+[KnowledgeExtractionAgent] started {"tool": "ingest"}
+[KnowledgeExtractionAgent] completed {"tool": "ingest"}
+[RetrievalAgent] started {"tool": "retrieve"}
+[RetrievalAgent] completed {"tool": "retrieve"}
+[GraphSearch] ok {}
+[PlannerAgent] started {"tool": "advise"}
+[LLM] {"call_id": "llm_0002", "purpose": "planning", "status": "ok", "provider": "local_openai_compatible", "model": "Qwen2.5-14B-Instruct", "latency_ms": 29206.87, "token_usage": {"prompt_tokens": 2593, "completion_tokens": 491, "total_tokens": 3084}, "retry_count": 0}
+[PlannerAgent] completed {"tool": "advise"}
+[PlannerAgent] started {"tool": "plan"}
+[PlannerAgent] completed {"tool": "plan"}
+[PlannerAgent] started {"tool": "search"}
+[PlannerAgent] completed {"tool": "search"}
+[CoderAgent] started {"tool": "generate"}
+[LLM] {"call_id": "llm_0003", "purpose": "code_generation", "status": "ok", "provider": "local_openai_compatible", "model": "Qwen2.5-Coder-3B-Instruct", "latency_ms": 42872.22, "token_usage": {"prompt_tokens": 3783, "completion_tokens": 993, "total_tokens": 4776}, "retry_count": 0}
+[LLM] {"call_id": "llm_0004", "purpose": "code_generation", "status": "ok", "provider": "local_openai_compatible", "model": "Qwen2.5-Coder-3B-Instruct", "latency_ms": 38513.32, "token_usage": {"prompt_tokens": 4737, "completion_tokens": 959, "total_tokens": 5696}, "retry_count": 0}
+[CoderAgent] completed {"tool": "generate"}
+[CoderAgent] llm_code_rejected {"algorithm": "algorithm_gradient_boosting__llm_proposed"}
+[Sandbox] started {"algorithm": "algorithm_gradient_boosting__llm_proposed", "version_id": "05ee2583bdba_algorithm_gradient_boosting__llm_proposed_v1"}
+[ValidatorAgent] started {"tool": "validate"}
+[ValidatorAgent] completed {"tool": "validate"}
+[ValidatorAgent] failed {"algorithm": "algorithm_gradient_boosting__llm_proposed", "round": 0, "version_id": "05ee2583bdba_algorithm_gradient_boosting__llm_proposed_v1", "metrics": {}}
+[CriticAgent] started {"tool": "critique"}
+[LLM] {"call_id": "llm_0005", "purpose": "critique", "status": "ok", "provider": "local_openai_compatible", "model": "Qwen2.5-14B-Instruct", "latency_ms": 7940.5, "token_usage": {"prompt_tokens": 2950, "completion_tokens": 112, "total_tokens": 3062}, "retry_count": 0}
+[CriticAgent] completed {"tool": "critique"}
+[CriticAgent] ok {"algorithm": "algorithm_gradient_boosting__llm_proposed"}
+[RepairAgent] started {"tool": "repair"}
+[LLM] {"call_id": "llm_0006", "purpose": "repair", "status": "ok", "provider": "local_openai_compatible", "model": "Qwen2.5-Coder-3B-Instruct", "latency_ms": 47042.31, "token_usage": {"prompt_tokens": 1913, "completion_tokens": 1130, "total_tokens": 3043}, "retry_count": 1}
+[RepairAgent] gate rejected: ValueError: missing function: train; missing function: predict; missing function: evaluate; missing function: metadata
+[LLM] {"call_id": "llm_0007", "purpose": "repair", "status": "ok", "provider": "local_openai_compatible", "model": "Qwen2.5-Coder-3B-Instruct", "latency_ms": 46776.01, "token_usage": {"prompt_tokens": 1941, "completion_tokens": 1130, "total_tokens": 3071}, "retry_count": 0}
+[RepairAgent] gate rejected: ValueError: missing function: train; missing function: predict; missing function: evaluate; missing function: metadata
+[RepairAgent] completed {"tool": "repair"}
+[RepairAgent] repair_rejected {"algorithm": "algorithm_gradient_boosting__llm_proposed", "round": 1}
+[CoderAgent] started {"tool": "generate"}
+[LLM] {"call_id": "llm_0008", "purpose": "code_generation", "status": "ok", "provider": "local_openai_compatible", "model": "Qwen2.5-Coder-3B-Instruct", "latency_ms": 41929.67, "token_usage": {"prompt_tokens": 3756, "completion_tokens": 1056, "total_tokens": 4812}, "retry_count": 0}
+[LLM] {"call_id": "llm_0009", "purpose": "code_generation", "status": "ok", "provider": "local_openai_compatible", "model": "Qwen2.5-Coder-3B-Instruct", "latency_ms": 44318.14, "token_usage": {"prompt_tokens": 4743, "completion_tokens": 1047, "total_tokens": 5790}, "retry_count": 0}
+[CoderAgent] completed {"tool": "generate"}
+[CoderAgent] llm_code_rejected {"algorithm": "algorithm_random_forest__llm_proposed"}
+[Sandbox] started {"algorithm": "algorithm_random_forest__llm_proposed", "version_id": "05ee2583bdba_algorithm_random_forest__llm_proposed_v1"}
+[ValidatorAgent] started {"tool": "validate"}
+[ValidatorAgent] completed {"tool": "validate"}
+[ValidatorAgent] failed {"algorithm": "algorithm_random_forest__llm_proposed", "round": 0, "version_id": "05ee2583bdba_algorithm_random_forest__llm_proposed_v1", "metrics": {}}
+[CriticAgent] started {"tool": "critique"}
+[LLM] {"call_id": "llm_0010", "purpose": "critique", "status": "ok", "provider": "local_openai_compatible", "model": "Qwen2.5-14B-Instruct", "latency_ms": 7679.34, "token_usage": {"prompt_tokens": 2981, "completion_tokens": 112, "total_tokens": 3093}, "retry_count": 0}
+[CriticAgent] completed {"tool": "critique"}
+[CriticAgent] ok {"algorithm": "algorithm_random_forest__llm_proposed"}
+[RepairAgent] started {"tool": "repair"}
+[LLM] {"call_id": "llm_0011", "purpose": "repair", "status": "ok", "provider": "local_openai_compatible", "model": "Qwen2.5-Coder-3B-Instruct", "latency_ms": 48466.24, "token_usage": {"prompt_tokens": 1961, "completion_tokens": 1185, "total_tokens": 3146}, "retry_count": 0}
+[RepairAgent] gate rejected: ValueError: missing function: train; missing function: predict; missing function: evaluate; missing function: metadata
+[LLM] {"call_id": "llm_0012", "purpose": "repair", "status": "ok", "provider": "local_openai_compatible", "model": "Qwen2.5-Coder-3B-Instruct", "latency_ms": 46871.1, "token_usage": {"prompt_tokens": 1989, "completion_tokens": 1185, "total_tokens": 3174}, "retry_count": 0}
+[RepairAgent] gate rejected: ValueError: missing function: train; missing function: predict; missing function: evaluate; missing function: metadata
+[RepairAgent] completed {"tool": "repair"}
+[RepairAgent] repair_rejected {"algorithm": "algorithm_random_forest__llm_proposed", "round": 1}
+[CoderAgent] started {"tool": "generate"}
+[LLM] {"call_id": "llm_0013", "purpose": "code_generation", "status": "ok", "provider": "local_openai_compatible", "model": "Qwen2.5-Coder-3B-Instruct", "latency_ms": 43680.99, "token_usage": {"prompt_tokens": 3729, "completion_tokens": 1049, "total_tokens": 4778}, "retry_count": 0}

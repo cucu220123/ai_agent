@@ -1,0 +1,421 @@
+{
+  "entities": [
+    {
+      "id": "entity_e75abaafdd1b4be9",
+      "type": "ValidationRun",
+      "name": "Validation Run",
+      "properties": {
+        "status": "passed",
+        "metrics": {
+          "accuracy": 0.8766666666666667,
+          "f1": 0.39344262295081966,
+          "precision": 0.8,
+          "recall": 0.2608695652173913,
+          "balanced_accuracy": 0.6245292707976721,
+          "roc_auc": 0.9288770968846285,
+          "pr_auc": 0.7114689013236358
+        },
+        "runtime_seconds": 2.076532319188118,
+        "resource_usage": {
+          "max_rss_kb": 1715872,
+          "cpu_seconds": 1.670737,
+          "latency_ms_per_row": 0.037162850300470986
+        }
+      },
+      "evidence_span": "6bde3f2c39b8",
+      "confidence": 1.0,
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+        "evidence_span": "6bde3f2c39b8",
+        "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+        "char_start": 15,
+        "line_start": 2
+      },
+      "provenance_records": [
+        {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+          "evidence_span": "6bde3f2c39b8",
+          "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+          "char_start": 15,
+          "line_start": 2
+        }
+      ]
+    },
+    {
+      "id": "entity_c7da26b4e8224cd6",
+      "type": "Algorithm",
+      "name": "Logistic Regression",
+      "properties": {},
+      "evidence_span": "Logistic Regression",
+      "confidence": 1.0,
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+        "evidence_span": "Logistic Regression",
+        "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+        "char_start": 46,
+        "line_start": 3
+      },
+      "provenance_records": [
+        {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+          "evidence_span": "Logistic Regression",
+          "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+          "char_start": 46,
+          "line_start": 3
+        }
+      ]
+    },
+    {
+      "id": "entity_1b73346ad7a51fce",
+      "type": "Task",
+      "name": "Binary Classification",
+      "properties": {},
+      "evidence_span": "binary_classification",
+      "confidence": 1.0,
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+        "evidence_span": "binary_classification",
+        "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+        "char_start": 84,
+        "line_start": 4
+      },
+      "provenance_records": [
+        {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+          "evidence_span": "binary_classification",
+          "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+          "char_start": 84,
+          "line_start": 4
+        }
+      ]
+    },
+    {
+      "id": "entity_c203f7b6d5dddffb",
+      "type": "Dataset",
+      "name": "Churn First",
+      "properties": {
+        "rows": 1200,
+        "columns": 8,
+        "feature_columns": 7,
+        "numeric_fraction": 0.7142857142857143,
+        "class_balance": {
+          "0": 0.8475,
+          "1": 0.1525
+        }
+      },
+      "evidence_span": "dataset_4bf999a657407039",
+      "confidence": 1.0,
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+        "evidence_span": "dataset_4bf999a657407039",
+        "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+        "char_start": 142,
+        "line_start": 6
+      },
+      "provenance_records": [
+        {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+          "evidence_span": "dataset_4bf999a657407039",
+          "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+          "char_start": 142,
+          "line_start": 6
+        }
+      ]
+    },
+    {
+      "id": "entity_ea5034abd6bea671",
+      "type": "Metric",
+      "name": "Accuracy",
+      "properties": {},
+      "evidence_span": "accuracy",
+      "confidence": 1.0,
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+        "evidence_span": "accuracy",
+        "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+        "char_start": 1641,
+        "line_start": 68
+      },
+      "provenance_records": [
+        {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+          "evidence_span": "accuracy",
+          "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+          "char_start": 1641,
+          "line_start": 68
+        }
+      ]
+    },
+    {
+      "id": "entity_865106a346ef7b54",
+      "type": "Metric",
+      "name": "F1 Score",
+      "properties": {},
+      "evidence_span": "f1",
+      "confidence": 1.0,
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+        "evidence_span": "f1",
+        "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+        "char_start": 1679,
+        "line_start": 69
+      },
+      "provenance_records": [
+        {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+          "evidence_span": "f1",
+          "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+          "char_start": 1679,
+          "line_start": 69
+        }
+      ]
+    },
+    {
+      "id": "entity_1a2f4efee3a2cb10",
+      "type": "Metric",
+      "name": "Precision",
+      "properties": {},
+      "evidence_span": "precision",
+      "confidence": 1.0,
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+        "evidence_span": "precision",
+        "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+        "char_start": 1712,
+        "line_start": 70
+      },
+      "provenance_records": [
+        {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+          "evidence_span": "precision",
+          "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+          "char_start": 1712,
+          "line_start": 70
+        }
+      ]
+    },
+    {
+      "id": "entity_2813a73bb406d19a",
+      "type": "Metric",
+      "name": "Recall",
+      "properties": {},
+      "evidence_span": "recall",
+      "confidence": 1.0,
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+        "evidence_span": "recall",
+        "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+        "char_start": 1736,
+        "line_start": 71
+      },
+      "provenance_records": [
+        {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+          "evidence_span": "recall",
+          "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+          "char_start": 1736,
+          "line_start": 71
+        }
+      ]
+    },
+    {
+      "id": "entity_c40b17eaac5defaa",
+      "type": "Metric",
+      "name": "Balanced Accuracy",
+      "properties": {},
+      "evidence_span": "balanced_accuracy",
+      "confidence": 1.0,
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+        "evidence_span": "balanced_accuracy",
+        "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+        "char_start": 1772,
+        "line_start": 72
+      },
+      "provenance_records": [
+        {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+          "evidence_span": "balanced_accuracy",
+          "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+          "char_start": 1772,
+          "line_start": 72
+        }
+      ]
+    },
+    {
+      "id": "entity_701665ec00502874",
+      "type": "Metric",
+      "name": "ROC AUC",
+      "properties": {},
+      "evidence_span": "roc_auc",
+      "confidence": 1.0,
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+        "evidence_span": "roc_auc",
+        "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+        "char_start": 1819,
+        "line_start": 73
+      },
+      "provenance_records": [
+        {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+          "evidence_span": "roc_auc",
+          "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+          "char_start": 1819,
+          "line_start": 73
+        }
+      ]
+    },
+    {
+      "id": "entity_e30b8fcf40be0f57",
+      "type": "Metric",
+      "name": "PR AUC",
+      "properties": {},
+      "evidence_span": "pr_auc",
+      "confidence": 1.0,
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+        "evidence_span": "pr_auc",
+        "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+        "char_start": 1856,
+        "line_start": 74
+      },
+      "provenance_records": [
+        {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+          "evidence_span": "pr_auc",
+          "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+          "char_start": 1856,
+          "line_start": 74
+        }
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "source": "entity_e75abaafdd1b4be9",
+      "relation": "VALIDATES",
+      "target": "entity_c7da26b4e8224cd6",
+      "evidence_span": "6bde3f2c39b8",
+      "confidence": 1.0,
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+        "evidence_span": "6bde3f2c39b8",
+        "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+        "char_start": 15,
+        "line_start": 2
+      }
+    },
+    {
+      "source": "entity_e75abaafdd1b4be9",
+      "relation": "ON_DATASET",
+      "target": "entity_c203f7b6d5dddffb",
+      "evidence_span": "dataset_4bf999a657407039",
+      "confidence": 1.0,
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+        "evidence_span": "dataset_4bf999a657407039",
+        "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+        "char_start": 142,
+        "line_start": 6
+      }
+    },
+    {
+      "source": "entity_c7da26b4e8224cd6",
+      "relation": "SUITABLE_FOR",
+      "target": "entity_1b73346ad7a51fce",
+      "evidence_span": "binary_classification",
+      "confidence": 1.0,
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+        "evidence_span": "binary_classification",
+        "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+        "char_start": 84,
+        "line_start": 4
+      }
+    }
+  ],
+  "summary": "The validation run with id 6bde3f2c39b8 passed using Logistic Regression on the Churn First dataset. The run achieved various performance metrics including accuracy of 0.8767.",
+  "provenance": {
+    "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+    "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1"
+  },
+  "extraction_trace": {
+    "provider": "openai",
+    "status": "ok",
+    "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+    "chunk_count": 1,
+    "chunks": [
+      {
+        "chunk_id": "chunk-0",
+        "status": "accepted",
+        "attempts": [
+          {
+            "attempt": 1,
+            "status": "accepted"
+          }
+        ],
+        "semantic_corrections": [],
+        "entities": 11,
+        "relations": 3,
+        "token_usage": {
+          "prompt_tokens": 2980,
+          "completion_tokens": 1146,
+          "total_tokens": 4126
+        },
+        "generation": {
+          "purpose": "extraction",
+          "max_new_tokens": 6000,
+          "finish_reason": "stop",
+          "truncated": false,
+          "eos_reached": true,
+          "structured_transport": "json_object",
+          "application_schema_validation": true
+        }
+      }
+    ],
+    "accepted_chunks": 1,
+    "rejected_chunks": 0
+  },
+  "deterministic_facts": {
+    "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+    "kind": "validation_report",
+    "run_id": "6bde3f2c39b8",
+    "algorithm": "Logistic Regression",
+    "status": "passed",
+    "metrics": {
+      "accuracy": 0.8766666666666667,
+      "f1": 0.39344262295081966,
+      "precision": 0.8,
+      "recall": 0.2608695652173913,
+      "balanced_accuracy": 0.6245292707976721,
+      "roc_auc": 0.9288770968846285,
+      "pr_auc": 0.7114689013236358
+    },
+    "runtime_seconds": 2.076532319188118,
+    "resource_usage": {
+      "max_rss_kb": 1715872,
+      "cpu_seconds": 1.670737,
+      "latency_ms_per_row": 0.037162850300470986,
+      "limits": {
+        "applied": true,
+        "cpu_seconds": 90,
+        "address_space_mb": 16384,
+        "max_file_mb": 16
+      },
+      "sandbox": {
+        "network_audit_blocked": true,
+        "filesystem_audit_whitelist": true,
+        "production_isolation": false,
+        "network_namespace": true
+      },
+      "code_hash": "a958c428a3e6305189ca9aa067f6f895a2f4ee61432b373cb61bf16577246a5a"
+    },
+    "errors": [],
+    "repair_history": []
+  },
+  "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+  "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+  "name": "measured_experiment.json",
+  "id": "source_measured_experiment_693b971c"
+}

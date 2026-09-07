@@ -1,0 +1,134 @@
+import pandas as pd
+from sklearn.pipeline import Pipeline
+from sklearn.impute import SimpleImputer
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.compose import ColumnTransformer
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
+from sklearn.metrics import roc_auc_score, f1_score, precision_score, recall_score
+from sklearn.model_selection import train_test_split
+
+class CoderAgent:
+    def __init__(self):
+        self.models = {
+            'logistic_regression': LogisticRegression,
+            'random_forest': RandomForestClassifier,
+            'gradient_boosting': GradientBoostingClassifier
+        }
+
+    def train(self, train_df, target_col, config=None):
+        if config is None:
+            config = {}
+
+        # Load the data
+        X = train_df.drop(columns=[target_col])
+        y = train_df[target_col]
+
+        # Define preprocessing steps
+        numeric_features = X.select_dtypes(include=['int64', 'float64']).columns
+        categorical_features = X.select_dtypes(include=['object']).columns
+
+        numeric_transformer = Pipeline(steps=[
+            ('imputer', SimpleImputer(strategy='median')),
+            ('scaler', StandardScaler())  # Assuming we need scaling for numerical features
+        ])
+
+        categorical_transformer = Pipeline(steps=[
+            ('imputer', SimpleImputer(strategy='most_frequent')),
+            ('onehot', OneHotEncoder(handle_unknown='ignore', sparse_output=False))
+        ])
+
+        preprocessor = ColumnTransformer(
+            transformers=[
+                ('num', numeric_transformer, numeric_features),
+                ('cat', categorical_transformer, categorical_features)
+            ])
+
+        # Define the model
+        model = self.models['logistic_regression'](**config)
+
+        # Create the pipeline
+        pipeline = Pipeline(steps=[('preprocessor', preprocessor), ('classifier', model)])
+
+        # Split the data into training and testing sets
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=config.get('random_state', 42))
+
+        # Train the model
+        pipeline.fit(X_train, y_train)
+
+        return pipeline
+
+    def predict(self, model, test_df):
+        if test_df.empty:
+            raise ValueError("Test dataframe is empty")
+
+        # Handle missing values in the test dataframe
+        test_df.fillna(method='ffill', inplace=True)
+
+        # Predict probabilities
+        proba = model.predict_proba(test_df)[:, 1]
+
+        # Ensure probabilities are within [0, 1]
+        proba = np.clip(proba, 0, 1)
+
+        # Create a DataFrame with predictions and probabilities
+        result_df = pd.DataFrame({
+            'predicted_churn': model.predict(test_df),
+            'positive_class_probability': proba
+        })
+
+        return result_df
+
+    def predict_proba(self, model, test_df):
+        if test_df.empty:
+            raise ValueError("Test dataframe is empty")
+
+        # Handle missing values in the test dataframe
+        test_df.fillna(method='ffill', inplace=True)
+
+        # Predict probabilities
+        proba = model.predict_proba(test_df)[:, 1]
+
+        # Ensure probabilities are within [0, 1]
+        proba = np.clip(proba, 0, 1)
+
+        return proba
+
+    def evaluate(self, model, test_df, target_col):
+        if test_df.empty:
+            raise ValueError("Test dataframe is empty")
+
+        # Handle missing values in the test dataframe
+        test_df.fillna(method='ffill', inplace=True)
+
+        # Predict probabilities
+        proba = model.predict_proba(test_df)[:, 1]
+
+        # Ensure probabilities are within [0, 1]
+        proba = np.clip(proba, 0, 1)
+
+        # Calculate metrics
+        y_true = test_df[target_col]
+        y_pred = model.predict(test_df)
+        roc_auc = roc_auc_score(y_true, proba)
+        f1 = f1_score(y_true, y_pred)
+        precision = precision_score(y_true, y_pred)
+        recall = recall_score(y_true, y_pred)
+
+        return {
+            'roc_auc': roc_auc,
+            'f1': f1,
+            'precision': precision,
+            'recall': recall
+        }
+
+    def metadata(self):
+        return {
+            'algorithm': 'Logistic Regression',
+            'rationale': 'Logistic Regression provides a simple baseline model and is interpretable.',
+            'evidence_ids': [
+                'source_reference_preprocessing_56f7c1fe',
+                'source_business_material_1c1a6f4d',
+                'preprocessingstrategy_build_preprocessor'
+            ]
+        }

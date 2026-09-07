@@ -1,0 +1,150 @@
+{
+  "experiences": [
+    {
+      "id": "failure_53ac387cea5c_algorithm_gradient_boosting__llm_proposed_v1",
+      "kind": "failure",
+      "algorithm_id": "algorithm_gradient_boosting",
+      "run_id": "53ac387cea5c:algorithm_gradient_boosting__llm_proposed:v1",
+      "task_type": "binary_classification",
+      "domain": "Customer Relationship Management",
+      "data_type": "tabular",
+      "target": "churn",
+      "feature_columns": [
+        "age",
+        "region",
+        "login_count_30d",
+        "total_spend",
+        "complaint_count",
+        "membership_level",
+        "tenure_months"
+      ],
+      "dataset_profile": {
+        "dataset_id": "dataset_4bf999a657407039",
+        "sha256": "4bf999a657407039780c32ce01e9ca9cd2d1fdafa131747b9ebb4e8ef8ef8e45",
+        "path": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/churn_first.csv",
+        "rows": 1200,
+        "row_count": 1200,
+        "column_count": 8,
+        "columns": [
+          "age",
+          "region",
+          "login_count_30d",
+          "total_spend",
+          "complaint_count",
+          "membership_level",
+          "tenure_months",
+          "churn"
+        ],
+        "feature_columns": [
+          "age",
+          "region",
+          "login_count_30d",
+          "total_spend",
+          "complaint_count",
+          "membership_level",
+          "tenure_months"
+        ],
+        "feature_count": 7,
+        "dtypes": {
+          "age": "int64",
+          "region": "object",
+          "login_count_30d": "float64",
+          "total_spend": "float64",
+          "complaint_count": "int64",
+          "membership_level": "object",
+          "tenure_months": "int64",
+          "churn": "int64"
+        },
+        "missing_rates": {
+          "age": 0.0,
+          "region": 0.015,
+          "login_count_30d": 0.01,
+          "total_spend": 0.025,
+          "complaint_count": 0.0,
+          "membership_level": 0.0,
+          "tenure_months": 0.0,
+          "churn": 0.0
+        },
+        "numeric_fraction": 0.7142857142857143,
+        "class_count": 2,
+        "class_balance": {
+          "0": 0.8475,
+          "1": 0.1525
+        },
+        "minority_rate": 0.1525,
+        "positive_rate": 0.1525
+      },
+      "failure_type": "interface_failure",
+      "root_cause": "missing function: predict",
+      "triggering_condition": "The provided code does not implement the required function 'predict'.",
+      "observed_error": [
+        "ValueError: missing function: predict"
+      ],
+      "repair_action": "1) Implement the missing 'predict' function that matches the required interface. 2) Fix the typo in the predict function name. 3) Ensure all required functions (train, predict, evaluate, predict_proba, metadata) are properly defined. 4) Maintain the existing functionality while ensuring compliance with the host execution contract.",
+      "repair_success": true,
+      "reusable_lesson": "Always ensure that all required functions are implemented when developing machine learning models to avoid interface failures during validation.",
+      "repair_history": [
+        {
+          "round": 1,
+          "before_sha256": "549c6f01870463641f0182babd499c84e755512ffdb171c5f7990e86f6f77df9",
+          "changes": [
+            "accepted LLM repair after strict safety/protocol gate"
+          ],
+          "retrieved_experience_ids": [
+            "failure_0f7edacd5655_algorithm_logistic_regression__llm_proposed_v1",
+            "failure_2b2a3d8a9bac_algorithm_logistic_regression__llm_proposed_v1",
+            "failure_6bde3f2c39b8_algorithm_random_forest__llm_proposed_v4",
+            "failure_6bde3f2c39b8_algorithm_random_forest__llm_proposed_v3",
+            "failure_6bde3f2c39b8_algorithm_random_forest__llm_proposed_v2",
+            "failure_6bde3f2c39b8_algorithm_random_forest__llm_proposed_v1",
+            "failure_9364e416a38a_algorithm_random_forest__llm_proposed_v1"
+          ],
+          "error": "{\"validation\": {\"status\": \"failed\", \"algorithm\": \"Gradient Boosting\", \"checks\": {\"static_safety\": {\"passed\": false, \"category\": \"interface\", \"message\": \"missing function: predict\"}, \"functional\": {\"passed\": false, \"message\": \"missing function: predict\"}, \"runtime_budget\": {\"passed\": true, \"runtime_seconds\": 0.003869175910949707, \"timeout_seconds\": 90}}, \"metrics\": {}, \"runtime_seconds\": 0.003869175910949707, \"errors\": [\"ValueError: missing function: predict\"], \"warnings\": [], \"stdout\": \"\", \"stderr\": \"\", \"repair_round\": 0, \"task_type\": \"binary_classification\", \"dataset_profile\": {}, \"resource_usage\": {\"code_hash\": \"549c6f01870463641f0182babd499c84e755512ffdb171c5f7990e86f6f77df9\"}, \"failure_type\": \"interface_failure\", \"root_cause\": \"ValueError: missing function: predict\"}, \"diagnosis\": {\"failure_type\": \"interface_failure\", \"root_cause\": \"missing function: predict\", \"triggering_condition\": \"The provided code does not implement the required function 'predict'.\", \"repair_strategy\": \"Implement the 'predict' function to ensure the code meets the interface requirements.\", \"reusable_lesson\": \"Always ensure that all required functions are implemented when developing machine learning models to avoid interface failures during validation.\", \"provider\": \"local_openai_compatible\", \"status\": \"ok\", \"observed_failure_type\": \"interface_failure\", \"observed_error\": \"ValueError: missing function: predict\", \"retrieved_experience_ids\": [\"failure_0f7edacd5655_algorithm_logistic_regression__llm_proposed_v1\", \"failure_2b2a3d8a9bac_algorithm_logistic_regression__llm_proposed_v1\", \"failure_6bde3f2c39b8_algorithm_random_forest__llm_proposed_v4\", \"failure_6bde3f2c39b8_algorithm_random_forest__llm_proposed_v3\", \"failure_6bde3f2c39b8_algorithm_random_forest__llm_proposed_v2\", \"failure_6bde3f2c39b8_algorithm_random_forest__llm_proposed_v1\", \"failure_9364e416a38a_algorithm_random_forest__llm_proposed_v1\"]}, \"metric_thresholds\": {\"roc_auc\": 0.8}, \"resource_constraints\": {}}",
+          "attempts": [],
+          "provider": "local_openai_compatible",
+          "status": "llm_repair_accepted",
+          "diagnosis": {
+            "failure_type": "interface_failure",
+            "root_cause": "missing function: predict",
+            "triggering_condition": "The provided code does not implement the required function 'predict'.",
+            "repair_strategy": "Implement the 'predict' function to ensure the code meets the interface requirements.",
+            "reusable_lesson": "Always ensure that all required functions are implemented when developing machine learning models to avoid interface failures during validation.",
+            "provider": "local_openai_compatible",
+            "status": "ok",
+            "observed_failure_type": "interface_failure",
+            "observed_error": "ValueError: missing function: predict",
+            "retrieved_experience_ids": [
+              "failure_0f7edacd5655_algorithm_logistic_regression__llm_proposed_v1",
+              "failure_2b2a3d8a9bac_algorithm_logistic_regression__llm_proposed_v1",
+              "failure_6bde3f2c39b8_algorithm_random_forest__llm_proposed_v4",
+              "failure_6bde3f2c39b8_algorithm_random_forest__llm_proposed_v3",
+              "failure_6bde3f2c39b8_algorithm_random_forest__llm_proposed_v2",
+              "failure_6bde3f2c39b8_algorithm_random_forest__llm_proposed_v1",
+              "failure_9364e416a38a_algorithm_random_forest__llm_proposed_v1"
+            ]
+          },
+          "strategy": "1) Implement the missing 'predict' function that matches the required interface. 2) Fix the typo in the predict function name. 3) Ensure all required functions (train, predict, evaluate, predict_proba, metadata) are properly defined. 4) Maintain the existing functionality while ensuring compliance with the host execution contract.",
+          "after_sha256": "1d726e5712c0c51d27d4d7aa37f7143ac13d1043a8133eb42b67796c7699b0ba",
+          "from_version": "53ac387cea5c_algorithm_gradient_boosting__llm_proposed_v1"
+        }
+      ],
+      "timestamp": "2026-09-07T17:26:01.563824+00:00",
+      "provenance": {
+        "validation_run": "53ac387cea5c:algorithm_gradient_boosting__llm_proposed:v1",
+        "code_hash": "549c6f01870463641f0182babd499c84e755512ffdb171c5f7990e86f6f77df9"
+      },
+      "relevance_score": 1.15
+    }
+  ],
+  "retrieval_trace": {
+    "strategy": "hybrid_graph_rag",
+    "graph_anchors": 6,
+    "graph_nodes": 64,
+    "graph_edges": 222,
+    "semantic_documents": 8,
+    "semantic_backend": "embedding",
+    "semantic_fallback_error": null,
+    "historical_cases": 12,
+    "fusion": "semantic+graph_distance+task+recency+validation_quality"
+  }
+}

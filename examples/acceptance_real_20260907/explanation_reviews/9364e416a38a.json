@@ -1,0 +1,75 @@
+{
+  "status": "passed",
+  "run_id": "9364e416a38a",
+  "source_report_semantic_sha256": "856d276e028a3e546f72e379d1f0addb6566f28294287b85562197833a57b77f",
+  "original_comparison_error": "contradictory comparison: logistic regression lower gradient boosting for roc_auc; actual 0.8655668975574189 vs 0.8554502369668247. Correct or remove this claim.",
+  "explanation": {
+    "selected_candidate": "algorithm_logistic_regression__llm_proposed",
+    "why_this_plan": "Logistic Regression was selected due to its strong historical performance, high interpretability, and ability to meet the required metrics while handling missing values, unseen categories, and class imbalance effectively.",
+    "historical_evidence_used": [
+      "6bde3f2c39b8",
+      "6bde3f2c39b8:algorithm_gradient_boosting__llm_proposed:v1",
+      "6bde3f2c39b8:algorithm_random_forest__llm_proposed:v4",
+      "6bde3f2c39b8:algorithm_random_forest__llm_proposed:v3",
+      "6bde3f2c39b8:algorithm_random_forest__llm_proposed:v2"
+    ],
+    "candidate_comparison": {
+      "algorithm_logistic_regression__llm_proposed": "Passed validation with ROC-AUC of 0.8655668975574189, meeting the requirement of ROC-AUC >= 0.80. It also has high interpretability.",
+      "algorithm_gradient_boosting__llm_proposed": "Passed validation with ROC-AUC of 0.8554502369668247, slightly lower than Logistic Regression but still competitive. However, it lacks interpretability.",
+      "algorithm_random_forest__llm_proposed": "Failed validation due to issues with preprocessing steps, specifically handling missing values and encoding categorical variables."
+    },
+    "metric_claims": [
+      {
+        "candidate_id": "algorithm_logistic_regression__llm_proposed",
+        "metric": "roc_auc",
+        "score": 0.8655668975574189
+      },
+      {
+        "candidate_id": "algorithm_gradient_boosting__llm_proposed",
+        "metric": "roc_auc",
+        "score": 0.8554502369668247
+      }
+    ],
+    "limitations": [
+      "Random Forest failed validation due to preprocessing issues, indicating potential instability in handling missing values and categorical variables.",
+      "Gradient Boosting, despite passing validation, did not meet the interpretability requirement as strongly as Logistic Regression.",
+      "Future datasets may exhibit different behaviors, affecting model performance."
+    ],
+    "status": "ok",
+    "comparison_check": "passed",
+    "provider": "local_openai_compatible",
+    "attempts": 1
+  },
+  "llm_calls": [
+    {
+      "call_id": "llm_0001",
+      "purpose": "explanation",
+      "timestamp": "2026-09-07T17:48:52.397428+00:00",
+      "prompt_sha256": "8eea7870bb9e9ce4eb669cf379fc0f79252f45dfd0831ce0275eacebb4a9548d",
+      "prompt_chars": 29302,
+      "status": "ok",
+      "response_sha256": "3d9ed68ff91b4720a74322932dc9b419424a45a6afb1ff398ad1b2f13bd37fc0",
+      "provider": "local_openai_compatible",
+      "model": "Qwen2.5-14B-Instruct",
+      "latency_ms": 27338.48,
+      "token_usage": {
+        "prompt_tokens": 10859,
+        "completion_tokens": 525,
+        "total_tokens": 11384
+      },
+      "retry_count": 0,
+      "generation": {
+        "purpose": "explanation",
+        "max_new_tokens": 2600,
+        "requested_max_new_tokens": 2600,
+        "budget_adjustments": [],
+        "finish_reason": "stop",
+        "truncated": false,
+        "eos_reached": true,
+        "structured_transport": "json_schema",
+        "application_schema_validation": true
+      }
+    }
+  ],
+  "scope": "Structured numeric/ID checks and supported metric comparison patterns; other free prose still requires review. Original measured report is unchanged."
+}

@@ -1,0 +1,426 @@
+{
+  "run_id": "694ab8698a2e",
+  "status": "failed",
+  "error": "Real knowledge extraction failed; refusing a template-only knowledge demo",
+  "event_log": [
+    {
+      "sequence": 1,
+      "timestamp": "2026-09-07T14:16:03.425915+00:00",
+      "agent": "RequirementAgent",
+      "status": "started",
+      "tool": "understand"
+    },
+    {
+      "sequence": 2,
+      "timestamp": "2026-09-07T14:16:28.344796+00:00",
+      "agent": "RequirementAgent",
+      "status": "completed",
+      "tool": "understand"
+    },
+    {
+      "sequence": 3,
+      "timestamp": "2026-09-07T14:16:28.351795+00:00",
+      "agent": "KnowledgeExtractionAgent",
+      "status": "started",
+      "tool": "ingest"
+    },
+    {
+      "sequence": 4,
+      "timestamp": "2026-09-07T14:20:18.359671+00:00",
+      "agent": "KnowledgeExtractionAgent",
+      "status": "completed",
+      "tool": "ingest"
+    }
+  ],
+  "llm_calls": [
+    {
+      "call_id": "llm_0001",
+      "purpose": "requirement",
+      "timestamp": "2026-09-07T14:16:03.439586+00:00",
+      "prompt_sha256": "6eb9707271f7894432e25db42b4a180def466e722b62a2906b4f1f3f5e8a7451",
+      "prompt_chars": 3945,
+      "status": "ok",
+      "response_sha256": "d13acec4688e72e049fd4e6db98ad2b9b938ab0886076993f1761bb567530b0b",
+      "provider": "local_openai_compatible",
+      "model": "Qwen2.5-14B-Instruct",
+      "latency_ms": 24893.57,
+      "token_usage": {
+        "prompt_tokens": 1074,
+        "completion_tokens": 525,
+        "total_tokens": 1599
+      },
+      "retry_count": 1,
+      "generation": {
+        "purpose": "requirement",
+        "max_new_tokens": 2400,
+        "finish_reason": "stop",
+        "truncated": false,
+        "eos_reached": true,
+        "structured_transport": "json_object",
+        "application_schema_validation": true
+      }
+    },
+    {
+      "call_id": "llm_0002",
+      "purpose": "extraction",
+      "timestamp": "2026-09-07T14:16:28.359863+00:00",
+      "prompt_sha256": "a156011f8aacff3085e718e53485262965f57ba752076d50051898c1b3f842ad",
+      "prompt_chars": 5118,
+      "status": "ok",
+      "response_sha256": "6b0cebbd74be06aa8e7e300586b69f4165a313ce9f5329ed8ad60c2577c3b83a",
+      "provider": "local_openai_compatible",
+      "model": "Qwen2.5-14B-Instruct",
+      "latency_ms": 88045.34,
+      "token_usage": {
+        "prompt_tokens": 1744,
+        "completion_tokens": 1861,
+        "total_tokens": 3605
+      },
+      "retry_count": 0,
+      "generation": {
+        "purpose": "extraction",
+        "max_new_tokens": 6000,
+        "finish_reason": "stop",
+        "truncated": false,
+        "eos_reached": true,
+        "structured_transport": "json_object",
+        "application_schema_validation": true
+      }
+    },
+    {
+      "call_id": "llm_0003",
+      "purpose": "extraction",
+      "timestamp": "2026-09-07T14:18:02.135208+00:00",
+      "prompt_sha256": "337fd4fb4cc9bb1ee3dfa906f10e243997487e07f123698a8105f4949da2a6ba",
+      "prompt_chars": 5784,
+      "status": "ok",
+      "response_sha256": "c975adfddb5dce6b6195a2cb0b0581c990f7391aa210bd1777e857589ce6dbed",
+      "provider": "local_openai_compatible",
+      "model": "Qwen2.5-14B-Instruct",
+      "latency_ms": 36854.92,
+      "token_usage": {
+        "prompt_tokens": 1437,
+        "completion_tokens": 747,
+        "total_tokens": 2184
+      },
+      "retry_count": 0,
+      "generation": {
+        "purpose": "extraction",
+        "max_new_tokens": 6000,
+        "finish_reason": "stop",
+        "truncated": false,
+        "eos_reached": true,
+        "structured_transport": "json_object",
+        "application_schema_validation": true
+      }
+    },
+    {
+      "call_id": "llm_0004",
+      "purpose": "extraction",
+      "timestamp": "2026-09-07T14:18:38.996200+00:00",
+      "prompt_sha256": "fece11ee8b1810eec06770109c10b54b4e2ef16c0a5088ee43d44e67385a87bd",
+      "prompt_chars": 9042,
+      "status": "ok",
+      "response_sha256": "c975adfddb5dce6b6195a2cb0b0581c990f7391aa210bd1777e857589ce6dbed",
+      "provider": "local_openai_compatible",
+      "model": "Qwen2.5-14B-Instruct",
+      "latency_ms": 35879.39,
+      "token_usage": {
+        "prompt_tokens": 2339,
+        "completion_tokens": 747,
+        "total_tokens": 3086
+      },
+      "retry_count": 0,
+      "generation": {
+        "purpose": "extraction",
+        "max_new_tokens": 6000,
+        "finish_reason": "stop",
+        "truncated": false,
+        "eos_reached": true,
+        "structured_transport": "json_object",
+        "application_schema_validation": true
+      }
+    },
+    {
+      "call_id": "llm_0005",
+      "purpose": "extraction",
+      "timestamp": "2026-09-07T14:19:14.880925+00:00",
+      "prompt_sha256": "d55b3a0b36a4b79ab9a96963f2f657bb646bf61a13d5346b9b0e4df3513823d4",
+      "prompt_chars": 9546,
+      "status": "ok",
+      "response_sha256": "c975adfddb5dce6b6195a2cb0b0581c990f7391aa210bd1777e857589ce6dbed",
+      "provider": "local_openai_compatible",
+      "model": "Qwen2.5-14B-Instruct",
+      "latency_ms": 35783.36,
+      "token_usage": {
+        "prompt_tokens": 2447,
+        "completion_tokens": 747,
+        "total_tokens": 3194
+      },
+      "retry_count": 0,
+      "generation": {
+        "purpose": "extraction",
+        "max_new_tokens": 6000,
+        "finish_reason": "stop",
+        "truncated": false,
+        "eos_reached": true,
+        "structured_transport": "json_object",
+        "application_schema_validation": true
+      }
+    },
+    {
+      "call_id": "llm_0006",
+      "purpose": "extraction",
+      "timestamp": "2026-09-07T14:19:50.665014+00:00",
+      "prompt_sha256": "ec298a332593e82d3fd63996755b86b72f7fa03c41d53987e74c73d99204dfd9",
+      "prompt_chars": 2495,
+      "status": "ok",
+      "response_sha256": "ae07de8d054b9d3e105d36d624d41ad1356f627e243681e70f6609f24c87a465",
+      "provider": "local_openai_compatible",
+      "model": "Qwen2.5-14B-Instruct",
+      "latency_ms": 13554.48,
+      "token_usage": {
+        "prompt_tokens": 611,
+        "completion_tokens": 292,
+        "total_tokens": 903
+      },
+      "retry_count": 0,
+      "generation": {
+        "purpose": "extraction",
+        "max_new_tokens": 6000,
+        "finish_reason": "stop",
+        "truncated": false,
+        "eos_reached": true,
+        "structured_transport": "json_object",
+        "application_schema_validation": false
+      }
+    },
+    {
+      "call_id": "llm_0007",
+      "purpose": "extraction",
+      "timestamp": "2026-09-07T14:20:04.867577+00:00",
+      "prompt_sha256": "46563ae86892ae23ecea6ed2c99e47407c8a1f856e352c86199f3f1fd19d6e0e",
+      "prompt_chars": 5091,
+      "status": "ok",
+      "response_sha256": "e59f332a4c5ff2df8fc8e5c10c4342289776934d34ae338efe20ebae5be8f9f7",
+      "provider": "local_openai_compatible",
+      "model": "Qwen2.5-14B-Instruct",
+      "latency_ms": 6909.27,
+      "token_usage": {
+        "prompt_tokens": 1366,
+        "completion_tokens": 143,
+        "total_tokens": 1509
+      },
+      "retry_count": 0,
+      "generation": {
+        "purpose": "extraction",
+        "max_new_tokens": 6000,
+        "finish_reason": "stop",
+        "truncated": false,
+        "eos_reached": true,
+        "structured_transport": "json_object",
+        "application_schema_validation": true
+      }
+    },
+    {
+      "call_id": "llm_0008",
+      "purpose": "extraction",
+      "timestamp": "2026-09-07T14:20:11.782212+00:00",
+      "prompt_sha256": "fa19be3463bb82d5ce4eccded7b7f13184b9eb1e07c8697102c74235cf497417",
+      "prompt_chars": 5972,
+      "status": "ok",
+      "response_sha256": "0f6add63eee8eda7c23382518491dc5e9209f597048ebdded628d83a964a7a9f",
+      "provider": "local_openai_compatible",
+      "model": "Qwen2.5-14B-Instruct",
+      "latency_ms": 6375.84,
+      "token_usage": {
+        "prompt_tokens": 1575,
+        "completion_tokens": 135,
+        "total_tokens": 1710
+      },
+      "retry_count": 0,
+      "generation": {
+        "purpose": "extraction",
+        "max_new_tokens": 6000,
+        "finish_reason": "stop",
+        "truncated": false,
+        "eos_reached": true,
+        "structured_transport": "json_object",
+        "application_schema_validation": true
+      }
+    }
+  ],
+  "requirement_trace": {
+    "provider": "local_openai_compatible",
+    "status": "ok",
+    "schema_valid": true,
+    "semantic_valid": true,
+    "attempts": [
+      {
+        "attempt": 1,
+        "status": "accepted"
+      }
+    ],
+    "model": "Qwen2.5-14B-Instruct",
+    "semantic_corrections": [],
+    "attempt_count": 1,
+    "response_preview": "{\n  \"domain\": \"Customer Relationship Management\",\n  \"capability_name\": \"Churn Prediction Model\",\n  \"task_type\": \"binary_classification\",\n  \"data_type\": \"tabular\",\n  \"target\": \"churn\",\n  \"input_schema\": {\n    \"age\": \"int64\",\n    \"region\": \"object\",\n    \"login_count_30d\": \"float64\",\n    \"total_spend\": \"float64\",\n    \"complaint_count\": \"int64\",\n    \"membership_level\": \"object\",\n    \"tenure_months\": \"int64\"\n  },\n  \"output_schema\": {\n    \"predicted_churn\": \"int64\",\n    \"positive_class_probability\": \"float64\"\n  },\n  \"dataset\": {\n    \"path\": \"/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_20260907/workspace/data/churn_first.csv\",\n    \"columns\": [\"age\", \"region\", \"login_count_30d\", \"total_spend\", \"complaint_count\", \"membership_level\", \"tenure_months\", \"churn\"],\n    \"dtypes\": {\n      \"age\": \"int64\",\n      \"region\": \"object\",\n      \"login_count_30d\": \"float64\",\n      \"total_spend\": \"float64\",\n      \"complaint_count\": \"int64\",\n      \"membership_level\": \"object\",\n      \"tenure_months\":",
+    "token_usage": {
+      "prompt_tokens": 1074,
+      "completion_tokens": 525,
+      "total_tokens": 1599
+    },
+    "generation": {
+      "purpose": "requirement",
+      "max_new_tokens": 2400,
+      "finish_reason": "stop",
+      "truncated": false,
+      "eos_reached": true,
+      "structured_transport": "json_object",
+      "application_schema_validation": true
+    }
+  },
+  "extraction_trace": [
+    {
+      "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_20260907/workspace/data/business_material.md",
+      "source_id": "source_business_material_9b240e8c",
+      "status": "extracted",
+      "extraction_status": "ok",
+      "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+      "trace": {
+        "provider": "openai",
+        "status": "ok",
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_20260907/workspace/data/business_material.md",
+        "chunk_count": 1,
+        "chunks": [
+          {
+            "chunk_id": "chunk-0",
+            "status": "accepted",
+            "attempts": [
+              {
+                "attempt": 1,
+                "status": "accepted"
+              }
+            ],
+            "semantic_corrections": [],
+            "entities": 13,
+            "relations": 12,
+            "token_usage": {
+              "prompt_tokens": 1744,
+              "completion_tokens": 1861,
+              "total_tokens": 3605
+            },
+            "generation": {
+              "purpose": "extraction",
+              "max_new_tokens": 6000,
+              "finish_reason": "stop",
+              "truncated": false,
+              "eos_reached": true,
+              "structured_transport": "json_object",
+              "application_schema_validation": true
+            }
+          }
+        ],
+        "accepted_chunks": 1,
+        "rejected_chunks": 0
+      }
+    },
+    {
+      "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_20260907/workspace/data/text_material.md",
+      "source_id": "source_text_material_83cdd01d",
+      "status": "extracted",
+      "extraction_status": "deterministic_fallback",
+      "source_sha256": "ec6dc1154474c781b568089c7926fce68183b5eb0b090543bf8cc452ce199ad2",
+      "trace": {
+        "provider": "openai",
+        "status": "deterministic_fallback",
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_20260907/workspace/data/text_material.md",
+        "chunk_count": 1,
+        "chunks": [
+          {
+            "chunk_id": "chunk-0",
+            "status": "rejected",
+            "attempts": [
+              {
+                "attempt": 1,
+                "status": "rejected",
+                "error": "ValueError: missing known Metric entities: ['f1']"
+              },
+              {
+                "attempt": 2,
+                "status": "rejected",
+                "error": "ValueError: missing known Metric entities: ['f1']"
+              },
+              {
+                "attempt": 3,
+                "status": "rejected",
+                "error": "ValueError: missing known Metric entities: ['f1']"
+              }
+            ],
+            "error": "ValueError: missing known Metric entities: ['f1']",
+            "generation": {
+              "purpose": "extraction",
+              "max_new_tokens": 6000,
+              "finish_reason": "stop",
+              "truncated": false,
+              "eos_reached": true,
+              "structured_transport": "json_object",
+              "application_schema_validation": false
+            }
+          }
+        ],
+        "fallback_reason": "no chunk passed strict extraction contract"
+      }
+    },
+    {
+      "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_20260907/workspace/data/reference_preprocessing.py",
+      "source_id": "source_reference_preprocessing_7238a567",
+      "status": "extracted",
+      "extraction_status": "ok",
+      "source_sha256": "8166b78dbccfd398212a1ccd9f4504a73c472282a61c0b07f9cdbafbfaec510f",
+      "trace": {
+        "provider": "openai",
+        "status": "ok",
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_20260907/workspace/data/reference_preprocessing.py",
+        "chunk_count": 1,
+        "chunks": [
+          {
+            "chunk_id": "function:build_preprocessor:14",
+            "status": "accepted",
+            "attempts": [
+              {
+                "attempt": 1,
+                "status": "rejected",
+                "error": "ValueError: ungrounded evidence_span: def build_preprocessor(features, scale=True):\\n \\\"\\\"\\\"Return an unfitted ColumnT"
+              },
+              {
+                "attempt": 2,
+                "status": "accepted"
+              }
+            ],
+            "semantic_corrections": [],
+            "entities": 1,
+            "relations": 0,
+            "token_usage": {
+              "prompt_tokens": 1575,
+              "completion_tokens": 135,
+              "total_tokens": 1710
+            },
+            "generation": {
+              "purpose": "extraction",
+              "max_new_tokens": 6000,
+              "finish_reason": "stop",
+              "truncated": false,
+              "eos_reached": true,
+              "structured_transport": "json_object",
+              "application_schema_validation": true
+            }
+          }
+        ],
+        "accepted_chunks": 1,
+        "rejected_chunks": 0
+      }
+    }
+  ],
+  "advisor_trace": null
+}

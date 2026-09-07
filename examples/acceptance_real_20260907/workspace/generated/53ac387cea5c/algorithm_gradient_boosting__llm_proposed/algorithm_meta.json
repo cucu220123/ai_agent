@@ -1,0 +1,209 @@
+{
+  "schema_version": "1.1",
+  "generated_at": "2026-09-07T17:23:34.148006+00:00",
+  "source_sha256": "af21c76b67877673204d9ae7f89f08f518dd65d1e15b9eb3268857d3bdfc308a",
+  "spec": {
+    "raw_description": "Build customer churn prediction for mixed numeric/categorical tabular customer data. Target column churn, binary 0/1. Exclude churn from features. Require ROC-AUC >= 0.80 and positive-class probability. Report F1, precision, recall; handle missing values, unseen categories and class imbalance. Compare logistic regression, random forest and gradient boosting.",
+    "domain": "Customer Relationship Management",
+    "capability_name": "Churn Prediction Model",
+    "task_type": "binary_classification",
+    "data_type": "tabular",
+    "target_column": "churn",
+    "feature_columns": [
+      "age",
+      "region",
+      "login_count_30d",
+      "total_spend",
+      "complaint_count",
+      "membership_level",
+      "tenure_months"
+    ],
+    "input_schema": {
+      "age": "int64",
+      "region": "object",
+      "login_count_30d": "float64",
+      "total_spend": "float64",
+      "complaint_count": "int64",
+      "membership_level": "object",
+      "tenure_months": "int64"
+    },
+    "output_schema": {
+      "prediction": "float",
+      "probability": "float"
+    },
+    "dataset_profile": {
+      "dataset_id": "dataset_4bf999a657407039",
+      "sha256": "4bf999a657407039780c32ce01e9ca9cd2d1fdafa131747b9ebb4e8ef8ef8e45",
+      "path": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/churn_first.csv",
+      "rows": 1200,
+      "row_count": 1200,
+      "column_count": 8,
+      "columns": [
+        "age",
+        "region",
+        "login_count_30d",
+        "total_spend",
+        "complaint_count",
+        "membership_level",
+        "tenure_months",
+        "churn"
+      ],
+      "feature_columns": [
+        "age",
+        "region",
+        "login_count_30d",
+        "total_spend",
+        "complaint_count",
+        "membership_level",
+        "tenure_months"
+      ],
+      "feature_count": 7,
+      "dtypes": {
+        "age": "int64",
+        "region": "object",
+        "login_count_30d": "float64",
+        "total_spend": "float64",
+        "complaint_count": "int64",
+        "membership_level": "object",
+        "tenure_months": "int64",
+        "churn": "int64"
+      },
+      "missing_rates": {
+        "age": 0.0,
+        "region": 0.015,
+        "login_count_30d": 0.01,
+        "total_spend": 0.025,
+        "complaint_count": 0.0,
+        "membership_level": 0.0,
+        "tenure_months": 0.0,
+        "churn": 0.0
+      },
+      "numeric_fraction": 0.7142857142857143,
+      "class_count": 2,
+      "class_balance": {
+        "0": 0.8475,
+        "1": 0.1525
+      },
+      "minority_rate": 0.1525,
+      "positive_rate": 0.1525
+    },
+    "metrics": [
+      "roc_auc",
+      "f1",
+      "precision",
+      "recall"
+    ],
+    "metric_thresholds": {
+      "roc_auc": 0.8
+    },
+    "output_columns": [
+      "prediction",
+      "probability"
+    ],
+    "constraints": [
+      "Exclude 'churn' from features",
+      "Handle missing values",
+      "Handle unseen categories",
+      "Handle class imbalance"
+    ],
+    "latency_requirement_ms": null,
+    "interpretability_requirement": null,
+    "resource_constraints": {},
+    "probability_output_required": true,
+    "class_imbalance": {
+      "positive_rate": 0.1525,
+      "is_imbalanced": true
+    },
+    "candidate_hints": [
+      "logistic_regression",
+      "random_forest",
+      "gradient_boosting"
+    ],
+    "uncertainty": [],
+    "understanding_confidence": 1.0,
+    "candidate_algorithms": [
+      "logistic_regression",
+      "random_forest",
+      "gradient_boosting"
+    ],
+    "dataset_path": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/churn_first.csv"
+  },
+  "plan": {
+    "algorithm_id": "algorithm_gradient_boosting__llm_proposed",
+    "algorithm_name": "Gradient Boosting",
+    "rationale": "Gradient boosting has shown robust performance across different datasets and can handle class imbalance effectively.",
+    "preprocessing": [
+      "handle_class_imbalance",
+      "handle_missing_values",
+      "encode_categorical_variables"
+    ],
+    "hyperparameters": {
+      "n_estimators": 100,
+      "learning_rate": 0.1,
+      "max_depth": 3,
+      "random_state": 42
+    },
+    "expected_metrics": {
+      "roc_auc": 0.8743361345772882
+    },
+    "priority": 0,
+    "base_algorithm_id": "algorithm_gradient_boosting",
+    "preprocessing_variant": "llm_proposed",
+    "config_variant": "llm_proposed",
+    "search_score": 1.0021786080897344,
+    "evidence_ids": [
+      "6bde3f2c39b8:algorithm_gradient_boosting__llm_proposed:v1",
+      "9364e416a38a:algorithm_gradient_boosting__llm_proposed:v1",
+      "6bde3f2c39b8:algorithm_random_forest__llm_proposed:v4",
+      "failure_6bde3f2c39b8_algorithm_random_forest__llm_proposed_v4"
+    ],
+    "score_components": {
+      "performance_prior": 0.7347938625423801,
+      "success": 0.1,
+      "stability": 0.04,
+      "exploration": 0.06928203230275509,
+      "runtime_cost": -0.01189728675540077,
+      "interpretability": 0,
+      "resource_fit": 0,
+      "llm_proposal": 0.03,
+      "historical_case_count": 2,
+      "llm_parameters": {
+        "n_estimators": 100,
+        "learning_rate": 0.1,
+        "max_depth": 3
+      }
+    }
+  },
+  "code_ir": null,
+  "generation": {
+    "provider": "local_openai_compatible",
+    "status": "llm_code_accepted",
+    "attempts": [
+      {
+        "attempt": 1,
+        "status": "accepted",
+        "reason": "generated code semantic contract passed"
+      }
+    ],
+    "model": "Qwen3-Coder-30B-A3B-Instruct",
+    "token_usage": {
+      "prompt_tokens": 9542,
+      "completion_tokens": 816,
+      "total_tokens": 10358
+    },
+    "generation": {
+      "purpose": "code_generation",
+      "max_new_tokens": 6400,
+      "requested_max_new_tokens": 6400,
+      "budget_adjustments": [],
+      "finish_reason": "stop",
+      "truncated": false,
+      "eos_reached": true,
+      "structured_transport": "text",
+      "application_schema_validation": false
+    }
+  },
+  "final_code_sha256": "1d726e5712c0c51d27d4d7aa37f7143ac13d1043a8133eb42b67796c7699b0ba",
+  "final_version": "53ac387cea5c_algorithm_gradient_boosting__llm_proposed_v2",
+  "validation_status": "passed"
+}

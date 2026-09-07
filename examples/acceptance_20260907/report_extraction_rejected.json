@@ -1,0 +1,196 @@
+{
+  "entities": [
+    {
+      "id": "metric_accuracy",
+      "type": "Metric",
+      "name": "accuracy",
+      "properties": {},
+      "evidence_span": "accuracy",
+      "confidence": 0.7,
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+        "evidence_span": "accuracy",
+        "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+        "char_start": 1641,
+        "line_start": 68
+      }
+    },
+    {
+      "id": "metric_f1",
+      "type": "Metric",
+      "name": "f1",
+      "properties": {},
+      "evidence_span": "f1",
+      "confidence": 0.7,
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+        "evidence_span": "f1",
+        "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+        "char_start": 1679,
+        "line_start": 69
+      }
+    },
+    {
+      "id": "metric_precision",
+      "type": "Metric",
+      "name": "precision",
+      "properties": {},
+      "evidence_span": "precision",
+      "confidence": 0.7,
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+        "evidence_span": "precision",
+        "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+        "char_start": 1712,
+        "line_start": 70
+      }
+    },
+    {
+      "id": "metric_recall",
+      "type": "Metric",
+      "name": "recall",
+      "properties": {},
+      "evidence_span": "recall",
+      "confidence": 0.7,
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+        "evidence_span": "recall",
+        "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+        "char_start": 1736,
+        "line_start": 71
+      }
+    },
+    {
+      "id": "metric_balanced_accuracy",
+      "type": "Metric",
+      "name": "balanced_accuracy",
+      "properties": {},
+      "evidence_span": "balanced_accuracy",
+      "confidence": 0.7,
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+        "evidence_span": "balanced_accuracy",
+        "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+        "char_start": 1772,
+        "line_start": 72
+      }
+    },
+    {
+      "id": "metric_roc_auc",
+      "type": "Metric",
+      "name": "roc_auc",
+      "properties": {},
+      "evidence_span": "roc_auc",
+      "confidence": 0.7,
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+        "evidence_span": "roc_auc",
+        "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+        "char_start": 1819,
+        "line_start": 73
+      }
+    },
+    {
+      "id": "metric_pr_auc",
+      "type": "Metric",
+      "name": "pr_auc",
+      "properties": {},
+      "evidence_span": "pr_auc",
+      "confidence": 0.7,
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+        "evidence_span": "pr_auc",
+        "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+        "char_start": 1856,
+        "line_start": 74
+      }
+    }
+  ],
+  "relations": [],
+  "summary": "deterministic extraction",
+  "provenance": {
+    "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+    "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1"
+  },
+  "deterministic_facts": {
+    "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+    "kind": "validation_report",
+    "run_id": "6bde3f2c39b8",
+    "algorithm": null,
+    "status": "passed",
+    "metrics": {
+      "accuracy": 0.8766666666666667,
+      "f1": 0.39344262295081966,
+      "precision": 0.8,
+      "recall": 0.2608695652173913,
+      "balanced_accuracy": 0.6245292707976721,
+      "roc_auc": 0.9288770968846285,
+      "pr_auc": 0.7114689013236358
+    },
+    "runtime_seconds": 2.076532319188118,
+    "resource_usage": {
+      "max_rss_kb": 1715872,
+      "cpu_seconds": 1.670737,
+      "latency_ms_per_row": 0.037162850300470986,
+      "limits": {
+        "applied": true,
+        "cpu_seconds": 90,
+        "address_space_mb": 16384,
+        "max_file_mb": 16
+      },
+      "sandbox": {
+        "network_audit_blocked": true,
+        "filesystem_audit_whitelist": true,
+        "production_isolation": false,
+        "network_namespace": true
+      },
+      "code_hash": "a958c428a3e6305189ca9aa067f6f895a2f4ee61432b373cb61bf16577246a5a"
+    },
+    "errors": [],
+    "repair_history": []
+  },
+  "extraction_trace": {
+    "provider": "openai",
+    "status": "deterministic_fallback",
+    "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+    "chunk_count": 1,
+    "chunks": [
+      {
+        "chunk_id": "chunk-0",
+        "status": "rejected",
+        "attempts": [
+          {
+            "attempt": 1,
+            "status": "rejected",
+            "error": "ValidationError: 4 validation errors for KnowledgeExtractionContract\nentities.0.evidence_span\n  String should have at least 1 character [type=string_too_short, input_value='', input_type=str]\n    For further information visit [endpoint:06afcfb4f8]\nentities.1.evidence_span\n  String should have at least 1 character [type=string_too_short, input_value='', input_type=str]\n    For further information visit [endpoint:06afcfb4f8]\nrelations.0.evidence_span\n  String should have at least 1 character [type=string_too_short, input_value='', input_type=str]\n    For further information visit [endpoint:06afcfb4f8]\nrelations.1.evidence_span\n  String should have at least 1 character [type=string_too_short, input_value='', input_type=str]\n    For further information visit [endpoint:06afcfb4f8]"
+          },
+          {
+            "attempt": 2,
+            "status": "rejected",
+            "error": "ValidationError: 1 validation error for KnowledgeExtractionContract\nrelations\n  Value error, relation endpoints must reference entity ids in the same chunk [type=value_error, input_value=[{'source': '6bde3f2c39b8...  },', 'confidence': 1}], input_type=list]\n    For further information visit [endpoint:4b7f3df09f]"
+          },
+          {
+            "attempt": 3,
+            "status": "rejected",
+            "error": "ValidationError: 1 validation error for KnowledgeExtractionContract\nrelations\n  Value error, relation endpoints must reference entity ids in the same chunk [type=value_error, input_value=[{'source': '6bde3f2c39b8...6358', 'confidence': 1}], input_type=list]\n    For further information visit [endpoint:4b7f3df09f]"
+          }
+        ],
+        "error": "ValidationError: 1 validation error for KnowledgeExtractionContract\nrelations\n  Value error, relation endpoints must reference entity ids in the same chunk [type=value_error, input_value=[{'source': '6bde3f2c39b8...6358', 'confidence': 1}], input_type=list]\n    For further information visit [endpoint:4b7f3df09f]",
+        "generation": {
+          "purpose": "extraction",
+          "max_new_tokens": 6000,
+          "finish_reason": "stop",
+          "truncated": false,
+          "eos_reached": true,
+          "structured_transport": "json_object",
+          "application_schema_validation": true
+        }
+      }
+    ],
+    "fallback_reason": "no chunk passed strict extraction contract"
+  },
+  "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+  "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+  "name": "measured_experiment.json",
+  "id": "source_measured_experiment_693b971c"
+}

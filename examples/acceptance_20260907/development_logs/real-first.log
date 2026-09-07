@@ -1,0 +1,24 @@
+[RequirementAgent] started {"tool": "understand"}
+[LLM] {"call_id": "llm_0001", "purpose": "requirement", "status": "ok", "provider": "local_openai_compatible", "model": "Qwen2.5-14B-Instruct", "latency_ms": 30273.45, "token_usage": {"prompt_tokens": 1075, "completion_tokens": 519, "total_tokens": 1594}, "retry_count": 1}
+[RequirementAgent] completed {"tool": "understand"}
+[KnowledgeExtractionAgent] started {"tool": "ingest"}
+[LLM] {"call_id": "llm_0002", "purpose": "extraction", "status": "ok", "provider": "local_openai_compatible", "model": "Qwen2.5-14B-Instruct", "latency_ms": 131604.28, "token_usage": {"prompt_tokens": 1746, "completion_tokens": 1861, "total_tokens": 3607}, "retry_count": 0}
+[LLM] {"call_id": "llm_0003", "purpose": "extraction", "status": "ok", "provider": "local_openai_compatible", "model": "Qwen2.5-14B-Instruct", "latency_ms": 46347.97, "token_usage": {"prompt_tokens": 1439, "completion_tokens": 747, "total_tokens": 2186}, "retry_count": 0}
+[LLM] {"call_id": "llm_0004", "purpose": "extraction", "status": "ok", "provider": "local_openai_compatible", "model": "Qwen2.5-14B-Instruct", "latency_ms": 9147.38, "token_usage": {"prompt_tokens": 1368, "completion_tokens": 143, "total_tokens": 1511}, "retry_count": 0}
+[LLM] {"call_id": "llm_0005", "purpose": "extraction", "status": "ok", "provider": "local_openai_compatible", "model": "Qwen2.5-14B-Instruct", "latency_ms": 8724.05, "token_usage": {"prompt_tokens": 1577, "completion_tokens": 135, "total_tokens": 1712}, "retry_count": 0}
+[KnowledgeExtractionAgent] completed {"tool": "ingest"}
+[RetrievalAgent] started {"tool": "retrieve"}
+[RetrievalAgent] completed {"tool": "retrieve"}
+[GraphSearch] ok {}
+[PlannerAgent] started {"tool": "advise"}
+[LLM] {"call_id": "llm_0006", "purpose": "planning", "status": "ok", "provider": "local_openai_compatible", "model": "Qwen2.5-14B-Instruct", "latency_ms": 29822.4, "token_usage": {"prompt_tokens": 2593, "completion_tokens": 491, "total_tokens": 3084}, "retry_count": 0}
+[LLM] {"call_id": "llm_0007", "purpose": "planning", "status": "ok", "provider": "local_openai_compatible", "model": "Qwen2.5-14B-Instruct", "latency_ms": 32555.54, "token_usage": {"prompt_tokens": 3237, "completion_tokens": 520, "total_tokens": 3757}, "retry_count": 0}
+[PlannerAgent] completed {"tool": "advise"}
+Traceback (most recent call last):
+  File "/data3/xiaotianqi/ai_algorithm_factory/scripts/run_acceptance.py", line 154, in <module>
+    print(json.dumps(run(Path(args.output), args.stage, args.provider)))
+  File "/data3/xiaotianqi/ai_algorithm_factory/scripts/run_acceptance.py", line 80, in run
+    result = workflow.run(description, data, provider_note="Explicit real-model API; see cloud_probe.json for original endpoint availability").to_dict()
+  File "/data3/xiaotianqi/ai_algorithm_factory/app/workflow.py", line 81, in run
+    raise RuntimeError("Real LLM planning failed; refusing to call deterministic advice real planning")
+RuntimeError: Real LLM planning failed; refusing to call deterministic advice real planning

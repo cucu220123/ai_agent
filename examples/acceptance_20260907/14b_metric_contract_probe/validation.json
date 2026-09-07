@@ -1,0 +1,111 @@
+{
+  "status": "failed",
+  "algorithm": "Gradient Boosting",
+  "checks": {
+    "static_safety": {
+      "passed": true,
+      "category": "ok",
+      "message": "algorithm protocol passed"
+    },
+    "interface_import": {
+      "passed": true,
+      "errors": [],
+      "message": "algorithm protocol passed"
+    },
+    "semantic_contract": {
+      "passed": true,
+      "errors": [],
+      "message": "generated code semantic contract passed"
+    },
+    "target_leakage": {
+      "passed": true,
+      "duplicate_target_columns": [],
+      "scope": "exact duplicate label detection; semantic leakage needs domain review"
+    },
+    "isolated_execution": {
+      "passed": false,
+      "timeout": false,
+      "returncode": 1,
+      "message": "isolated process exit=1",
+      "environment_sanitized": true
+    },
+    "functional": {
+      "passed": false,
+      "message": "isolated process exit=1: Traceback (most recent call last):\n  File \"/data3/xiaotianqi/ai_algorithm_factory/app/validation/worker.py\", line 129, in <module>\n  File \"/data3/xiaotianqi/ai_algorithm_factory/app/validation/worker.py\", line 72, in main\n  File \"/tmp/ai_factory_sandbox_whxwonmv/algorithm.py\", line 61, in evaluate\n    pr_auc = average_precision_score(y_test, y_prob)\nNameError: name 'average_precision_score' is not defined\n"
+    },
+    "runtime_budget": {
+      "passed": true,
+      "runtime_seconds": 1.5896498709917068,
+      "timeout_seconds": 90
+    }
+  },
+  "metrics": {},
+  "runtime_seconds": 1.5896498709917068,
+  "errors": [
+    "RuntimeError: isolated process exit=1: Traceback (most recent call last):\n  File \"/data3/xiaotianqi/ai_algorithm_factory/app/validation/worker.py\", line 129, in <module>\n  File \"/data3/xiaotianqi/ai_algorithm_factory/app/validation/worker.py\", line 72, in main\n  File \"/tmp/ai_factory_sandbox_whxwonmv/algorithm.py\", line 61, in evaluate\n    pr_auc = average_precision_score(y_test, y_prob)\nNameError: name 'average_precision_score' is not defined\n"
+  ],
+  "warnings": [],
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/data3/xiaotianqi/ai_algorithm_factory/app/validation/worker.py\", line 129, in <module>\n  File \"/data3/xiaotianqi/ai_algorithm_factory/app/validation/worker.py\", line 72, in main\n  File \"/tmp/ai_factory_sandbox_whxwonmv/algorithm.py\", line 61, in evaluate\n    pr_auc = average_precision_score(y_test, y_prob)\nNameError: name 'average_precision_score' is not defined\n",
+  "repair_round": 0,
+  "task_type": "binary_classification",
+  "dataset_profile": {
+    "dataset_id": "dataset_4bf999a657407039",
+    "sha256": "4bf999a657407039780c32ce01e9ca9cd2d1fdafa131747b9ebb4e8ef8ef8e45",
+    "path": "examples/acceptance_real_20260907/workspace/data/churn_first.csv",
+    "rows": 1200,
+    "row_count": 1200,
+    "column_count": 8,
+    "columns": [
+      "age",
+      "region",
+      "login_count_30d",
+      "total_spend",
+      "complaint_count",
+      "membership_level",
+      "tenure_months",
+      "churn"
+    ],
+    "feature_columns": [
+      "age",
+      "region",
+      "login_count_30d",
+      "total_spend",
+      "complaint_count",
+      "membership_level",
+      "tenure_months"
+    ],
+    "feature_count": 7,
+    "dtypes": {
+      "age": "int64",
+      "region": "object",
+      "login_count_30d": "float64",
+      "total_spend": "float64",
+      "complaint_count": "int64",
+      "membership_level": "object",
+      "tenure_months": "int64",
+      "churn": "int64"
+    },
+    "missing_rates": {
+      "age": 0.0,
+      "region": 0.015,
+      "login_count_30d": 0.01,
+      "total_spend": 0.025,
+      "complaint_count": 0.0,
+      "membership_level": 0.0,
+      "tenure_months": 0.0,
+      "churn": 0.0
+    },
+    "numeric_fraction": 0.7142857142857143,
+    "class_count": 2,
+    "class_balance": {
+      "0": 0.8475,
+      "1": 0.1525
+    },
+    "minority_rate": 0.1525,
+    "positive_rate": 0.1525
+  },
+  "resource_usage": {},
+  "failure_type": "runtime_failure",
+  "root_cause": "RuntimeError: isolated process exit=1: Traceback (most recent call last):\n  File \"/data3/xiaotianqi/ai_algorithm_factory/app/validation/worker.py\", line 129, in <module>\n  File \"/data3/xiaotianqi/ai_algorithm_factory/app/validation/worker.py\", line 72, in main\n  File \"/tmp/ai_factory_sandbox_whxwonmv/algorithm.py\", line 61, in evaluate\n    pr_auc = average_precision_score(y_test, y_prob)\nNameError: name 'average_precision_score' is not defined\n"
+}

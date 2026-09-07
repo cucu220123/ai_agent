@@ -1,0 +1,205 @@
+{
+  "schema_version": "1.1",
+  "generated_at": "2026-09-07T15:53:58.437583+00:00",
+  "source_sha256": "420904b50a5c79a2da783d5078d8f543c8f6c73ba5512f818aa810c87a9cd755",
+  "spec": {
+    "raw_description": "Build customer churn prediction for mixed numeric/categorical tabular customer data. Target column churn, binary 0/1. Exclude churn from features. Require ROC-AUC >= 0.80 and positive-class probability. Report F1, precision, recall; handle missing values, unseen categories and class imbalance. Compare logistic regression, random forest and gradient boosting.",
+    "domain": "customer analytics",
+    "capability_name": "Customer Churn Prediction",
+    "task_type": "binary_classification",
+    "data_type": "tabular",
+    "target_column": "churn",
+    "feature_columns": [
+      "age",
+      "region",
+      "login_count_30d",
+      "total_spend",
+      "complaint_count",
+      "membership_level",
+      "tenure_months"
+    ],
+    "input_schema": {
+      "age": "int64",
+      "region": "object",
+      "login_count_30d": "float64",
+      "total_spend": "float64",
+      "complaint_count": "int64",
+      "membership_level": "object",
+      "tenure_months": "int64"
+    },
+    "output_schema": {
+      "prediction": "float",
+      "probability": "float"
+    },
+    "dataset_profile": {
+      "dataset_id": "dataset_4bf999a657407039",
+      "sha256": "4bf999a657407039780c32ce01e9ca9cd2d1fdafa131747b9ebb4e8ef8ef8e45",
+      "path": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/churn_first.csv",
+      "rows": 1200,
+      "row_count": 1200,
+      "column_count": 8,
+      "columns": [
+        "age",
+        "region",
+        "login_count_30d",
+        "total_spend",
+        "complaint_count",
+        "membership_level",
+        "tenure_months",
+        "churn"
+      ],
+      "feature_columns": [
+        "age",
+        "region",
+        "login_count_30d",
+        "total_spend",
+        "complaint_count",
+        "membership_level",
+        "tenure_months"
+      ],
+      "feature_count": 7,
+      "dtypes": {
+        "age": "int64",
+        "region": "object",
+        "login_count_30d": "float64",
+        "total_spend": "float64",
+        "complaint_count": "int64",
+        "membership_level": "object",
+        "tenure_months": "int64",
+        "churn": "int64"
+      },
+      "missing_rates": {
+        "age": 0.0,
+        "region": 0.015,
+        "login_count_30d": 0.01,
+        "total_spend": 0.025,
+        "complaint_count": 0.0,
+        "membership_level": 0.0,
+        "tenure_months": 0.0,
+        "churn": 0.0
+      },
+      "numeric_fraction": 0.7142857142857143,
+      "class_count": 2,
+      "class_balance": {
+        "0": 0.8475,
+        "1": 0.1525
+      },
+      "minority_rate": 0.1525,
+      "positive_rate": 0.1525
+    },
+    "metrics": [
+      "roc_auc",
+      "f1",
+      "precision",
+      "recall"
+    ],
+    "metric_thresholds": {
+      "roc_auc": 0.8
+    },
+    "output_columns": [
+      "prediction",
+      "probability"
+    ],
+    "constraints": [
+      "Exclude churn from features",
+      "Handle missing values",
+      "Handle unseen categories",
+      "Handle class imbalance"
+    ],
+    "latency_requirement_ms": null,
+    "interpretability_requirement": null,
+    "resource_constraints": {},
+    "probability_output_required": true,
+    "class_imbalance": {
+      "positive_rate": 0.1525,
+      "is_imbalanced": true
+    },
+    "candidate_hints": [
+      "logistic_regression",
+      "random_forest",
+      "gradient_boosting"
+    ],
+    "uncertainty": [
+      "The exact distribution of class imbalance is unknown.",
+      "The dataset may contain unseen categories in the test set."
+    ],
+    "understanding_confidence": 1.0,
+    "candidate_algorithms": [
+      "logistic_regression",
+      "random_forest",
+      "gradient_boosting"
+    ],
+    "dataset_path": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/churn_first.csv"
+  },
+  "plan": {
+    "algorithm_id": "algorithm_gradient_boosting__llm_proposed",
+    "algorithm_name": "Gradient Boosting",
+    "rationale": "Gradient Boosting can handle class imbalance and provide robust performance with proper tuning.",
+    "preprocessing": [
+      "preprocessingstrategy_build_preprocessor",
+      "source_reference_preprocessing_56f7c1fe"
+    ],
+    "hyperparameters": {
+      "n_estimators": 100,
+      "learning_rate": 0.1,
+      "max_depth": 3,
+      "random_state": 42
+    },
+    "expected_metrics": {
+      "roc_auc": 0.85
+    },
+    "priority": 0,
+    "base_algorithm_id": "algorithm_gradient_boosting",
+    "preprocessing_variant": "llm_proposed",
+    "config_variant": "llm_proposed",
+    "search_score": 0.7950000000000002,
+    "evidence_ids": [
+      "source_reference_preprocessing_56f7c1fe",
+      "source_business_material_1c1a6f4d",
+      "preprocessingstrategy_build_preprocessor"
+    ],
+    "score_components": {
+      "performance_prior": 0.535,
+      "success": 0.05,
+      "stability": 0.02,
+      "exploration": 0.12,
+      "runtime_cost": -0.0,
+      "interpretability": 0,
+      "resource_fit": 0,
+      "llm_proposal": 0.03,
+      "historical_case_count": 0,
+      "llm_parameters": {
+        "learning_rate": 0.1,
+        "n_estimators": 100,
+        "max_depth": 3
+      }
+    }
+  },
+  "code_ir": null,
+  "generation": {
+    "provider": "local_openai_compatible",
+    "status": "llm_code_accepted",
+    "attempts": [
+      {
+        "attempt": 1,
+        "status": "accepted",
+        "reason": "generated code semantic contract passed"
+      }
+    ],
+    "model": "Qwen2.5-14B-Instruct",
+    "token_usage": {
+      "prompt_tokens": 2241,
+      "completion_tokens": 693,
+      "total_tokens": 2934
+    },
+    "generation": {
+      "purpose": "code_generation",
+      "max_new_tokens": 6400,
+      "finish_reason": "stop",
+      "truncated": false,
+      "eos_reached": true,
+      "structured_transport": "text",
+      "application_schema_validation": false
+    }
+  }
+}

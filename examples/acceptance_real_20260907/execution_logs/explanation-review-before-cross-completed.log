@@ -1,0 +1,12 @@
+[LLM] {"call_id": "llm_0001", "purpose": "explanation", "status": "ok", "provider": "local_openai_compatible", "model": "Qwen2.5-14B-Instruct", "latency_ms": 27338.48, "token_usage": {"prompt_tokens": 10859, "completion_tokens": 525, "total_tokens": 11384}, "retry_count": 0}
+[LLM] {"call_id": "llm_0001", "purpose": "explanation", "status": "ok", "provider": "local_openai_compatible", "model": "Qwen2.5-14B-Instruct", "latency_ms": 25309.37, "token_usage": {"prompt_tokens": 9735, "completion_tokens": 353, "total_tokens": 10088}, "retry_count": 0}
+Traceback (most recent call last):
+  File "/data3/xiaotianqi/ai_algorithm_factory/scripts/review_explanations.py", line 54, in <module>
+    print(json.dumps(review(args.output, args.provider), indent=2))
+  File "/data3/xiaotianqi/ai_algorithm_factory/scripts/review_explanations.py", line 20, in review
+    report = json.loads((output / f"{stage}.json").read_text())
+  File "/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/pathlib.py", line 1134, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+  File "/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/pathlib.py", line 1119, in open
+    return self._accessor.open(self, mode, buffering, encoding, errors,
+FileNotFoundError: [Errno 2] No such file or directory: 'examples/acceptance_real_20260907/cross.json'

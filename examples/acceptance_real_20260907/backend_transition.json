@@ -1,0 +1,8 @@
+{
+  "timestamp": "2026-09-07T16:10:32.960277+00:00",
+  "model": "Qwen3-Coder-30B-A3B-Instruct",
+  "from": "Transformers NF4 single GPU",
+  "to": "vLLM 0.17.1 BF16 TP2",
+  "routing": "temporary loopback relay preserves the existing API endpoint",
+  "note": "Existing slow NF4 request interrupted after replacement API verified; provider errors and subsequent repair retries remain in workflow trace. No evidence relabeled."
+}

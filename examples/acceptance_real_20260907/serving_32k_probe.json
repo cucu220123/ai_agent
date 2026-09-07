@@ -1,0 +1,39 @@
+{
+  "status": "passed",
+  "services": [
+    {
+      "model": "Qwen2.5-14B-Instruct",
+      "provider": "local_openai_compatible",
+      "backend": "vLLM",
+      "max_model_len": 32768,
+      "timestamp": "2026-09-07T17:08:39.140349+00:00",
+      "latency_ms": 557.94,
+      "usage": {
+        "completion_tokens": 2,
+        "prompt_tokens": 34,
+        "total_tokens": 36,
+        "completion_tokens_details": null,
+        "prompt_tokens_details": null
+      },
+      "response": "READY",
+      "finish_reason": "stop"
+    },
+    {
+      "model": "Qwen3-Coder-30B-A3B-Instruct",
+      "provider": "local_openai_compatible",
+      "backend": "vLLM",
+      "max_model_len": 32768,
+      "timestamp": "2026-09-07T17:08:40.855559+00:00",
+      "latency_ms": 1667.31,
+      "usage": {
+        "completion_tokens": 2,
+        "prompt_tokens": 13,
+        "total_tokens": 15,
+        "completion_tokens_details": null,
+        "prompt_tokens_details": null
+      },
+      "response": "READY",
+      "finish_reason": "stop"
+    }
+  ]
+}

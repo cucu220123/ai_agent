@@ -1,0 +1,375 @@
+{
+  "run_id": "53ac387cea5c",
+  "fault_injection": "explicit demo-only predict rename",
+  "attempts": [
+    {
+      "version_id": "53ac387cea5c_algorithm_gradient_boosting__llm_proposed_v1",
+      "parent_version": null,
+      "code_hash": "549c6f01870463641f0182babd499c84e755512ffdb171c5f7990e86f6f77df9",
+      "algorithm_path": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/generated/53ac387cea5c/algorithm_gradient_boosting__llm_proposed/versions/v1.py",
+      "code_source": "llm",
+      "validation": {
+        "status": "failed",
+        "algorithm": "Gradient Boosting",
+        "checks": {
+          "static_safety": {
+            "passed": false,
+            "category": "interface",
+            "message": "missing function: predict"
+          },
+          "functional": {
+            "passed": false,
+            "message": "missing function: predict"
+          },
+          "runtime_budget": {
+            "passed": true,
+            "runtime_seconds": 0.003869175910949707,
+            "timeout_seconds": 90
+          }
+        },
+        "metrics": {},
+        "runtime_seconds": 0.003869175910949707,
+        "errors": [
+          "ValueError: missing function: predict"
+        ],
+        "warnings": [],
+        "stdout": "",
+        "stderr": "",
+        "repair_round": 0,
+        "task_type": "binary_classification",
+        "dataset_profile": {},
+        "resource_usage": {
+          "code_hash": "549c6f01870463641f0182babd499c84e755512ffdb171c5f7990e86f6f77df9"
+        },
+        "failure_type": "interface_failure",
+        "root_cause": "ValueError: missing function: predict"
+      },
+      "diagnosis": {
+        "failure_type": "interface_failure",
+        "root_cause": "missing function: predict",
+        "triggering_condition": "The provided code does not implement the required function 'predict'.",
+        "repair_strategy": "Implement the 'predict' function to ensure the code meets the interface requirements.",
+        "reusable_lesson": "Always ensure that all required functions are implemented when developing machine learning models to avoid interface failures during validation.",
+        "provider": "local_openai_compatible",
+        "status": "ok",
+        "observed_failure_type": "interface_failure",
+        "observed_error": "ValueError: missing function: predict",
+        "retrieved_experience_ids": [
+          "failure_0f7edacd5655_algorithm_logistic_regression__llm_proposed_v1",
+          "failure_2b2a3d8a9bac_algorithm_logistic_regression__llm_proposed_v1",
+          "failure_6bde3f2c39b8_algorithm_random_forest__llm_proposed_v4",
+          "failure_6bde3f2c39b8_algorithm_random_forest__llm_proposed_v3",
+          "failure_6bde3f2c39b8_algorithm_random_forest__llm_proposed_v2",
+          "failure_6bde3f2c39b8_algorithm_random_forest__llm_proposed_v1",
+          "failure_9364e416a38a_algorithm_random_forest__llm_proposed_v1"
+        ]
+      }
+    },
+    {
+      "version_id": "53ac387cea5c_algorithm_gradient_boosting__llm_proposed_v2",
+      "parent_version": "53ac387cea5c_algorithm_gradient_boosting__llm_proposed_v1",
+      "code_hash": "1d726e5712c0c51d27d4d7aa37f7143ac13d1043a8133eb42b67796c7699b0ba",
+      "algorithm_path": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/generated/53ac387cea5c/algorithm_gradient_boosting__llm_proposed/versions/v2.py",
+      "code_source": "repaired_llm",
+      "validation": {
+        "status": "passed",
+        "algorithm": "Gradient Boosting",
+        "checks": {
+          "static_safety": {
+            "passed": true,
+            "category": "ok",
+            "message": "algorithm protocol passed"
+          },
+          "interface_import": {
+            "passed": true,
+            "errors": [],
+            "message": "algorithm protocol passed"
+          },
+          "semantic_contract": {
+            "passed": true,
+            "errors": [],
+            "message": "generated code semantic contract passed"
+          },
+          "target_leakage": {
+            "passed": true,
+            "duplicate_target_columns": [],
+            "scope": "exact duplicate label detection; semantic leakage needs domain review"
+          },
+          "isolated_execution": {
+            "passed": true,
+            "timeout": false,
+            "message": "isolated execution passed",
+            "environment_sanitized": true,
+            "resource_limits_applied": true,
+            "runtime_seconds": 2.026976704597473,
+            "prediction_rows": 300,
+            "resource_limits": {
+              "applied": true,
+              "cpu_seconds": 90,
+              "address_space_mb": 16384,
+              "max_file_mb": 16
+            },
+            "sandbox": {
+              "network_audit_blocked": true,
+              "filesystem_audit_whitelist": true,
+              "production_isolation": false,
+              "network_namespace": true
+            },
+            "robustness": {
+              "small_batch": true,
+              "missing_values_and_unseen_categories": true,
+              "empty_input": "explicitly_rejected",
+              "invalid_input": "rejected"
+            },
+            "max_rss_kb": 1787808,
+            "cpu_seconds": 1.943569
+          },
+          "metric_integrity": {
+            "passed": true,
+            "source": "parent_process_trusted_metrics",
+            "disagreements": {}
+          },
+          "metrics": {
+            "passed": true,
+            "per_metric": {
+              "roc_auc": true
+            },
+            "thresholds": {
+              "roc_auc": 0.8
+            },
+            "actual": {
+              "accuracy": 0.8733333333333333,
+              "f1": 0.4571428571428571,
+              "precision": 0.6666666666666666,
+              "recall": 0.34782608695652173,
+              "balanced_accuracy": 0.6581650119821978,
+              "roc_auc": 0.8888223211229032,
+              "pr_auc": 0.5706341139334712
+            }
+          },
+          "stability": {
+            "passed": true,
+            "same_seed_drift": 0.0,
+            "seeds": [
+              42,
+              42,
+              9
+            ],
+            "metric_variance": {
+              "accuracy": 1.232595164407831e-32,
+              "f1": 0.0,
+              "precision": 0.0,
+              "recall": 0.0,
+              "balanced_accuracy": 0.0,
+              "roc_auc": 4.069531348472654e-08,
+              "pr_auc": 1.1314758848174089e-07
+            },
+            "normalized_variance": {
+              "accuracy": 1.232595164407831e-32,
+              "f1": 0.0,
+              "precision": 0.0,
+              "recall": 0.0,
+              "balanced_accuracy": 0.0,
+              "roc_auc": 4.069531348472654e-08,
+              "pr_auc": 1.1314758848174089e-07
+            },
+            "variance_limit": 0.02
+          },
+          "latency": {
+            "passed": true,
+            "ms_per_row": 0.04700213670730591,
+            "limit_ms_per_row": null
+          },
+          "resource_usage": {
+            "passed": true,
+            "max_rss_kb": 1787808,
+            "cpu_seconds": 1.943569,
+            "latency_ms_per_row": 0.04700213670730591,
+            "limits": {
+              "applied": true,
+              "cpu_seconds": 90,
+              "address_space_mb": 16384,
+              "max_file_mb": 16
+            },
+            "sandbox": {
+              "network_audit_blocked": true,
+              "filesystem_audit_whitelist": true,
+              "production_isolation": false,
+              "network_namespace": true
+            }
+          },
+          "functional": {
+            "passed": true,
+            "prediction_rows": 300
+          },
+          "output_contract": {
+            "passed": true,
+            "required_outputs": [
+              "prediction",
+              "probability"
+            ],
+            "metadata": {
+              "algorithm": "Gradient Boosting",
+              "rationale": "Gradient boosting has shown robust performance across different datasets and can handle class imbalance effectively.",
+              "evidence_ids": [
+                "6bde3f2c39b8:algorithm_gradient_boosting__llm_proposed:v1",
+                "9364e416a38a:algorithm_gradient_boosting__llm_proposed:v1",
+                "6bde3f2c39b8:algorithm_random_forest__llm_proposed:v4",
+                "failure_6bde3f2c39b8_algorithm_random_forest__llm_proposed_v4"
+              ]
+            }
+          },
+          "robustness": {
+            "passed": true,
+            "small_batch": true,
+            "missing_values_and_unseen_categories": true,
+            "empty_input": "explicitly_rejected",
+            "invalid_input": "rejected"
+          },
+          "runtime_budget": {
+            "passed": true,
+            "runtime_seconds": 2.498089388012886,
+            "timeout_seconds": 90
+          }
+        },
+        "metrics": {
+          "accuracy": 0.8733333333333333,
+          "f1": 0.4571428571428571,
+          "precision": 0.6666666666666666,
+          "recall": 0.34782608695652173,
+          "balanced_accuracy": 0.6581650119821978,
+          "roc_auc": 0.8888223211229032,
+          "pr_auc": 0.5706341139334712
+        },
+        "runtime_seconds": 2.498089388012886,
+        "errors": [],
+        "warnings": [],
+        "stdout": "",
+        "stderr": "",
+        "repair_round": 1,
+        "task_type": "binary_classification",
+        "dataset_profile": {
+          "dataset_id": "dataset_4bf999a657407039",
+          "sha256": "4bf999a657407039780c32ce01e9ca9cd2d1fdafa131747b9ebb4e8ef8ef8e45",
+          "path": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/churn_first.csv",
+          "rows": 1200,
+          "row_count": 1200,
+          "column_count": 8,
+          "columns": [
+            "age",
+            "region",
+            "login_count_30d",
+            "total_spend",
+            "complaint_count",
+            "membership_level",
+            "tenure_months",
+            "churn"
+          ],
+          "feature_columns": [
+            "age",
+            "region",
+            "login_count_30d",
+            "total_spend",
+            "complaint_count",
+            "membership_level",
+            "tenure_months"
+          ],
+          "feature_count": 7,
+          "dtypes": {
+            "age": "int64",
+            "region": "object",
+            "login_count_30d": "float64",
+            "total_spend": "float64",
+            "complaint_count": "int64",
+            "membership_level": "object",
+            "tenure_months": "int64",
+            "churn": "int64"
+          },
+          "missing_rates": {
+            "age": 0.0,
+            "region": 0.015,
+            "login_count_30d": 0.01,
+            "total_spend": 0.025,
+            "complaint_count": 0.0,
+            "membership_level": 0.0,
+            "tenure_months": 0.0,
+            "churn": 0.0
+          },
+          "numeric_fraction": 0.7142857142857143,
+          "class_count": 2,
+          "class_balance": {
+            "0": 0.8475,
+            "1": 0.1525
+          },
+          "minority_rate": 0.1525,
+          "positive_rate": 0.1525
+        },
+        "resource_usage": {
+          "max_rss_kb": 1787808,
+          "cpu_seconds": 1.943569,
+          "latency_ms_per_row": 0.04700213670730591,
+          "limits": {
+            "applied": true,
+            "cpu_seconds": 90,
+            "address_space_mb": 16384,
+            "max_file_mb": 16
+          },
+          "sandbox": {
+            "network_audit_blocked": true,
+            "filesystem_audit_whitelist": true,
+            "production_isolation": false,
+            "network_namespace": true
+          },
+          "code_hash": "1d726e5712c0c51d27d4d7aa37f7143ac13d1043a8133eb42b67796c7699b0ba"
+        },
+        "failure_type": null,
+        "root_cause": null
+      }
+    }
+  ],
+  "repair_history": [
+    {
+      "round": 1,
+      "before_sha256": "549c6f01870463641f0182babd499c84e755512ffdb171c5f7990e86f6f77df9",
+      "changes": [
+        "accepted LLM repair after strict safety/protocol gate"
+      ],
+      "retrieved_experience_ids": [
+        "failure_0f7edacd5655_algorithm_logistic_regression__llm_proposed_v1",
+        "failure_2b2a3d8a9bac_algorithm_logistic_regression__llm_proposed_v1",
+        "failure_6bde3f2c39b8_algorithm_random_forest__llm_proposed_v4",
+        "failure_6bde3f2c39b8_algorithm_random_forest__llm_proposed_v3",
+        "failure_6bde3f2c39b8_algorithm_random_forest__llm_proposed_v2",
+        "failure_6bde3f2c39b8_algorithm_random_forest__llm_proposed_v1",
+        "failure_9364e416a38a_algorithm_random_forest__llm_proposed_v1"
+      ],
+      "error": "{\"validation\": {\"status\": \"failed\", \"algorithm\": \"Gradient Boosting\", \"checks\": {\"static_safety\": {\"passed\": false, \"category\": \"interface\", \"message\": \"missing function: predict\"}, \"functional\": {\"passed\": false, \"message\": \"missing function: predict\"}, \"runtime_budget\": {\"passed\": true, \"runtime_seconds\": 0.003869175910949707, \"timeout_seconds\": 90}}, \"metrics\": {}, \"runtime_seconds\": 0.003869175910949707, \"errors\": [\"ValueError: missing function: predict\"], \"warnings\": [], \"stdout\": \"\", \"stderr\": \"\", \"repair_round\": 0, \"task_type\": \"binary_classification\", \"dataset_profile\": {}, \"resource_usage\": {\"code_hash\": \"549c6f01870463641f0182babd499c84e755512ffdb171c5f7990e86f6f77df9\"}, \"failure_type\": \"interface_failure\", \"root_cause\": \"ValueError: missing function: predict\"}, \"diagnosis\": {\"failure_type\": \"interface_failure\", \"root_cause\": \"missing function: predict\", \"triggering_condition\": \"The provided code does not implement the required function 'predict'.\", \"repair_strategy\": \"Implement the 'predict' function to ensure the code meets the interface requirements.\", \"reusable_lesson\": \"Always ensure that all required functions are implemented when developing machine learning models to avoid interface failures during validation.\", \"provider\": \"local_openai_compatible\", \"status\": \"ok\", \"observed_failure_type\": \"interface_failure\", \"observed_error\": \"ValueError: missing function: predict\", \"retrieved_experience_ids\": [\"failure_0f7edacd5655_algorithm_logistic_regression__llm_proposed_v1\", \"failure_2b2a3d8a9bac_algorithm_logistic_regression__llm_proposed_v1\", \"failure_6bde3f2c39b8_algorithm_random_forest__llm_proposed_v4\", \"failure_6bde3f2c39b8_algorithm_random_forest__llm_proposed_v3\", \"failure_6bde3f2c39b8_algorithm_random_forest__llm_proposed_v2\", \"failure_6bde3f2c39b8_algorithm_random_forest__llm_proposed_v1\", \"failure_9364e416a38a_algorithm_random_forest__llm_proposed_v1\"]}, \"metric_thresholds\": {\"roc_auc\": 0.8}, \"resource_constraints\": {}}",
+      "attempts": [],
+      "provider": "local_openai_compatible",
+      "status": "llm_repair_accepted",
+      "diagnosis": {
+        "failure_type": "interface_failure",
+        "root_cause": "missing function: predict",
+        "triggering_condition": "The provided code does not implement the required function 'predict'.",
+        "repair_strategy": "Implement the 'predict' function to ensure the code meets the interface requirements.",
+        "reusable_lesson": "Always ensure that all required functions are implemented when developing machine learning models to avoid interface failures during validation.",
+        "provider": "local_openai_compatible",
+        "status": "ok",
+        "observed_failure_type": "interface_failure",
+        "observed_error": "ValueError: missing function: predict",
+        "retrieved_experience_ids": [
+          "failure_0f7edacd5655_algorithm_logistic_regression__llm_proposed_v1",
+          "failure_2b2a3d8a9bac_algorithm_logistic_regression__llm_proposed_v1",
+          "failure_6bde3f2c39b8_algorithm_random_forest__llm_proposed_v4",
+          "failure_6bde3f2c39b8_algorithm_random_forest__llm_proposed_v3",
+          "failure_6bde3f2c39b8_algorithm_random_forest__llm_proposed_v2",
+          "failure_6bde3f2c39b8_algorithm_random_forest__llm_proposed_v1",
+          "failure_9364e416a38a_algorithm_random_forest__llm_proposed_v1"
+        ]
+      },
+      "strategy": "1) Implement the missing 'predict' function that matches the required interface. 2) Fix the typo in the predict function name. 3) Ensure all required functions (train, predict, evaluate, predict_proba, metadata) are properly defined. 4) Maintain the existing functionality while ensuring compliance with the host execution contract.",
+      "after_sha256": "1d726e5712c0c51d27d4d7aa37f7143ac13d1043a8133eb42b67796c7699b0ba",
+      "from_version": "53ac387cea5c_algorithm_gradient_boosting__llm_proposed_v1"
+    }
+  ]
+}

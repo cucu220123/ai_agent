@@ -1,0 +1,19 @@
+[LLM] {"call_id": "llm_0001", "purpose": "explanation", "status": "ok", "provider": "local_openai_compatible", "model": "Qwen2.5-14B-Instruct", "latency_ms": 14999.9, "token_usage": {"prompt_tokens": 9775, "completion_tokens": 306, "total_tokens": 10081}, "retry_count": 0}
+{
+  "first": {
+    "status": "passed",
+    "retained_hash_matched_review": true
+  },
+  "second": {
+    "status": "passed",
+    "retained_hash_matched_review": true
+  },
+  "repair": {
+    "status": "passed",
+    "corrected_with_real_llm": true
+  },
+  "cross": {
+    "status": "passed",
+    "corrected_with_real_llm": false
+  }
+}

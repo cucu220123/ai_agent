@@ -1,0 +1,127 @@
+import pandas as pd
+from sklearn.pipeline import Pipeline
+from sklearn.impute import SimpleImputer
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.compose import ColumnTransformer
+from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.metrics import roc_auc_score, f1_score, precision_score, recall_score
+from sklearn.model_selection import train_test_split
+
+class CoderAgent:
+    def __init__(self):
+        self.preprocessor = None
+        self.model = None
+
+    def train(self, train_df, target_col='churn', config=None):
+        if config is None:
+            config = {}
+        
+        # Extract features and target
+        X = train_df.drop(columns=[target_col])
+        y = train_df[target_col]
+        
+        # Define preprocessing steps
+        numeric_features = X.select_dtypes(include=['int64', 'float64']).columns
+        categorical_features = X.select_dtypes(include=['object']).columns
+        
+        numeric_transformer = Pipeline(steps=[
+            ('imputer', SimpleImputer(strategy='median'))
+        ])
+        
+        categorical_transformer = Pipeline(steps=[
+            ('imputer', SimpleImputer(strategy='most_frequent')),
+            ('onehot', OneHotEncoder(handle_unknown='ignore', sparse_output=False))
+        ])
+        
+        preprocessor = ColumnTransformer(
+            transformers=[
+                ('num', numeric_transformer, numeric_features),
+                ('cat', categorical_transformer, categorical_features)
+            ]
+        )
+        
+        # Train model
+        self.preprocessor = preprocessor.fit(X)
+        X_preprocessed = self.preprocessor.transform(X)
+        self.model = GradientBoostingClassifier(n_estimators=100, learning_rate=0.1, max_depth=3, random_state=config.get('random_state', 42)).fit(X_preprocessed, y)
+        
+        return {
+            'preprocessor': self.preprocessor,
+            'model': self.model
+        }
+
+    def predict(self, model, test_df):
+        if self.preprocessor is None or self.model is None:
+            raise ValueError("Model not trained. Call train method first.")
+        
+        # Extract features
+        X = test_df.drop(columns=['churn'])
+        
+        # Preprocess test data
+        X_preprocessed = self.preprocessor.transform(X)
+        
+        # Make predictions
+        predictions = model.predict(X_preprocessed)
+        probabilities = model.predict_proba(X_preprocessed)[:, 1]
+        
+        # Create result DataFrame
+        result_df = pd.DataFrame({
+            'predicted_churn': predictions,
+            'positive_class_probability': probabilities
+        })
+        
+        return result_df
+
+    def predict_proba(self, model, test_df):
+        if self.preprocessor is None or self.model is None:
+            raise ValueError("Model not trained. Call train method first.")
+        
+        # Extract features
+        X = test_df.drop(columns=['churn'])
+        
+        # Preprocess test data
+        X_preprocessed = self.preprocessor.transform(X)
+        
+        # Get probabilities
+        probabilities = model.predict_proba(X_preprocessed)[:, 1]
+        
+        return probabilities
+
+    def evaluate(self, model, test_df, target_col='churn'):
+        if self.preprocessor is None or self.model is None:
+            raise ValueError("Model not trained. Call train method first.")
+        
+        # Extract features and target
+        X = test_df.drop(columns=[target_col])
+        y = test_df[target_col]
+        
+        # Preprocess test data
+        X_preprocessed = self.preprocessor.transform(X)
+        
+        # Make predictions
+        y_pred = model.predict(X_preprocessed)
+        y_prob = model.predict_proba(X_preprocessed)[:, 1]
+        
+        # Calculate metrics
+        roc_auc = roc_auc_score(y, y_prob)
+        f1 = f1_score(y, y_pred)
+        precision = precision_score(y, y_pred)
+        recall = recall_score(y, y_pred)
+        
+        return {
+            'roc_auc': roc_auc,
+            'f1': f1,
+            'precision': precision,
+            'recall': recall
+        }
+
+    def metadata(self):
+        return {
+            'algorithm': 'Gradient Boosting',
+            'rationale': 'Gradient Boosting can handle class imbalance and provide robust performance with proper tuning.',
+            'evidence_ids': [
+                'source_reference_preprocessing_56f7c1fe',
+                'source_business_material_1c1a6f4d',
+                'preprocessingstrategy_build_preprocessor'
+            ]
+        }

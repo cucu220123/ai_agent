@@ -1,0 +1,64 @@
+{
+  "status": "passed",
+  "run_id": "53ac387cea5c",
+  "source_report_semantic_sha256": "4fd87af93841549dc6407a209a851f0cb47a898593fb8425042a8e016c9681fa",
+  "original_comparison_error": "Free-text historical rankings are not supported: Historical evidence shows Gradient Boosting outperforming other algorithms like Logistic Regression and Random Forest in similar tasks. Cite run IDs and compare only current candidates.",
+  "explanation": {
+    "selected_candidate": "algorithm_gradient_boosting__llm_proposed",
+    "why_this_plan": "Gradient Boosting was selected due to its demonstrated robust performance across various datasets and its effectiveness in handling class imbalance. Historical evidence indicates that Gradient Boosting has achieved high ROC-AUC scores and balanced accuracy on similar tasks.",
+    "historical_evidence_used": [
+      "6bde3f2c39b8:algorithm_gradient_boosting__llm_proposed:v1",
+      "9364e416a38a:algorithm_gradient_boosting__llm_proposed:v1"
+    ],
+    "candidate_comparison": {
+      "algorithm_gradient_boosting__llm_proposed": "Gradient Boosting has passed validation with an ROC-AUC of 0.8888, meeting the requirement of ROC-AUC >= 0.80."
+    },
+    "metric_claims": [
+      {
+        "candidate_id": "algorithm_gradient_boosting__llm_proposed",
+        "metric": "roc_auc",
+        "score": 0.8888223211229032
+      }
+    ],
+    "limitations": [
+      "The model's performance may be limited by the small size of the dataset (1200 rows), which could lead to overfitting or underfitting.",
+      "Further validation on additional datasets is recommended to confirm generalizability."
+    ],
+    "status": "ok",
+    "comparison_check": "passed",
+    "provider": "local_openai_compatible",
+    "attempts": 1
+  },
+  "llm_calls": [
+    {
+      "call_id": "llm_0001",
+      "purpose": "explanation",
+      "timestamp": "2026-09-07T17:56:00.919637+00:00",
+      "prompt_sha256": "4412c6aad28e75b0d299d1585f35e4f2aae38790af562f4ebd88718a470bff5d",
+      "prompt_chars": 25786,
+      "status": "ok",
+      "response_sha256": "7136634ae3a1c79ac65e1d248b2f083c2ecd0575fe8f057dd0b7a0d3a19fd367",
+      "provider": "local_openai_compatible",
+      "model": "Qwen2.5-14B-Instruct",
+      "latency_ms": 14999.9,
+      "token_usage": {
+        "prompt_tokens": 9775,
+        "completion_tokens": 306,
+        "total_tokens": 10081
+      },
+      "retry_count": 0,
+      "generation": {
+        "purpose": "explanation",
+        "max_new_tokens": 2600,
+        "requested_max_new_tokens": 2600,
+        "budget_adjustments": [],
+        "finish_reason": "stop",
+        "truncated": false,
+        "eos_reached": true,
+        "structured_transport": "json_schema",
+        "application_schema_validation": true
+      }
+    }
+  ],
+  "scope": "Structured numeric/ID checks and supported metric comparison patterns; other free prose still requires review. Original measured report is unchanged."
+}

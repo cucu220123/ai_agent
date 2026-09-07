@@ -1,0 +1,159 @@
+{
+  "schema_version": "1.1",
+  "generated_at": "2026-09-07T17:43:34.720788+00:00",
+  "source_sha256": "cfb44e2892368d86e2cd0d4a718bc695a21e4c9ba54ce1dab0f3133ac870133b",
+  "spec": {
+    "raw_description": "Classify English customer support text sentiment using column text and binary target label (0/1). This is text_classification, not tabular classification. Use TF-IDF with logistic regression, compare configurations. Report accuracy and weighted F1. Output prediction only; no probability requirement. Handle empty or missing text and unseen vocabulary. No minimum metric threshold.",
+    "domain": "Customer Support",
+    "capability_name": "Sentiment Classification for Customer Support Text",
+    "task_type": "text_classification",
+    "data_type": "text",
+    "target_column": "label",
+    "feature_columns": [
+      "text"
+    ],
+    "input_schema": {
+      "text": "string"
+    },
+    "output_schema": {
+      "prediction": "integer"
+    },
+    "dataset_profile": {
+      "dataset_id": "dataset_3b129777b0fa5fd4",
+      "sha256": "3b129777b0fa5fd4d7a55e80fda1c53641d176597fa8254ab0e5ed5f281daa77",
+      "path": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/text_demo.csv",
+      "rows": 16,
+      "row_count": 16,
+      "column_count": 2,
+      "columns": [
+        "text",
+        "label"
+      ],
+      "feature_columns": [
+        "text"
+      ],
+      "feature_count": 1,
+      "dtypes": {
+        "text": "object",
+        "label": "int64"
+      },
+      "missing_rates": {
+        "text": 0.0,
+        "label": 0.0
+      },
+      "numeric_fraction": 0.0,
+      "class_count": 2,
+      "class_balance": {
+        "1": 0.5625,
+        "0": 0.4375
+      },
+      "minority_rate": 0.4375,
+      "positive_rate": 0.5625
+    },
+    "metrics": [
+      "accuracy",
+      "f1"
+    ],
+    "metric_thresholds": {},
+    "output_columns": [
+      "prediction"
+    ],
+    "constraints": [
+      "Handle empty or missing text",
+      "Handle unseen vocabulary"
+    ],
+    "latency_requirement_ms": null,
+    "interpretability_requirement": null,
+    "resource_constraints": {},
+    "probability_output_required": false,
+    "class_imbalance": {
+      "positive_rate": 0.5625,
+      "is_imbalanced": false
+    },
+    "candidate_hints": [],
+    "uncertainty": [
+      "No specific minimum metric threshold provided"
+    ],
+    "understanding_confidence": 1.0,
+    "candidate_algorithms": [
+      "tfidf_logistic_regression"
+    ],
+    "dataset_path": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/text_demo.csv"
+  },
+  "plan": {
+    "algorithm_id": "algorithm_tfidf_logistic_regression__tfidf_unigram",
+    "algorithm_name": "TF-IDF Logistic Regression",
+    "rationale": "Selected due to its simplicity, interpretability, and suitability for text classification tasks.",
+    "preprocessing": [
+      "median imputation"
+    ],
+    "hyperparameters": {
+      "max_features": 3000,
+      "ngram_range": [
+        1,
+        2
+      ],
+      "max_iter": 100,
+      "C": 1.0,
+      "ngram_max": 1
+    },
+    "expected_metrics": {},
+    "priority": 0,
+    "base_algorithm_id": "algorithm_tfidf_logistic_regression",
+    "preprocessing_variant": "imputer=median;scaler=none",
+    "config_variant": "tfidf_unigram",
+    "search_score": 0.7200000000000001,
+    "evidence_ids": [
+      "source_text_material_84554427",
+      "source_reference_preprocessing_56f7c1fe",
+      "algorithm_tfidf_logistic_regression"
+    ],
+    "score_components": {
+      "performance_prior": 0.5,
+      "success": 0.05,
+      "stability": 0.02,
+      "exploration": 0.12,
+      "runtime_cost": -0.0,
+      "interpretability": 0,
+      "resource_fit": 0,
+      "llm_proposal": 0.03,
+      "historical_case_count": 0,
+      "llm_parameters": {
+        "C": 1.0,
+        "max_iter": 100
+      }
+    }
+  },
+  "code_ir": null,
+  "generation": {
+    "provider": "local_openai_compatible",
+    "status": "llm_code_accepted",
+    "attempts": [
+      {
+        "attempt": 1,
+        "status": "accepted",
+        "reason": "generated code semantic contract passed"
+      }
+    ],
+    "model": "Qwen3-Coder-30B-A3B-Instruct",
+    "token_usage": {
+      "prompt_tokens": 2649,
+      "completion_tokens": 553,
+      "total_tokens": 3202
+    },
+    "generation": {
+      "purpose": "code_generation",
+      "max_new_tokens": 6400,
+      "requested_max_new_tokens": 6400,
+      "budget_adjustments": [],
+      "finish_reason": "stop",
+      "truncated": false,
+      "eos_reached": true,
+      "structured_transport": "text",
+      "application_schema_validation": false
+    }
+  },
+  "final_code_sha256": "635af841cd2fff49f958d7781123dc28dc6a81e50095b40cd25c0793097e8cfb",
+  "final_version": "a054aaacecab_algorithm_tfidf_logistic_regression__tfidf_unigram_v4",
+  "validation_status": "passed"
+}

@@ -1,0 +1,67 @@
+{
+  "status": "passed",
+  "run_id": "53ac387cea5c",
+  "source_report_semantic_sha256": "4fd87af93841549dc6407a209a851f0cb47a898593fb8425042a8e016c9681fa",
+  "original_comparison_error": "Free-text historical rankings are not supported: cite historical run IDs without ranking algorithms. Limit measured comparisons to the current candidates.",
+  "explanation": {
+    "selected_candidate": "algorithm_gradient_boosting__llm_proposed",
+    "why_this_plan": "Gradient Boosting was selected due to its demonstrated robust performance across various datasets, particularly in handling class imbalance and achieving high ROC-AUC scores. Historical runs indicate that Gradient Boosting has passed validation with acceptable metrics, making it a reliable choice for this task.",
+    "historical_evidence_used": [
+      "6bde3f2c39b8:algorithm_gradient_boosting__llm_proposed:v1",
+      "9364e416a38a:algorithm_gradient_boosting__llm_proposed:v1",
+      "6bde3f2c39b8:algorithm_random_forest__llm_proposed:v4",
+      "failure_6bde3f2c39b8_algorithm_random_forest__llm_proposed_v4"
+    ],
+    "candidate_comparison": {
+      "algorithm_gradient_boosting__llm_proposed": "Gradient Boosting has shown consistent performance and reliability in previous validations."
+    },
+    "metric_claims": [
+      {
+        "candidate_id": "algorithm_gradient_boosting__llm_proposed",
+        "metric": "roc_auc",
+        "score": 0.8888223211229032
+      }
+    ],
+    "limitations": [
+      "Previous runs of Logistic Regression and Random Forest have either failed or shown inconsistent performance.",
+      "Gradient Boosting's success is based on limited historical evidence and may not generalize well to all datasets.",
+      "There is uncertainty regarding the exact hyperparameter settings that will yield optimal performance."
+    ],
+    "status": "ok",
+    "comparison_check": "passed",
+    "provider": "local_openai_compatible",
+    "attempts": 1
+  },
+  "llm_calls": [
+    {
+      "call_id": "llm_0001",
+      "purpose": "explanation",
+      "timestamp": "2026-09-07T17:49:20.005536+00:00",
+      "prompt_sha256": "8bb66551f8c53032b13853faaeed813fdf1711670ef33e92851c59c4eb10a5f5",
+      "prompt_chars": 25565,
+      "status": "ok",
+      "response_sha256": "9cf4d71cbcd1461dc0acf6b86b47ce445f0a404073692447b0f56ef9d95673ae",
+      "provider": "local_openai_compatible",
+      "model": "Qwen2.5-14B-Instruct",
+      "latency_ms": 25309.37,
+      "token_usage": {
+        "prompt_tokens": 9735,
+        "completion_tokens": 353,
+        "total_tokens": 10088
+      },
+      "retry_count": 0,
+      "generation": {
+        "purpose": "explanation",
+        "max_new_tokens": 2600,
+        "requested_max_new_tokens": 2600,
+        "budget_adjustments": [],
+        "finish_reason": "stop",
+        "truncated": false,
+        "eos_reached": true,
+        "structured_transport": "json_schema",
+        "application_schema_validation": true
+      }
+    }
+  ],
+  "scope": "Structured numeric/ID checks and supported metric comparison patterns; other free prose still requires review. Original measured report is unchanged."
+}

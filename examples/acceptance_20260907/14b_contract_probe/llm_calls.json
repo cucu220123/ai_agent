@@ -1,0 +1,29 @@
+[
+  {
+    "call_id": "llm_0001",
+    "purpose": "code_generation",
+    "timestamp": "2026-09-07T15:53:13.511678+00:00",
+    "prompt_sha256": "4e83d3a61d97f79b5b67ecdf74bf10148c377071d4ef07390354dd12160e0227",
+    "prompt_chars": 8838,
+    "status": "ok",
+    "response_sha256": "0a00b9fa85a76fafae8d269f6af688697dba4055c6220585b6d09191dd1772aa",
+    "provider": "local_openai_compatible",
+    "model": "Qwen2.5-14B-Instruct",
+    "latency_ms": 44871.75,
+    "token_usage": {
+      "prompt_tokens": 2241,
+      "completion_tokens": 693,
+      "total_tokens": 2934
+    },
+    "retry_count": 0,
+    "generation": {
+      "purpose": "code_generation",
+      "max_new_tokens": 6400,
+      "finish_reason": "stop",
+      "truncated": false,
+      "eos_reached": true,
+      "structured_transport": "text",
+      "application_schema_validation": false
+    }
+  }
+]
