@@ -1,9 +1,85 @@
 {
   "nodes_before": 0,
   "edges_before": 0,
-  "nodes_after": 13,
-  "edges_after": 12,
+  "nodes_after": 16,
+  "edges_after": 14,
   "extracted_sources": [
+    {
+      "entities": [],
+      "relations": [],
+      "summary": "deterministic extraction",
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/self_repair_demo/algorithm.py"
+      },
+      "deterministic_facts": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/self_repair_demo/algorithm.py",
+        "kind": "python",
+        "module_docstring": "Generated algorithm for: 客户流失预测.",
+        "functions": [
+          {
+            "name": "_build_pipeline",
+            "line": 19,
+            "signature": "_build_pipeline(train_df, target_col, config)",
+            "doc": "",
+            "source": "def _build_pipeline(train_df: pd.DataFrame, target_col: str, config: Optional[dict] = None):\n    config = config or {}\n    X = train_df.drop(columns=[target_col])\n    numeric = X.select_dtypes(include=[np.number]).columns.tolist()\n    categorical = [c for c in X.columns if c not in numeric]\n    numeric_steps = [(\"impute\", SimpleImputer(strategy=\"median\"))]\n    numeric_steps.append((\"scale\", StandardScaler()))\n    categorical_steps = [\n        (\"impute\", SimpleImputer(strategy=\"most_frequent\")),\n        (\"onehot\", OneHotEncoder(handle_unknown=\"ignore\", sparse_output=False)),\n    ]\n    transformers = []\n    if numeric:\n        transformers.append((\"numeric\", Pipeline(numeric_steps), numeric))\n    if categorical:\n        transformers.append((\"categorical\", Pipeline(categorical_steps), categorical))\n    preprocessor = ColumnTransformer(transformers=transformers, remainder=\"drop\")\n    estimator = LogisticRegression(C=1.0, max_iter=500, random_state=42)\n    return Pipeline([(\"preprocessor\", preprocessor), (\"model\", estimator)])"
+          },
+          {
+            "name": "train",
+            "line": 40,
+            "signature": "train(train_df, target_col, config)",
+            "doc": "",
+            "source": "def train(train_df: pd.DataFrame, target_col: str, config: Optional[dict] = None):\n    if target_col not in train_df.columns:\n        raise ValueError(f\"target column '{target_col}' not found\")\n    if len(train_df) < 10:\n        raise ValueError(\"at least 10 rows are required\")\n    model = _build_pipeline(train_df, target_col, config)\n    model.fit(train_df.drop(columns=[target_col]), train_df[target_col].astype(int))\n    model._ai_factory_threshold = float((config or {}).get(\"threshold\", 0.5))\n    return model"
+          },
+          {
+            "name": "predict",
+            "line": 51,
+            "signature": "predict(model, test_df)",
+            "doc": "",
+            "source": "def predict(model, test_df: pd.DataFrame) -> pd.DataFrame:\n    probability = model.predict_proba(test_df)[:, 1]\n    prediction = (probability >= float(getattr(model, \"_ai_factory_threshold\", 0.5))).astype(int)\n    return pd.DataFrame({\"prediction\": prediction.astype(int), \"probability\": probability.astype(float)})"
+          },
+          {
+            "name": "evaluate",
+            "line": 57,
+            "signature": "evaluate(model, test_df, target_col)",
+            "doc": "",
+            "source": "def evaluate(model, test_df: pd.DataFrame, target_col: str) -> dict:\n    if target_col not in test_df.columns:\n        raise ValueError(f\"target column '{target_col}' not found\")\n    y_true = test_df[target_col].astype(int)\n    pred = predict(model, test_df.drop(columns=[target_col]))\n    precision_curve, recall_curve, thresholds = precision_recall_curve(y_true, pred[\"probability\"])\n    f1_curve = 2 * precision_curve * recall_curve / np.maximum(precision_curve + recall_curve, 1e-12)\n    best_idx = int(np.nanargmax(f1_curve)) if len(f1_curve) else 0\n    best_threshold = float(thresholds[min(best_idx, len(thresholds) - 1)]) if len(thresholds) else 0.5\n    return {\n        \"roc_auc\": float(roc_auc_score(y_true, pred[\"probability\"])),\n        \"pr_auc\": float(average_precision_score(y_true, pred[\"probability\"])),\n        \"f1\": float(f1_score(y_true, pred[\"prediction\"], zero_division=0)),\n        \"precision\": float(precision_score(y_true, pred[\"prediction\"], zero_division=0)),\n        \"recall\": float(recall_score(y_true, pred[\"prediction\"], zero_division=0)),\n        \"balanced_accuracy\": float(balanced_accuracy_score(y_true, pred[\"prediction\"])),\n        \"best_f1\": float(f1_curve[best_idx]) if len(f1_curve) else 0.0,\n        \"best_threshold\": best_threshold,\n    }"
+          }
+        ],
+        "classes": [],
+        "imports": [
+          "__future__",
+          "numpy",
+          "pandas",
+          "sklearn.compose",
+          "sklearn.ensemble",
+          "sklearn.impute",
+          "sklearn.linear_model",
+          "sklearn.metrics",
+          "sklearn.pipeline",
+          "sklearn.preprocessing",
+          "typing"
+        ],
+        "has_algorithm_interface": true,
+        "inferred_task_types": [
+          "binary_classification"
+        ],
+        "character_count": 3841
+      },
+      "extraction_trace": {
+        "provider": "mock",
+        "status": "deterministic_fallback",
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/self_repair_demo/algorithm.py",
+        "chunk_count": 4,
+        "chunks": [],
+        "fallback_reason": "no chunk passed strict extraction contract"
+      },
+      "id": "source_algorithm_7277596c"
+    },
+    {
+      "id": "target_churn",
+      "name": "churn",
+      "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md"
+    },
     {
       "id": "feature_churn",
       "name": "churn",
@@ -308,9 +384,9 @@
   ],
   "retrieval_trace": {
     "strategy": "hybrid_graph_rag",
-    "graph_anchors": 4,
-    "graph_nodes": 13,
-    "graph_edges": 12,
+    "graph_anchors": 7,
+    "graph_nodes": 16,
+    "graph_edges": 14,
     "semantic_documents": 8,
     "semantic_backend": "tfidf",
     "semantic_fallback_error": null,
@@ -324,6 +400,14 @@
         "score": 3.0
       },
       {
+        "id": "source_algorithm_7277596c",
+        "score": 2.0
+      },
+      {
+        "id": "algorithm_extracted_algorithm",
+        "score": 2.0
+      },
+      {
         "id": "feature_age",
         "score": 1.0
       },
@@ -333,6 +417,10 @@
       },
       {
         "id": "feature_churn",
+        "score": 1.0
+      },
+      {
+        "id": "target_churn",
         "score": 1.0
       }
     ],
@@ -534,6 +622,136 @@
         }
       },
       {
+        "id": "source_algorithm_7277596c",
+        "score": 2.0,
+        "type": "SourceDocument",
+        "summary": "deterministic extraction",
+        "entities": [],
+        "relations": [],
+        "provenance": {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/self_repair_demo/algorithm.py"
+        },
+        "deterministic_facts": {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/self_repair_demo/algorithm.py",
+          "kind": "python",
+          "module_docstring": "Generated algorithm for: 客户流失预测.",
+          "functions": [
+            {
+              "name": "_build_pipeline",
+              "line": 19,
+              "signature": "_build_pipeline(train_df, target_col, config)",
+              "doc": "",
+              "source": "def _build_pipeline(train_df: pd.DataFrame, target_col: str, config: Optional[dict] = None):\n    config = config or {}\n    X = train_df.drop(columns=[target_col])\n    numeric = X.select_dtypes(include=[np.number]).columns.tolist()\n    categorical = [c for c in X.columns if c not in numeric]\n    numeric_steps = [(\"impute\", SimpleImputer(strategy=\"median\"))]\n    numeric_steps.append((\"scale\", StandardScaler()))\n    categorical_steps = [\n        (\"impute\", SimpleImputer(strategy=\"most_frequent\")),\n        (\"onehot\", OneHotEncoder(handle_unknown=\"ignore\", sparse_output=False)),\n    ]\n    transformers = []\n    if numeric:\n        transformers.append((\"numeric\", Pipeline(numeric_steps), numeric))\n    if categorical:\n        transformers.append((\"categorical\", Pipeline(categorical_steps), categorical))\n    preprocessor = ColumnTransformer(transformers=transformers, remainder=\"drop\")\n    estimator = LogisticRegression(C=1.0, max_iter=500, random_state=42)\n    return Pipeline([(\"preprocessor\", preprocessor), (\"model\", estimator)])"
+            },
+            {
+              "name": "train",
+              "line": 40,
+              "signature": "train(train_df, target_col, config)",
+              "doc": "",
+              "source": "def train(train_df: pd.DataFrame, target_col: str, config: Optional[dict] = None):\n    if target_col not in train_df.columns:\n        raise ValueError(f\"target column '{target_col}' not found\")\n    if len(train_df) < 10:\n        raise ValueError(\"at least 10 rows are required\")\n    model = _build_pipeline(train_df, target_col, config)\n    model.fit(train_df.drop(columns=[target_col]), train_df[target_col].astype(int))\n    model._ai_factory_threshold = float((config or {}).get(\"threshold\", 0.5))\n    return model"
+            },
+            {
+              "name": "predict",
+              "line": 51,
+              "signature": "predict(model, test_df)",
+              "doc": "",
+              "source": "def predict(model, test_df: pd.DataFrame) -> pd.DataFrame:\n    probability = model.predict_proba(test_df)[:, 1]\n    prediction = (probability >= float(getattr(model, \"_ai_factory_threshold\", 0.5))).astype(int)\n    return pd.DataFrame({\"prediction\": prediction.astype(int), \"probability\": probability.astype(float)})"
+            },
+            {
+              "name": "evaluate",
+              "line": 57,
+              "signature": "evaluate(model, test_df, target_col)",
+              "doc": "",
+              "source": "def evaluate(model, test_df: pd.DataFrame, target_col: str) -> dict:\n    if target_col not in test_df.columns:\n        raise ValueError(f\"target column '{target_col}' not found\")\n    y_true = test_df[target_col].astype(int)\n    pred = predict(model, test_df.drop(columns=[target_col]))\n    precision_curve, recall_curve, thresholds = precision_recall_curve(y_true, pred[\"probability\"])\n    f1_curve = 2 * precision_curve * recall_curve / np.maximum(precision_curve + recall_curve, 1e-12)\n    best_idx = int(np.nanargmax(f1_curve)) if len(f1_curve) else 0\n    best_threshold = float(thresholds[min(best_idx, len(thresholds) - 1)]) if len(thresholds) else 0.5\n    return {\n        \"roc_auc\": float(roc_auc_score(y_true, pred[\"probability\"])),\n        \"pr_auc\": float(average_precision_score(y_true, pred[\"probability\"])),\n        \"f1\": float(f1_score(y_true, pred[\"prediction\"], zero_division=0)),\n        \"precision\": float(precision_score(y_true, pred[\"prediction\"], zero_division=0)),\n        \"recall\": float(recall_score(y_true, pred[\"prediction\"], zero_division=0)),\n        \"balanced_accuracy\": float(balanced_accuracy_score(y_true, pred[\"prediction\"])),\n        \"best_f1\": float(f1_curve[best_idx]) if len(f1_curve) else 0.0,\n        \"best_threshold\": best_threshold,\n    }"
+            }
+          ],
+          "classes": [],
+          "imports": [
+            "__future__",
+            "numpy",
+            "pandas",
+            "sklearn.compose",
+            "sklearn.ensemble",
+            "sklearn.impute",
+            "sklearn.linear_model",
+            "sklearn.metrics",
+            "sklearn.pipeline",
+            "sklearn.preprocessing",
+            "typing"
+          ],
+          "has_algorithm_interface": true,
+          "inferred_task_types": [
+            "binary_classification"
+          ],
+          "character_count": 3841
+        },
+        "extraction_trace": {
+          "provider": "mock",
+          "status": "deterministic_fallback",
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/self_repair_demo/algorithm.py",
+          "chunk_count": 4,
+          "chunks": [],
+          "fallback_reason": "no chunk passed strict extraction contract"
+        }
+      },
+      {
+        "id": "algorithm_extracted_algorithm",
+        "score": 2.0,
+        "type": "Algorithm",
+        "name": "algorithm",
+        "task_types": [
+          "binary_classification"
+        ],
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/self_repair_demo/algorithm.py",
+        "extracted_functions": [
+          {
+            "name": "_build_pipeline",
+            "line": 19,
+            "signature": "_build_pipeline(train_df, target_col, config)",
+            "doc": "",
+            "source": "def _build_pipeline(train_df: pd.DataFrame, target_col: str, config: Optional[dict] = None):\n    config = config or {}\n    X = train_df.drop(columns=[target_col])\n    numeric = X.select_dtypes(include=[np.number]).columns.tolist()\n    categorical = [c for c in X.columns if c not in numeric]\n    numeric_steps = [(\"impute\", SimpleImputer(strategy=\"median\"))]\n    numeric_steps.append((\"scale\", StandardScaler()))\n    categorical_steps = [\n        (\"impute\", SimpleImputer(strategy=\"most_frequent\")),\n        (\"onehot\", OneHotEncoder(handle_unknown=\"ignore\", sparse_output=False)),\n    ]\n    transformers = []\n    if numeric:\n        transformers.append((\"numeric\", Pipeline(numeric_steps), numeric))\n    if categorical:\n        transformers.append((\"categorical\", Pipeline(categorical_steps), categorical))\n    preprocessor = ColumnTransformer(transformers=transformers, remainder=\"drop\")\n    estimator = LogisticRegression(C=1.0, max_iter=500, random_state=42)\n    return Pipeline([(\"preprocessor\", preprocessor), (\"model\", estimator)])"
+          },
+          {
+            "name": "train",
+            "line": 40,
+            "signature": "train(train_df, target_col, config)",
+            "doc": "",
+            "source": "def train(train_df: pd.DataFrame, target_col: str, config: Optional[dict] = None):\n    if target_col not in train_df.columns:\n        raise ValueError(f\"target column '{target_col}' not found\")\n    if len(train_df) < 10:\n        raise ValueError(\"at least 10 rows are required\")\n    model = _build_pipeline(train_df, target_col, config)\n    model.fit(train_df.drop(columns=[target_col]), train_df[target_col].astype(int))\n    model._ai_factory_threshold = float((config or {}).get(\"threshold\", 0.5))\n    return model"
+          },
+          {
+            "name": "predict",
+            "line": 51,
+            "signature": "predict(model, test_df)",
+            "doc": "",
+            "source": "def predict(model, test_df: pd.DataFrame) -> pd.DataFrame:\n    probability = model.predict_proba(test_df)[:, 1]\n    prediction = (probability >= float(getattr(model, \"_ai_factory_threshold\", 0.5))).astype(int)\n    return pd.DataFrame({\"prediction\": prediction.astype(int), \"probability\": probability.astype(float)})"
+          },
+          {
+            "name": "evaluate",
+            "line": 57,
+            "signature": "evaluate(model, test_df, target_col)",
+            "doc": "",
+            "source": "def evaluate(model, test_df: pd.DataFrame, target_col: str) -> dict:\n    if target_col not in test_df.columns:\n        raise ValueError(f\"target column '{target_col}' not found\")\n    y_true = test_df[target_col].astype(int)\n    pred = predict(model, test_df.drop(columns=[target_col]))\n    precision_curve, recall_curve, thresholds = precision_recall_curve(y_true, pred[\"probability\"])\n    f1_curve = 2 * precision_curve * recall_curve / np.maximum(precision_curve + recall_curve, 1e-12)\n    best_idx = int(np.nanargmax(f1_curve)) if len(f1_curve) else 0\n    best_threshold = float(thresholds[min(best_idx, len(thresholds) - 1)]) if len(thresholds) else 0.5\n    return {\n        \"roc_auc\": float(roc_auc_score(y_true, pred[\"probability\"])),\n        \"pr_auc\": float(average_precision_score(y_true, pred[\"probability\"])),\n        \"f1\": float(f1_score(y_true, pred[\"prediction\"], zero_division=0)),\n        \"precision\": float(precision_score(y_true, pred[\"prediction\"], zero_division=0)),\n        \"recall\": float(recall_score(y_true, pred[\"prediction\"], zero_division=0)),\n        \"balanced_accuracy\": float(balanced_accuracy_score(y_true, pred[\"prediction\"])),\n        \"best_f1\": float(f1_curve[best_idx]) if len(f1_curve) else 0.0,\n        \"best_threshold\": best_threshold,\n    }"
+          }
+        ],
+        "imports": [
+          "__future__",
+          "numpy",
+          "pandas",
+          "sklearn.compose",
+          "sklearn.ensemble",
+          "sklearn.impute",
+          "sklearn.linear_model",
+          "sklearn.metrics",
+          "sklearn.pipeline",
+          "sklearn.preprocessing",
+          "typing"
+        ],
+        "historical_metrics": {},
+        "provenance": {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/self_repair_demo/algorithm.py"
+        }
+      },
+      {
         "id": "metric_f1",
         "score": 1.5,
         "type": "Metric",
@@ -664,6 +882,13 @@
           "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
           "evidence_span": "churn"
         }
+      },
+      {
+        "id": "target_churn",
+        "score": 1.5,
+        "type": "Target",
+        "name": "churn",
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md"
       }
     ],
     "edges": [
@@ -798,6 +1023,23 @@
           "evidence_span": "churn",
           "confidence": 0.7
         }
+      },
+      {
+        "source": "source_business_material_cef5e946",
+        "target": "target_churn",
+        "relation": "SUPPORTS",
+        "key": 0,
+        "provenance": {}
+      },
+      {
+        "source": "source_algorithm_7277596c",
+        "target": "algorithm_extracted_algorithm",
+        "relation": "SUPPORTS",
+        "key": 0,
+        "provenance": {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/self_repair_demo/algorithm.py",
+          "kind": "ast"
+        }
       }
     ],
     "serialized": {
@@ -845,7 +1087,18 @@
         "domain": "customer_churn",
         "target": "churn"
       },
-      "candidate_algorithms": [],
+      "candidate_algorithms": [
+        {
+          "algorithm": "algorithm",
+          "algorithm_id": "algorithm_extracted_algorithm",
+          "applicable_conditions": [],
+          "historical_runs": [],
+          "failure_experiences": [],
+          "evidence_node_ids": [
+            "source_algorithm_7277596c"
+          ]
+        }
+      ],
       "nodes": [
         {
           "id": "source_business_material_cef5e946",
@@ -1043,6 +1296,136 @@
           }
         },
         {
+          "id": "source_algorithm_7277596c",
+          "score": 2.0,
+          "type": "SourceDocument",
+          "summary": "deterministic extraction",
+          "entities": [],
+          "relations": [],
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/self_repair_demo/algorithm.py"
+          },
+          "deterministic_facts": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/self_repair_demo/algorithm.py",
+            "kind": "python",
+            "module_docstring": "Generated algorithm for: 客户流失预测.",
+            "functions": [
+              {
+                "name": "_build_pipeline",
+                "line": 19,
+                "signature": "_build_pipeline(train_df, target_col, config)",
+                "doc": "",
+                "source": "def _build_pipeline(train_df: pd.DataFrame, target_col: str, config: Optional[dict] = None):\n    config = config or {}\n    X = train_df.drop(columns=[target_col])\n    numeric = X.select_dtypes(include=[np.number]).columns.tolist()\n    categorical = [c for c in X.columns if c not in numeric]\n    numeric_steps = [(\"impute\", SimpleImputer(strategy=\"median\"))]\n    numeric_steps.append((\"scale\", StandardScaler()))\n    categorical_steps = [\n        (\"impute\", SimpleImputer(strategy=\"most_frequent\")),\n        (\"onehot\", OneHotEncoder(handle_unknown=\"ignore\", sparse_output=False)),\n    ]\n    transformers = []\n    if numeric:\n        transformers.append((\"numeric\", Pipeline(numeric_steps), numeric))\n    if categorical:\n        transformers.append((\"categorical\", Pipeline(categorical_steps), categorical))\n    preprocessor = ColumnTransformer(transformers=transformers, remainder=\"drop\")\n    estimator = LogisticRegression(C=1.0, max_iter=500, random_state=42)\n    return Pipeline([(\"preprocessor\", preprocessor), (\"model\", estimator)])"
+              },
+              {
+                "name": "train",
+                "line": 40,
+                "signature": "train(train_df, target_col, config)",
+                "doc": "",
+                "source": "def train(train_df: pd.DataFrame, target_col: str, config: Optional[dict] = None):\n    if target_col not in train_df.columns:\n        raise ValueError(f\"target column '{target_col}' not found\")\n    if len(train_df) < 10:\n        raise ValueError(\"at least 10 rows are required\")\n    model = _build_pipeline(train_df, target_col, config)\n    model.fit(train_df.drop(columns=[target_col]), train_df[target_col].astype(int))\n    model._ai_factory_threshold = float((config or {}).get(\"threshold\", 0.5))\n    return model"
+              },
+              {
+                "name": "predict",
+                "line": 51,
+                "signature": "predict(model, test_df)",
+                "doc": "",
+                "source": "def predict(model, test_df: pd.DataFrame) -> pd.DataFrame:\n    probability = model.predict_proba(test_df)[:, 1]\n    prediction = (probability >= float(getattr(model, \"_ai_factory_threshold\", 0.5))).astype(int)\n    return pd.DataFrame({\"prediction\": prediction.astype(int), \"probability\": probability.astype(float)})"
+              },
+              {
+                "name": "evaluate",
+                "line": 57,
+                "signature": "evaluate(model, test_df, target_col)",
+                "doc": "",
+                "source": "def evaluate(model, test_df: pd.DataFrame, target_col: str) -> dict:\n    if target_col not in test_df.columns:\n        raise ValueError(f\"target column '{target_col}' not found\")\n    y_true = test_df[target_col].astype(int)\n    pred = predict(model, test_df.drop(columns=[target_col]))\n    precision_curve, recall_curve, thresholds = precision_recall_curve(y_true, pred[\"probability\"])\n    f1_curve = 2 * precision_curve * recall_curve / np.maximum(precision_curve + recall_curve, 1e-12)\n    best_idx = int(np.nanargmax(f1_curve)) if len(f1_curve) else 0\n    best_threshold = float(thresholds[min(best_idx, len(thresholds) - 1)]) if len(thresholds) else 0.5\n    return {\n        \"roc_auc\": float(roc_auc_score(y_true, pred[\"probability\"])),\n        \"pr_auc\": float(average_precision_score(y_true, pred[\"probability\"])),\n        \"f1\": float(f1_score(y_true, pred[\"prediction\"], zero_division=0)),\n        \"precision\": float(precision_score(y_true, pred[\"prediction\"], zero_division=0)),\n        \"recall\": float(recall_score(y_true, pred[\"prediction\"], zero_division=0)),\n        \"balanced_accuracy\": float(balanced_accuracy_score(y_true, pred[\"prediction\"])),\n        \"best_f1\": float(f1_curve[best_idx]) if len(f1_curve) else 0.0,\n        \"best_threshold\": best_threshold,\n    }"
+              }
+            ],
+            "classes": [],
+            "imports": [
+              "__future__",
+              "numpy",
+              "pandas",
+              "sklearn.compose",
+              "sklearn.ensemble",
+              "sklearn.impute",
+              "sklearn.linear_model",
+              "sklearn.metrics",
+              "sklearn.pipeline",
+              "sklearn.preprocessing",
+              "typing"
+            ],
+            "has_algorithm_interface": true,
+            "inferred_task_types": [
+              "binary_classification"
+            ],
+            "character_count": 3841
+          },
+          "extraction_trace": {
+            "provider": "mock",
+            "status": "deterministic_fallback",
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/self_repair_demo/algorithm.py",
+            "chunk_count": 4,
+            "chunks": [],
+            "fallback_reason": "no chunk passed strict extraction contract"
+          }
+        },
+        {
+          "id": "algorithm_extracted_algorithm",
+          "score": 2.0,
+          "type": "Algorithm",
+          "name": "algorithm",
+          "task_types": [
+            "binary_classification"
+          ],
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/self_repair_demo/algorithm.py",
+          "extracted_functions": [
+            {
+              "name": "_build_pipeline",
+              "line": 19,
+              "signature": "_build_pipeline(train_df, target_col, config)",
+              "doc": "",
+              "source": "def _build_pipeline(train_df: pd.DataFrame, target_col: str, config: Optional[dict] = None):\n    config = config or {}\n    X = train_df.drop(columns=[target_col])\n    numeric = X.select_dtypes(include=[np.number]).columns.tolist()\n    categorical = [c for c in X.columns if c not in numeric]\n    numeric_steps = [(\"impute\", SimpleImputer(strategy=\"median\"))]\n    numeric_steps.append((\"scale\", StandardScaler()))\n    categorical_steps = [\n        (\"impute\", SimpleImputer(strategy=\"most_frequent\")),\n        (\"onehot\", OneHotEncoder(handle_unknown=\"ignore\", sparse_output=False)),\n    ]\n    transformers = []\n    if numeric:\n        transformers.append((\"numeric\", Pipeline(numeric_steps), numeric))\n    if categorical:\n        transformers.append((\"categorical\", Pipeline(categorical_steps), categorical))\n    preprocessor = ColumnTransformer(transformers=transformers, remainder=\"drop\")\n    estimator = LogisticRegression(C=1.0, max_iter=500, random_state=42)\n    return Pipeline([(\"preprocessor\", preprocessor), (\"model\", estimator)])"
+            },
+            {
+              "name": "train",
+              "line": 40,
+              "signature": "train(train_df, target_col, config)",
+              "doc": "",
+              "source": "def train(train_df: pd.DataFrame, target_col: str, config: Optional[dict] = None):\n    if target_col not in train_df.columns:\n        raise ValueError(f\"target column '{target_col}' not found\")\n    if len(train_df) < 10:\n        raise ValueError(\"at least 10 rows are required\")\n    model = _build_pipeline(train_df, target_col, config)\n    model.fit(train_df.drop(columns=[target_col]), train_df[target_col].astype(int))\n    model._ai_factory_threshold = float((config or {}).get(\"threshold\", 0.5))\n    return model"
+            },
+            {
+              "name": "predict",
+              "line": 51,
+              "signature": "predict(model, test_df)",
+              "doc": "",
+              "source": "def predict(model, test_df: pd.DataFrame) -> pd.DataFrame:\n    probability = model.predict_proba(test_df)[:, 1]\n    prediction = (probability >= float(getattr(model, \"_ai_factory_threshold\", 0.5))).astype(int)\n    return pd.DataFrame({\"prediction\": prediction.astype(int), \"probability\": probability.astype(float)})"
+            },
+            {
+              "name": "evaluate",
+              "line": 57,
+              "signature": "evaluate(model, test_df, target_col)",
+              "doc": "",
+              "source": "def evaluate(model, test_df: pd.DataFrame, target_col: str) -> dict:\n    if target_col not in test_df.columns:\n        raise ValueError(f\"target column '{target_col}' not found\")\n    y_true = test_df[target_col].astype(int)\n    pred = predict(model, test_df.drop(columns=[target_col]))\n    precision_curve, recall_curve, thresholds = precision_recall_curve(y_true, pred[\"probability\"])\n    f1_curve = 2 * precision_curve * recall_curve / np.maximum(precision_curve + recall_curve, 1e-12)\n    best_idx = int(np.nanargmax(f1_curve)) if len(f1_curve) else 0\n    best_threshold = float(thresholds[min(best_idx, len(thresholds) - 1)]) if len(thresholds) else 0.5\n    return {\n        \"roc_auc\": float(roc_auc_score(y_true, pred[\"probability\"])),\n        \"pr_auc\": float(average_precision_score(y_true, pred[\"probability\"])),\n        \"f1\": float(f1_score(y_true, pred[\"prediction\"], zero_division=0)),\n        \"precision\": float(precision_score(y_true, pred[\"prediction\"], zero_division=0)),\n        \"recall\": float(recall_score(y_true, pred[\"prediction\"], zero_division=0)),\n        \"balanced_accuracy\": float(balanced_accuracy_score(y_true, pred[\"prediction\"])),\n        \"best_f1\": float(f1_curve[best_idx]) if len(f1_curve) else 0.0,\n        \"best_threshold\": best_threshold,\n    }"
+            }
+          ],
+          "imports": [
+            "__future__",
+            "numpy",
+            "pandas",
+            "sklearn.compose",
+            "sklearn.ensemble",
+            "sklearn.impute",
+            "sklearn.linear_model",
+            "sklearn.metrics",
+            "sklearn.pipeline",
+            "sklearn.preprocessing",
+            "typing"
+          ],
+          "historical_metrics": {},
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/self_repair_demo/algorithm.py"
+          }
+        },
+        {
           "id": "metric_f1",
           "score": 1.5,
           "type": "Metric",
@@ -1173,6 +1556,13 @@
             "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
             "evidence_span": "churn"
           }
+        },
+        {
+          "id": "target_churn",
+          "score": 1.5,
+          "type": "Target",
+          "name": "churn",
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md"
         }
       ],
       "edges": [
@@ -1307,12 +1697,139 @@
             "evidence_span": "churn",
             "confidence": 0.7
           }
+        },
+        {
+          "source": "source_business_material_cef5e946",
+          "target": "target_churn",
+          "relation": "SUPPORTS",
+          "key": 0,
+          "provenance": {}
+        },
+        {
+          "source": "source_algorithm_7277596c",
+          "target": "algorithm_extracted_algorithm",
+          "relation": "SUPPORTS",
+          "key": 0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/self_repair_demo/algorithm.py",
+            "kind": "ast"
+          }
         }
       ]
     },
-    "text": "Task: binary_classification / customer_churn"
+    "text": "Task: binary_classification / customer_churn\nAlgorithm algorithm (algorithm_extracted_algorithm)"
   },
-  "candidate_algorithms": [],
-  "git_commit": "267cbcc72569bfe004673b61e36d2f395e551e1e",
-  "generated_at": "2026-09-07T08:45:29Z"
+  "candidate_algorithms": [
+    {
+      "id": "algorithm_extracted_algorithm",
+      "name": "algorithm",
+      "task_types": [
+        "binary_classification"
+      ],
+      "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/self_repair_demo/algorithm.py",
+      "extracted_functions": [
+        {
+          "name": "_build_pipeline",
+          "line": 19,
+          "signature": "_build_pipeline(train_df, target_col, config)",
+          "doc": "",
+          "source": "def _build_pipeline(train_df: pd.DataFrame, target_col: str, config: Optional[dict] = None):\n    config = config or {}\n    X = train_df.drop(columns=[target_col])\n    numeric = X.select_dtypes(include=[np.number]).columns.tolist()\n    categorical = [c for c in X.columns if c not in numeric]\n    numeric_steps = [(\"impute\", SimpleImputer(strategy=\"median\"))]\n    numeric_steps.append((\"scale\", StandardScaler()))\n    categorical_steps = [\n        (\"impute\", SimpleImputer(strategy=\"most_frequent\")),\n        (\"onehot\", OneHotEncoder(handle_unknown=\"ignore\", sparse_output=False)),\n    ]\n    transformers = []\n    if numeric:\n        transformers.append((\"numeric\", Pipeline(numeric_steps), numeric))\n    if categorical:\n        transformers.append((\"categorical\", Pipeline(categorical_steps), categorical))\n    preprocessor = ColumnTransformer(transformers=transformers, remainder=\"drop\")\n    estimator = LogisticRegression(C=1.0, max_iter=500, random_state=42)\n    return Pipeline([(\"preprocessor\", preprocessor), (\"model\", estimator)])"
+        },
+        {
+          "name": "train",
+          "line": 40,
+          "signature": "train(train_df, target_col, config)",
+          "doc": "",
+          "source": "def train(train_df: pd.DataFrame, target_col: str, config: Optional[dict] = None):\n    if target_col not in train_df.columns:\n        raise ValueError(f\"target column '{target_col}' not found\")\n    if len(train_df) < 10:\n        raise ValueError(\"at least 10 rows are required\")\n    model = _build_pipeline(train_df, target_col, config)\n    model.fit(train_df.drop(columns=[target_col]), train_df[target_col].astype(int))\n    model._ai_factory_threshold = float((config or {}).get(\"threshold\", 0.5))\n    return model"
+        },
+        {
+          "name": "predict",
+          "line": 51,
+          "signature": "predict(model, test_df)",
+          "doc": "",
+          "source": "def predict(model, test_df: pd.DataFrame) -> pd.DataFrame:\n    probability = model.predict_proba(test_df)[:, 1]\n    prediction = (probability >= float(getattr(model, \"_ai_factory_threshold\", 0.5))).astype(int)\n    return pd.DataFrame({\"prediction\": prediction.astype(int), \"probability\": probability.astype(float)})"
+        },
+        {
+          "name": "evaluate",
+          "line": 57,
+          "signature": "evaluate(model, test_df, target_col)",
+          "doc": "",
+          "source": "def evaluate(model, test_df: pd.DataFrame, target_col: str) -> dict:\n    if target_col not in test_df.columns:\n        raise ValueError(f\"target column '{target_col}' not found\")\n    y_true = test_df[target_col].astype(int)\n    pred = predict(model, test_df.drop(columns=[target_col]))\n    precision_curve, recall_curve, thresholds = precision_recall_curve(y_true, pred[\"probability\"])\n    f1_curve = 2 * precision_curve * recall_curve / np.maximum(precision_curve + recall_curve, 1e-12)\n    best_idx = int(np.nanargmax(f1_curve)) if len(f1_curve) else 0\n    best_threshold = float(thresholds[min(best_idx, len(thresholds) - 1)]) if len(thresholds) else 0.5\n    return {\n        \"roc_auc\": float(roc_auc_score(y_true, pred[\"probability\"])),\n        \"pr_auc\": float(average_precision_score(y_true, pred[\"probability\"])),\n        \"f1\": float(f1_score(y_true, pred[\"prediction\"], zero_division=0)),\n        \"precision\": float(precision_score(y_true, pred[\"prediction\"], zero_division=0)),\n        \"recall\": float(recall_score(y_true, pred[\"prediction\"], zero_division=0)),\n        \"balanced_accuracy\": float(balanced_accuracy_score(y_true, pred[\"prediction\"])),\n        \"best_f1\": float(f1_curve[best_idx]) if len(f1_curve) else 0.0,\n        \"best_threshold\": best_threshold,\n    }"
+        }
+      ],
+      "imports": [
+        "__future__",
+        "numpy",
+        "pandas",
+        "sklearn.compose",
+        "sklearn.ensemble",
+        "sklearn.impute",
+        "sklearn.linear_model",
+        "sklearn.metrics",
+        "sklearn.pipeline",
+        "sklearn.preprocessing",
+        "typing"
+      ],
+      "historical_metrics": {},
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/self_repair_demo/algorithm.py"
+      }
+    }
+  ],
+  "selected_algorithm": {
+    "id": "algorithm_extracted_algorithm",
+    "name": "algorithm",
+    "task_types": [
+      "binary_classification"
+    ],
+    "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/self_repair_demo/algorithm.py",
+    "extracted_functions": [
+      {
+        "name": "_build_pipeline",
+        "line": 19,
+        "signature": "_build_pipeline(train_df, target_col, config)",
+        "doc": "",
+        "source": "def _build_pipeline(train_df: pd.DataFrame, target_col: str, config: Optional[dict] = None):\n    config = config or {}\n    X = train_df.drop(columns=[target_col])\n    numeric = X.select_dtypes(include=[np.number]).columns.tolist()\n    categorical = [c for c in X.columns if c not in numeric]\n    numeric_steps = [(\"impute\", SimpleImputer(strategy=\"median\"))]\n    numeric_steps.append((\"scale\", StandardScaler()))\n    categorical_steps = [\n        (\"impute\", SimpleImputer(strategy=\"most_frequent\")),\n        (\"onehot\", OneHotEncoder(handle_unknown=\"ignore\", sparse_output=False)),\n    ]\n    transformers = []\n    if numeric:\n        transformers.append((\"numeric\", Pipeline(numeric_steps), numeric))\n    if categorical:\n        transformers.append((\"categorical\", Pipeline(categorical_steps), categorical))\n    preprocessor = ColumnTransformer(transformers=transformers, remainder=\"drop\")\n    estimator = LogisticRegression(C=1.0, max_iter=500, random_state=42)\n    return Pipeline([(\"preprocessor\", preprocessor), (\"model\", estimator)])"
+      },
+      {
+        "name": "train",
+        "line": 40,
+        "signature": "train(train_df, target_col, config)",
+        "doc": "",
+        "source": "def train(train_df: pd.DataFrame, target_col: str, config: Optional[dict] = None):\n    if target_col not in train_df.columns:\n        raise ValueError(f\"target column '{target_col}' not found\")\n    if len(train_df) < 10:\n        raise ValueError(\"at least 10 rows are required\")\n    model = _build_pipeline(train_df, target_col, config)\n    model.fit(train_df.drop(columns=[target_col]), train_df[target_col].astype(int))\n    model._ai_factory_threshold = float((config or {}).get(\"threshold\", 0.5))\n    return model"
+      },
+      {
+        "name": "predict",
+        "line": 51,
+        "signature": "predict(model, test_df)",
+        "doc": "",
+        "source": "def predict(model, test_df: pd.DataFrame) -> pd.DataFrame:\n    probability = model.predict_proba(test_df)[:, 1]\n    prediction = (probability >= float(getattr(model, \"_ai_factory_threshold\", 0.5))).astype(int)\n    return pd.DataFrame({\"prediction\": prediction.astype(int), \"probability\": probability.astype(float)})"
+      },
+      {
+        "name": "evaluate",
+        "line": 57,
+        "signature": "evaluate(model, test_df, target_col)",
+        "doc": "",
+        "source": "def evaluate(model, test_df: pd.DataFrame, target_col: str) -> dict:\n    if target_col not in test_df.columns:\n        raise ValueError(f\"target column '{target_col}' not found\")\n    y_true = test_df[target_col].astype(int)\n    pred = predict(model, test_df.drop(columns=[target_col]))\n    precision_curve, recall_curve, thresholds = precision_recall_curve(y_true, pred[\"probability\"])\n    f1_curve = 2 * precision_curve * recall_curve / np.maximum(precision_curve + recall_curve, 1e-12)\n    best_idx = int(np.nanargmax(f1_curve)) if len(f1_curve) else 0\n    best_threshold = float(thresholds[min(best_idx, len(thresholds) - 1)]) if len(thresholds) else 0.5\n    return {\n        \"roc_auc\": float(roc_auc_score(y_true, pred[\"probability\"])),\n        \"pr_auc\": float(average_precision_score(y_true, pred[\"probability\"])),\n        \"f1\": float(f1_score(y_true, pred[\"prediction\"], zero_division=0)),\n        \"precision\": float(precision_score(y_true, pred[\"prediction\"], zero_division=0)),\n        \"recall\": float(recall_score(y_true, pred[\"prediction\"], zero_division=0)),\n        \"balanced_accuracy\": float(balanced_accuracy_score(y_true, pred[\"prediction\"])),\n        \"best_f1\": float(f1_curve[best_idx]) if len(f1_curve) else 0.0,\n        \"best_threshold\": best_threshold,\n    }"
+      }
+    ],
+    "imports": [
+      "__future__",
+      "numpy",
+      "pandas",
+      "sklearn.compose",
+      "sklearn.ensemble",
+      "sklearn.impute",
+      "sklearn.linear_model",
+      "sklearn.metrics",
+      "sklearn.pipeline",
+      "sklearn.preprocessing",
+      "typing"
+    ],
+    "historical_metrics": {},
+    "provenance": {
+      "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/self_repair_demo/algorithm.py"
+    }
+  },
+  "validation_status": "passed"
 }

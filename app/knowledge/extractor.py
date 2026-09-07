@@ -57,6 +57,7 @@ class CapabilityExtractor:
             "source": str(path), "kind": "python", "module_docstring": ast.get_docstring(tree) or "",
             "functions": functions, "classes": classes, "imports": sorted(set(imports)),
             "has_algorithm_interface": all(name in {f["name"] for f in functions} for name in ("train", "predict", "evaluate")),
+            "inferred_task_types": self._infer_task_types(text, imports, functions),
             "content_chunks": relevant_chunks, "character_count": len(text),
         }
 
@@ -89,7 +90,7 @@ class CapabilityExtractor:
         self._materialize(result, source_id, store)
         if deterministic.get("has_algorithm_interface"):
             algorithm_id = "algorithm_extracted_" + self._slug(path.stem)
-            store.upsert_algorithm({"id": algorithm_id, "name": path.stem, "task_types": ["binary_classification"], "source": str(path), "extracted_functions": deterministic["functions"], "imports": deterministic["imports"], "historical_metrics": {}, "provenance": {"source": str(path)}})
+            store.upsert_algorithm({"id": algorithm_id, "name": path.stem, "task_types": deterministic.get("inferred_task_types", []), "source": str(path), "extracted_functions": deterministic["functions"], "imports": deterministic["imports"], "historical_metrics": {}, "provenance": {"source": str(path)}})
             store.add_edge(source_id, algorithm_id, "SUPPORTS", {"source": str(path), "kind": "ast"})
         store.export_graph()
         return result
@@ -121,7 +122,9 @@ class CapabilityExtractor:
             source = id_map.get(str(relation.get("source")))
             target = id_map.get(str(relation.get("target")))
             if source and target:
-                store.add_edge(source, target, str(relation.get("relation", "RELATED_TO")).upper(), {"source": result.get("provenance", {}).get("source"), "evidence_span": relation.get("evidence_span"), "confidence": relation.get("confidence")})
+                relation_name = relation.get("relation", "RELATED_TO")
+                relation_name = getattr(relation_name, "value", relation_name)
+                store.add_edge(source, target, str(relation_name).upper(), {"source": result.get("provenance", {}).get("source"), "evidence_span": relation.get("evidence_span"), "confidence": relation.get("confidence")})
 
         # Normalize semantically distinct field roles if an extracted document identifies them.
         for entity in result.get("entities", []):
@@ -168,6 +171,20 @@ class CapabilityExtractor:
     def _signature(node: ast.FunctionDef | ast.AsyncFunctionDef) -> str:
         args = [arg.arg for arg in [*node.args.posonlyargs, *node.args.args]]
         return f"{node.name}({', '.join(args)})"
+
+    @staticmethod
+    def _infer_task_types(source: str, imports: list[str], functions: list[dict[str, Any]]) -> list[str]:
+        text = (source + " " + " ".join(imports) + " " + json.dumps(functions, ensure_ascii=False)).lower()
+        result = []
+        if "isolationforest" in text or "anomaly" in text:
+            result.append("anomaly_detection")
+        if "tfidfvectorizer" in text or "text" in text:
+            result.append("text_classification")
+        if "regressor" in text or "mean_absolute_error" in text or "mean_squared_error" in text:
+            result.append("regression")
+        if "classifier" in text or "roc_auc" in text or "f1_score" in text or "logisticregression" in text:
+            result.append("binary_classification")
+        return list(dict.fromkeys(result))
 
     @staticmethod
     def _slug(value: str) -> str:

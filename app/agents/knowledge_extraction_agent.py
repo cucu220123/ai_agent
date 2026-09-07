@@ -7,6 +7,7 @@ from typing import Any, Literal
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from app.llm.contracts import extract_json_object
+from app.knowledge.schema import RelationType
 
 
 EntityType = Literal["Capability", "Task", "Algorithm", "Dataset", "Feature", "Target", "InputSchema", "OutputSchema", "PreprocessingStrategy", "Metric", "Constraint", "Dependency", "Environment", "HyperparameterConfig", "ValidationRun", "FailureExperience", "RepairExperience", "AlgorithmVersion"]
@@ -25,7 +26,7 @@ class ExtractedEntity(BaseModel):
 class ExtractedRelation(BaseModel):
     model_config = ConfigDict(extra="forbid")
     source: str = Field(min_length=1)
-    relation: str = Field(min_length=1)
+    relation: RelationType
     target: str = Field(min_length=1)
     evidence_span: str = Field(min_length=1)
     confidence: float = Field(ge=0, le=1)
@@ -205,8 +206,13 @@ class KnowledgeExtractionAgent:
     @staticmethod
     def _deterministic_fallback(facts: dict[str, Any], source_path: str) -> dict[str, Any]:
         entities = []
+        source_text = json.dumps(facts, ensure_ascii=False).lower()
+        target_names = {name for name in facts.get("fields", []) if name.lower() in {"target", "label", "churn", "y", "anomaly"} and (name.lower() in source_text)}
         for metric in facts.get("metrics", []):
             entities.append({"id": f"metric_{str(metric).lower().replace('-', '_')}", "type": "Metric", "name": str(metric), "properties": {}, "evidence_span": str(metric), "confidence": 0.7, "provenance": {"source": source_path, "evidence_span": str(metric)}})
         for field_name in facts.get("fields", []):
+            if field_name in target_names:
+                entities.append({"id": f"target_{field_name}", "type": "Target", "name": field_name, "properties": {"role": "target"}, "evidence_span": field_name, "confidence": 0.8, "provenance": {"source": source_path, "evidence_span": field_name}})
+                continue
             entities.append({"id": f"feature_{field_name}", "type": "Feature", "name": field_name, "properties": {}, "evidence_span": field_name, "confidence": 0.7, "provenance": {"source": source_path, "evidence_span": field_name}})
         return {"entities": entities, "relations": [], "summary": facts.get("summary", "deterministic extraction"), "provenance": {"source": source_path}, "deterministic_facts": facts}
