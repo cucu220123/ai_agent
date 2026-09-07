@@ -17,7 +17,7 @@ def main() -> None:
             payload = json.loads(path.read_text(encoding="utf-8"))
         except Exception:
             continue
-        payload.setdefault("git_commit", commit)
+        payload["git_commit"] = commit
         payload.setdefault("generated_at", generated_at)
         path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     print(commit)
