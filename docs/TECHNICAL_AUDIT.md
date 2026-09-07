@@ -1,7 +1,7 @@
 # AI Algorithm Factory 技术审计
 
 审计日期：2026-09-07  
-审计版本：`ebdddd2` 基线；整改结果截至提交 `65eaa06`（当前 evidence 见 `docs/REAL_LLM_EVIDENCE.md`）  
+审计版本：`ebdddd2` 基线；整改结果截至当前 final commits（当前 evidence 见 `docs/REAL_LLM_EVIDENCE.md`、`docs/MODEL_SELECTION.md`）。  
 审计方式：阅读全部核心模块、运行测试、运行四类 demo、检查数据库/GraphML/生成产物和 LLM 配置。
 
 ## 1. 基线运行结果
