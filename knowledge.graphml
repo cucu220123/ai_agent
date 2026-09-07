@@ -293,6 +293,12 @@
       <data key="d1">feature_standard_scaling</data>
       <data key="d17">standard_scaling</data>
     </node>
+    <node id="feature_churn">
+      <data key="d0">Feature</data>
+      <data key="d1">feature_churn</data>
+      <data key="d17">churn</data>
+      <data key="d18">0.7</data>
+    </node>
     <node id="source_business_material_cef5e946">
       <data key="d0">SourceDocument</data>
       <data key="d13"># 客户流失预测业务材料（模拟）
@@ -357,12 +363,6 @@
       <data key="d0">Feature</data>
       <data key="d1">feature_tenure_months</data>
       <data key="d17">tenure_months</data>
-      <data key="d18">0.7</data>
-    </node>
-    <node id="feature_churn">
-      <data key="d0">Feature</data>
-      <data key="d1">feature_churn</data>
-      <data key="d17">churn</data>
       <data key="d18">0.7</data>
     </node>
     <node id="target_churn">

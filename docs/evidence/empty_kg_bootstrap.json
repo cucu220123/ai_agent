@@ -2,8 +2,127 @@
   "nodes_before": 0,
   "edges_before": 0,
   "nodes_after": 16,
-  "edges_after": 14,
+  "edges_after": 17,
   "extracted_sources": [
+    {
+      "id": "metric_recall",
+      "name": "recall",
+      "confidence": 0.7,
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/reports/116eedc944ea.json",
+        "evidence_span": "recall"
+      }
+    },
+    {
+      "id": "metric_precision",
+      "name": "precision",
+      "confidence": 0.7,
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/reports/116eedc944ea.json",
+        "evidence_span": "precision"
+      }
+    },
+    {
+      "id": "metric_f1",
+      "name": "f1",
+      "confidence": 0.7,
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/reports/116eedc944ea.json",
+        "evidence_span": "f1"
+      }
+    },
+    {
+      "id": "metric_roc_auc",
+      "name": "roc_auc",
+      "confidence": 0.7,
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/reports/116eedc944ea.json",
+        "evidence_span": "roc_auc"
+      }
+    },
+    {
+      "entities": [
+        {
+          "id": "metric_roc_auc",
+          "type": "Metric",
+          "name": "roc_auc",
+          "properties": {},
+          "evidence_span": "roc_auc",
+          "confidence": 0.7,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/reports/116eedc944ea.json",
+            "evidence_span": "roc_auc"
+          }
+        },
+        {
+          "id": "metric_f1",
+          "type": "Metric",
+          "name": "f1",
+          "properties": {},
+          "evidence_span": "f1",
+          "confidence": 0.7,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/reports/116eedc944ea.json",
+            "evidence_span": "f1"
+          }
+        },
+        {
+          "id": "metric_precision",
+          "type": "Metric",
+          "name": "precision",
+          "properties": {},
+          "evidence_span": "precision",
+          "confidence": 0.7,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/reports/116eedc944ea.json",
+            "evidence_span": "precision"
+          }
+        },
+        {
+          "id": "metric_recall",
+          "type": "Metric",
+          "name": "recall",
+          "properties": {},
+          "evidence_span": "recall",
+          "confidence": 0.7,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/reports/116eedc944ea.json",
+            "evidence_span": "recall"
+          }
+        }
+      ],
+      "relations": [],
+      "summary": "deterministic extraction",
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/reports/116eedc944ea.json"
+      },
+      "deterministic_facts": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/reports/116eedc944ea.json",
+        "kind": "validation_report",
+        "run_id": "116eedc944ea",
+        "algorithm": "Logistic Regression",
+        "status": "passed",
+        "metrics": {
+          "roc_auc": 0.8793432607865598,
+          "f1": 0.0,
+          "precision": 0.0,
+          "recall": 0.0
+        },
+        "runtime_seconds": 1.9851694703102112,
+        "resource_usage": {},
+        "errors": [],
+        "repair_history": []
+      },
+      "extraction_trace": {
+        "provider": "mock",
+        "status": "deterministic_fallback",
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/reports/116eedc944ea.json",
+        "chunk_count": 4,
+        "chunks": [],
+        "fallback_reason": "no chunk passed strict extraction contract"
+      },
+      "id": "source_116eedc944ea_d211b778"
+    },
     {
       "entities": [],
       "relations": [],
@@ -81,15 +200,6 @@
       "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md"
     },
     {
-      "id": "feature_churn",
-      "name": "churn",
-      "confidence": 0.7,
-      "provenance": {
-        "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
-        "evidence_span": "churn"
-      }
-    },
-    {
       "id": "feature_tenure_months",
       "name": "tenure_months",
       "confidence": 0.7,
@@ -150,42 +260,6 @@
       "provenance": {
         "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
         "evidence_span": "age"
-      }
-    },
-    {
-      "id": "metric_recall",
-      "name": "Recall",
-      "confidence": 0.7,
-      "provenance": {
-        "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
-        "evidence_span": "Recall"
-      }
-    },
-    {
-      "id": "metric_roc_auc",
-      "name": "ROC-AUC",
-      "confidence": 0.7,
-      "provenance": {
-        "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
-        "evidence_span": "ROC-AUC"
-      }
-    },
-    {
-      "id": "metric_precision",
-      "name": "Precision",
-      "confidence": 0.7,
-      "provenance": {
-        "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
-        "evidence_span": "Precision"
-      }
-    },
-    {
-      "id": "metric_f1",
-      "name": "F1",
-      "confidence": 0.7,
-      "provenance": {
-        "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
-        "evidence_span": "F1"
       }
     },
     {
@@ -323,12 +397,14 @@
           }
         },
         {
-          "id": "feature_churn",
-          "type": "Feature",
+          "id": "target_churn",
+          "type": "Target",
           "name": "churn",
-          "properties": {},
+          "properties": {
+            "role": "target"
+          },
           "evidence_span": "churn",
-          "confidence": 0.7,
+          "confidence": 0.8,
           "provenance": {
             "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
             "evidence_span": "churn"
@@ -384,9 +460,9 @@
   ],
   "retrieval_trace": {
     "strategy": "hybrid_graph_rag",
-    "graph_anchors": 7,
+    "graph_anchors": 8,
     "graph_nodes": 16,
-    "graph_edges": 14,
+    "graph_edges": 17,
     "semantic_documents": 8,
     "semantic_backend": "tfidf",
     "semantic_fallback_error": null,
@@ -408,6 +484,10 @@
         "score": 2.0
       },
       {
+        "id": "metric_roc_auc",
+        "score": 1.0
+      },
+      {
         "id": "feature_age",
         "score": 1.0
       },
@@ -416,11 +496,11 @@
         "score": 1.0
       },
       {
-        "id": "feature_churn",
+        "id": "target_churn",
         "score": 1.0
       },
       {
-        "id": "target_churn",
+        "id": "source_116eedc944ea_d211b778",
         "score": 1.0
       }
     ],
@@ -565,12 +645,14 @@
             }
           },
           {
-            "id": "feature_churn",
-            "type": "Feature",
+            "id": "target_churn",
+            "type": "Target",
             "name": "churn",
-            "properties": {},
+            "properties": {
+              "role": "target"
+            },
             "evidence_span": "churn",
-            "confidence": 0.7,
+            "confidence": 0.8,
             "provenance": {
               "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
               "evidence_span": "churn"
@@ -755,44 +837,44 @@
         "id": "metric_f1",
         "score": 1.5,
         "type": "Metric",
-        "name": "F1",
+        "name": "f1",
         "confidence": 0.7,
         "provenance": {
-          "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
-          "evidence_span": "F1"
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/reports/116eedc944ea.json",
+          "evidence_span": "f1"
         }
       },
       {
         "id": "metric_precision",
         "score": 1.5,
         "type": "Metric",
-        "name": "Precision",
+        "name": "precision",
         "confidence": 0.7,
         "provenance": {
-          "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
-          "evidence_span": "Precision"
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/reports/116eedc944ea.json",
+          "evidence_span": "precision"
         }
       },
       {
         "id": "metric_roc_auc",
         "score": 1.5,
         "type": "Metric",
-        "name": "ROC-AUC",
+        "name": "roc_auc",
         "confidence": 0.7,
         "provenance": {
-          "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
-          "evidence_span": "ROC-AUC"
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/reports/116eedc944ea.json",
+          "evidence_span": "roc_auc"
         }
       },
       {
         "id": "metric_recall",
         "score": 1.5,
         "type": "Metric",
-        "name": "Recall",
+        "name": "recall",
         "confidence": 0.7,
         "provenance": {
-          "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
-          "evidence_span": "Recall"
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/reports/116eedc944ea.json",
+          "evidence_span": "recall"
         }
       },
       {
@@ -873,22 +955,98 @@
         }
       },
       {
-        "id": "feature_churn",
-        "score": 1.5,
-        "type": "Feature",
-        "name": "churn",
-        "confidence": 0.7,
-        "provenance": {
-          "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
-          "evidence_span": "churn"
-        }
-      },
-      {
         "id": "target_churn",
         "score": 1.5,
         "type": "Target",
         "name": "churn",
+        "role": "target",
+        "confidence": "0.8",
         "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md"
+      },
+      {
+        "id": "source_116eedc944ea_d211b778",
+        "score": 1.0,
+        "type": "SourceDocument",
+        "summary": "deterministic extraction",
+        "entities": [
+          {
+            "id": "metric_roc_auc",
+            "type": "Metric",
+            "name": "roc_auc",
+            "properties": {},
+            "evidence_span": "roc_auc",
+            "confidence": 0.7,
+            "provenance": {
+              "source": "/data3/xiaotianqi/ai_algorithm_factory/reports/116eedc944ea.json",
+              "evidence_span": "roc_auc"
+            }
+          },
+          {
+            "id": "metric_f1",
+            "type": "Metric",
+            "name": "f1",
+            "properties": {},
+            "evidence_span": "f1",
+            "confidence": 0.7,
+            "provenance": {
+              "source": "/data3/xiaotianqi/ai_algorithm_factory/reports/116eedc944ea.json",
+              "evidence_span": "f1"
+            }
+          },
+          {
+            "id": "metric_precision",
+            "type": "Metric",
+            "name": "precision",
+            "properties": {},
+            "evidence_span": "precision",
+            "confidence": 0.7,
+            "provenance": {
+              "source": "/data3/xiaotianqi/ai_algorithm_factory/reports/116eedc944ea.json",
+              "evidence_span": "precision"
+            }
+          },
+          {
+            "id": "metric_recall",
+            "type": "Metric",
+            "name": "recall",
+            "properties": {},
+            "evidence_span": "recall",
+            "confidence": 0.7,
+            "provenance": {
+              "source": "/data3/xiaotianqi/ai_algorithm_factory/reports/116eedc944ea.json",
+              "evidence_span": "recall"
+            }
+          }
+        ],
+        "relations": [],
+        "provenance": {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/reports/116eedc944ea.json"
+        },
+        "deterministic_facts": {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/reports/116eedc944ea.json",
+          "kind": "validation_report",
+          "run_id": "116eedc944ea",
+          "algorithm": "Logistic Regression",
+          "status": "passed",
+          "metrics": {
+            "roc_auc": 0.8793432607865598,
+            "f1": 0.0,
+            "precision": 0.0,
+            "recall": 0.0
+          },
+          "runtime_seconds": 1.9851694703102112,
+          "resource_usage": {},
+          "errors": [],
+          "repair_history": []
+        },
+        "extraction_trace": {
+          "provider": "mock",
+          "status": "deterministic_fallback",
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/reports/116eedc944ea.json",
+          "chunk_count": 4,
+          "chunks": [],
+          "fallback_reason": "no chunk passed strict extraction contract"
+        }
       }
     ],
     "edges": [
@@ -1015,17 +1173,6 @@
       },
       {
         "source": "source_business_material_cef5e946",
-        "target": "feature_churn",
-        "relation": "SUPPORTS",
-        "key": 0,
-        "provenance": {
-          "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
-          "evidence_span": "churn",
-          "confidence": 0.7
-        }
-      },
-      {
-        "source": "source_business_material_cef5e946",
         "target": "target_churn",
         "relation": "SUPPORTS",
         "key": 0,
@@ -1039,6 +1186,50 @@
         "provenance": {
           "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/self_repair_demo/algorithm.py",
           "kind": "ast"
+        }
+      },
+      {
+        "source": "source_116eedc944ea_d211b778",
+        "target": "metric_roc_auc",
+        "relation": "SUPPORTS",
+        "key": 0,
+        "provenance": {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/reports/116eedc944ea.json",
+          "evidence_span": "roc_auc",
+          "confidence": 0.7
+        }
+      },
+      {
+        "source": "source_116eedc944ea_d211b778",
+        "target": "metric_f1",
+        "relation": "SUPPORTS",
+        "key": 0,
+        "provenance": {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/reports/116eedc944ea.json",
+          "evidence_span": "f1",
+          "confidence": 0.7
+        }
+      },
+      {
+        "source": "source_116eedc944ea_d211b778",
+        "target": "metric_precision",
+        "relation": "SUPPORTS",
+        "key": 0,
+        "provenance": {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/reports/116eedc944ea.json",
+          "evidence_span": "precision",
+          "confidence": 0.7
+        }
+      },
+      {
+        "source": "source_116eedc944ea_d211b778",
+        "target": "metric_recall",
+        "relation": "SUPPORTS",
+        "key": 0,
+        "provenance": {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/reports/116eedc944ea.json",
+          "evidence_span": "recall",
+          "confidence": 0.7
         }
       }
     ],
@@ -1239,12 +1430,14 @@
               }
             },
             {
-              "id": "feature_churn",
-              "type": "Feature",
+              "id": "target_churn",
+              "type": "Target",
               "name": "churn",
-              "properties": {},
+              "properties": {
+                "role": "target"
+              },
               "evidence_span": "churn",
-              "confidence": 0.7,
+              "confidence": 0.8,
               "provenance": {
                 "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
                 "evidence_span": "churn"
@@ -1429,44 +1622,44 @@
           "id": "metric_f1",
           "score": 1.5,
           "type": "Metric",
-          "name": "F1",
+          "name": "f1",
           "confidence": 0.7,
           "provenance": {
-            "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
-            "evidence_span": "F1"
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/reports/116eedc944ea.json",
+            "evidence_span": "f1"
           }
         },
         {
           "id": "metric_precision",
           "score": 1.5,
           "type": "Metric",
-          "name": "Precision",
+          "name": "precision",
           "confidence": 0.7,
           "provenance": {
-            "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
-            "evidence_span": "Precision"
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/reports/116eedc944ea.json",
+            "evidence_span": "precision"
           }
         },
         {
           "id": "metric_roc_auc",
           "score": 1.5,
           "type": "Metric",
-          "name": "ROC-AUC",
+          "name": "roc_auc",
           "confidence": 0.7,
           "provenance": {
-            "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
-            "evidence_span": "ROC-AUC"
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/reports/116eedc944ea.json",
+            "evidence_span": "roc_auc"
           }
         },
         {
           "id": "metric_recall",
           "score": 1.5,
           "type": "Metric",
-          "name": "Recall",
+          "name": "recall",
           "confidence": 0.7,
           "provenance": {
-            "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
-            "evidence_span": "Recall"
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/reports/116eedc944ea.json",
+            "evidence_span": "recall"
           }
         },
         {
@@ -1547,22 +1740,98 @@
           }
         },
         {
-          "id": "feature_churn",
-          "score": 1.5,
-          "type": "Feature",
-          "name": "churn",
-          "confidence": 0.7,
-          "provenance": {
-            "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
-            "evidence_span": "churn"
-          }
-        },
-        {
           "id": "target_churn",
           "score": 1.5,
           "type": "Target",
           "name": "churn",
+          "role": "target",
+          "confidence": "0.8",
           "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md"
+        },
+        {
+          "id": "source_116eedc944ea_d211b778",
+          "score": 1.0,
+          "type": "SourceDocument",
+          "summary": "deterministic extraction",
+          "entities": [
+            {
+              "id": "metric_roc_auc",
+              "type": "Metric",
+              "name": "roc_auc",
+              "properties": {},
+              "evidence_span": "roc_auc",
+              "confidence": 0.7,
+              "provenance": {
+                "source": "/data3/xiaotianqi/ai_algorithm_factory/reports/116eedc944ea.json",
+                "evidence_span": "roc_auc"
+              }
+            },
+            {
+              "id": "metric_f1",
+              "type": "Metric",
+              "name": "f1",
+              "properties": {},
+              "evidence_span": "f1",
+              "confidence": 0.7,
+              "provenance": {
+                "source": "/data3/xiaotianqi/ai_algorithm_factory/reports/116eedc944ea.json",
+                "evidence_span": "f1"
+              }
+            },
+            {
+              "id": "metric_precision",
+              "type": "Metric",
+              "name": "precision",
+              "properties": {},
+              "evidence_span": "precision",
+              "confidence": 0.7,
+              "provenance": {
+                "source": "/data3/xiaotianqi/ai_algorithm_factory/reports/116eedc944ea.json",
+                "evidence_span": "precision"
+              }
+            },
+            {
+              "id": "metric_recall",
+              "type": "Metric",
+              "name": "recall",
+              "properties": {},
+              "evidence_span": "recall",
+              "confidence": 0.7,
+              "provenance": {
+                "source": "/data3/xiaotianqi/ai_algorithm_factory/reports/116eedc944ea.json",
+                "evidence_span": "recall"
+              }
+            }
+          ],
+          "relations": [],
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/reports/116eedc944ea.json"
+          },
+          "deterministic_facts": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/reports/116eedc944ea.json",
+            "kind": "validation_report",
+            "run_id": "116eedc944ea",
+            "algorithm": "Logistic Regression",
+            "status": "passed",
+            "metrics": {
+              "roc_auc": 0.8793432607865598,
+              "f1": 0.0,
+              "precision": 0.0,
+              "recall": 0.0
+            },
+            "runtime_seconds": 1.9851694703102112,
+            "resource_usage": {},
+            "errors": [],
+            "repair_history": []
+          },
+          "extraction_trace": {
+            "provider": "mock",
+            "status": "deterministic_fallback",
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/reports/116eedc944ea.json",
+            "chunk_count": 4,
+            "chunks": [],
+            "fallback_reason": "no chunk passed strict extraction contract"
+          }
         }
       ],
       "edges": [
@@ -1689,17 +1958,6 @@
         },
         {
           "source": "source_business_material_cef5e946",
-          "target": "feature_churn",
-          "relation": "SUPPORTS",
-          "key": 0,
-          "provenance": {
-            "source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md",
-            "evidence_span": "churn",
-            "confidence": 0.7
-          }
-        },
-        {
-          "source": "source_business_material_cef5e946",
           "target": "target_churn",
           "relation": "SUPPORTS",
           "key": 0,
@@ -1713,6 +1971,50 @@
           "provenance": {
             "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/self_repair_demo/algorithm.py",
             "kind": "ast"
+          }
+        },
+        {
+          "source": "source_116eedc944ea_d211b778",
+          "target": "metric_roc_auc",
+          "relation": "SUPPORTS",
+          "key": 0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/reports/116eedc944ea.json",
+            "evidence_span": "roc_auc",
+            "confidence": 0.7
+          }
+        },
+        {
+          "source": "source_116eedc944ea_d211b778",
+          "target": "metric_f1",
+          "relation": "SUPPORTS",
+          "key": 0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/reports/116eedc944ea.json",
+            "evidence_span": "f1",
+            "confidence": 0.7
+          }
+        },
+        {
+          "source": "source_116eedc944ea_d211b778",
+          "target": "metric_precision",
+          "relation": "SUPPORTS",
+          "key": 0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/reports/116eedc944ea.json",
+            "evidence_span": "precision",
+            "confidence": 0.7
+          }
+        },
+        {
+          "source": "source_116eedc944ea_d211b778",
+          "target": "metric_recall",
+          "relation": "SUPPORTS",
+          "key": 0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/reports/116eedc944ea.json",
+            "evidence_span": "recall",
+            "confidence": 0.7
           }
         }
       ]
@@ -1831,5 +2133,7 @@
       "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/self_repair_demo/algorithm.py"
     }
   },
-  "validation_status": "passed"
+  "validation_status": "passed",
+  "git_commit": "8708e4f8f17c43144ba7a3955e250191bedb7866",
+  "generated_at": "2026-09-07T09:30:50Z"
 }
