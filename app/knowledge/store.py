@@ -17,11 +17,12 @@ class KnowledgeStore:
         self.db_path = Path(db_path)
         self.graphml_path = Path(graphml_path) if graphml_path else self.db_path.with_suffix(".graphml")
         self.graph = nx.MultiDiGraph()
+        self._payloads: dict[str, dict[str, Any]] = {}
         self._init_db()
         self._load_graph()
 
     def _connect(self) -> sqlite3.Connection:
-        conn = sqlite3.connect(self.db_path)
+        conn = sqlite3.connect(self.db_path, timeout=30)
         conn.row_factory = sqlite3.Row
         return conn
 
@@ -61,9 +62,12 @@ class KnowledgeStore:
         return datetime.now(timezone.utc).isoformat()
 
     def _load_graph(self) -> None:
+        self.graph.clear()
+        self._payloads.clear()
         with self._connect() as conn:
             for row in conn.execute("SELECT * FROM knowledge_items").fetchall():
                 payload = json.loads(row["payload"])
+                self._payloads[row["id"]] = payload
                 attrs = {k: str(v) for k, v in payload.items() if isinstance(v, (str, int, float, bool))}
                 self.graph.add_node(row["id"], type=row["node_type"], **attrs)
             for table, node_type in (
@@ -74,6 +78,7 @@ class KnowledgeStore:
             ):
                 for row in conn.execute(f"SELECT * FROM {table}").fetchall():
                     payload = json.loads(row["payload"])
+                    self._payloads[row["id"]] = payload
                     node_id = row["id"]
                     attrs = {k: str(v) for k, v in payload.items() if isinstance(v, (str, int, float, bool))}
                     self.graph.add_node(node_id, type=node_type, **attrs)
@@ -94,6 +99,11 @@ class KnowledgeStore:
         """Materialize only generic catalog entities; domain data comes from seed/extraction/ingestion."""
         from app.metrics.registry import METRIC_REGISTRY
         from app.plugins.registry import DEFAULT_REGISTRY
+
+        for plugin in DEFAULT_REGISTRY.algorithms.values():
+            algorithm_id = f"algorithm_{plugin.id}"
+            if algorithm_id not in self._payloads:
+                self.upsert_algorithm({"id": algorithm_id, "name": plugin.name, "task_types": plugin.task_types, "resource_profile": plugin.resource_profile, "preprocessing": plugin.preprocessing, "origin": "plugin_catalog"})
 
         for task_id, task in DEFAULT_REGISTRY.tasks.items():
             node_id = f"task_{task_id}"
@@ -117,11 +127,12 @@ class KnowledgeStore:
         self.export_graph()
 
     def artifact_fingerprint(self, path: str | Path) -> str:
-        return hashlib.sha256(Path(path).read_bytes()).hexdigest()[:16]
+        return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
     def upsert_capability(self, item: dict[str, Any]) -> None:
         payload = dict(item)
         node_id = str(payload["id"])
+        self._payloads[node_id] = payload
         with self._connect() as conn:
             conn.execute(
                 "INSERT OR REPLACE INTO capabilities(id,name,task_type,payload,created_at) VALUES (?,?,?,?,?)",
@@ -132,6 +143,7 @@ class KnowledgeStore:
     def upsert_algorithm(self, item: dict[str, Any]) -> None:
         payload = dict(item)
         node_id = str(payload["id"])
+        self._payloads[node_id] = payload
         with self._connect() as conn:
             conn.execute(
                 "INSERT OR REPLACE INTO algorithms(id,name,payload,created_at) VALUES (?,?,?,?)",
@@ -140,6 +152,8 @@ class KnowledgeStore:
         self.graph.add_node(node_id, type="Algorithm", name=payload.get("name", node_id))
 
     def upsert_knowledge_item(self, item_id: str, node_type: str, payload: dict[str, Any]) -> None:
+        payload = {**payload, "id": item_id}
+        self._payloads[item_id] = payload
         with self._connect() as conn:
             conn.execute("INSERT OR REPLACE INTO knowledge_items(id,node_type,payload,created_at) VALUES (?,?,?,?)", (item_id, node_type, json.dumps(payload, ensure_ascii=False), self._now()))
         attrs = {k: str(v) for k, v in payload.items() if isinstance(v, (str, int, float, bool))}
@@ -165,6 +179,7 @@ class KnowledgeStore:
     def add_validation_run(self, item: dict[str, Any]) -> None:
         payload = dict(item)
         node_id = str(payload["run_id"])
+        self._payloads[node_id] = payload
         with self._connect() as conn:
             conn.execute(
                 "INSERT OR REPLACE INTO validation_runs(id,capability_id,algorithm_id,status,payload,created_at) VALUES (?,?,?,?,?,?)",
@@ -179,7 +194,9 @@ class KnowledgeStore:
         if payload.get("capability_id"):
             self.add_edge(node_id, payload["capability_id"], "VALIDATES")
         if payload.get("algorithm_id"):
-            self.add_edge(node_id, payload["algorithm_id"], "RELATED_TO")
+            self.add_edge(node_id, payload["algorithm_id"], "VALIDATES")
+        if payload.get("version_id"):
+            self.add_edge(node_id, payload["version_id"], "PRODUCED_VERSION")
         self.export_graph()
 
     def add_algorithm_version(self, item: dict[str, Any]) -> None:
@@ -188,6 +205,8 @@ class KnowledgeStore:
         self.upsert_knowledge_item(node_id, "AlgorithmVersion", payload)
         if payload.get("algorithm_id"):
             self.add_edge(node_id, payload["algorithm_id"], "VERSION_OF")
+        if payload.get("parent_version"):
+            self.add_edge(node_id, payload["parent_version"], "PARENT_VERSION")
 
     def add_repair_experience(self, item: dict[str, Any]) -> None:
         payload = dict(item)
@@ -202,6 +221,7 @@ class KnowledgeStore:
     def add_experience(self, item: dict[str, Any]) -> None:
         payload = dict(item)
         node_id = str(payload["id"])
+        self._payloads[node_id] = payload
         with self._connect() as conn:
             conn.execute(
                 "INSERT OR REPLACE INTO experiences(id,algorithm_id,kind,payload,created_at) VALUES (?,?,?,?,?)",
@@ -234,6 +254,8 @@ class KnowledgeStore:
 
     def get_node_payload(self, node_id: str) -> dict[str, Any]:
         """Resolve full JSON payload for GraphRAG serialization, not lossy GraphML scalars."""
+        if node_id in self._payloads:
+            return dict(self._payloads[node_id])
         table_specs = (("capabilities", "id"), ("algorithms", "id"), ("validation_runs", "id"), ("experiences", "id"), ("knowledge_items", "id"))
         with self._connect() as conn:
             for table, column in table_specs:
@@ -241,6 +263,10 @@ class KnowledgeStore:
                 if row:
                     return json.loads(row["payload"])
         return dict(self.graph.nodes[node_id]) if node_id in self.graph else {}
+
+    def refresh(self) -> None:
+        """Reload persisted mutations while retaining the graph object's identity."""
+        self._load_graph()
 
     def graph_summary(self) -> dict[str, Any]:
         node_counts: dict[str, int] = {}

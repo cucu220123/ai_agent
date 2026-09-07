@@ -24,6 +24,9 @@ class RelationType(str, Enum):
     VALIDATES = "VALIDATES"
     REQUIRES_FEATURE = "REQUIRES_FEATURE"
     RELATED_TO = "RELATED_TO"
+    SATISFIES = "SATISFIES"
+    PARENT_VERSION = "PARENT_VERSION"
+    PRODUCED_VERSION = "PRODUCED_VERSION"
 
 NODE_TYPES = [
     "Capability",
@@ -32,6 +35,7 @@ NODE_TYPES = [
     "AlgorithmVersion",
     "Dataset",
     "FeatureStrategy",
+    "PreprocessingStrategy",
     "Feature",
     "Target",
     "InputSchema",
