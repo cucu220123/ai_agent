@@ -8,6 +8,7 @@ from app.generation.templates import render_algorithm
 from app.llm.contracts import extract_python_code
 from app.models import AlgorithmPlan, CapabilitySpec
 from app.validation.checks import static_check
+from app.validation.protocol import AlgorithmProtocolValidator
 
 
 class GeneratorAgent:
@@ -26,17 +27,34 @@ class GeneratorAgent:
                 "只输出完整 Python 代码，不要思考过程、不要 Markdown。"
                 "代码仅允许 pandas、numpy、scikit-learn，必须提供 train(train_df,target_col,config)、predict(model,test_df)、evaluate(model,test_df,target_col)。"
                 f"方案：{plan.algorithm_name}; 参数：{plan.hyperparameters}; 任务：{spec.task_type}; 目标列：{spec.target_column}; 特征：{spec.feature_columns}。"
-                "禁止文件、网络、系统调用。代码必须短小，直接定义三个函数。"
+                "工程要求：train 内从 train_df 动态识别 numeric/categorical 列；先 drop target；numeric 用 median SimpleImputer，categorical 用 most_frequent SimpleImputer + OneHotEncoder(handle_unknown='ignore')；"
+                "ColumnTransformer 和 estimator 必须放在同一个 sklearn Pipeline，使 predict 可直接接收原始 DataFrame；不得硬编码 benchmark 不存在的列；config 必须允许 None 并只用 config.get；"
+                "predict 返回与输入等长的 DataFrame，二分类必须包含 prediction 和 [0,1] probability；evaluate 必须调用 predict 并返回 float roc_auc/f1/precision/recall。"
+                "必须处理 NaN、未见类别、小批次；禁止文件、网络、系统调用。代码必须短小，直接定义三个函数和必要 helper。"
             )
-            try:
-                source = extract_python_code(self.llm.complete("你是安全的算法代码生成器。", prompt))
-                if source and static_check_text(source)["passed"]:
-                    generation_trace = {"provider": self.provider_name, "status": "llm_code_accepted"}
-                else:
-                    source = None
-                    generation_trace["reason"] = "LLM code failed extraction or static checks"
-            except Exception as exc:
-                generation_trace["reason"] = f"{type(exc).__name__}: {exc}"
+            previous_output, gate_error, attempts = "", "", []
+            for attempt in range(1, 3):
+                try:
+                    current_prompt = prompt
+                    if attempt > 1:
+                        current_prompt += f"\n上一次代码被严格门禁拒绝：{gate_error}。请返回修正后的完整代码。特别注意签名必须逐字是 def train(train_df, target_col, config=None)。\n上一次输出：\n{previous_output[:10000]}"
+                    raw_output = self.llm.complete("你是安全的算法代码生成器。只输出完整代码。", current_prompt, purpose="code_generation")
+                    previous_output = raw_output
+                    proposed = extract_python_code(raw_output)
+                    gate = static_check_text(proposed) if proposed else {"passed": False, "message": "no complete Python module extracted"}
+                    if proposed and gate["passed"]:
+                        source = proposed
+                        attempts.append({"attempt": attempt, "status": "accepted"})
+                        generation_trace = {"provider": getattr(self.llm, "last_provider", self.provider_name), "model": getattr(self.llm, "model", None), "status": "llm_code_accepted", "attempts": attempts, "token_usage": getattr(self.llm, "last_usage", {}), "generation": getattr(self.llm, "last_generation", {})}
+                        break
+                    gate_error = gate["message"]
+                    attempts.append({"attempt": attempt, "status": "rejected", "reason": gate_error, "generation": getattr(self.llm, "last_generation", {})})
+                except Exception as exc:
+                    gate_error = f"{type(exc).__name__}: {exc}"
+                    attempts.append({"attempt": attempt, "status": "provider_error", "reason": gate_error})
+                    break
+            if source is None:
+                generation_trace.update({"reason": gate_error or "no usable LLM code", "attempts": attempts, "generation": getattr(self.llm, "last_generation", {}), "output_preview": previous_output[:1000]})
         if not allow_llm:
             generation_trace = {"provider": self.provider_name, "status": "template_by_budget", "reason": "LLM code budget reserved for top beam candidate"}
         path.write_text(source or render_algorithm(spec, plan), encoding="utf-8")
@@ -59,16 +77,9 @@ def static_check_text(source: str) -> dict:
         tree = ast.parse(source)
     except SyntaxError as exc:
         return {"passed": False, "message": str(exc)}
-    function_nodes = {node.name: node for node in ast.walk(tree) if isinstance(node, ast.FunctionDef)}
-    functions = set(function_nodes)
-    if not {"train", "predict", "evaluate"}.issubset(functions):
-        return {"passed": False, "message": "missing required interfaces"}
-    required_arity = {"train": 2, "predict": 2, "evaluate": 3}
-    for name, arity in required_arity.items():
-        args = function_nodes[name].args
-        positional_count = len(args.posonlyargs) + len(args.args)
-        if positional_count < arity:
-            return {"passed": False, "message": f"{name} requires at least {arity} positional parameters"}
+    protocol = AlgorithmProtocolValidator().validate_source(source)
+    if not protocol.passed:
+        return {"passed": False, "message": protocol.to_dict()["message"]}
     allowed = {"__future__", "typing", "numpy", "pandas", "sklearn"}
     blocked = {"os", "sys", "subprocess", "socket", "shutil", "pathlib", "requests", "urllib", "ctypes"}
     for node in ast.walk(tree):

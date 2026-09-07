@@ -14,7 +14,8 @@ class CriticAgent:
         self.llm = llm
         self.provider_name = provider_name
 
-    def run(self, spec: CapabilitySpec, plan: AlgorithmPlan, result: ValidationResult, source_code: str = "") -> dict[str, Any]:
+    def run(self, spec: CapabilitySpec, plan: AlgorithmPlan, result: ValidationResult, source_code: str = "", retrieved_experiences: list[dict[str, Any]] | None = None) -> dict[str, Any]:
+        retrieved_experiences = retrieved_experiences or []
         failure_type = self._classify(result)
         diagnosis = {
             "failure_type": failure_type,
@@ -24,12 +25,14 @@ class CriticAgent:
             "repair_strategy": self._strategy(failure_type),
             "reusable_lesson": self._lesson(failure_type),
             "provider": self.provider_name,
+            "retrieved_experience_ids": [item.get("id") for item in retrieved_experiences[:5] if item.get("id")],
         }
         if self.llm is not None and self.provider_name != "mock" and result.status != "passed":
             try:
                 raw = self.llm.complete(
                     "你是 CriticAgent。只输出 JSON：failure_type, root_cause, triggering_condition, repair_strategy, reusable_lesson。",
-                    json.dumps({"spec": spec.to_dict(), "plan": plan.to_dict(), "validation": result.to_dict(), "source_code": source_code[-12000:]}, ensure_ascii=False),
+                    json.dumps({"spec": spec.to_dict(), "plan": plan.to_dict(), "validation": result.to_dict(), "source_code": source_code[-12000:], "similar_failures_and_successful_repairs": retrieved_experiences[:5], "instruction": "Prefer historically validated repairs when triggering conditions match, but do not blindly copy them."}, ensure_ascii=False),
+                    purpose="critique",
                 )
                 parsed = extract_json_object(raw)
                 if parsed:

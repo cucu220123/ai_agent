@@ -4,16 +4,16 @@ from app.experience.retriever import ExperienceRetriever
 from app.knowledge.store import KnowledgeStore
 from app.models import CapabilitySpec, KnowledgeContext
 from app.retrieval.graph import GraphRetriever
-from app.retrieval.semantic import SemanticRetriever
+from app.retrieval.semantic import HybridSemanticRetriever
 
 
 class RetrieverAgent:
     """Hybrid GraphRAG retriever: entity-linking graph traversal + semantic evidence + cases."""
 
-    def __init__(self, store: KnowledgeStore):
+    def __init__(self, store: KnowledgeStore, embedding_model_path: str | None = None):
         self.store = store
-        self.graph = GraphRetriever(store.graph)
-        self.semantic = SemanticRetriever()
+        self.graph = GraphRetriever(store.graph, store.get_node_payload)
+        self.semantic = HybridSemanticRetriever(embedding_model_path)
         self.experience = ExperienceRetriever()
 
     def run(self, spec: CapabilitySpec) -> KnowledgeContext:
@@ -23,6 +23,7 @@ class RetrieverAgent:
         semantic_evidence = self.semantic.retrieve(spec, documents, limit=8)
         historical_cases = self.experience.retrieve(spec, self.store.list_validation_runs(100), limit=12)
         algorithms = self.store.list_algorithms()
+        relevant_experiences = self.experience.retrieve_failures(spec, self.store.recent_experiences(100), limit=8)
         graph_algorithms = graph_evidence.get("serialized", {}).get("candidate_algorithms", [])
         if graph_algorithms:
             selected_ids = {a.get("algorithm_id") for a in graph_algorithms}
@@ -31,7 +32,7 @@ class RetrieverAgent:
             retrieval_query=query,
             capabilities=self.store.list_capabilities(),
             algorithms=algorithms,
-            experiences=self.store.recent_experiences(20),
+            experiences=relevant_experiences,
             graph_evidence=graph_evidence,
             semantic_evidence=semantic_evidence,
             historical_cases=historical_cases,
@@ -41,7 +42,8 @@ class RetrieverAgent:
                 "graph_nodes": len(graph_evidence.get("nodes", [])),
                 "graph_edges": len(graph_evidence.get("edges", [])),
                 "semantic_documents": len(semantic_evidence),
+                "semantic_backend": self.semantic.last_backend,
+                "semantic_fallback_error": self.semantic.last_error,
                 "historical_cases": len(historical_cases),
             },
         )
-

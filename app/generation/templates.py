@@ -16,11 +16,13 @@ def render_algorithm(spec: CapabilitySpec, plan: AlgorithmPlan) -> str:
     feature_hint = json.dumps(spec.feature_columns, ensure_ascii=False)
     params = plan.hyperparameters
     algorithm_key = plan.base_algorithm_id or plan.algorithm_id
+    numeric_imputer = params.get("numeric_imputer", "median")
+    scaler_kind = params.get("scaler", "none")
     if algorithm_key.endswith("logistic_regression"):
-        estimator = f"LogisticRegression(C={params.get('C', 1.0)!r}, max_iter={params.get('max_iter', 500)!r}, random_state=42)"
-        scale = '    numeric_steps.append(("scale", StandardScaler()))\n'
+        estimator = f"LogisticRegression(C={params.get('C', 1.0)!r}, max_iter={params.get('max_iter', 500)!r}, class_weight={params.get('class_weight')!r}, random_state=42)"
+        scale = '    numeric_steps.append(("scale", RobustScaler()))\n' if scaler_kind == "robust" else ('    numeric_steps.append(("scale", StandardScaler()))\n' if scaler_kind == "standard" else "")
     elif algorithm_key.endswith("random_forest"):
-        estimator = f"RandomForestClassifier(n_estimators={params.get('n_estimators', 180)!r}, max_depth={params.get('max_depth', 8)!r}, random_state=42, n_jobs=1, class_weight=\"balanced\")"
+        estimator = f"RandomForestClassifier(n_estimators={params.get('n_estimators', 180)!r}, max_depth={params.get('max_depth', 8)!r}, min_samples_leaf={params.get('min_samples_leaf', 1)!r}, random_state=42, n_jobs=1, class_weight={params.get('class_weight', 'balanced')!r})"
         scale = ""
     else:
         estimator = f"GradientBoostingClassifier(n_estimators={params.get('n_estimators', 120)!r}, learning_rate={params.get('learning_rate', 0.05)!r}, max_depth={params.get('max_depth', 3)!r}, random_state=42)"
@@ -34,7 +36,7 @@ import pandas as pd
 from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import OneHotEncoder, StandardScaler
+from sklearn.preprocessing import OneHotEncoder, StandardScaler, RobustScaler
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.metrics import roc_auc_score, average_precision_score, f1_score, precision_score, recall_score, balanced_accuracy_score, precision_recall_curve
@@ -48,7 +50,7 @@ def _build_pipeline(train_df: pd.DataFrame, target_col: str, config: Optional[di
     X = train_df.drop(columns=[target_col])
     numeric = X.select_dtypes(include=[np.number]).columns.tolist()
     categorical = [c for c in X.columns if c not in numeric]
-    numeric_steps = [("impute", SimpleImputer(strategy="median"))]
+    numeric_steps = [("impute", SimpleImputer(strategy={numeric_imputer!r}))]
 {scale}    categorical_steps = [
         ("impute", SimpleImputer(strategy="most_frequent")),
         ("onehot", OneHotEncoder(handle_unknown="ignore", sparse_output=False)),
@@ -70,7 +72,7 @@ def train(train_df: pd.DataFrame, target_col: str, config: Optional[dict] = None
         raise ValueError("at least 10 rows are required")
     model = _build_pipeline(train_df, target_col, config)
     model.fit(train_df.drop(columns=[target_col]), train_df[target_col].astype(int))
-    model._ai_factory_threshold = float((config or {{}}).get("threshold", 0.5))
+    model._ai_factory_threshold = float((config or {{}}).get("threshold", {params.get('threshold', 0.5)!r}))
     return model
 
 
@@ -103,6 +105,7 @@ def evaluate(model, test_df: pd.DataFrame, target_col: str) -> dict:
 
 
 def render_regression_algorithm(spec: CapabilitySpec, plan: AlgorithmPlan) -> str:
+    params = plan.hyperparameters
     return f'''"""Generated regression algorithm for: {spec.capability_name}."""
 from __future__ import annotations
 from typing import Optional
@@ -127,7 +130,7 @@ def _build_pipeline(train_df: pd.DataFrame, target_col: str):
     if categorical:
         transformers.append(("categorical", Pipeline([("impute", SimpleImputer(strategy="most_frequent")), ("onehot", OneHotEncoder(handle_unknown="ignore", sparse_output=False))]), categorical))
     preprocessor = ColumnTransformer(transformers=transformers, remainder="drop")
-    estimator = RandomForestRegressor(n_estimators=160, max_depth=10, random_state=42, n_jobs=1)
+    estimator = RandomForestRegressor(n_estimators={params.get('n_estimators', 160)!r}, max_depth={params.get('max_depth', 10)!r}, min_samples_leaf={params.get('min_samples_leaf', 1)!r}, random_state=42, n_jobs=1)
     return Pipeline([("preprocessor", preprocessor), ("model", estimator)])
 
 def train(train_df: pd.DataFrame, target_col: str, config: Optional[dict] = None):
@@ -147,6 +150,7 @@ def evaluate(model, test_df: pd.DataFrame, target_col: str) -> dict:
 
 
 def render_anomaly_algorithm(spec: CapabilitySpec, plan: AlgorithmPlan) -> str:
+    params = plan.hyperparameters
     return f'''"""Generated anomaly detection algorithm for: {spec.capability_name}."""
 from __future__ import annotations
 from typing import Optional
@@ -158,11 +162,11 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import IsolationForest
 ALGORITHM_NAME = {plan.algorithm_name!r}
 
-def train(train_df: pd.DataFrame, target_col: str = "", config: Optional[dict] = None):
+def train(train_df: pd.DataFrame, target_col: str, config: Optional[dict] = None):
     X = train_df.drop(columns=[target_col]) if target_col and target_col in train_df.columns else train_df.copy()
     numeric = X.select_dtypes(include=[np.number]).columns.tolist()
     if not numeric: raise ValueError("anomaly detection requires numeric features")
-    model = Pipeline([("impute", SimpleImputer(strategy="median")), ("scale", StandardScaler()), ("model", IsolationForest(n_estimators=160, contamination="auto", random_state=42, n_jobs=1))])
+    model = Pipeline([("impute", SimpleImputer(strategy="median")), ("scale", StandardScaler()), ("model", IsolationForest(n_estimators={params.get('n_estimators', 160)!r}, contamination={params.get('contamination', 'auto')!r}, random_state=42, n_jobs=1))])
     model.fit(X[numeric])
     model._ai_factory_features = numeric
     return model
@@ -172,7 +176,7 @@ def predict(model, test_df: pd.DataFrame) -> pd.DataFrame:
     raw = model.predict(X)
     return pd.DataFrame({{"prediction": (raw == -1).astype(int), "anomaly_score": (-model.decision_function(X)).astype(float)}})
 
-def evaluate(model, test_df: pd.DataFrame, target_col: str = "") -> dict:
+def evaluate(model, test_df: pd.DataFrame, target_col: str) -> dict:
     pred = predict(model, test_df.drop(columns=[target_col]) if target_col and target_col in test_df.columns else test_df)
     if target_col and target_col in test_df.columns:
         from sklearn.metrics import f1_score, precision_score, recall_score
@@ -184,6 +188,7 @@ def evaluate(model, test_df: pd.DataFrame, target_col: str = "") -> dict:
 
 def render_text_algorithm(spec: CapabilitySpec, plan: AlgorithmPlan) -> str:
     text_column = spec.feature_columns[0] if spec.feature_columns else "text"
+    params = plan.hyperparameters
     return f'''"""Generated text classification algorithm for: {spec.capability_name}."""
 from __future__ import annotations
 from typing import Optional
@@ -198,7 +203,7 @@ ALGORITHM_NAME = {plan.algorithm_name!r}
 
 def train(train_df: pd.DataFrame, target_col: str, config: Optional[dict] = None):
     if TEXT_COLUMN not in train_df.columns: raise ValueError(f"text column '{{TEXT_COLUMN}}' not found")
-    model = Pipeline([("tfidf", TfidfVectorizer(max_features=5000, ngram_range=(1, 2), min_df=1)), ("model", LogisticRegression(max_iter=500, random_state=42))])
+    model = Pipeline([("tfidf", TfidfVectorizer(max_features={params.get('max_features', 5000)!r}, ngram_range=(1, {params.get('ngram_max', 2)!r}), min_df=1)), ("model", LogisticRegression(C={params.get('C', 1.0)!r}, max_iter=500, random_state=42))])
     model.fit(train_df[TEXT_COLUMN].fillna("").astype(str), train_df[target_col])
     return model
 

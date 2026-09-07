@@ -45,6 +45,7 @@ class KnowledgeContext:
     semantic_evidence: list[dict[str, Any]] = field(default_factory=list)
     historical_cases: list[dict[str, Any]] = field(default_factory=list)
     retrieval_trace: dict[str, Any] = field(default_factory=dict)
+    planning_context: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)

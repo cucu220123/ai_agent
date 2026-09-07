@@ -34,10 +34,10 @@ def write_report(result: WorkflowResult, reports_dir: str | Path) -> tuple[Path,
     for plan in result.plans:
         lines.append(f"- **{plan.algorithm_name}**：{plan.rationale}；历史预期指标 `{plan.expected_metrics}`")
     if result.candidate_results:
-        lines.extend(["", "## 候选算法自动比较", "", "| 算法 | 状态 | ROC-AUC | F1 | 耗时(s) |", "|---|---|---:|---:|---:|"])
+        lines.extend(["", "## 候选算法自动比较", "", "| 算法 | 代码来源 | 状态 | ROC-AUC | F1 | 耗时(s) |", "|---|---|---|---:|---:|---:|"])
         for item in result.candidate_results:
             v = item["validation"]
-            lines.append(f"| {v['algorithm']} | {v['status']} | {v['metrics'].get('roc_auc', 0.0):.4f} | {v['metrics'].get('f1', 0.0):.4f} | {v['runtime_seconds']:.3f} |")
+            lines.append(f"| {v['algorithm']} | {item.get('code_source', 'unknown')} | {v['status']} | {v['metrics'].get('roc_auc', 0.0):.4f} | {v['metrics'].get('f1', 0.0):.4f} | {v['runtime_seconds']:.3f} |")
     if result.search_trace:
         lines.extend(["", "## 方案搜索", "", f"- 策略：`{result.search_trace.get('strategy')}`", f"- Beam width：`{result.search_trace.get('beam_width')}`", f"- 扩展候选数：`{result.search_trace.get('expanded')}`", f"- 入选：`{result.search_trace.get('selected')}`"])
     if validation:

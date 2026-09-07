@@ -17,6 +17,7 @@ class LLMTrace:
     structured: bool = False
     latency_ms: float = 0.0
     token_usage: dict[str, int] = field(default_factory=dict)
+    generation: dict[str, Any] = field(default_factory=dict)
     retry_count: int = 0
 
     def to_dict(self) -> dict[str, Any]:
@@ -66,11 +67,11 @@ def extract_python_code(text: str) -> str | None:
     return None
 
 
-def complete_with_trace(provider: Any, provider_name: str, model: str | None, purpose: str, system: str, user: str) -> tuple[str, LLMTrace]:
+def complete_with_trace(provider: Any, provider_name: str, model: str | None, purpose: str, system: str, user: str, generation_config: dict[str, Any] | None = None) -> tuple[str, LLMTrace]:
     trace = LLMTrace(provider=provider_name, model=model, purpose=purpose, status="started")
     started = time.perf_counter()
     try:
-        response = provider.complete(system, user) or ""
+        response = provider.complete(system, user, purpose=purpose, generation_config=generation_config) or ""
         trace.status = "ok"
         trace.provider = getattr(provider, "last_provider", provider_name)
         trace.model = getattr(provider, "model", model)
@@ -78,6 +79,7 @@ def complete_with_trace(provider: Any, provider_name: str, model: str | None, pu
         trace.latency_ms = round((time.perf_counter() - started) * 1000, 2)
         trace.token_usage = getattr(provider, "last_usage", {}) or {}
         trace.retry_count = int(getattr(provider, "last_retry_count", 0) or 0)
+        trace.generation = getattr(provider, "last_generation", {}) or {}
         return response, trace
     except Exception as exc:
         trace.status = "fallback"

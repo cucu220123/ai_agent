@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 
 
@@ -15,7 +15,9 @@ except Exception:
     pass
 
 DEFAULT_SECRET_FILE = Path("/data/xiaotianqi/gen_eval/eval/secret.txt")
-DEFAULT_LOCAL_MODEL = Path("/data/public_checkpoints/huggingface_models/Qwen2.5-1.5B-Instruct")
+DEFAULT_LOCAL_MODEL = Path("/data/public_checkpoints/huggingface_models/Qwen2.5-14B-Instruct")
+DEFAULT_CODER_MODEL = Path("/data/public_checkpoints/huggingface_models/Qwen2.5-Coder-3B-Instruct")
+DEFAULT_EMBEDDING_MODEL = Path("/data/public_checkpoints/huggingface_models/shibing624-text2vec-base-chinese")
 
 
 @dataclass(frozen=True)
@@ -32,9 +34,14 @@ class Settings:
     openai_model: str = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
     secret_file: Path | None = Path(os.environ["AI_FACTORY_SECRET_FILE"]) if os.getenv("AI_FACTORY_SECRET_FILE") else (DEFAULT_SECRET_FILE if DEFAULT_SECRET_FILE.exists() else None)
     local_model_path: str | None = os.getenv("LOCAL_MODEL_PATH", str(DEFAULT_LOCAL_MODEL) if DEFAULT_LOCAL_MODEL.exists() else "") or None
+    local_instruction_model_path: str | None = os.getenv("LOCAL_INSTRUCTION_MODEL_PATH", str(DEFAULT_LOCAL_MODEL) if DEFAULT_LOCAL_MODEL.exists() else "") or None
+    local_coder_model_path: str | None = os.getenv("LOCAL_CODER_MODEL_PATH", str(DEFAULT_CODER_MODEL) if DEFAULT_CODER_MODEL.exists() else "") or None
+    embedding_model_path: str | None = os.getenv("EMBEDDING_MODEL_PATH") or None
     validation_timeout_seconds: int = int(os.getenv("VALIDATION_TIMEOUT_SECONDS", "90"))
     validation_memory_mb: int = int(os.getenv("VALIDATION_MEMORY_MB", "16384"))
     max_repair_rounds: int = int(os.getenv("MAX_REPAIR_ROUNDS", "3"))
+    planning_context_max_chars: int = int(os.getenv("PLANNING_CONTEXT_MAX_CHARS", "12000"))
+    llm_code_candidate_budget: int = int(os.getenv("LLM_CODE_CANDIDATE_BUDGET", "2"))
 
     def ensure_dirs(self) -> None:
         for path in (self.data_dir, self.generated_dir, self.reports_dir):
@@ -43,5 +50,7 @@ class Settings:
 
 def get_settings() -> Settings:
     settings = Settings()
+    if settings.embedding_model_path is None and DEFAULT_EMBEDDING_MODEL.exists() and os.getenv("ENABLE_LOCAL_EMBEDDING", "1") == "1":
+        settings = replace(settings, embedding_model_path=str(DEFAULT_EMBEDDING_MODEL))
     settings.ensure_dirs()
     return settings

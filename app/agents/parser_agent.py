@@ -43,6 +43,9 @@ class ParserAgent:
             target = ""
 
         features: list[str] = []
+        input_schema: dict[str, str] = {}
+        dataset_profile: dict[str, object] = {}
+        class_imbalance: dict[str, object] = {}
         for canonical, aliases in self._known_features.items():
             if any(alias.lower() in lowered for alias in aliases):
                 features.append(canonical)
@@ -61,6 +64,12 @@ class ParserAgent:
                     features = [c for c in columns if c != target]
                 elif task_type == "anomaly_detection":
                     features = columns
+                frame = pd.read_csv(dataset_path)
+                input_schema = {column: str(frame[column].dtype) for column in features if column in frame.columns}
+                dataset_profile = {"path": str(dataset_path), "row_count": len(frame), "column_count": len(frame.columns), "missing_rates": {column: float(frame[column].isna().mean()) for column in frame.columns}}
+                if target and target in frame.columns and task_type == "binary_classification":
+                    positive_rate = float(frame[target].mean())
+                    class_imbalance = {"positive_rate": positive_rate, "is_imbalanced": min(positive_rate, 1.0 - positive_rate) < 0.25}
             except Exception:
                 pass
 
@@ -103,15 +112,25 @@ class ParserAgent:
             constraints.append("low_latency")
         if "概率" in text or "probability" in lowered:
             constraints.append("output_probability")
+        domain = "customer_churn" if target == "churn" else ({"text_classification": "text", "regression": "tabular_regression", "anomaly_detection": "anomaly_detection"}.get(task_type, "custom"))
+        capability_name = "客户流失预测" if target == "churn" else {"text_classification": "文本分类", "regression": "回归预测", "anomaly_detection": "异常检测"}.get(task_type, "自定义算法能力")
+        data_type = "text" if task_type == "text_classification" else "tabular"
         return CapabilitySpec(
             raw_description=text,
-            capability_name="客户流失预测" if target == "churn" else "自定义算法能力",
+            domain=domain,
+            capability_name=capability_name,
             task_type=task_type,
+            data_type=data_type,
             target_column=target,
             feature_columns=features,
+            input_schema=input_schema,
+            dataset_profile=dataset_profile,
             metrics=metrics,
             metric_thresholds=thresholds,
+            output_schema=({"prediction": "int", "probability": "float"} if task_type in {"binary_classification", "text_classification"} else ({"prediction": "float"} if task_type == "regression" else {"prediction": "int", "anomaly_score": "float"})),
+            output_columns=(["prediction", "probability"] if task_type in {"binary_classification", "text_classification"} else (["prediction"] if task_type == "regression" else ["prediction", "anomaly_score"])),
             constraints=constraints,
+            class_imbalance=class_imbalance,
             candidate_algorithms=candidates,
             dataset_path=dataset_path,
         )

@@ -3,6 +3,7 @@ from __future__ import annotations
 from app.models import AlgorithmPlan, CapabilitySpec, KnowledgeContext
 from app.experience.retriever import ExperienceRetriever
 from app.plugins.registry import DEFAULT_REGISTRY
+from app.metrics.registry import METRIC_REGISTRY
 
 
 class PlannerAgent:
@@ -21,13 +22,14 @@ class PlannerAgent:
         priors = ExperienceRetriever().algorithm_priors(spec, prior_runs)
         supported = {p.id for p in DEFAULT_REGISTRY.algorithms_for(spec.task_type)}
         names = [name for name in (spec.candidate_algorithms or list(self._defaults)) if name in supported]
+        primary_metric = METRIC_REGISTRY.primary(spec.task_type, spec.metrics, bool(spec.target_column))
         plans = []
         for priority, key in enumerate(names):
             name, preprocessing, params = self._defaults[key]
             expected = dict(historical.get(key, {}))
             real_prior = priors.get(f"algorithm_{key}", {})
             if real_prior:
-                expected["roc_auc"] = max(float(expected.get("roc_auc", 0.0)), float(real_prior.get("historical_score", 0.0)))
+                expected[primary_metric] = float(real_prior.get("historical_score", expected.get(primary_metric, 0.0)))
             rationale = {
                 "logistic_regression": "类别和数值特征经过统一预处理后，逻辑回归提供高可解释性和低资源消耗。",
                 "random_forest": "随机森林对非线性关系和特征尺度不敏感，适合混合类型客户行为特征。",
@@ -38,8 +40,12 @@ class PlannerAgent:
             }[key]
             if "prefer_interpretable" in spec.constraints and key == "logistic_regression":
                 priority -= 2
-            prior_score = float(real_prior.get("historical_score", expected.get("roc_auc", 0.5)))
+            prior_value = float(real_prior.get("historical_score", expected.get(primary_metric, 0.5)))
+            prior_score = prior_value if METRIC_REGISTRY.is_maximize(primary_metric) else -prior_value
             exploration = float(real_prior.get("exploration_bonus", 1.0))
-            search_score = prior_score + 0.08 * exploration
+            success = float(real_prior.get("success_rate", 0.5))
+            stability = float(real_prior.get("stability_rate", 0.5))
+            runtime = float(real_prior.get("mean_runtime", 0.0))
+            search_score = prior_score + 0.12 * success + 0.04 * stability + 0.08 * exploration - 0.01 * __import__("math").log1p(max(0.0, runtime))
             plans.append(AlgorithmPlan(f"algorithm_{key}", name, rationale, preprocessing, params, expected, priority, f"algorithm_{key}", "default", "default", search_score, [x.get("run_id", "") for x in prior_runs if x.get("algorithm_id") == f"algorithm_{key}"]))
-        return sorted(plans, key=lambda p: (p.priority, -p.expected_metrics.get("roc_auc", 0.0)))
+        return sorted(plans, key=lambda p: (p.priority, -p.search_score))

@@ -3,6 +3,9 @@ from __future__ import annotations
 import os
 from pathlib import Path
 import time
+from typing import Any
+
+from app.llm.generation import resolve_generation_config
 
 
 def load_openai_settings(secret_file: str | Path | None = None) -> dict[str, str]:
@@ -36,14 +39,25 @@ class OpenAICompatibleLLM:
         self.client = OpenAI(api_key=api_key, base_url=base_url, timeout=timeout, max_retries=0)
         self.last_usage: dict[str, int] = {}
         self.last_retry_count = 0
+        self.last_generation: dict[str, Any] = {}
 
-    def complete(self, system: str, user: str) -> str:
+    def complete(self, system: str, user: str, purpose: str = "general", generation_config: dict[str, Any] | None = None) -> str:
+        config = resolve_generation_config(purpose, generation_config)
+        kwargs: dict[str, Any] = {
+            "model": self.model,
+            "temperature": config.temperature,
+            "max_tokens": config.max_new_tokens,
+            "messages": [{"role": "system", "content": system}, {"role": "user", "content": user}],
+        }
+        if config.json_mode:
+            kwargs["response_format"] = {"type": "json_object"}
         response = self.client.chat.completions.create(
-            model=self.model,
-            temperature=0.1,
-            messages=[{"role": "system", "content": system}, {"role": "user", "content": user}],
+            **kwargs,
         )
         usage = getattr(response, "usage", None)
         if usage:
             self.last_usage = {k: int(getattr(usage, k)) for k in ("prompt_tokens", "completion_tokens", "total_tokens") if getattr(usage, k, None) is not None}
-        return response.choices[0].message.content or ""
+        choice = response.choices[0]
+        finish_reason = getattr(choice, "finish_reason", None)
+        self.last_generation = {"purpose": purpose, "max_new_tokens": config.max_new_tokens, "finish_reason": finish_reason, "truncated": finish_reason == "length", "eos_reached": finish_reason in {"stop", "eos"}}
+        return choice.message.content or ""

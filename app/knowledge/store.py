@@ -235,6 +235,16 @@ class KnowledgeStore:
         with self._connect() as conn:
             return [json.loads(row["payload"]) for row in conn.execute("SELECT payload FROM validation_runs ORDER BY created_at DESC LIMIT ?", (limit,))]
 
+    def get_node_payload(self, node_id: str) -> dict[str, Any]:
+        """Resolve full JSON payload for GraphRAG serialization, not lossy GraphML scalars."""
+        table_specs = (("capabilities", "id"), ("algorithms", "id"), ("validation_runs", "id"), ("experiences", "id"), ("knowledge_items", "id"))
+        with self._connect() as conn:
+            for table, column in table_specs:
+                row = conn.execute(f"SELECT payload FROM {table} WHERE {column} = ?", (node_id,)).fetchone()
+                if row:
+                    return json.loads(row["payload"])
+        return dict(self.graph.nodes[node_id]) if node_id in self.graph else {}
+
     def graph_summary(self) -> dict[str, Any]:
         node_counts: dict[str, int] = {}
         for _, attrs in self.graph.nodes(data=True):

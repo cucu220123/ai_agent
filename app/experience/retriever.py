@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import math
+from datetime import datetime, timezone
 from typing import Any
 
 from app.models import CapabilitySpec
+from app.metrics.registry import METRIC_REGISTRY
 
 
 class ExperienceRetriever:
@@ -27,19 +29,46 @@ class ExperienceRetriever:
                 grouped.setdefault(algo, []).append(run)
         priors: dict[str, dict[str, float]] = {}
         for algo, items in grouped.items():
-            weights = [max(0.05, float(item.get("similarity", 0.0))) for item in items]
             successes = sum(1 for item in items if item.get("status") == "passed")
-            aucs = [float(item.get("metrics", {}).get("roc_auc", 0.0)) for item in items if item.get("metrics", {}).get("roc_auc") is not None]
+            primary = METRIC_REGISTRY.primary(spec.task_type, spec.metrics, bool(spec.target_column))
+            weighted_values = [(float(item.get("metrics", {}).get(primary)), max(0.05, float(item.get("similarity", 0.0))) * self._recency_weight(item.get("timestamp"))) for item in items if item.get("metrics", {}).get(primary) is not None]
             rates = [float(item.get("runtime_seconds", 0.0)) for item in items]
-            weight_sum = sum(weights)
+            weight_sum = sum(weight for _, weight in weighted_values)
             priors[algo] = {
                 "success_rate": successes / len(items),
-                "historical_score": sum(a * w for a, w in zip(aucs, weights)) / weight_sum if aucs else 0.5,
+                "historical_score": sum(value * weight for value, weight in weighted_values) / weight_sum if weighted_values else 0.5,
+                "primary_metric": primary,
+                "maximize": METRIC_REGISTRY.is_maximize(primary),
                 "mean_runtime": sum(rates) / len(rates) if rates else 0.0,
+                "stability_rate": sum(1 for item in items if item.get("checks", {}).get("stability", {}).get("passed", True)) / len(items),
+                "mean_recency_weight": sum(self._recency_weight(item.get("timestamp")) for item in items) / len(items),
                 "exploration_bonus": 1.0 / math.sqrt(1.0 + len(items)),
                 "sample_count": float(len(items)),
             }
         return priors
+
+    @staticmethod
+    def _recency_weight(timestamp: str | None) -> float:
+        if not timestamp:
+            return 0.7
+        try:
+            parsed = datetime.fromisoformat(timestamp.replace("Z", "+00:00"))
+            age_days = max(0.0, (datetime.now(timezone.utc) - parsed.astimezone(timezone.utc)).total_seconds() / 86400)
+            return max(0.25, math.exp(-age_days / 180.0))
+        except (ValueError, TypeError):
+            return 0.7
+
+    def retrieve_failures(self, spec: CapabilitySpec, experiences: list[dict[str, Any]], limit: int = 8) -> list[dict[str, Any]]:
+        query_terms = {spec.task_type, spec.domain, spec.target_column, *spec.constraints}
+        ranked = []
+        for item in experiences:
+            text = str(item).lower()
+            overlap = sum(1 for term in query_terms if term and str(term).lower() in text)
+            repair_bonus = 1 if item.get("repair_history") or item.get("repair_success") else 0
+            failure_bonus = 1 if item.get("failure_type") else 0
+            ranked.append((overlap + repair_bonus + failure_bonus, item))
+        ranked.sort(key=lambda value: value[0], reverse=True)
+        return [{"relevance_score": score, **item} for score, item in ranked[:limit] if score > 0]
 
     @staticmethod
     def _similarity(spec: CapabilitySpec, run: dict[str, Any]) -> float:
@@ -56,5 +85,12 @@ class ExperienceRetriever:
             score += 0.30 * len(old_features & new_features) / max(1, len(old_features | new_features))
         if run.get("data_type") == spec.data_type:
             score += 0.10
+        old_rows = run.get("dataset_profile", {}).get("rows")
+        new_rows = spec.dataset_profile.get("row_count") or spec.dataset_profile.get("rows")
+        if old_rows and new_rows:
+            score += 0.10 * min(float(old_rows), float(new_rows)) / max(float(old_rows), float(new_rows))
+        old_rate = run.get("dataset_profile", {}).get("positive_rate")
+        new_rate = spec.class_imbalance.get("positive_rate")
+        if old_rate is not None and new_rate is not None:
+            score += 0.10 * max(0.0, 1.0 - abs(float(old_rate) - float(new_rate)))
         return min(1.0, score)
-

@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 import re
 from collections import defaultdict
-from typing import Any
+from typing import Any, Callable
 
 import networkx as nx
 
@@ -61,8 +61,9 @@ class SubgraphSerializer:
 class GraphRetriever:
     """Entity-linking plus bounded multi-hop graph traversal and path scoring."""
 
-    def __init__(self, graph: nx.MultiDiGraph):
+    def __init__(self, graph: nx.MultiDiGraph, payload_resolver: Callable[[str], dict[str, Any]] | None = None):
         self.graph = graph
+        self.payload_resolver = payload_resolver
         self.serializer = SubgraphSerializer()
 
     def retrieve(self, spec: CapabilitySpec, hops: int = 2, limit: int = 40) -> dict[str, Any]:
@@ -70,12 +71,21 @@ class GraphRetriever:
         query_tokens = _tokens(query_text)
         anchors: list[tuple[str, float]] = []
         for node_id, attrs in self.graph.nodes(data=True):
+            payload = self.payload_resolver(node_id) if self.payload_resolver else {}
+            combined = {**attrs, **payload}
             node_type = attrs.get("type", "")
-            text = " ".join(str(v) for v in attrs.values())
+            text = " ".join(str(v) for v in combined.values())
             node_tokens = _tokens(text + " " + str(node_id))
             overlap = len(query_tokens & node_tokens)
-            if node_id == "cap_churn_prediction_v1" and spec.target_column == "churn":
-                overlap += 8
+            if combined.get("task_type") == spec.task_type:
+                overlap += 5
+            if combined.get("domain") == spec.domain:
+                overlap += 4
+            if spec.target_column and combined.get("target") == spec.target_column:
+                overlap += 3
+            aliases = combined.get("aliases", [])
+            if isinstance(aliases, list) and any(_tokens(str(alias)) & query_tokens for alias in aliases):
+                overlap += 3
             if node_type == "Algorithm" and any(node_id.endswith(name) or name.replace("_", " ") in text.lower() for name in spec.candidate_algorithms):
                 overlap += 4
             if overlap:
@@ -93,11 +103,17 @@ class GraphRetriever:
         nodes: list[dict[str, Any]] = []
         for node_id, score in ranked_nodes:
             attrs = dict(self.graph.nodes[node_id])
+            full_payload = self.payload_resolver(node_id) if self.payload_resolver else {}
             attrs.pop("payload", None)
-            nodes.append({"id": node_id, "score": round(score, 5), **attrs})
+            nodes.append({"id": node_id, "score": round(score, 5), **attrs, **full_payload})
         edges = []
         for source, target, key, attrs in self.graph.edges(keys=True, data=True):
             if source in node_ids and target in node_ids:
-                edges.append({"source": source, "target": target, "relation": attrs.get("relation", ""), "key": key})
+                payload = attrs.get("payload", "")
+                try:
+                    payload = json.loads(payload) if isinstance(payload, str) and payload else payload
+                except json.JSONDecodeError:
+                    pass
+                edges.append({"source": source, "target": target, "relation": attrs.get("relation", ""), "key": key, "provenance": payload})
         evidence = self.serializer.serialize(self.graph, nodes, edges, spec)
         return {"query": query_text, "anchors": [{"id": x, "score": y} for x, y in anchors], "hops": hops, "nodes": nodes, "edges": edges, "serialized": evidence, "text": self.serializer.to_text(evidence)}
