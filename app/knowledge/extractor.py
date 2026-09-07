@@ -84,6 +84,15 @@ class CapabilityExtractor:
         result, extraction_trace = self.semantic_agent.run(path, deterministic)
         result["extraction_trace"] = extraction_trace
         result["deterministic_facts"] = {k: v for k, v in deterministic.items() if k != "content_chunks"}
+        result["source_sha256"] = hashlib.sha256(path.read_bytes()).hexdigest()
+        result["source"] = str(path)
+        result["name"] = path.name
+        result["provenance"]["source_sha256"] = result["source_sha256"]
+        source_text = path.read_text(encoding="utf-8")
+        for item in [*result.get("entities", []), *result.get("relations", [])]:
+            span = item.get("evidence_span", "")
+            offset = source_text.find(span)
+            item.setdefault("provenance", {}).update(source_sha256=result["source_sha256"], char_start=offset if offset >= 0 else None, line_start=source_text[:offset].count("\n") + 1 if offset >= 0 else None)
         source_id = "source_" + self._slug(path.stem) + "_" + hashlib.sha256(str(path.resolve()).encode()).hexdigest()[:8]
         result["id"] = source_id
         store.upsert_knowledge_item(source_id, "SourceDocument", result)
@@ -102,11 +111,12 @@ class CapabilityExtractor:
             node_type = entity.get("type", "SourceDocument")
             global_id = self._node_id(node_type, entity.get("name", local_id))
             id_map[local_id] = global_id
-            payload = {"id": global_id, "name": entity.get("name", local_id), **entity.get("properties", {}), "confidence": entity.get("confidence"), "provenance": entity.get("provenance", {"source": result.get("provenance", {}).get("source"), "evidence_span": entity.get("evidence_span")})}
+            payload = {**entity.get("properties", {}), "id": global_id, "name": entity.get("name", local_id), "origin": "llm_extracted" if result.get("extraction_trace", {}).get("status") == "ok" else "deterministic_extracted", "confidence": entity.get("confidence"), "provenance": entity.get("provenance", {"source": result.get("provenance", {}).get("source"), "evidence_span": entity.get("evidence_span")}), "provenance_records": entity.get("provenance_records", [])}
             if node_type == "Algorithm":
-                store.upsert_algorithm({"task_types": payload.get("task_types", ["binary_classification"]), "historical_metrics": payload.get("historical_metrics", {}), **payload})
+                existing = store.get_node_payload(global_id)
+                store.upsert_algorithm({**existing, "task_types": payload.get("task_types", existing.get("task_types", [])), "historical_metrics": existing.get("historical_metrics", {}), **payload})
             elif node_type == "Capability":
-                store.upsert_capability({"task_type": payload.get("task_type", "binary_classification"), **payload})
+                store.upsert_capability({"task_type": payload.get("task_type", ""), **payload})
             elif node_type == "ValidationRun":
                 store.add_validation_run({"run_id": global_id, "status": payload.get("status", "unknown"), "metrics": payload.get("metrics", {}), **payload})
             elif node_type == "FailureExperience":
@@ -143,7 +153,7 @@ class CapabilityExtractor:
             raise FileNotFoundError(path)
         results = []
         for child in sorted(path.rglob("*")):
-            if child.is_file() and child.suffix.lower() in {".py", ".md", ".markdown", ".txt", ".json"} and ".git" not in child.parts and "__pycache__" not in child.parts:
+            if child.is_file() and not child.is_symlink() and child.suffix.lower() in {".py", ".md", ".markdown", ".txt", ".json"} and not any(part.startswith((".env", "secret", ".git", "__pycache__")) for part in child.parts):
                 try:
                     results.append(self.ingest(child, store))
                 except (SyntaxError, UnicodeDecodeError, json.JSONDecodeError) as exc:
@@ -169,8 +179,7 @@ class CapabilityExtractor:
 
     @staticmethod
     def _signature(node: ast.FunctionDef | ast.AsyncFunctionDef) -> str:
-        args = [arg.arg for arg in [*node.args.posonlyargs, *node.args.args]]
-        return f"{node.name}({', '.join(args)})"
+        return f"{node.name}({ast.unparse(node.args)})"
 
     @staticmethod
     def _infer_task_types(source: str, imports: list[str], functions: list[dict[str, Any]]) -> list[str]:
@@ -192,4 +201,10 @@ class CapabilityExtractor:
         return normalized or hashlib.sha256(str(value).encode()).hexdigest()[:10]
 
     def _node_id(self, node_type: str, name: str) -> str:
+        if node_type == "Algorithm":
+            from app.plugins.registry import DEFAULT_REGISTRY
+            normalized = self._slug(name)
+            for plugin in DEFAULT_REGISTRY.algorithms.values():
+                if normalized in {self._slug(plugin.name), plugin.id}:
+                    return f"algorithm_{plugin.id}"
         return f"{node_type.lower()}_{self._slug(name)}"
