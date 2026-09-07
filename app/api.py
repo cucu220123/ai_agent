@@ -20,6 +20,11 @@ class RunRequest(BaseModel):
     provider: Literal["auto", "mock", "openai", "local"] = "auto"
 
 
+class IngestRequest(BaseModel):
+    path: str
+    provider: Literal["auto", "mock", "openai", "local"] = "auto"
+
+
 @app.get("/health")
 def health() -> dict:
     return {"status": "ok", "service": "ai-algorithm-factory"}
@@ -57,6 +62,25 @@ def sources(limit: int = Query(default=50, ge=1, le=200)) -> dict:
 def catalog() -> dict:
     workflow = AlgorithmFactoryWorkflow()
     return {"summary": workflow.store.graph_summary(), "items": workflow.store.list_knowledge_items(200)}
+
+
+@app.post("/knowledge/ingest")
+def ingest_knowledge(request: IngestRequest) -> dict:
+    from app.agents.knowledge_extraction_agent import KnowledgeExtractionAgent
+    from app.knowledge.extractor import CapabilityExtractor
+    from app.config import Settings, get_settings
+
+    base = get_settings()
+    requested = Path(request.path)
+    resolved = (base.project_root / requested).resolve() if not requested.is_absolute() else requested.resolve()
+    if not resolved.exists() or (not resolved.is_file() and not resolved.is_dir()):
+        raise HTTPException(status_code=400, detail="source path does not exist")
+    if base.project_root.resolve() not in resolved.parents and resolved != base.project_root.resolve():
+        raise HTTPException(status_code=400, detail="source path must be inside project directory")
+    settings = Settings(**{**base.__dict__, "llm_provider": request.provider})
+    workflow = AlgorithmFactoryWorkflow(settings)
+    items = CapabilityExtractor(workflow.llm, request.provider).ingest_path(resolved, workflow.store)
+    return {"count": len(items), "items": items, "graph_summary": workflow.store.graph_summary()}
 
 
 @app.get("/run/{run_id}")

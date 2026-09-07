@@ -14,8 +14,9 @@ from app.validation.isolate import run_isolated
 class ValidationRunner:
     """Validate generated code in a separate Python process with a hard timeout."""
 
-    def __init__(self, timeout_seconds: int = 90):
+    def __init__(self, timeout_seconds: int = 90, memory_mb: int = 16384):
         self.timeout_seconds = timeout_seconds
+        self.memory_mb = memory_mb
 
     def run(self, algorithm_path: str | Path, data_path: str | Path, spec: CapabilitySpec, algorithm_name: str, repair_round: int = 0) -> ValidationResult:
         started = time.perf_counter()
@@ -42,7 +43,7 @@ class ValidationRunner:
                 _, test_df = train_test_split(df, test_size=0.25, random_state=42, stratify=stratify)
             else:
                 test_df = df
-            isolated = run_isolated(algorithm_path, data_path, spec.target_column, self.timeout_seconds)
+            isolated = run_isolated(algorithm_path, data_path, spec.target_column, self.timeout_seconds, self.memory_mb)
             stdout, stderr = isolated.get("stdout", ""), isolated.get("stderr", "")
             checks["isolated_execution"] = {k: v for k, v in isolated.items() if k not in {"stdout", "stderr", "metrics", "metrics2"}}
             checks["resource_usage"] = {"max_rss_kb": isolated.get("max_rss_kb"), "runtime_seconds_child": isolated.get("runtime_seconds")}

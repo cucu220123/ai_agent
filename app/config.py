@@ -33,6 +33,7 @@ class Settings:
     secret_file: Path | None = Path(os.environ["AI_FACTORY_SECRET_FILE"]) if os.getenv("AI_FACTORY_SECRET_FILE") else (DEFAULT_SECRET_FILE if DEFAULT_SECRET_FILE.exists() else None)
     local_model_path: str | None = os.getenv("LOCAL_MODEL_PATH", str(DEFAULT_LOCAL_MODEL) if DEFAULT_LOCAL_MODEL.exists() else "") or None
     validation_timeout_seconds: int = int(os.getenv("VALIDATION_TIMEOUT_SECONDS", "90"))
+    validation_memory_mb: int = int(os.getenv("VALIDATION_MEMORY_MB", "16384"))
     max_repair_rounds: int = int(os.getenv("MAX_REPAIR_ROUNDS", "3"))
 
     def ensure_dirs(self) -> None:

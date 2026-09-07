@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 from typing import Any
 
@@ -47,12 +48,32 @@ print("AI_FACTORY_RESULT=" + json.dumps({"metrics": metrics, "metrics2": metrics
 '''
 
 
-def run_isolated(algorithm_path: str | Path, data_path: str | Path, target_col: str, timeout_seconds: int) -> dict[str, Any]:
+def _limit_resources(cpu_seconds: int, memory_mb: int) -> None:
     try:
-        completed = subprocess.run(
-            [sys.executable, "-I", "-c", HARNESS, str(Path(algorithm_path).resolve()), str(Path(data_path).resolve()), target_col],
-            capture_output=True, text=True, timeout=timeout_seconds, check=False,
-        )
+        if cpu_seconds > 0:
+            resource.setrlimit(resource.RLIMIT_CPU, (cpu_seconds, cpu_seconds + 1))
+        if memory_mb > 0:
+            memory_bytes = memory_mb * 1024 * 1024
+            # Do not lower a process soft limit if the host already configured a smaller hard limit.
+            hard = resource.getrlimit(resource.RLIMIT_AS)[1]
+            if hard < 0 or memory_bytes <= hard:
+                resource.setrlimit(resource.RLIMIT_AS, (memory_bytes, hard if hard >= 0 else memory_bytes))
+        resource.setrlimit(resource.RLIMIT_FSIZE, (64 * 1024 * 1024, 64 * 1024 * 1024))
+    except (ValueError, OSError):
+        pass
+
+
+def run_isolated(algorithm_path: str | Path, data_path: str | Path, target_col: str, timeout_seconds: int, memory_mb: int = 16384) -> dict[str, Any]:
+    try:
+        with tempfile.TemporaryDirectory(prefix="ai_factory_sandbox_") as temp_dir:
+            command = [sys.executable, "-I", "-c", HARNESS, str(Path(algorithm_path).resolve()), str(Path(data_path).resolve()), target_col]
+            limits_applied = True
+            try:
+                completed = subprocess.run(command, capture_output=True, text=True, timeout=timeout_seconds, check=False, cwd=temp_dir, preexec_fn=lambda: _limit_resources(timeout_seconds, memory_mb))
+            except subprocess.SubprocessError:
+                # Some managed/server environments reject preexec resource limits. Keep hard timeout and isolated cwd.
+                limits_applied = False
+                completed = subprocess.run(command, capture_output=True, text=True, timeout=timeout_seconds, check=False, cwd=temp_dir)
     except subprocess.TimeoutExpired as exc:
         return {"passed": False, "timeout": True, "message": f"isolated validation exceeded {timeout_seconds}s", "stdout": (exc.stdout or "")[-5000:], "stderr": (exc.stderr or "")[-5000:]}
     stdout, stderr = completed.stdout[-10000:], completed.stderr[-10000:]
@@ -63,4 +84,4 @@ def run_isolated(algorithm_path: str | Path, data_path: str | Path, target_col: 
         result = json.loads(marker.split("=", 1)[1])
     except json.JSONDecodeError as exc:
         return {"passed": False, "timeout": False, "message": f"invalid harness output: {exc}", "stdout": stdout, "stderr": stderr}
-    return {"passed": True, "timeout": False, "message": "isolated execution passed", "stdout": stdout, "stderr": stderr, **result}
+    return {"passed": True, "timeout": False, "message": "isolated execution passed", "resource_limits_applied": locals().get("limits_applied", False), "stdout": stdout, "stderr": stderr, **result}

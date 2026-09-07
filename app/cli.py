@@ -20,6 +20,7 @@ def main() -> int:
     sub.add_parser("tasks", help="list registered task plugins")
     ingest = sub.add_parser("ingest", help="extract capability knowledge from Markdown/Python")
     ingest.add_argument("path")
+    ingest.add_argument("--provider", choices=["auto", "mock", "openai", "local"], default=None)
     args = parser.parse_args()
     if args.command == "run":
         settings = get_settings()
@@ -44,8 +45,11 @@ def main() -> int:
         return 0
     if args.command == "ingest":
         from app.knowledge.extractor import CapabilityExtractor
-        workflow = AlgorithmFactoryWorkflow(get_settings())
-        print(json.dumps(CapabilityExtractor().ingest_path(args.path, workflow.store), ensure_ascii=False, indent=2))
+        settings = get_settings()
+        if args.provider:
+            settings = Settings(**{**settings.__dict__, "llm_provider": args.provider})
+        workflow = AlgorithmFactoryWorkflow(settings)
+        print(json.dumps(CapabilityExtractor(workflow.llm, settings.llm_provider).ingest_path(args.path, workflow.store), ensure_ascii=False, indent=2))
         return 0
     return 2
 
