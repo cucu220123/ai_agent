@@ -1,5 +1,7 @@
+"""Combine validated LLM proposals with contextual priors and deterministic constraints."""
 from __future__ import annotations
-
+import math
+from typing import Any
 from app.models import AlgorithmPlan, CapabilitySpec, KnowledgeContext
 from app.experience.retriever import ExperienceRetriever
 from app.plugins.registry import DEFAULT_REGISTRY
@@ -7,50 +9,56 @@ from app.metrics.registry import METRIC_REGISTRY
 
 
 class PlannerAgent:
-    _defaults = {
-        "logistic_regression": ("Logistic Regression", ["median imputation", "most-frequent imputation", "one-hot encoding", "standard scaling"], {"C": 1.0, "max_iter": 500}),
-        "random_forest": ("Random Forest", ["median imputation", "most-frequent imputation", "one-hot encoding"], {"n_estimators": 180, "max_depth": 8, "random_state": 42}),
-        "gradient_boosting": ("Gradient Boosting", ["median imputation", "most-frequent imputation", "one-hot encoding"], {"n_estimators": 120, "learning_rate": 0.05, "max_depth": 3, "random_state": 42}),
-        "random_forest_regressor": ("Random Forest Regressor", ["median imputation", "most-frequent imputation", "one-hot encoding"], {"n_estimators": 160, "max_depth": 10, "random_state": 42}),
-        "isolation_forest": ("Isolation Forest", ["median imputation", "standard scaling"], {"n_estimators": 160, "contamination": "auto", "random_state": 42}),
-        "tfidf_logistic_regression": ("TF-IDF Logistic Regression", ["text fillna", "TF-IDF unigram/bigram"], {"max_features": 5000, "max_iter": 500}),
-    }
-
     def run(self, spec: CapabilitySpec, knowledge: KnowledgeContext) -> list[AlgorithmPlan]:
-        historical = {item.get("id", "").replace("algorithm_", ""): item.get("historical_metrics", {}) for item in knowledge.algorithms}
-        prior_runs = knowledge.historical_cases
-        priors = ExperienceRetriever().algorithm_priors(spec, prior_runs)
-        supported = {p.id for p in DEFAULT_REGISTRY.algorithms_for(spec.task_type)}
-        names = [name for name in (spec.candidate_algorithms or list(self._defaults)) if name in supported]
-        primary_metric = METRIC_REGISTRY.primary(spec.task_type, spec.metrics, bool(spec.target_column))
+        plugins = {p.id: p for p in DEFAULT_REGISTRY.algorithms_for(spec.task_type)}
+        names = [name for name in (spec.candidate_algorithms or list(plugins)) if name in plugins and name != "dummy_classifier"]
+        if "dummy_classifier" in spec.candidate_algorithms: names.append("dummy_classifier")
+        priors = ExperienceRetriever().algorithm_priors(spec, knowledge.historical_cases)
+        primary = METRIC_REGISTRY.primary(spec.task_type, spec.metrics, bool(spec.target_column))
+        seed = {a["id"]: a.get("historical_metrics", {}) for a in knowledge.algorithms}
+        advice = knowledge.planner_advice
         plans = []
-        for priority, key in enumerate(names):
-            plugin = DEFAULT_REGISTRY.algorithms.get(key)
-            if plugin and key not in self._defaults:
-                name, preprocessing, params = plugin.name, plugin.preprocessing, dict(plugin.default_params)
-                rationale = plugin.description
+        for key in dict.fromkeys(names):
+            plugin = plugins[key]
+            algorithm_id = f"algorithm_{key}"
+            prior = priors.get(algorithm_id, {})
+            measured = prior.get("historical_score")
+            cold = seed.get(algorithm_id, {}).get(primary)
+            expected = {primary: measured} if measured is not None else ({primary: cold} if cold is not None else {})
+            if measured is None:
+                utility = .5 + .1 * ((float(cold) if cold is not None else .5) - .5)
             else:
-                name, preprocessing, params = self._defaults[key]
-                rationale = {
-                    "logistic_regression": "类别和数值特征经过统一预处理后，逻辑回归提供高可解释性和低资源消耗。",
-                    "random_forest": "随机森林对非线性关系和特征尺度不敏感，适合混合类型客户行为特征。",
-                    "gradient_boosting": "梯度提升通常具有较高的排序能力，作为性能优先候选方案。",
-                    "random_forest_regressor": "随机森林回归对非线性数值关系鲁棒，作为无需缩放的稳健回归方案。",
-                    "isolation_forest": "Isolation Forest 通过随机划分识别稀有样本，适合无监督异常检测。",
-                    "tfidf_logistic_regression": "TF-IDF 与逻辑回归组合轻量、稳定，适合作为文本分类基线。",
-                }.get(key, plugin.description if plugin else "registered algorithm plugin")
-            expected = dict(historical.get(key, {}))
-            real_prior = priors.get(f"algorithm_{key}", {})
-            if real_prior:
-                expected[primary_metric] = float(real_prior.get("historical_score", expected.get(primary_metric, 0.0)))
-            if "prefer_interpretable" in spec.constraints and key == "logistic_regression":
-                priority -= 2
-            prior_value = float(real_prior.get("historical_score", expected.get(primary_metric, 0.5)))
-            prior_score = prior_value if METRIC_REGISTRY.is_maximize(primary_metric) else -prior_value
-            exploration = float(real_prior.get("exploration_bonus", 1.0))
-            success = float(real_prior.get("success_rate", 0.5))
-            stability = float(real_prior.get("stability_rate", 0.5))
-            runtime = float(real_prior.get("mean_runtime", 0.0))
-            search_score = prior_score + 0.12 * success + 0.04 * stability + 0.08 * exploration - 0.01 * __import__("math").log1p(max(0.0, runtime))
-            plans.append(AlgorithmPlan(f"algorithm_{key}", name, rationale, preprocessing, params, expected, priority, f"algorithm_{key}", "default", "default", search_score, [x.get("run_id", "") for x in prior_runs if x.get("algorithm_id") == f"algorithm_{key}"]))
-        return sorted(plans, key=lambda p: (p.priority, -p.search_score))
+                utility = self._utility(primary, float(measured), spec)
+                confidence = float(prior.get("effective_weight", 0)) / (1 + float(prior.get("effective_weight", 0)))
+                utility = .5 + confidence * (utility - .5)
+            components: dict[str, Any] = {
+                "performance_prior": utility, "success": .10 * prior.get("success_rate", .5),
+                "stability": .04 * prior.get("stability_rate", .5),
+                "exploration": .12 * prior.get("exploration_bonus", 1.0),
+                "runtime_cost": -.01 * math.log1p(prior.get("mean_runtime", 0)),
+                "interpretability": .22 if spec.interpretability_requirement == "high" and plugin.resource_profile == "low" else 0,
+                "resource_fit": -.12 if spec.resource_constraints.get("prefer_low_memory") and plugin.resource_profile != "low" else 0,
+            }
+            params = dict(plugin.default_params)
+            recommendations = advice.get("hyperparameter_recommendations", {}).get(key, {})
+            allowed_keys = set(plugin.default_params) | set(plugin.search_space) | {"numeric_imputer", "scaler", "threshold", "max_iter"}
+            accepted = {name: value for name, value in recommendations.items() if name in allowed_keys and isinstance(value, (str, int, float, bool, type(None)))}
+            params.update(accepted)
+            reason = advice.get("algorithm_reasons", {}).get(key, plugin.description)
+            evidence = list(dict.fromkeys([*prior.get("evidence_ids", []), *advice.get("evidence_ids", [])]))
+            preprocessing = advice.get("preprocessing_recommendations", {}).get(key) or plugin.preprocessing
+            components["llm_proposal"] = .03 if key in advice.get("candidate_algorithms", []) else 0
+            score = sum(components.values())
+            components["historical_case_count"] = prior.get("sample_count", 0)
+            components["llm_parameters"] = accepted
+            plans.append(AlgorithmPlan(algorithm_id, plugin.name, reason, list(preprocessing), params, expected, 0, algorithm_id, "llm_proposed" if accepted else "default", "llm_proposed" if accepted else "default", score, evidence, components))
+        return sorted(plans, key=lambda p: -p.search_score)
+
+    @staticmethod
+    def _utility(metric: str, value: float, spec: CapabilitySpec) -> float:
+        if not METRIC_REGISTRY.is_maximize(metric):
+            scale = max(1e-6, abs(spec.metric_thresholds.get(metric, 1)))
+            return 1 / (1 + max(0, value) / scale)
+        if metric == "r2": return max(0, min(1, (value + 1) / 2))
+        return max(0, min(1, value))
+

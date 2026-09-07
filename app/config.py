@@ -59,6 +59,9 @@ class Settings:
 def get_settings() -> Settings:
     settings = Settings()
     settings = replace(settings, llm_provider=os.getenv("LLM_PROVIDER", settings.llm_provider), openai_base_url=os.getenv("OPENAI_BASE_URL", settings.openai_base_url), openai_api_key=os.getenv("OPENAI_API_KEY"), openai_model=os.getenv("OPENAI_MODEL", settings.openai_model), llm_timeout_seconds=float(os.getenv("LLM_TIMEOUT_SECONDS", "240")), beam_width=int(os.getenv("BEAM_WIDTH", "3")), strict_real_llm=os.getenv("STRICT_REAL_LLM", "1") == "1")
+    if os.getenv("AI_FACTORY_WORKSPACE"):
+        root = Path(os.environ["AI_FACTORY_WORKSPACE"]).resolve()
+        settings = replace(settings, project_root=root, data_dir=root / "data", generated_dir=root / "generated", reports_dir=root / "reports", knowledge_db=root / "knowledge.sqlite", graphml_path=root / "knowledge.graphml")
     if settings.embedding_model_path is None and DEFAULT_EMBEDDING_MODEL.exists() and os.getenv("ENABLE_LOCAL_EMBEDDING", "1") == "1":
         settings = replace(settings, embedding_model_path=str(DEFAULT_EMBEDDING_MODEL))
     settings.ensure_dirs()

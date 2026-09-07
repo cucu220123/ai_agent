@@ -46,6 +46,7 @@ class KnowledgeContext:
     historical_cases: list[dict[str, Any]] = field(default_factory=list)
     retrieval_trace: dict[str, Any] = field(default_factory=dict)
     planning_context: dict[str, Any] = field(default_factory=dict)
+    planner_advice: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -65,6 +66,7 @@ class AlgorithmPlan:
     config_variant: str = "default"
     search_score: float = 0.0
     evidence_ids: list[str] = field(default_factory=list)
+    score_components: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -106,6 +108,9 @@ class WorkflowResult:
     llm_trace: dict[str, Any] = field(default_factory=dict)
     search_trace: dict[str, Any] = field(default_factory=dict)
     event_log: list[dict[str, Any]] = field(default_factory=list)
+    extraction_trace: list[dict[str, Any]] = field(default_factory=list)
+    explanation: dict[str, Any] = field(default_factory=dict)
+    writeback: dict[str, Any] = field(default_factory=dict)
     report_json: str | None = None
     report_markdown: str | None = None
 
@@ -123,6 +128,9 @@ class WorkflowResult:
             "llm_trace": self.llm_trace,
             "search_trace": self.search_trace,
             "event_log": self.event_log,
+            "extraction_trace": self.extraction_trace,
+            "explanation": self.explanation,
+            "writeback": self.writeback,
             "report_json": self.report_json,
             "report_markdown": self.report_markdown,
         }

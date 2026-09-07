@@ -8,6 +8,8 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator, model_valida
 from app.agents.planning_context import PlanningContextBuilder
 from app.llm.contracts import extract_json_object
 from app.models import CapabilitySpec, KnowledgeContext
+from app.plugins.registry import DEFAULT_REGISTRY
+from app.llm.security import sanitize
 
 
 class PlannerAdviceContract(BaseModel):
@@ -21,6 +23,7 @@ class PlannerAdviceContract(BaseModel):
     algorithm_reasons: dict[str, str]
     risks: list[str]
     confidence: float = Field(ge=0, le=1)
+    hyperparameter_recommendations: dict[str, dict[str, Any]] = Field(default_factory=dict)
 
     @field_validator("candidate_algorithms")
     @classmethod
@@ -63,7 +66,8 @@ class AdvisorAgent:
 
     def run(self, spec: CapabilitySpec, knowledge: KnowledgeContext) -> tuple[dict[str, Any], dict[str, Any]]:
         context, context_trace = self.context_builder.build(spec, knowledge)
-        allowed = [item.get("id", "").replace("algorithm_", "") for item in knowledge.algorithms]
+        compatible = {p.id for p in DEFAULT_REGISTRY.algorithms_for(spec.task_type)}
+        allowed = [item.get("id", "").replace("algorithm_", "") for item in knowledge.algorithms if item.get("id", "").replace("algorithm_", "") in compatible and item.get("id") != "algorithm_dummy_classifier"]
         fallback = {
             "candidate_algorithms": [x for x in spec.candidate_algorithms if x in allowed] or allowed,
             "preprocessing_recommendations": {x: [] for x in allowed},
@@ -80,24 +84,31 @@ class AdvisorAgent:
         previous = ""
         for attempt in range(1, self.max_attempts + 1):
             try:
-                payload = {"planning_context": context, "allowed_algorithms": allowed, "required_fields": list(PlannerAdviceContract.model_fields)}
+                payload = {"planning_context": context, "allowed_algorithms": allowed, "json_schema": PlannerAdviceContract.model_json_schema(), "execution_rules": "For each candidate recommend concrete preprocessing and a small hyperparameter dictionary. Keep user metric thresholds unchanged. Justify candidates using supplied evidence ids; preserve exploration. Supported configuration keys include C, max_iter, n_estimators, max_depth, learning_rate, min_samples_leaf, class_weight, scaler, numeric_imputer, threshold, max_features, ngram_max, contamination."}
                 if attempt > 1:
                     payload.update({"repair_previous_json": previous[:6000], "validation_error": trace["attempts"][-1].get("error")})
-                raw = self.llm.complete("你是 PlannerAgent。只返回严格 JSON，不要预测结果、Markdown 或思考过程。所有 evidence_ids 必须来自上下文。", json.dumps(payload, ensure_ascii=False), purpose="planning") or ""
+                raw = self.llm.complete("You are PlannerAgent. Return one JSON object matching json_schema. Use double quotes and null/true/false, never Python None/True/False. preprocessing_recommendations and hyperparameter_recommendations must be keyed by candidate algorithm IDs, not feature names. Include concrete parameter dictionaries. All evidence_ids must come from supplied evidence. Do not invent outcomes. Use sklearn-only dependencies, no SMOTE unless explicitly supported.", json.dumps(payload, ensure_ascii=False), purpose="planning", generation_config={"json_schema": PlannerAdviceContract.model_json_schema()}) or ""
                 previous = raw
                 parsed = PlannerAdviceContract.normalize_candidate(extract_json_object(raw))
+                try:
+                    json.loads(raw)
+                    syntax_correction = False
+                except ValueError:
+                    syntax_correction = parsed is not None
                 advice = PlannerAdviceContract.model_validate(parsed)
                 unknown_algorithms = set(advice.candidate_algorithms) - set(allowed)
                 unknown_evidence = set(advice.evidence_ids) - set(context_trace["final_evidence_ids"])
+                if set(advice.preprocessing_recommendations) - set(allowed) - {"global"}:
+                    raise ValueError("preprocessing_recommendations keys must be candidate algorithm IDs")
                 if unknown_algorithms:
                     raise ValueError(f"unsupported algorithms: {sorted(unknown_algorithms)}")
                 if unknown_evidence:
                     raise ValueError(f"hallucinated evidence ids: {sorted(unknown_evidence)}")
                 result = advice.model_dump()
-                trace.update({"status": "ok", "schema_valid": True, "semantic_valid": True, "attempt_count": attempt, "provider": getattr(self.llm, "last_provider", type(self.llm).__name__), "model": getattr(self.llm, "model", None), "token_usage": getattr(self.llm, "last_usage", {}), "generation": getattr(self.llm, "last_generation", {})})
+                trace.update({"status": "ok", "syntax_correction": syntax_correction, "schema_valid": True, "semantic_valid": True, "attempt_count": attempt, "provider": getattr(self.llm, "last_provider", type(self.llm).__name__), "model": getattr(self.llm, "model", None), "token_usage": getattr(self.llm, "last_usage", {}), "generation": getattr(self.llm, "last_generation", {})})
                 trace["attempts"].append({"attempt": attempt, "status": "accepted"})
-                return result, trace
+                return result, sanitize(trace)
             except Exception as exc:
-                trace["attempts"].append({"attempt": attempt, "status": "rejected", "error": f"{type(exc).__name__}: {exc}"[:1500]})
+                trace["attempts"].append({"attempt": attempt, "status": "rejected", "error": f"{type(exc).__name__}: {exc}"[:1500], "rejected_output": sanitize(previous[:5000])})
         trace["fallback_reason"] = trace["attempts"][-1]["error"] if trace["attempts"] else "no provider"
-        return fallback, trace
+        return fallback, sanitize(trace)

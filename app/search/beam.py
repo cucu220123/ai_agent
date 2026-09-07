@@ -30,7 +30,10 @@ class BeamSearchPlanner:
         expansions: list[dict[str, Any]] = []
         for parent in plans:
             plugin = DEFAULT_REGISTRY.algorithms.get((parent.base_algorithm_id or parent.algorithm_id).replace("algorithm_", ""))
-            for action in self._actions(parent, spec):
+            actions = self._actions(parent, spec)
+            if parent.config_variant == "llm_proposed":
+                actions = [{"name": "llm_proposed", "parameters": parent.hyperparameters, "preprocessing_variant": "llm_proposed", "preprocessing": parent.preprocessing}, *actions]
+            for action in actions:
                 params = {**parent.hyperparameters, **action["parameters"]}
                 state_id = parent.algorithm_id + "__" + self._slug(action["name"])
                 state = AlgorithmPlan(
@@ -40,6 +43,7 @@ class BeamSearchPlanner:
                     base_algorithm_id=parent.base_algorithm_id or parent.algorithm_id,
                     preprocessing_variant=action["preprocessing_variant"], config_variant=action["name"],
                     search_score=0.0, evidence_ids=parent.evidence_ids,
+                    score_components=parent.score_components,
                 )
                 state.search_score = self._score(parent, state, spec)
                 states.append(state)
@@ -121,6 +125,8 @@ class BeamSearchPlanner:
             score += 0.01
         if params.get("n_estimators", 0) and params.get("n_estimators", 0) <= 80:
             score += 0.015
+        if state.config_variant == "llm_proposed":
+            score += 0.04
         return score
 
     @staticmethod
