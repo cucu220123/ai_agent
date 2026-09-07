@@ -12,7 +12,7 @@ from app.workflow import AlgorithmFactoryWorkflow
 from scripts.generate_demo_data import generate
 
 
-def main() -> None:
+def main() -> int:
     settings = get_settings()
     data_path = settings.data_dir / "churn_demo.csv"
     if not data_path.exists():
@@ -26,7 +26,8 @@ def main() -> None:
         "metrics": result.validation.metrics if result.validation else {},
         "report": result.report_markdown,
     }, ensure_ascii=False, indent=2))
+    return 0 if result.validation and result.validation.status == "passed" else 1
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
