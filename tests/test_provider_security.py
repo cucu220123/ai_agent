@@ -48,3 +48,25 @@ def test_no_real_provider_does_not_silently_become_mock():
     with pytest.raises(ValueError, match="No real LLM"):
         build_llm(Settings(llm_provider="auto", secret_file=None, local_instruction_model_path=None, local_model_path=None, openai_base_url=None, openai_api_key=None))
 
+
+
+def test_context_budget_recovery_preserves_input_and_records_effective_tokens():
+    from types import SimpleNamespace
+    from app.llm.openai_compatible import OpenAICompatibleLLM
+    calls = []
+    class ContextError(Exception):
+        status_code = 400
+    def create(**kwargs):
+        calls.append(kwargs)
+        if len(calls) == 1:
+            raise ContextError('You passed 9985 input tokens and requested 6400 output tokens. However, the model\'s context length is only 16384 tokens.')
+        return SimpleNamespace(choices=[SimpleNamespace(message=SimpleNamespace(content='{}'), finish_reason='stop')], usage=None)
+    llm = OpenAICompatibleLLM('http://127.0.0.1:1/v1', 'local-fixture', 'fixture')
+    llm.client = SimpleNamespace(chat=SimpleNamespace(completions=SimpleNamespace(create=create)))
+    assert llm.complete('full system', 'all requirement and evidence', purpose='repair') == '{}'
+    assert calls[0]['messages'] == calls[1]['messages']
+    assert calls[1]['max_tokens'] == 6271
+    assert llm.last_retry_count == 1
+    assert llm.last_generation['budget_adjustments'] == [{'requested': 6400, 'effective': 6271, 'reason': 'provider_reported_context_limit'}]
+    assert llm._context_output_budget('passed 16400 input tokens; context length is only 16384 tokens', 6400) is None
+    assert llm._context_output_budget('unrelated bad request', 6400) is None
