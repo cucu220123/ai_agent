@@ -46,7 +46,7 @@ class CriticAgent:
             return "syntax_failure"
         if "missing" in text or "interface" in text or "output" in text:
             return "interface_failure"
-        if "timeout" in text or "runtime" in text:
+        if "timeout" in text or "runtime" in text or "traceback" in text or "typeerror" in text or "keyerror" in text:
             return "runtime_failure"
         if "<" in text or "metric" in text:
             return "metric_underperformance"
@@ -67,4 +67,3 @@ class CriticAgent:
     @staticmethod
     def _lesson(failure_type: str) -> str:
         return {"syntax_failure": "LLM code must pass AST compilation before execution", "interface_failure": "all algorithms must expose the versioned protocol", "runtime_failure": "test missing values and unseen categories", "metric_underperformance": "historical priors are not a substitute for current validation", "validation_failure": "persist the exact check and evidence"}.get(failure_type, "retain validation evidence")
-

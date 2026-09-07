@@ -1,4 +1,9 @@
 .env
+.env.*
+!.env.example
+secret*
+secrets/
+*.token
 *.key
 *.pem
 __pycache__/
@@ -14,4 +19,3 @@ generated/*
 reports/*
 !generated/.gitkeep
 !reports/.gitkeep
-

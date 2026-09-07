@@ -18,3 +18,4 @@
 - 超时、异常、stdout、stderr、峰值 RSS 都回传到验证报告；
 - 生产部署仍应使用容器/虚拟机级隔离、禁网、只读文件系统和资源配额。
 
+密钥策略：项目只从环境变量或用户指定的 secret 文件读取 API 配置；secret 文件不复制到项目、不写入 Git/README/报告。日志只允许 provider、masked endpoint host、model、latency、token usage 和错误类型，不允许完整 API key。
