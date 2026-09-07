@@ -26,6 +26,8 @@ class MetricRegistry:
             "mae": MetricDefinition("mae", False, ("regression",)),
             "rmse": MetricDefinition("rmse", False, ("regression",)),
             "runtime_seconds": MetricDefinition("runtime_seconds", False, ("anomaly_detection",)),
+            "anomaly_rate": MetricDefinition("anomaly_rate", False, ("anomaly_detection",)),
+            "mean_anomaly_score": MetricDefinition("mean_anomaly_score", False, ("anomaly_detection",)),
         }
         self.defaults = {
             "binary_classification": "roc_auc",

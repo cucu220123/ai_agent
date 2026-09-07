@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 from app.generation.templates import render_algorithm
-from app.generation.task_contracts import build_codegen_prompt
+from app.generation.task_contracts import build_codegen_prompt, executable_api_rules
 from app.generation.code_ir import plan_to_code_ir, compile_code_ir
 from app.llm.contracts import extract_python_code
 from app.llm.security import sanitize
@@ -35,7 +35,7 @@ class GeneratorAgent:
             for attempt in range(1, 3):
                 try:
                     retry = "" if not previous else "\nPrevious rejected code; return a complete corrected module:\n" + previous + "\nGate feedback:\n" + trace["attempts"][-1].get("reason", "")
-                    raw = self.llm.complete("You are CoderAgent. Return only a complete Python module. Obey the API contract and security rules.", prompt + retry, purpose="code_generation")
+                    raw = self.llm.complete("Generate a complete executable Python module. Return only source code. " + executable_api_rules(spec.task_type), prompt + retry, purpose="code_generation")
                     proposed = extract_python_code(raw)
                     previous = proposed or raw
                     (run_dir / f"generation_attempt_{attempt}.txt").write_text(previous, encoding="utf-8")

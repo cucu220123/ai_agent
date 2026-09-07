@@ -214,6 +214,8 @@ class KnowledgeStore:
         self.upsert_knowledge_item(node_id, "RepairExperience", payload)
         if payload.get("failure_id"):
             self.add_edge(node_id, payload["failure_id"], "REPAIRS")
+        if payload.get("to_version"):
+            self.add_edge(node_id, payload["to_version"], "PRODUCED_VERSION")
 
     def add_source_support(self, source_id: str, target_id: str, relation: str = "SUPPORTS") -> None:
         self.add_edge(source_id, target_id, relation)

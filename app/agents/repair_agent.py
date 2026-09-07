@@ -8,6 +8,7 @@ from typing import Any
 from pydantic import BaseModel, ConfigDict, Field
 from app.llm.contracts import extract_json_object
 from app.llm.security import sanitize
+from app.generation.task_contracts import executable_api_rules
 
 
 class RepairContract(BaseModel):
@@ -32,7 +33,7 @@ class RepairAgent:
             payload = {"original_code": code, "validation_and_critic": error_text[-16000:], "retrieved_failure_and_repair_experience": experiences[:5], "task_type": task_type, "target": target_column, "json_schema": RepairContract.model_json_schema(), "rules": ["Return diagnosis, strategy and the complete revised_code in JSON.", "Preserve metadata() and exact train(train_df,target_col,config=None), predict(model,test_df), evaluate(model,test_df,target_col), predict_proba(model,test_df) if probability is required.", "predict receives features only. Exclude target before discovering training features.", "Never fake metrics: the trusted parent recomputes them.", "No I/O, network, processes or unsafe imports. Honor random_state from config."]}
             for attempt in range(2):
                 try:
-                    raw = self.llm.complete("You are RepairAgent. Diagnose the observed failure and return a complete minimal corrected implementation as strict JSON.", json.dumps(payload, ensure_ascii=False), purpose="repair", generation_config={"json_schema": RepairContract.model_json_schema()})
+                    raw = self.llm.complete("Diagnose the observed failure and return a complete minimal corrected implementation as strict JSON. " + executable_api_rules(task_type), json.dumps(payload, ensure_ascii=False), purpose="repair", generation_config={"json_schema": RepairContract.model_json_schema()})
                     path.with_name(f"repair_round_{round_no}_attempt_{attempt + 1}.json").write_text(json.dumps({"raw_response": sanitize(raw)}, ensure_ascii=False, indent=2), encoding="utf-8")
                     repair = RepairContract.model_validate(extract_json_object(raw))
                     gate = static_check_text(repair.revised_code, task_type, target_column)

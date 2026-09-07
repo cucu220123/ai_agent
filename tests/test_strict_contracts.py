@@ -52,3 +52,22 @@ def evaluate(model, test_df, target_col): pass
     assert not result.passed
     assert "train signature must be" in result.to_dict()["message"]
 
+
+def test_planner_graph_ids_resolve_to_registered_algorithm_identity():
+    value = PlannerAdviceContract.normalize_candidate({"candidate_algorithms": ["algorithm_random_forest"], "algorithm_reasons": {"algorithm_random_forest": "Evidence supports this model"}, "preprocessing_recommendations": {"algorithm_random_forest": ["median imputation"]}, "hyperparameter_recommendations": {"algorithm_random_forest": {"max_depth": 5}}})
+    assert value["candidate_algorithms"] == ["random_forest"]
+    assert value["hyperparameter_recommendations"]["random_forest"]["max_depth"] == 5
+    assert "random_forest" in value["algorithm_reasons"]
+
+
+def test_business_labels_become_executable_contract_without_target_leakage(tmp_path):
+    data = tmp_path / "input.csv"
+    data.write_text("age,churn\n20,0\n30,1\n40,0\n50,1\n")
+    class BusinessLLM:
+        def complete(self, *args, **kwargs):
+            return json.dumps({"domain": "customer_churn", "capability_name": "Customer churn", "task_type": "binary_classification", "data_type": "tabular", "target": "churn", "input_schema": {"age": "int", "churn": "int"}, "output_schema": {"predicted_churn": "int", "positive_class_probability": "float"}, "metrics": ["roc_auc"], "probability_output_required": True, "confidence": 0.95})
+    spec, trace = RequirementUnderstandingAgent(BusinessLLM(), "openai").run("Customer churn ROC-AUC", data)
+    assert trace["status"] == "ok"
+    assert set(spec.output_schema) == {"prediction", "probability"}
+    assert "churn" not in spec.input_schema
+    assert trace["business_output_schema"]["predicted_churn"] == "int"

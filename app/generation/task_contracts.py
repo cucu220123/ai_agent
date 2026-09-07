@@ -30,6 +30,24 @@ def get_task_contract(task_type: str) -> TaskCodeContract:
     return TASK_CODE_CONTRACTS[task_type]
 
 
+def executable_api_rules(task_type: str) -> str:
+    """The host protocol takes precedence over descriptive business output names."""
+    contract = get_task_contract(task_type)
+    return (
+        "HOST EXECUTION CONTRACT (mandatory): Write module-level functions, never a class or methods. "
+        "No self arguments. Define exactly: def train(train_df, target_col, config=None):; "
+        "def predict(model, test_df):; def evaluate(model, test_df, target_col):; def metadata():. "
+        "train returns ONE fitted sklearn Pipeline containing preprocessing and the estimator. "
+        "predict receives FEATURES ONLY and calls this fitted Pipeline directly; never drop or access the target in predict. "
+        f"predict returns a pandas DataFrame with these EXACT column names: {list(contract.required_outputs)}. "
+        "Business output_schema labels describe meaning, not Python column names. "
+        "evaluate receives a labeled DataFrame: split its target_col from features and compute real metrics. "
+        "metadata returns a dictionary with algorithm, rationale, evidence_ids. "
+        + ("Also define module-level def predict_proba(model, test_df): returning model.predict_proba(test_df)[:, 1]. " if task_type == "binary_classification" else "")
+        + "Implement every function fully. Do not create CoderAgent, RepairAgent or Algorithm classes."
+    )
+
+
 def build_codegen_prompt(spec: Any, plan: Any) -> str:
     contract = get_task_contract(spec.task_type)
     outputs = ", ".join(contract.required_outputs + contract.optional_outputs)
@@ -43,10 +61,12 @@ def build_codegen_prompt(spec: Any, plan: Any) -> str:
         "metadata() returns a dict including algorithm, rationale and evidence_ids. predict returns a pandas DataFrame with the requested columns. "
         "For classification with probability output, also implement predict_proba(model,test_df) returning a 1D positive-class probability vector; predict probability column must match it. "
         "Use config=config or {} and honor config.get('random_state',42) for estimator seeds. For binary classification F1 uses binary average; text classification uses weighted F1. "
-        "Fit preprocessing only on training features, with numeric imputation and categorical imputation + OneHotEncoder(handle_unknown='ignore', sparse_output=False). "
+        + ("For text, use a Pipeline with FunctionTransformer selecting the text column and fillna('').astype(str), TfidfVectorizer, and the classifier. Do not one-hot encode free text. " if spec.task_type == "text_classification" else "Fit preprocessing only on training features, with numeric imputation and categorical imputation + OneHotEncoder(handle_unknown='ignore', sparse_output=False). ")
+        +
         "predict must handle missing values, unseen categories and a one-row batch. Empty/invalid input may raise ValueError. No target column is supplied to predict. "
         + " ".join(contract.prompt_requirements)
         + " Never hard-code a target column in predict/evaluate. Never pass prediction threshold to an estimator constructor. "
         "Only use pandas, numpy and scikit-learn; no files, network or system calls.\n"
         + json.dumps({"requirement": spec.to_dict(), "execution_plan": plan.to_dict()}, ensure_ascii=False)
+        + "\n" + executable_api_rules(spec.task_type)
     )

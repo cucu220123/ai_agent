@@ -129,6 +129,7 @@ class RequirementUnderstandingAgent:
                     raise ValueError("; ".join(quality_errors))
                 spec, corrections = self._to_spec(contract, fallback, description, dataset_path)
                 trace.update({"provider": getattr(self.llm, "last_provider", self.provider_name), "model": getattr(self.llm, "model", None), "status": "ok", "schema_valid": True, "semantic_valid": True, "semantic_corrections": corrections, "attempt_count": attempt, "response_preview": raw[:1000], "token_usage": getattr(self.llm, "last_usage", {}), "generation": getattr(self.llm, "last_generation", {})})
+                trace["business_output_schema"] = contract.output_schema
                 trace["attempts"].append({"attempt": attempt, "status": "accepted"})
                 return spec, trace
             except (ValidationError, ValueError, TypeError, KeyError) as exc:
@@ -236,11 +237,17 @@ class RequirementUnderstandingAgent:
         if "positive_rate" in profile:
             balance.update(positive_rate=profile["positive_rate"], is_imbalanced=profile["minority_rate"] < 0.25)
         candidates = [p.id for p in DEFAULT_REGISTRY.algorithms_for(contract.task_type) if p.id != "dummy_classifier"]
-        outputs = contract.output_schema or {name: "float" for name in DEFAULT_REGISTRY.tasks[contract.task_type].output_columns}
+        from app.generation.task_contracts import get_task_contract
+        names = list(get_task_contract(contract.task_type).required_outputs)
+        if contract.probability_output_required and "probability" not in names:
+            names.append("probability")
+        outputs = {name: contract.output_schema.get(name, "float") for name in names}
+        if outputs != contract.output_schema:
+            corrections.append("business output labels mapped to the registered executable API; original schema retained in trace")
         return CapabilitySpec(
             raw_description=description, domain=contract.domain, capability_name=contract.capability_name,
             task_type=contract.task_type, data_type=contract.data_type, target_column=target,
-            feature_columns=features, input_schema=contract.input_schema or {c: "unknown" for c in features},
+            feature_columns=features, input_schema={c: contract.input_schema.get(c, "unknown") for c in features},
             output_schema=outputs, output_columns=list(outputs), dataset_profile=profile, metrics=contract.metrics,
             metric_thresholds=thresholds, constraints=contract.constraints,
             latency_requirement_ms=contract.latency_requirement_ms,

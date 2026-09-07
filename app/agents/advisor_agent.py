@@ -47,6 +47,17 @@ class PlannerAdviceContract(BaseModel):
         if not isinstance(value, dict):
             return value
         value = dict(value)
+        # KG IDs carry algorithm_; executable registry IDs do not. These are
+        # the same verified entity, so normalize both list and keyed sections.
+        def canonical(name):
+            if isinstance(name, str) and name.startswith("algorithm_") and name[10:] in DEFAULT_REGISTRY.algorithms:
+                return name[10:]
+            return name
+        if isinstance(value.get("candidate_algorithms"), list):
+            value["candidate_algorithms"] = [canonical(name) for name in value["candidate_algorithms"]]
+        for section in ("algorithm_reasons", "preprocessing_recommendations", "hyperparameter_recommendations"):
+            if isinstance(value.get(section), dict):
+                value[section] = {canonical(name): content for name, content in value[section].items()}
         if isinstance(value.get("preprocessing_recommendations"), list):
             value["preprocessing_recommendations"] = {str(item.get("algorithm", "global")) if isinstance(item, dict) else "global": (item.get("steps", []) if isinstance(item, dict) else [str(item)]) for item in value["preprocessing_recommendations"]}
         if isinstance(value.get("constraint_analysis"), dict):

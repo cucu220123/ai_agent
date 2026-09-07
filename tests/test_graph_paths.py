@@ -33,3 +33,13 @@ def test_generic_dependency_hub_does_not_connect_unrelated_algorithm(tmp_path):
     result = GraphRetriever(store.graph, store.get_node_payload).retrieve(CapabilitySpec(raw_description="churn"))
     assert "a" in {n["id"] for n in result["nodes"]}
     assert "b" not in {n["id"] for n in result["nodes"]}
+
+
+def test_repair_version_lineage_survives_reloading(tmp_path):
+    store = KnowledgeStore(tmp_path / "k.sqlite")
+    store.add_algorithm_version({"id": "v1", "algorithm_id": "algorithm_a", "code_hash": "old"})
+    store.add_algorithm_version({"id": "v2", "algorithm_id": "algorithm_a", "code_hash": "new", "parent_version": "v1"})
+    store.add_repair_experience({"id": "repair", "failure_id": "failure", "to_version": "v2"})
+    reopened = KnowledgeStore(tmp_path / "k.sqlite")
+    assert reopened.graph.has_edge("repair", "v2")
+    assert reopened.graph.has_edge("v2", "v1")
