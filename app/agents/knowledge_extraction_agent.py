@@ -48,7 +48,8 @@ class KnowledgeExtractionContract(BaseModel):
         entity_ids = {entity.id for entity in entities}
         invalid = [rel for rel in relations if rel.source not in entity_ids or rel.target not in entity_ids]
         if invalid:
-            raise ValueError("relation endpoints must reference entity ids in the same chunk")
+            missing = sorted({endpoint for rel in invalid for endpoint in (rel.source, rel.target) if endpoint not in entity_ids})
+            raise ValueError(f"relation endpoints missing from entities: {missing}; declared ids: {sorted(entity_ids)}")
         return relations
 
 
@@ -87,9 +88,18 @@ class KnowledgeExtractionAgent:
                             "rules": ["top-level JSON must contain exactly entities, relations, summary; do not add metrics/features keys", "put every metric and feature inside entities", "type must use an exact English value from allowed_entity_types_exact", "confidence is required for every entity and relation", "relation endpoints must reference ids from entities", "evidence_span must be copied from the chunk", "return empty relations if no relation is stated"],
                             "mandatory_observations": {"known_metrics": deterministic_facts.get("metrics", []), "known_fields": deterministic_facts.get("fields", []), "headings": deterministic_facts.get("headings", []), "document_kind": deterministic_facts.get("kind")},
                         }
+                        if deterministic_facts.get("kind") == "validation_report":
+                            payload["experiment_report_rules"] = [
+                                "Use short local entity ids (run1, algorithm1, dataset1, config1) consistently in relations.",
+                                "Extract the stated ValidationRun, Algorithm, Task, Dataset and HyperparameterConfig. Put all observed scores/runtime/memory/status in ValidationRun.properties, never make a numeric score a node.",
+                                "Each known metric must also have a Metric entity named exactly as its JSON key. Metric entities describe metric definitions; scores belong to the run.",
+                                "Only add relations whose BOTH endpoints are declared in entities. Useful grounded edges: run1 VALIDATES algorithm1, run1 ON_DATASET dataset1, run1 HAS_CONFIG config1, algorithm1 SUITABLE_FOR task1.",
+                                "For every evidence_span copy a SHORT nonempty literal substring from the original JSON chunk, such as an exact run_id, algorithm name or metric key. Never use an empty string or paraphrase.",
+                                "Do not infer missing failure, repair, preprocessing, capability or quality claims. Keep output concise.",
+                            ]
                         if attempt > 1:
                             payload.update({"repair_previous_output": previous[:10000], "validation_error": last_error})
-                        if attempt == self.max_attempts and deterministic_facts.get("kind") in {"markdown", "validation_report"}:
+                        if attempt == self.max_attempts and deterministic_facts.get("kind") == "markdown":
                             payload["focused_semantic_completion"] = {
                                 "must_include_entity_types": ["Capability", "Task", "Metric"],
                                 "must_include_metric_names": deterministic_facts.get("metrics", []),
@@ -111,7 +121,7 @@ class KnowledgeExtractionAgent:
                         break
                     except Exception as exc:
                         last_error = f"{type(exc).__name__}: {exc}"[:1800]
-                        attempts.append({"attempt": attempt, "status": "rejected", "error": last_error})
+                        attempts.append({"attempt": attempt, "status": "rejected", "error": last_error, "raw_response": sanitize(previous)})
                 else:
                     focused = self._focused_completion(source_path, chunk, deterministic_facts, partial_contract)
                     if focused is not None:

@@ -31,3 +31,30 @@ def test_weighted_f1_qualifier_is_not_discarded_or_falsely_rejected():
     extracted = KnowledgeExtractionContract.model_validate({"entities": [{"id": "m", "type": "Metric", "name": "weighted F1", "evidence_span": "weighted F1", "confidence": 1}], "relations": [], "summary": "weighted F1"})
     assert not KnowledgeExtractionAgent._quality_gate(extracted, {"metrics": ["f1"]}, {"text": "Report weighted F1"})
     assert extracted.entities[0].name == "weighted F1"
+
+
+def test_report_endpoint_error_is_actionable_and_retry_keeps_provenance(tmp_path):
+    import json
+    from app.knowledge.extractor import CapabilityExtractor
+    report = tmp_path / "experiment.json"
+    report.write_text(json.dumps({"run_id": "Run_X", "algorithm": "Logistic Regression", "validation": {"metrics": {"roc_auc": 0.87}, "status": "passed"}}))
+    facts = CapabilityExtractor().extract_report(report)
+    assert facts["algorithm"] == "Logistic Regression"
+    entities = [
+        {"id": "run1", "type": "ValidationRun", "name": "Run_X", "properties": {"metrics": {"roc_auc": 0.87}}, "evidence_span": "Run_X", "confidence": 1},
+        {"id": "algorithm1", "type": "Algorithm", "name": "Logistic Regression", "evidence_span": "Logistic Regression", "confidence": 1},
+        {"id": "m1", "type": "Metric", "name": "roc_auc", "evidence_span": "roc_auc", "confidence": 1},
+    ]
+    class RetryModel:
+        def __init__(self): self.payloads = []
+        def complete(self, system, user, **kwargs):
+            self.payloads.append(json.loads(user))
+            return json.dumps({"entities": entities, "relations": [{"source": "missing_run" if len(self.payloads) == 1 else "run1", "target": "algorithm1", "relation": "VALIDATES", "evidence_span": "Logistic Regression", "confidence": 1}], "summary": "Observed experiment"})
+    model = RetryModel()
+    result, trace = KnowledgeExtractionAgent(model, "openai").run(report, facts)
+    assert trace["status"] == "ok" and len(model.payloads) == 2
+    assert "missing_run" in model.payloads[1]["validation_error"]
+    assert "run1" in model.payloads[1]["validation_error"]
+    assert result["entities"][0]["properties"]["metrics"]["roc_auc"] == 0.87
+    assert result["relations"][0]["provenance"]["evidence_span"] == "Logistic Regression"
+    assert trace["chunks"][0]["attempts"][0]["raw_response"]

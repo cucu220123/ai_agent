@@ -66,7 +66,7 @@ class CapabilityExtractor:
         validation = payload.get("validation", payload)
         return {
             "source": str(path), "kind": "validation_report", "run_id": payload.get("run_id"),
-            "algorithm": validation.get("algorithm"), "status": validation.get("status"),
+            "algorithm": payload.get("algorithm", validation.get("algorithm")), "status": validation.get("status"),
             "metrics": validation.get("metrics", {}), "runtime_seconds": validation.get("runtime_seconds"),
             "resource_usage": validation.get("resource_usage", {}), "errors": validation.get("errors", []),
             "repair_history": payload.get("repair_history", []),
