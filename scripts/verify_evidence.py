@@ -38,6 +38,11 @@ def verify(output: Path) -> dict:
         assert any(x["status"] == "llm_repair_accepted" for x in repaired["repair_history"])
         assert json.loads((output / "report_extraction.json").read_text())["extraction_trace"]["status"] == "ok"
         assert (output / "knowledge_snapshot.graphml").is_file()
+        import networkx as nx
+        graph = nx.read_graphml(output / "knowledge_snapshot.graphml")
+        assert all(report["run_id"] in graph for report in reports.values())
+        final_version = repaired["attempts"][-1]["version_id"]
+        assert any(target == final_version and attrs.get("relation") == "PRODUCED_VERSION" and graph.nodes[source].get("type") == "RepairExperience" for source, target, attrs in graph.edges(data=True))
     except Exception as exc:
         failures.append(f"{type(exc).__name__}: {exc}")
     return {"status": "failed" if failures else "passed", "checked": counts, "failures": failures}

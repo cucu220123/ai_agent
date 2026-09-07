@@ -124,18 +124,24 @@ def run(output: Path, stage: str, provider: str) -> dict:
             assert matching, "new failure experience was not retrievable"
             save(demo / "next_retrieval.json", {"experiences": matching, "retrieval_trace": knowledge.retrieval_trace})
         elif current == "cross":
+            # The repair stage used an independent store. Reload its committed
+            # graph before the next task rather than exporting a stale graph.
+            workflow = AlgorithmFactoryWorkflow(settings)
             result = workflow.run("Classify English customer support text sentiment using column text and binary target label (0/1). This is text_classification, not tabular classification. Use TF-IDF with logistic regression, compare configurations. Report accuracy and weighted F1. Output prediction only; no probability requirement. Handle empty or missing text and unseen vocabulary. No minimum metric threshold.", work / "data/text_demo.csv").to_dict()
             assert_real(result)
             assert result["spec"]["task_type"] == "text_classification"
             save(destination, result)
         elif current == "verify":
+            from app.knowledge.store import KnowledgeStore
+            verified_store = KnowledgeStore(settings.knowledge_db, settings.graphml_path)
             reports = {name: json.loads((output / f"{name}.json").read_text()) for name in ("first", "second", "repair", "cross")}
             for result in reports.values():
                 assert_real(result)
                 for candidate in result["candidate_results"]:
                     for attempt in candidate["attempts"]:
                         assert hashlib.sha256(Path(attempt["algorithm_path"]).read_bytes()).hexdigest() == attempt["code_hash"]
-            save(output / "extracted_knowledge.json", {"items": workflow.store.list_knowledge_items(1000)})
+            save(output / "extracted_knowledge.json", {"items": verified_store.list_knowledge_items(1000)})
+            verified_store.export_graph()
             shutil.copy2(settings.graphml_path, output / "knowledge_snapshot.graphml")
             source_hashes = {str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest() for folder in ("app", "scripts") for p in (ROOT / folder).rglob("*.py")}
             calls = [call for result in reports.values() for call in result["llm_trace"]["calls"]]

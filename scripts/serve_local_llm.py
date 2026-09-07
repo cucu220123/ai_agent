@@ -32,7 +32,7 @@ class CompletionRequest(BaseModel):
 
 @app.get("/health")
 def health() -> dict:
-    return {"status": "ok", "model": model.model if model else None, "real_weights": True}
+    return {"status": "ok", "model": model.model if model else None, "real_weights": True, "quantization": "nf4" if model and getattr(model._model, "is_loaded_in_4bit", False) else "native"}
 
 
 @app.get("/v1/models")

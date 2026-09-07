@@ -43,6 +43,10 @@ def executable_api_rules(task_type: str) -> str:
         "Business output_schema labels describe meaning, not Python column names. "
         "evaluate receives a labeled DataFrame: split its target_col from features and compute real metrics. "
         "metadata returns a dictionary with algorithm, rationale, evidence_ids. "
+        "Include ALL necessary imports. ColumnTransformer is from sklearn.compose. Keep code concise, with short comments. "
+        "Avoid feature-name introspection inside predict: let the fitted Pipeline validate the feature frame. "
+        "The prediction column contains discrete class labels for classification, never probabilities. "
+        "Binary F1/precision/recall use average='binary'; text classification uses average='weighted'. "
         + ("Also define module-level def predict_proba(model, test_df): returning model.predict_proba(test_df)[:, 1]. " if task_type == "binary_classification" else "")
         + "Implement every function fully. Do not create CoderAgent, RepairAgent or Algorithm classes."
     )

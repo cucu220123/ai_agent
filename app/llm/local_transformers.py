@@ -25,20 +25,27 @@ class LocalTransformersLLM:
         if self._model is not None:
             return
         import torch
-        from transformers import AutoModelForCausalLM, AutoTokenizer
+        from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 
         device = os.getenv("LOCAL_LLM_DEVICE", "cuda:0" if torch.cuda.is_available() else "cpu")
-        cache_key = (self.model_path, device)
+        quantized = os.getenv("LOCAL_LLM_LOAD_IN_4BIT", "0") == "1"
+        cache_key = (self.model_path, device + (":nf4" if quantized else ":native"))
         if cache_key in self._MODEL_CACHE:
             self._tokenizer, self._model = self._MODEL_CACHE[cache_key]
             return
         self._tokenizer = AutoTokenizer.from_pretrained(self.model_path, trust_remote_code=False, local_files_only=True)
+        options = {}
+        if quantized:
+            if not device.startswith("cuda"):
+                raise ValueError("optional NF4 inference requires CUDA and bitsandbytes")
+            options["quantization_config"] = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_compute_dtype=torch.bfloat16, bnb_4bit_use_double_quant=True, bnb_4bit_quant_type="nf4")
         self._model = AutoModelForCausalLM.from_pretrained(
             self.model_path,
             torch_dtype="auto",
             device_map={"": device},
             trust_remote_code=False,
             local_files_only=True,
+            **options,
         )
         self._MODEL_CACHE[cache_key] = (self._tokenizer, self._model)
 
