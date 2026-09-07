@@ -4,7 +4,7 @@
 
 | 原题要求 | 当前实现 | 验证位置 |
 |---|---|---|
-| 使用开源模型或 LLM 接口 | OpenAI-compatible、本地 Transformers、Mock 三种 Provider | `app/llm/` |
+| 使用开源模型或 LLM 接口 | `auto`（云 API → 本地 Qwen → 安全模板）、OpenAI-compatible、本地 Transformers、Mock | `app/llm/`、`docs/REAL_LLM_EVIDENCE.md` |
 | 具体行业场景 | 客户流失预测，另含文本分类/回归/异常检测 | `data/`、`scripts/` |
 | 能力知识库/知识图谱 | SQLite JSON payload + NetworkX + GraphML | `app/knowledge/` |
 | 自然语言到可运行代码 | Parser → Planner → Generator → Validator | `app/workflow.py` |
@@ -17,10 +17,10 @@
 
 | 流程 | 实现 |
 |---|---|
-| a 理解输入 | `ParserAgent` + 可选结构化 `AdvisorAgent` |
-| b 检索知识 | `RetrieverAgent` + SQLite/NetworkX |
-| c 规划方案 | `PlannerAgent` + `BeamSearchPlanner` |
-| d 生成代码 | 安全受约束模板 + LLM 代码提案 |
+| a 理解输入 | LLM-first `RequirementUnderstandingAgent` + Pydantic schema + deterministic correction |
+| b 检索知识 | `RetrieverAgent` + GraphRetriever + SubgraphSerializer + TF-IDF semantic evidence + historical cases |
+| c 规划方案 | `PlannerAgent` + history prior/exploration + `BeamSearchPlanner` |
+| d 生成代码 | LLM code proposal（仅 Top beam）+ AST/interface gate + explicit template recovery |
 | e 自动测试评估 | `ValidationRunner` + 独立子进程 |
 | f 错误修复优化 | `RepairAgent`，最多 N 轮 |
 | g 沉淀结果 | `CuratorAgent`，运行记录/候选失败/修复经验入图 |
@@ -40,4 +40,5 @@
 - 跨场景迁移：表格分类、文本分类、回归、异常检测四种模板；
 - 部署配置：Dockerfile、docker-compose、Makefile；
 - 多智能体协作：Parser/Retriever/Advisor/Planner/Generator/Validator/Repair/Curator 分工。
-
+- 真实 LLM 证据：本地 Qwen2.5-1.5B 已实际完成 Requirement/Advisor 调用；Coder/Repair 的一次真实失败和安全回退已保存，云 API 额度耗尽也有单独证据。
+- 闭环学习证据：`closed_loop_learning_demo` 明确断言写回前不含目标 run、写回后重新检索到目标 run。

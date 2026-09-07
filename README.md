@@ -7,7 +7,7 @@
 → 静态/功能/指标/稳定性验证 → 多轮修复 → 报告 → 知识沉淀
 ```
 
-项目默认使用离线 Mock/模板模式，因此无网络、无 API 额度时也能完整复现；同时提供 OpenAI-compatible API 和本地 Transformers 适配器。
+项目默认使用 `auto` Provider：先尝试 OpenAI-compatible API，失败后切换本地 Qwen，再由安全模板兜底；`mock` 仍用于 CI/离线测试。这样无网络、无 API 额度时仍可复现，但正常路径会优先尝试真实 LLM。
 
 增强版还支持真实 LLM-first 需求理解、结构化 JSON 合约、Hybrid GraphRAG、历史经验 prior + exploration、Critic/Repair 闭环、插件注册表、组合 Beam Search、PR-AUC/最佳 F1 阈值、真实子进程隔离与超时、知识查询 API 和内置极简 Web 页面。真实 API/本地模型状态和 fallback 原因见 [REAL_LLM_EVIDENCE](docs/REAL_LLM_EVIDENCE.md)。
 

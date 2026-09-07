@@ -21,11 +21,10 @@ Sandbox/Validator -> PASS
 CuratorAgent -> knowledge write-back
 ```
 
-证据文件：`reports/real_local_llm_evidence.json`。
+证据文件：`reports/real_local_llm_evidence.json`、`reports/real_local_llm_repair_evidence.json`；Git 中只保留脱敏摘要 `docs/evidence/real_local_llm_summary.json`，原始 reports 被 `.gitignore` 忽略。
 
-关键事实：RequirementAgent 状态为 `ok`，AdvisorAgent 状态为 `ok`，两者均有 token usage 和 latency；三个 CoderAgent metadata 标记为 `template_fallback`，原因是本地 1.5B 输出未通过代码提取/静态门禁。这个 fallback 是显式记录的安全行为，不是伪装成 LLM code success。
+关键事实：RequirementAgent 状态为 `ok`，AdvisorAgent 状态为 `ok`，两者均有 token usage 和 latency。一次运行中三个 CoderAgent metadata 标记为 `template_fallback`；另一次运行中 CoderAgent 标记为 `llm_code_accepted`，但运行时参数契约失败，随后 CriticAgent 和 RepairAgent 真实调用本地 LLM 两轮，仍未通过，最终由显式 template recovery 保证安全完成。这个 fallback/失败过程均被记录，绝不是伪装成 LLM code success。
 
 ## Why this is acceptable
 
 真实 LLM 已经进入需求理解、方案建议和证据轨迹；代码生成仍坚持安全门禁。云端额度恢复后，设置 `LLM_PROVIDER=openai` 可以使用同一条路径。更大的本地 Qwen3-Coder 需要约 60GB 权重和较长加载时间，项目保留 adapter 但不默认强制占用 GPU。
-
