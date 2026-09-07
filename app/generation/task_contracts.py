@@ -48,7 +48,14 @@ def executable_api_rules(task_type: str) -> str:
         "The prediction column contains discrete class labels for classification, never probabilities. "
         "Binary F1/precision/recall use average='binary'; text classification uses average='weighted'. "
         "If reporting pr_auc, use sklearn.metrics.average_precision_score(y_true, positive_class_probability), matching the trusted evaluator's definition. "
-        + ("Text preprocessing must fill missing strings before vectorization. " if task_type == "text_classification" else "Tabular preprocessing must impute missing numeric and categorical values; OneHotEncoder must use handle_unknown='ignore'. ")
+        + ("For text, construct Pipeline([text selection FunctionTransformer, TfidfVectorizer, classifier]). "
+           "The text selection step must return a ONE-dimensional Series of strings via frame[text_column].fillna('').astype(str). "
+           "TfidfVectorizer consumes 1D strings and produces a 2D sparse feature matrix. "
+           "Do not wrap raw text selection in ColumnTransformer, reshape strings to (-1,1), or call .values on text to make 2D arrays. "
+           "Config is a mixed search-plan dictionary, not constructor kwargs: explicitly route max_features to TfidfVectorizer; "
+           "translate ngram_max into ngram_range=(1, ngram_max); route C, max_iter, class_weight and random_state only to LogisticRegression. "
+           "Never pass **config to either component. Ignore orchestration keys such as scaler, threshold and ngram_max in estimator constructors. "
+           if task_type == "text_classification" else "Tabular preprocessing must impute missing numeric and categorical values; OneHotEncoder must use handle_unknown='ignore'. ")
         + ("Also define module-level def predict_proba(model, test_df): returning model.predict_proba(test_df)[:, 1]. " if task_type == "binary_classification" else "")
         + "Implement every function fully. Do not create CoderAgent, RepairAgent or Algorithm classes."
     )

@@ -28,3 +28,5 @@ docs/evidence/*.json
 examples/**/evidence.json
 !generated/.gitkeep
 !reports/.gitkeep
+
+*.tmp

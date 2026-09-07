@@ -50,7 +50,7 @@ class ExplanationAgent:
         payload = {"allowed_current_candidate_ids": list(actual), "requirement": spec.to_dict(), "retrieved_context": knowledge.planning_context, "allowed_historical_evidence_ids": sorted(allowed_ids), "current_candidates": [{"candidate_id": item["plan"]["algorithm_id"], "plan": item["plan"], "validation": {k: item["validation"][k] for k in ("status", "metrics", "errors", "runtime_seconds")}} for item in candidates], "actual_selected_candidate": winner_id, "json_schema": schema}
         for attempt in range(2):
             try:
-                raw = self.llm.complete("You are ExplanationAgent. Explain why these plans were tried, which history informed them, current measured comparisons and limitations. Return strict JSON. Never invent measurements or evidence IDs; put numbers only in metric_claims.", json.dumps(payload, ensure_ascii=False), purpose="explanation", generation_config={"json_schema": schema, "max_new_tokens": 2600})
+                raw = self.llm.complete("You are ExplanationAgent. Explain why these plans were tried, which history informed them, current measured comparisons and limitations. Return strict JSON. Never invent measurements or evidence IDs; put numbers only in metric_claims. candidate_comparison describes current_candidates ONLY. For history, only cite run IDs and explain that retrieved cases inform uncertain planning priors. Do not assert historical algorithm performance, reliability, success/failure, or rankings in free text. Describe measured outcomes only for current_candidates. A passing algorithm can still have poor metrics; state small dataset limitations.", json.dumps(payload, ensure_ascii=False), purpose="explanation", generation_config={"json_schema": schema, "max_new_tokens": 2600})
                 explanation = ExplanationContract.model_validate(extract_json_object(raw))
                 if explanation.selected_candidate != winner_id:
                     raise ValueError("explanation changes actual winner")
@@ -81,6 +81,10 @@ def validate_comparative_claims(explanation: dict, candidates: list[dict]) -> No
     for text in texts:
         for sentence in re.split(r"[.!?](?:\s|$)|[。！？]", text):
             folded = sentence.lower()
+            if re.search(r"historical|previous|prior|历史|以往", folded) and re.search(r"\b(higher|lower|better|worse|best|highest|lowest|outperform\w*|underperform\w*)\b|优于|劣于|更高|更低", folded):
+                raise ValueError("Free-text historical rankings are not supported: cite historical run IDs without ranking algorithms. Limit measured comparisons to the current candidates.")
+            if re.search(r"historical|previous|历史|以往", folded) and re.search(r"\b(performance|passed|failed|success\w*|reliab\w*|consisten\w*|inconsisten\w*|robust\w*)\b|表现|成功|失败|稳定", folded):
+                raise ValueError("Unstructured historical outcome claims are not supported. Say only that cited cases informed uncertain planning priors; describe outcomes for current_candidates only.")
             for left in candidates:
                 left_name = left["plan"]["algorithm_name"].lower()
                 if left_name not in folded:

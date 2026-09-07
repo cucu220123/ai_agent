@@ -28,7 +28,9 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def save(path: Path, value: dict) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(sanitize(value), ensure_ascii=False, indent=2), encoding="utf-8")
+    temporary = path.with_suffix(path.suffix + ".tmp")
+    temporary.write_text(json.dumps(sanitize(value), ensure_ascii=False, indent=2), encoding="utf-8")
+    temporary.replace(path)
 
 
 def assert_real(result: dict) -> None:
@@ -103,8 +105,8 @@ def run(output: Path, stage: str, provider: str) -> dict:
             assert reference in retrieved
             assert reference in json.dumps(context)
             assert any(reference in p["evidence_ids"] for p in result["plans"])
-            save(destination, result)
             save(output / "closed_loop_proof.json", {"prior_run_id": reference, "next_run_id": result["run_id"], "first_dataset": first["spec"]["dataset_profile"], "second_dataset": result["spec"]["dataset_profile"], "before_historical_run_ids": [x["run_id"] for x in first["knowledge"]["historical_cases"]], "after_historical_run_ids": retrieved, "exact_second_planner_context": context, "first_plans": first["plans"], "second_plans": result["plans"], "first_search": first["search_trace"], "second_search": result["search_trace"]})
+            save(destination, result)
         elif current == "repair":
             repair_workflow = AlgorithmFactoryWorkflow(replace(settings, beam_width=1))
             completed = []
@@ -121,7 +123,6 @@ def run(output: Path, stage: str, provider: str) -> dict:
             assert candidate["attempts"][0]["code_hash"] != candidate["attempts"][-1]["code_hash"]
             assert any(r["status"] == "llm_repair_accepted" for r in candidate["repair_history"])
             assert candidate["attempts"][0]["diagnosis"]["status"] == "ok"
-            save(destination, result)
             demo = output / "self_repair_demo"
             demo.mkdir(exist_ok=True)
             shutil.copy2(candidate["attempts"][0]["algorithm_path"], demo / "before.py")
@@ -133,6 +134,7 @@ def run(output: Path, stage: str, provider: str) -> dict:
             matching = [x for x in knowledge.experiences if x.get("workflow_run_id") == result["run_id"] or result["run_id"] in str(x.get("id", ""))]
             assert matching, "new failure experience was not retrievable"
             save(demo / "next_retrieval.json", {"experiences": matching, "retrieval_trace": knowledge.retrieval_trace})
+            save(destination, result)
         elif current == "cross":
             # The repair stage used an independent store. Reload its committed
             # graph before the next task rather than exporting a stale graph.

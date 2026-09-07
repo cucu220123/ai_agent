@@ -23,3 +23,15 @@ def test_explanation_metric_direction_and_unmeasured_comparison():
     with pytest.raises(ValueError, match='unmeasured comparison'):
         validate_comparative_claims({'limitations': ['Ridge has higher ROC-AUC than Forest.']}, candidates)
 
+
+
+def test_historical_ranking_requires_evidence_beyond_current_candidates():
+    current=[{'plan':{'algorithm_name':'Gradient Boosting'},'validation':{'metrics':{'roc_auc':.88}}}]
+    with pytest.raises(ValueError,match='historical rankings'):
+        validate_comparative_claims({'why_this_plan':'Historical evidence shows Gradient Boosting outperforming Logistic Regression.'},current)
+
+
+def test_unchecked_historical_failures_are_rejected_but_prior_citations_allowed():
+    with pytest.raises(ValueError, match='historical outcome'):
+        validate_comparative_claims({'limitations': ['Previous runs of Logistic Regression have failed.']}, [])
+    validate_comparative_claims({'why_this_plan': 'Historical cases cited below informed uncertain planning priors. Current validation determines the winner.'}, [])

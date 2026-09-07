@@ -19,6 +19,19 @@ def review(output: Path, provider: str) -> dict:
     for stage in ("first", "second", "repair", "cross"):
         report = json.loads((output / f"{stage}.json").read_text())
         source_hash = hashlib.sha256(json.dumps(report, sort_keys=True).encode()).hexdigest()
+        review_path = output / "explanation_reviews" / f"{report['run_id']}.json"
+        if review_path.exists():
+            previous = json.loads(review_path.read_text())
+            if previous.get("status") == "passed" and previous.get("source_report_semantic_sha256") == source_hash:
+                try:
+                    validate_comparative_claims(previous["explanation"], report["candidate_results"])
+                    results[stage] = {"status": "passed", "retained_hash_matched_review": True}
+                    continue
+                except ValueError:
+                    digest = hashlib.sha256(review_path.read_bytes()).hexdigest()[:16]
+                    archive = output / "explanation_reviews/rejected" / f"{report['run_id']}.{digest}.json"
+                    archive.parent.mkdir(parents=True, exist_ok=True)
+                    archive.write_bytes(review_path.read_bytes())
         error, calls = None, []
         explanation = report["explanation"]
         try:

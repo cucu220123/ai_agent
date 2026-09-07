@@ -53,6 +53,10 @@ def verify(output: Path) -> dict:
         assert repaired["attempts"][0]["validation"]["status"] == "failed"
         assert repaired["attempts"][-1]["validation"]["status"] == "passed"
         assert any(x["status"] == "llm_repair_accepted" for x in repaired["repair_history"])
+        reused = json.loads((output / "self_repair_demo/next_retrieval.json").read_text())
+        assert any(reports["repair"]["run_id"] in str(item) for item in reused["experiences"])
+        assert (output / "self_repair_demo/before.py").read_bytes() != (output / "self_repair_demo/after.py").read_bytes()
+        assert json.loads((output / "closed_loop_proof.json").read_text())["prior_run_id"] == first["run_id"]
         assert json.loads((output / "report_extraction.json").read_text())["extraction_trace"]["status"] == "ok"
         assert (output / "knowledge_snapshot.graphml").is_file()
         import networkx as nx
