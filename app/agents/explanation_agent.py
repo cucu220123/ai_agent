@@ -82,9 +82,9 @@ def validate_comparative_claims(explanation: dict, candidates: list[dict]) -> No
         for sentence in re.split(r"[.!?](?:\s|$)|[。！？]", text):
             folded = sentence.lower()
             if re.search(r"historical|previous|prior|历史|以往", folded) and re.search(r"\b(higher|lower|better|worse|best|highest|lowest|outperform\w*|underperform\w*)\b|优于|劣于|更高|更低", folded):
-                raise ValueError("Free-text historical rankings are not supported: cite historical run IDs without ranking algorithms. Limit measured comparisons to the current candidates.")
-            if re.search(r"historical|previous|历史|以往", folded) and re.search(r"\b(performance|passed|failed|success\w*|reliab\w*|consisten\w*|inconsisten\w*|robust\w*)\b|表现|成功|失败|稳定", folded):
-                raise ValueError("Unstructured historical outcome claims are not supported. Say only that cited cases informed uncertain planning priors; describe outcomes for current_candidates only.")
+                raise ValueError(f"Free-text historical rankings are not supported: {sentence}. Cite run IDs and compare only current candidates.")
+            if re.search(r"historical|previous|历史|以往", folded) and re.search(r"\b(passed|failed|succeeded|inconsistent)\b|成功|失败", folded):
+                raise ValueError(f"Unstructured historical outcome claims are not supported: {sentence}. Cite cases as uncertain planning priors; describe outcomes for current_candidates only.")
             for left in candidates:
                 left_name = left["plan"]["algorithm_name"].lower()
                 if left_name not in folded:
