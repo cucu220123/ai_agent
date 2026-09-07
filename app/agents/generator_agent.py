@@ -5,6 +5,7 @@ from datetime import datetime, timezone
 import hashlib
 
 from app.generation.templates import render_algorithm
+from app.generation.task_contracts import build_codegen_prompt
 from app.generation.code_ir import plan_to_code_ir, compile_code_ir
 from app.llm.contracts import extract_python_code
 from app.models import AlgorithmPlan, CapabilitySpec
@@ -27,17 +28,9 @@ class GeneratorAgent:
         if mode == "structured_synthesis":
             code_ir = plan_to_code_ir(spec, plan)
             source = compile_code_ir(spec, code_ir)
-            generation_trace = {"provider": "structured_llm_synthesis", "status": "code_ir_compiled", "code_ir": code_ir.model_dump()}
+            generation_trace = {"provider": "deterministic_code_ir_compiler", "status": "structured_code_ir_compiled", "code_ir": code_ir.model_dump()}
         if mode == "free_form_llm" and allow_llm and self.llm is not None and self.provider_name != "mock":
-            prompt = (
-                "只输出完整 Python 代码，不要思考过程、不要 Markdown。"
-                "代码仅允许 pandas、numpy、scikit-learn，必须提供 train(train_df,target_col,config)、predict(model,test_df)、evaluate(model,test_df,target_col)。"
-                f"方案：{plan.algorithm_name}; 参数：{plan.hyperparameters}; 任务：{spec.task_type}; 目标列：{spec.target_column}; 特征：{spec.feature_columns}。"
-                "工程要求：train 内从 train_df 动态识别 numeric/categorical 列；先 drop target；numeric 用 median SimpleImputer，categorical 用 most_frequent SimpleImputer + OneHotEncoder(handle_unknown='ignore')；"
-                "ColumnTransformer 和 estimator 必须放在同一个 sklearn Pipeline，使 predict 可直接接收原始 DataFrame；不得硬编码 benchmark 不存在的列；config 必须允许 None 并只用 config.get；"
-                "predict 返回与输入等长的 DataFrame，二分类必须包含 prediction 和 [0,1] probability；evaluate 必须调用 predict 并返回 float roc_auc/f1/precision/recall。"
-                "必须处理 NaN、未见类别、小批次；禁止文件、网络、系统调用。代码必须短小，直接定义三个函数和必要 helper。"
-            )
+            prompt = "只输出完整 Python 代码，不要思考过程、不要 Markdown。" + build_codegen_prompt(spec, plan)
             previous_output, gate_error, attempts = "", "", []
             for attempt in range(1, 3):
                 try:
@@ -47,7 +40,7 @@ class GeneratorAgent:
                     raw_output = self.llm.complete("你是安全的算法代码生成器。只输出完整代码。", current_prompt, purpose="code_generation")
                     previous_output = raw_output
                     proposed = extract_python_code(raw_output)
-                    gate = static_check_text(proposed) if proposed else {"passed": False, "message": "no complete Python module extracted"}
+                    gate = static_check_text(proposed, spec.task_type, spec.target_column) if proposed else {"passed": False, "message": "no complete Python module extracted"}
                     if proposed and gate["passed"]:
                         source = proposed
                         attempts.append({"attempt": attempt, "status": "accepted"})
@@ -77,7 +70,7 @@ class GeneratorAgent:
         return path
 
 
-def static_check_text(source: str) -> dict:
+def static_check_text(source: str, task_type: str = "binary_classification", target_column: str = "") -> dict:
     import ast
 
     try:
@@ -98,4 +91,8 @@ def static_check_text(source: str) -> dict:
             return {"passed": False, "message": f"disallowed import: {node.module}"}
         if isinstance(node, ast.Name) and node.id in blocked:
             return {"passed": False, "message": f"blocked name: {node.id}"}
+    from app.validation.semantic import GeneratedCodeSemanticValidator
+    semantic = GeneratedCodeSemanticValidator().validate_source(source, task_type, target_column)
+    if not semantic.passed:
+        return semantic.to_dict()
     return {"passed": True, "message": "ok"}

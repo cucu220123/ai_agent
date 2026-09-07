@@ -11,6 +11,10 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_valida
 from app.agents.parser_agent import ParserAgent
 from app.llm.contracts import extract_json_object
 from app.models import CapabilitySpec
+from app.validation.dataset import profile_dataset
+from app.metrics.registry import METRIC_REGISTRY
+from app.plugins.registry import DEFAULT_REGISTRY
+from app.llm.secrets import sanitize
 
 
 TaskType = Literal["binary_classification", "multiclass_classification", "regression", "anomaly_detection", "text_classification"]
@@ -102,11 +106,13 @@ class RequirementUnderstandingAgent:
         self.fallback = ParserAgent()
 
     def run(self, description: str, dataset_path: str | Path | None = None) -> tuple[CapabilitySpec, dict[str, Any]]:
-        fallback = self.fallback.run(description, str(dataset_path) if dataset_path else None)
+        if not description.strip():
+            raise ValueError("能力描述不能为空")
+        fallback = CapabilitySpec(raw_description=description)
         trace: dict[str, Any] = {"provider": self.provider_name, "status": "fallback", "schema_valid": False, "semantic_valid": False, "attempts": []}
         if self.llm is None or self.provider_name == "mock":
             trace["fallback_reason"] = "mock_or_missing_provider"
-            return fallback, trace
+            return self.fallback.run(description, str(dataset_path) if dataset_path else None), trace
 
         prompt = self._prompt(description, dataset_path)
         previous = ""
@@ -114,7 +120,7 @@ class RequirementUnderstandingAgent:
             try:
                 if attempt > 1:
                     prompt = json.dumps({"instruction": "Repair the previous JSON. Return only a complete object matching the schema.", "previous_output": previous[:8000], "validation_error": trace["attempts"][-1].get("error"), "original_request": json.loads(self._prompt(description, dataset_path))}, ensure_ascii=False)
-                raw = self.llm.complete("你是 RequirementUnderstandingAgent。只返回严格 JSON，不要 Markdown 或思考过程。", prompt, purpose="requirement") or ""
+                raw = self.llm.complete("你是 RequirementUnderstandingAgent。理解用户的领域、任务和约束。只返回严格 JSON，不要 Markdown。统计事实以数据画像为准；不确定信息列入 uncertainty。", prompt, purpose="requirement", generation_config={"json_schema": RequirementContract.model_json_schema()}) or ""
                 previous = raw
                 parsed = self._normalize_candidate(extract_json_object(raw))
                 contract = RequirementContract.model_validate(parsed)
@@ -131,7 +137,7 @@ class RequirementUnderstandingAgent:
                 trace["attempts"].append({"attempt": attempt, "status": "provider_error", "error": f"{type(exc).__name__}: {exc}"[:1500]})
                 break
         trace["fallback_reason"] = trace["attempts"][-1].get("error", "invalid structured output") if trace["attempts"] else "provider unavailable"
-        return fallback, trace
+        return self.fallback.run(description, str(dataset_path) if dataset_path else None), sanitize(trace)
 
     @staticmethod
     def _normalize_candidate(parsed: dict[str, Any] | None) -> dict[str, Any]:
@@ -170,12 +176,20 @@ class RequirementUnderstandingAgent:
             errors.append("confidence below 0.45")
         lowered = description.lower()
         required_metrics = []
-        for alias, canonical in (("roc-auc", "roc_auc"), ("auc", "roc_auc"), ("f1", "f1"), ("mae", "mae"), ("rmse", "rmse"), ("r2", "r2")):
-            if alias in lowered and canonical not in required_metrics:
+        metric_text = lowered.replace("pr-auc", "pr_auc").replace("pr_auc", "average precision")
+        for alias, canonical in (("roc-auc", "roc_auc"), ("auc", "roc_auc"), ("average precision", "pr_auc"), ("f1", "f1"), ("mae", "mae"), ("rmse", "rmse"), ("r2", "r2")):
+            if alias in metric_text and canonical not in required_metrics:
                 required_metrics.append(canonical)
         missing = set(required_metrics) - set(contract.metrics)
         if missing:
             errors.append(f"metrics omit user requirements: {sorted(missing)}")
+        for metric in set(contract.metrics) | set(contract.thresholds):
+            definition = METRIC_REGISTRY.metrics.get(metric)
+            if definition is None or contract.task_type not in definition.tasks:
+                errors.append(f"metric {metric} is not registered for {contract.task_type}")
+        for metric, threshold in contract.thresholds.items():
+            if metric in {"roc_auc", "pr_auc", "f1", "accuracy", "precision", "recall", "balanced_accuracy"} and not 0 <= threshold <= 1:
+                errors.append(f"threshold for {metric} must be in [0,1]")
         if dataset_path:
             try:
                 columns = pd.read_csv(dataset_path, nrows=0).columns.tolist()
@@ -199,6 +213,7 @@ class RequirementUnderstandingAgent:
                 pass
         return json.dumps({
             "user_requirement": description,
+            "json_schema": RequirementContract.model_json_schema(),
             "dataset": {"path": str(dataset_path or ""), "columns": columns, "dtypes": dtypes, "row_count": row_count},
             "required_fields": ["domain", "capability_name", "task_type", "data_type", "target", "input_schema", "output_schema", "dataset", "metrics", "thresholds", "constraints", "latency_requirement_ms", "interpretability_requirement", "resource_constraint", "probability_output_required", "class_imbalance", "candidate_hints", "uncertainty", "confidence"],
             "allowed_task_types": ["binary_classification", "multiclass_classification", "regression", "anomaly_detection", "text_classification"],
@@ -213,18 +228,24 @@ class RequirementUnderstandingAgent:
         if dataset_path:
             columns = pd.read_csv(dataset_path, nrows=0).columns.tolist()
             features = columns if not target else [c for c in columns if c != target]
-        thresholds = contract.thresholds or fallback.metric_thresholds
+        thresholds = contract.thresholds
+        profile = profile_dataset(dataset_path, target) if dataset_path else contract.dataset
+        balance = dict(contract.class_imbalance)
+        if "positive_rate" in profile:
+            balance.update(positive_rate=profile["positive_rate"], is_imbalanced=profile["minority_rate"] < 0.25)
+        candidates = [p.id for p in DEFAULT_REGISTRY.algorithms_for(contract.task_type) if p.id != "dummy_classifier"]
+        outputs = contract.output_schema or {name: "float" for name in DEFAULT_REGISTRY.tasks[contract.task_type].output_columns}
         return CapabilitySpec(
             raw_description=description, domain=contract.domain, capability_name=contract.capability_name,
             task_type=contract.task_type, data_type=contract.data_type, target_column=target,
             feature_columns=features, input_schema=contract.input_schema or {c: "unknown" for c in features},
-            output_schema=contract.output_schema, dataset_profile=contract.dataset, metrics=contract.metrics,
+            output_schema=outputs, output_columns=list(outputs), dataset_profile=profile, metrics=contract.metrics,
             metric_thresholds=thresholds, constraints=contract.constraints,
             latency_requirement_ms=contract.latency_requirement_ms,
             interpretability_requirement=contract.interpretability_requirement,
             resource_constraints=contract.resource_constraint,
             probability_output_required=contract.probability_output_required,
-            class_imbalance=contract.class_imbalance, candidate_hints=contract.candidate_hints,
+            class_imbalance=balance, candidate_hints=contract.candidate_hints,
             uncertainty=contract.uncertainty, understanding_confidence=contract.confidence,
-            candidate_algorithms=fallback.candidate_algorithms, dataset_path=str(dataset_path) if dataset_path else None,
+            candidate_algorithms=candidates, dataset_path=str(dataset_path) if dataset_path else None,
         ), corrections

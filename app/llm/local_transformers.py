@@ -32,19 +32,21 @@ class LocalTransformersLLM:
         if cache_key in self._MODEL_CACHE:
             self._tokenizer, self._model = self._MODEL_CACHE[cache_key]
             return
-        self._tokenizer = AutoTokenizer.from_pretrained(self.model_path, trust_remote_code=True)
+        self._tokenizer = AutoTokenizer.from_pretrained(self.model_path, trust_remote_code=False, local_files_only=True)
         self._model = AutoModelForCausalLM.from_pretrained(
             self.model_path,
             torch_dtype="auto",
             device_map={"": device},
-            trust_remote_code=True,
+            trust_remote_code=False,
+            local_files_only=True,
         )
         self._MODEL_CACHE[cache_key] = (self._tokenizer, self._model)
 
     def complete(self, system: str, user: str, purpose: str = "general", generation_config: dict[str, Any] | None = None) -> str:
         self._load()
         config = resolve_generation_config(purpose, generation_config)
-        max_chars = int(os.getenv("LOCAL_LLM_MAX_INPUT_CHARS", "14000"))
+        max_chars = int(os.getenv("LOCAL_LLM_MAX_INPUT_CHARS", "60000"))
+        char_truncated = len(user) > max_chars
         if len(user) > max_chars:
             user = user[:max_chars] + "\n[context truncated by local LLM adapter]"
         messages = [{"role": "system", "content": system}, {"role": "user", "content": user}]
@@ -59,7 +61,9 @@ class LocalTransformersLLM:
         generate_kwargs: dict[str, Any] = {"max_new_tokens": config.max_new_tokens, "do_sample": config.temperature > 0}
         if config.temperature > 0:
             generate_kwargs["temperature"] = config.temperature
-        outputs = self._model.generate(**inputs, **generate_kwargs)
+        import torch
+        with torch.inference_mode():
+            outputs = self._model.generate(**inputs, **generate_kwargs)
         generated_tokens = outputs[0][inputs.input_ids.shape[1]:]
         self.last_usage = {"prompt_tokens": int(inputs.input_ids.shape[1]), "completion_tokens": int(generated_tokens.shape[0]), "total_tokens": int(outputs.shape[1])}
         eos_id = self._tokenizer.eos_token_id

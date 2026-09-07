@@ -42,13 +42,13 @@ class AutoFallbackLLM:
         return self.last_provider
 
 
-def build_llm(settings: Settings):
+def _build_llm(settings: Settings):
     provider = settings.llm_provider
     if provider == "auto":
         values = load_openai_settings(settings.secret_file)
         base_url = values.get("OPENAI_BASE_URL") or settings.openai_base_url
         api_key = values.get("OPENAI_API_KEY") or settings.openai_api_key
-        primary = OpenAICompatibleLLM(base_url, api_key, values.get("OPENAI_MODEL") or settings.openai_model, timeout=12.0) if base_url and api_key else None
+        primary = OpenAICompatibleLLM(base_url, api_key, values.get("OPENAI_MODEL") or settings.openai_model, timeout=settings.llm_timeout_seconds) if base_url and api_key else None
         fallback = None
         instruction_path = settings.local_instruction_model_path or settings.local_model_path
         if instruction_path:
@@ -58,7 +58,7 @@ def build_llm(settings: Settings):
             return AutoFallbackLLM(primary, fallback)
         if fallback:
             return fallback
-        return MockLLM()
+        raise ValueError("No real LLM is configured. Configure an API/local model, or explicitly select --provider mock for offline tests.")
     if provider == "openai":
         values = load_openai_settings(settings.secret_file)
         base_url = values.get("OPENAI_BASE_URL") or settings.openai_base_url
@@ -66,11 +66,18 @@ def build_llm(settings: Settings):
         model = values.get("OPENAI_MODEL") or settings.openai_model
         if not base_url or not api_key:
             raise ValueError("openai provider requires OPENAI_BASE_URL and OPENAI_API_KEY")
-        return OpenAICompatibleLLM(base_url, api_key, model)
+        return OpenAICompatibleLLM(base_url, api_key, model, timeout=settings.llm_timeout_seconds)
     if provider == "local":
         instruction_path = settings.local_instruction_model_path or settings.local_model_path
         if not instruction_path:
             raise ValueError("local provider requires LOCAL_INSTRUCTION_MODEL_PATH or LOCAL_MODEL_PATH")
         from app.llm.router import LocalModelRouter
         return LocalModelRouter(instruction_path, settings.local_coder_model_path)
-    return MockLLM()
+    if provider == "mock":
+        return MockLLM()
+    raise ValueError(f"unsupported LLM provider: {provider}")
+
+
+def build_llm(settings: Settings):
+    from app.llm.telemetry import TracedLLM
+    return TracedLLM(_build_llm(settings), settings.llm_provider)

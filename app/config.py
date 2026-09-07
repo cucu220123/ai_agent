@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import os
-from dataclasses import dataclass, replace
+from dataclasses import dataclass, replace, field
 from pathlib import Path
 
 
@@ -30,7 +30,7 @@ class Settings:
     graphml_path: Path = PROJECT_ROOT / "knowledge.graphml"
     llm_provider: str = os.getenv("LLM_PROVIDER", "auto").lower()
     openai_base_url: str | None = os.getenv("OPENAI_BASE_URL")
-    openai_api_key: str | None = os.getenv("OPENAI_API_KEY")
+    openai_api_key: str | None = field(default=None, repr=False)
     openai_model: str = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
     secret_file: Path | None = Path(os.environ["AI_FACTORY_SECRET_FILE"]) if os.getenv("AI_FACTORY_SECRET_FILE") else (DEFAULT_SECRET_FILE if DEFAULT_SECRET_FILE.exists() else None)
     local_model_path: str | None = os.getenv("LOCAL_MODEL_PATH", str(DEFAULT_LOCAL_MODEL) if DEFAULT_LOCAL_MODEL.exists() else "") or None
@@ -43,6 +43,13 @@ class Settings:
     planning_context_max_chars: int = int(os.getenv("PLANNING_CONTEXT_MAX_CHARS", "12000"))
     llm_code_candidate_budget: int = int(os.getenv("LLM_CODE_CANDIDATE_BUDGET", "2"))
     codegen_mode: str = os.getenv("CODEGEN_MODE", "free_form_llm")
+    llm_timeout_seconds: float = 240.0
+    strict_real_llm: bool = True
+    beam_width: int = 3
+    validation_seed_variance: float = 0.02
+    validation_repeats: int = 3
+    validation_cv_folds: int = 0
+    bootstrap_knowledge: bool = True
 
     def ensure_dirs(self) -> None:
         for path in (self.data_dir, self.generated_dir, self.reports_dir):
@@ -51,6 +58,7 @@ class Settings:
 
 def get_settings() -> Settings:
     settings = Settings()
+    settings = replace(settings, llm_provider=os.getenv("LLM_PROVIDER", settings.llm_provider), openai_base_url=os.getenv("OPENAI_BASE_URL", settings.openai_base_url), openai_api_key=os.getenv("OPENAI_API_KEY"), openai_model=os.getenv("OPENAI_MODEL", settings.openai_model), llm_timeout_seconds=float(os.getenv("LLM_TIMEOUT_SECONDS", "240")), beam_width=int(os.getenv("BEAM_WIDTH", "3")), strict_real_llm=os.getenv("STRICT_REAL_LLM", "1") == "1")
     if settings.embedding_model_path is None and DEFAULT_EMBEDDING_MODEL.exists() and os.getenv("ENABLE_LOCAL_EMBEDDING", "1") == "1":
         settings = replace(settings, embedding_model_path=str(DEFAULT_EMBEDDING_MODEL))
     settings.ensure_dirs()
