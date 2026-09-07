@@ -79,7 +79,7 @@ NF4 是可选的真实权重量化推理，需要 CUDA 与 bitsandbytes；不是
 CUDA_VISIBLE_DEVICES=1,2 python -m vllm.entrypoints.openai.api_server \
   --model /path/to/Qwen3-Coder-30B-A3B-Instruct \
   --served-model-name Qwen3-Coder-30B-A3B-Instruct \
-  --tensor-parallel-size 2 --dtype bfloat16 --max-model-len 16384 \
+  --tensor-parallel-size 2 --dtype bfloat16 --max-model-len 32768 \
   --gpu-memory-utilization 0.46 --max-num-seqs 2 \
   --max-num-batched-tokens 2048 --enforce-eager \
   --host 127.0.0.1 --port 18088 --no-enable-log-requests

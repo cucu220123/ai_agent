@@ -65,8 +65,32 @@ def test_context_budget_recovery_preserves_input_and_records_effective_tokens():
     llm.client = SimpleNamespace(chat=SimpleNamespace(completions=SimpleNamespace(create=create)))
     assert llm.complete('full system', 'all requirement and evidence', purpose='repair') == '{}'
     assert calls[0]['messages'] == calls[1]['messages']
-    assert calls[1]['max_tokens'] == 6271
+    assert calls[1]['max_tokens'] == 3200
     assert llm.last_retry_count == 1
-    assert llm.last_generation['budget_adjustments'] == [{'requested': 6400, 'effective': 6271, 'reason': 'provider_reported_context_limit'}]
+    assert llm.last_generation['budget_adjustments'] == [{'requested': 6400, 'effective': 3200, 'reason': 'provider_reported_context_limit'}]
     assert llm._context_output_budget('passed 16400 input tokens; context length is only 16384 tokens', 6400) is None
     assert llm._context_output_budget('unrelated bad request', 6400) is None
+
+
+def test_local_adapter_rejects_oversized_text_before_model_load(monkeypatch):
+    from app.llm.local_transformers import LocalTransformersLLM
+    monkeypatch.setenv('LOCAL_LLM_MAX_INPUT_CHARS', '10')
+    llm = LocalTransformersLLM('fixture')
+    llm._load = lambda: (_ for _ in ()).throw(AssertionError('should not load'))
+    with pytest.raises(ValueError, match='character budget'):
+        llm.complete('system', 'evidence ' * 10)
+
+
+def test_local_adapter_does_not_silently_truncate_token_input(monkeypatch):
+    from types import SimpleNamespace
+    from app.llm.local_transformers import LocalTransformersLLM
+    llm = LocalTransformersLLM('fixture')
+    llm._load = lambda: None
+    llm._model = SimpleNamespace(config=SimpleNamespace(max_position_embeddings=512), device='cpu')
+    class Tokenizer:
+        def __call__(self, text, **kwargs):
+            assert kwargs['truncation'] is False
+            return SimpleNamespace(input_ids=SimpleNamespace(shape=(1, 300)))
+    llm._tokenizer = Tokenizer()
+    with pytest.raises(ValueError, match='input was not truncated'):
+        llm.complete('system', 'evidence', generation_config={'max_new_tokens': 300})

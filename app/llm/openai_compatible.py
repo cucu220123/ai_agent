@@ -74,14 +74,15 @@ class OpenAICompatibleLLM:
 
     @staticmethod
     def _context_output_budget(message: str, requested: int) -> int | None:
-        """Use exact provider counts; never silently drop requirement/evidence text.
+        """Use reported context limits; never silently drop requirement/evidence text.
 
-        vLLM reports both counts on an oversized output reservation. Unknown
+        Some tokenizers report only a clipped lower bound on input size, so
+        reduce the reservation geometrically with a margin. Unknown
         error formats remain errors. A truncated response is still rejected.
         """
         supplied = re.search(r"passed (\d+) input tokens", message)
         capacity = re.search(r"context length is only (\d+) tokens", message)
         if not supplied or not capacity:
             return None
-        available = int(capacity.group(1)) - int(supplied.group(1)) - 128
+        available = min(requested // 2, int(capacity.group(1)) - int(supplied.group(1)) - 512)
         return available if 256 <= available < requested else None

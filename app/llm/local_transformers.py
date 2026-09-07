@@ -50,12 +50,11 @@ class LocalTransformersLLM:
         self._MODEL_CACHE[cache_key] = (self._tokenizer, self._model)
 
     def complete(self, system: str, user: str, purpose: str = "general", generation_config: dict[str, Any] | None = None) -> str:
-        self._load()
         config = resolve_generation_config(purpose, generation_config)
         max_chars = int(os.getenv("LOCAL_LLM_MAX_INPUT_CHARS", "60000"))
-        char_truncated = len(user) > max_chars
         if len(user) > max_chars:
-            user = user[:max_chars] + "\n[context truncated by local LLM adapter]"
+            raise ValueError(f"local input exceeds configured character budget ({len(user)} > {max_chars}); compress evidence explicitly or raise the budget")
+        self._load()
         messages = [{"role": "system", "content": system}, {"role": "user", "content": user}]
         if hasattr(self._tokenizer, "apply_chat_template"):
             prompt = self._tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
@@ -63,8 +62,10 @@ class LocalTransformersLLM:
             prompt = f"System: {system}\nUser: {user}\nAssistant:"
         context_length = int(getattr(self._model.config, "max_position_embeddings", 32768) or 32768)
         max_input_tokens = max(256, context_length - config.max_new_tokens)
-        inputs = self._tokenizer(prompt, return_tensors="pt", truncation=True, max_length=max_input_tokens).to(self._model.device)
-        token_input_truncated = int(inputs.input_ids.shape[1]) >= max_input_tokens
+        inputs = self._tokenizer(prompt, return_tensors="pt", truncation=False)
+        if int(inputs.input_ids.shape[1]) > max_input_tokens:
+            raise ValueError("local prompt plus output reservation exceeds model context; input was not truncated")
+        inputs = inputs.to(self._model.device)
         generate_kwargs: dict[str, Any] = {"max_new_tokens": config.max_new_tokens, "do_sample": config.temperature > 0}
         if config.temperature > 0:
             generate_kwargs["temperature"] = config.temperature
@@ -76,5 +77,5 @@ class LocalTransformersLLM:
         eos_id = self._tokenizer.eos_token_id
         eos_reached = bool(eos_id is not None and generated_tokens.numel() and int(generated_tokens[-1]) == int(eos_id))
         truncated = int(generated_tokens.shape[0]) >= config.max_new_tokens and not eos_reached
-        self.last_generation = {"purpose": purpose, "max_new_tokens": config.max_new_tokens, "context_length": context_length, "finish_reason": "length" if truncated else "eos", "truncated": truncated, "eos_reached": eos_reached, "input_truncated": char_truncated or token_input_truncated}
+        self.last_generation = {"purpose": purpose, "max_new_tokens": config.max_new_tokens, "context_length": context_length, "finish_reason": "length" if truncated else "eos", "truncated": truncated, "eos_reached": eos_reached, "input_truncated": False}
         return self._tokenizer.decode(generated_tokens, skip_special_tokens=True)
