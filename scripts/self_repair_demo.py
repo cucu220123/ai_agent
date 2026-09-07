@@ -1,15 +1,15 @@
-from __future__ import annotations
-
-import json
+"""Explicit fault injection -> actual real LLM repair -> validated PASS."""
+import argparse
 import sys
 from pathlib import Path
-
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-
-from app.experience.self_repair import run_self_repair_demo
-
+from scripts.run_acceptance import run
 
 if __name__ == "__main__":
-    result = run_self_repair_demo(Path("examples/self_repair_demo"))
-    Path("examples/self_repair_demo/result.json").write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(json.dumps({"repair_status": result["repair_status"], "first": result["first_validation"]["status"], "second": result["second_validation"]["status"], "diagnosis": result["diagnosis"]}, ensure_ascii=False, indent=2))
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--provider", choices=["auto", "openai", "local"], default="auto")
+    parser.add_argument("--output", default="examples/real_self_repair")
+    args = parser.parse_args()
+    run(Path(args.output), "first", args.provider)
+    run(Path(args.output), "repair", args.provider)
+
