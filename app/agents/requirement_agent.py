@@ -14,7 +14,7 @@ from app.models import CapabilitySpec
 from app.validation.dataset import profile_dataset
 from app.metrics.registry import METRIC_REGISTRY
 from app.plugins.registry import DEFAULT_REGISTRY
-from app.llm.secrets import sanitize
+from app.llm.security import sanitize
 
 
 TaskType = Literal["binary_classification", "multiclass_classification", "regression", "anomaly_detection", "text_classification"]
@@ -249,3 +249,4 @@ class RequirementUnderstandingAgent:
             uncertainty=contract.uncertainty, understanding_confidence=contract.confidence,
             candidate_algorithms=candidates, dataset_path=str(dataset_path) if dataset_path else None,
         ), corrections
+

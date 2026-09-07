@@ -6,7 +6,7 @@ import time
 from datetime import datetime, timezone
 from typing import Any
 
-from app.llm.secrets import sanitize
+from app.llm.security import sanitize
 
 
 class LLMInvocationError(RuntimeError):
@@ -35,3 +35,4 @@ class TracedLLM:
         finally:
             record.update(provider=getattr(self.provider, "last_provider", self.provider_name), model=getattr(self.provider, "model", None), latency_ms=round((time.perf_counter() - started) * 1000, 2), token_usage=getattr(self.provider, "last_usage", {}), retry_count=getattr(self.provider, "last_retry_count", 0), generation=getattr(self.provider, "last_generation", {}))
             self.calls.append(sanitize(record))
+

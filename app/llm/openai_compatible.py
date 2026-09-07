@@ -4,7 +4,7 @@ import time
 from typing import Any
 
 from app.llm.generation import resolve_generation_config
-from app.llm.secrets import load_credentials, register_secret, sanitize
+from app.llm.security import load_credentials, register_secret, sanitize
 
 load_openai_settings = load_credentials
 
@@ -63,4 +63,5 @@ class OpenAICompatibleLLM:
         if reason == "length":
             raise RuntimeError("LLM output truncated at configured token limit")
         return choice.message.content or ""
+
 

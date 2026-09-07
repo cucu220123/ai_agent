@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-from app.llm.secrets import load_credentials, sanitize
+from app.llm.security import load_credentials, sanitize
 from app.llm.telemetry import TracedLLM
 
 
@@ -47,3 +47,4 @@ def test_no_real_provider_does_not_silently_become_mock():
     from app.llm.factory import build_llm
     with pytest.raises(ValueError, match="No real LLM"):
         build_llm(Settings(llm_provider="auto", secret_file=None, local_instruction_model_path=None, local_model_path=None, openai_base_url=None, openai_api_key=None))
+
