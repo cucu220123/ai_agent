@@ -15,10 +15,11 @@ def render_algorithm(spec: CapabilitySpec, plan: AlgorithmPlan) -> str:
         return render_text_algorithm(spec, plan)
     feature_hint = json.dumps(spec.feature_columns, ensure_ascii=False)
     params = plan.hyperparameters
-    if plan.algorithm_id.endswith("logistic_regression"):
+    algorithm_key = plan.base_algorithm_id or plan.algorithm_id
+    if algorithm_key.endswith("logistic_regression"):
         estimator = f"LogisticRegression(C={params.get('C', 1.0)!r}, max_iter={params.get('max_iter', 500)!r}, random_state=42)"
         scale = '    numeric_steps.append(("scale", StandardScaler()))\n'
-    elif plan.algorithm_id.endswith("random_forest"):
+    elif algorithm_key.endswith("random_forest"):
         estimator = f"RandomForestClassifier(n_estimators={params.get('n_estimators', 180)!r}, max_depth={params.get('max_depth', 8)!r}, random_state=42, n_jobs=1, class_weight=\"balanced\")"
         scale = ""
     else:

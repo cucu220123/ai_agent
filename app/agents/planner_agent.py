@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from app.models import AlgorithmPlan, CapabilitySpec, KnowledgeContext
+from app.experience.retriever import ExperienceRetriever
 from app.plugins.registry import DEFAULT_REGISTRY
 
 
@@ -16,12 +17,17 @@ class PlannerAgent:
 
     def run(self, spec: CapabilitySpec, knowledge: KnowledgeContext) -> list[AlgorithmPlan]:
         historical = {item.get("id", "").replace("algorithm_", ""): item.get("historical_metrics", {}) for item in knowledge.algorithms}
+        prior_runs = knowledge.historical_cases
+        priors = ExperienceRetriever().algorithm_priors(spec, prior_runs)
         supported = {p.id for p in DEFAULT_REGISTRY.algorithms_for(spec.task_type)}
         names = [name for name in (spec.candidate_algorithms or list(self._defaults)) if name in supported]
         plans = []
         for priority, key in enumerate(names):
             name, preprocessing, params = self._defaults[key]
-            expected = historical.get(key, {})
+            expected = dict(historical.get(key, {}))
+            real_prior = priors.get(f"algorithm_{key}", {})
+            if real_prior:
+                expected["roc_auc"] = max(float(expected.get("roc_auc", 0.0)), float(real_prior.get("historical_score", 0.0)))
             rationale = {
                 "logistic_regression": "类别和数值特征经过统一预处理后，逻辑回归提供高可解释性和低资源消耗。",
                 "random_forest": "随机森林对非线性关系和特征尺度不敏感，适合混合类型客户行为特征。",
@@ -32,5 +38,8 @@ class PlannerAgent:
             }[key]
             if "prefer_interpretable" in spec.constraints and key == "logistic_regression":
                 priority -= 2
-            plans.append(AlgorithmPlan(f"algorithm_{key}", name, rationale, preprocessing, params, expected, priority))
+            prior_score = float(real_prior.get("historical_score", expected.get("roc_auc", 0.5)))
+            exploration = float(real_prior.get("exploration_bonus", 1.0))
+            search_score = prior_score + 0.08 * exploration
+            plans.append(AlgorithmPlan(f"algorithm_{key}", name, rationale, preprocessing, params, expected, priority, f"algorithm_{key}", "default", "default", search_score, [x.get("run_id", "") for x in prior_runs if x.get("algorithm_id") == f"algorithm_{key}"]))
         return sorted(plans, key=lambda p: (p.priority, -p.expected_metrics.get("roc_auc", 0.0)))
