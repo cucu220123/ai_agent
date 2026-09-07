@@ -20,6 +20,7 @@ from app.knowledge.extractor import CapabilityExtractor
 from app.llm.security import sanitize
 from app.workflow import AlgorithmFactoryWorkflow
 from scripts.generate_demo_data import generate
+from scripts.acceptance_recovery import recover_explanation
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -70,6 +71,7 @@ def run(output: Path, stage: str, provider: str) -> dict:
                     existing.append(candidate)
             if existing:
                 result = existing[-1]
+                result = recover_explanation(result, workflow, output)
                 assert_real(result)
                 save(destination, result)
                 shutil.copy2(settings.graphml_path, output / "graph_after_first.graphml")
@@ -78,6 +80,7 @@ def run(output: Path, stage: str, provider: str) -> dict:
             assert not workflow.store.list_validation_runs(1000), "First stage needs a fresh knowledge workspace"
             data = generate(work / "data/churn_first.csv", 1200, 42)
             result = workflow.run(description, data, provider_note="Explicit real-model API; see cloud_probe.json for original endpoint availability").to_dict()
+            result = recover_explanation(result, workflow, output)
             assert_real(result)
             assert not result["knowledge"]["historical_cases"]
             save(destination, result)
@@ -92,6 +95,7 @@ def run(output: Path, stage: str, provider: str) -> dict:
             assert extraction["extraction_trace"]["status"] == "ok"
             data = generate(work / "data/churn_second.csv", 1050, 2026)
             result = workflow.run(description + " This is a new customer cohort; prefer interpretable models when their current metric is competitive. Prediction latency per row must be below 500 ms.", data).to_dict()
+            result = recover_explanation(result, workflow, output)
             assert_real(result)
             reference = first["run_id"]
             retrieved = [x["run_id"] for x in result["knowledge"]["historical_cases"]]
@@ -103,7 +107,13 @@ def run(output: Path, stage: str, provider: str) -> dict:
             save(output / "closed_loop_proof.json", {"prior_run_id": reference, "next_run_id": result["run_id"], "first_dataset": first["spec"]["dataset_profile"], "second_dataset": result["spec"]["dataset_profile"], "before_historical_run_ids": [x["run_id"] for x in first["knowledge"]["historical_cases"]], "after_historical_run_ids": retrieved, "exact_second_planner_context": context, "first_plans": first["plans"], "second_plans": result["plans"], "first_search": first["search_trace"], "second_search": result["search_trace"]})
         elif current == "repair":
             repair_workflow = AlgorithmFactoryWorkflow(replace(settings, beam_width=1))
-            result = repair_workflow.run(description, work / "data/churn_first.csv", inject_repair_failure=True).to_dict()
+            completed = []
+            for path in settings.reports_dir.glob("*.json"):
+                prior = json.loads(path.read_text())
+                if prior.get("validation", {}).get("status") == "passed" and any(e.get("agent") == "DemoFaultInjection" for e in prior.get("event_log", [])) and prior.get("llm_trace", {}).get("real_winner"):
+                    completed.append(prior)
+            result = completed[-1] if completed else repair_workflow.run(description, work / "data/churn_first.csv", inject_repair_failure=True).to_dict()
+            result = recover_explanation(result, repair_workflow, output)
             assert_real(result)
             candidate = result["candidate_results"][0]
             assert candidate["attempts"][0]["validation"]["status"] == "failed"
@@ -128,6 +138,7 @@ def run(output: Path, stage: str, provider: str) -> dict:
             # graph before the next task rather than exporting a stale graph.
             workflow = AlgorithmFactoryWorkflow(settings)
             result = workflow.run("Classify English customer support text sentiment using column text and binary target label (0/1). This is text_classification, not tabular classification. Use TF-IDF with logistic regression, compare configurations. Report accuracy and weighted F1. Output prediction only; no probability requirement. Handle empty or missing text and unseen vocabulary. No minimum metric threshold.", work / "data/text_demo.csv").to_dict()
+            result = recover_explanation(result, workflow, output)
             assert_real(result)
             assert result["spec"]["task_type"] == "text_classification"
             save(destination, result)

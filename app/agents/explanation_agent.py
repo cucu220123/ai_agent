@@ -39,17 +39,25 @@ class ExplanationAgent:
         fallback = {"status": "deterministic_fallback", "selected_candidate": winner_id, "why_this_plan": "Candidates were filtered by task/constraints, prioritized with contextual history and exploration, and ranked using current independently recomputed validation metrics.", "historical_evidence_used": sorted(allowed_ids), "candidate_comparison": {item["plan"]["algorithm_id"]: item["validation"]["status"] for item in candidates}, "metric_claims": [{"candidate_id": key, "metric": metric, "score": score} for key, values in actual.items() for metric, score in values.items()], "limitations": ["Synthetic demo data; holdout metrics are not production performance.", "Prototype process/audit sandbox is not a production hostile-code security boundary.", "Generated free-text explanations require human review; numeric claims and evidence ids are checked."]}
         if self.provider == "mock" or self.llm is None:
             return fallback
-        payload = {"requirement": spec.to_dict(), "retrieved_context": knowledge.planning_context, "allowed_historical_evidence_ids": sorted(allowed_ids), "current_candidates": [{"candidate_id": item["plan"]["algorithm_id"], "plan": item["plan"], "validation": {k: item["validation"][k] for k in ("status", "metrics", "errors", "runtime_seconds")}} for item in candidates], "actual_selected_candidate": winner_id, "json_schema": ExplanationContract.model_json_schema()}
+        schema = ExplanationContract.model_json_schema()
+        schema["properties"]["selected_candidate"]["enum"] = [winner_id]
+        schema["properties"]["candidate_comparison"] = {"type": "object", "properties": {key: {"type": "string"} for key in actual}, "required": list(actual), "additionalProperties": False}
+        schema["$defs"]["MetricClaim"]["properties"]["candidate_id"]["enum"] = list(actual)
+        if allowed_ids:
+            schema["properties"]["historical_evidence_used"]["items"]["enum"] = sorted(allowed_ids)
+        else:
+            schema["properties"]["historical_evidence_used"]["maxItems"] = 0
+        payload = {"allowed_current_candidate_ids": list(actual), "requirement": spec.to_dict(), "retrieved_context": knowledge.planning_context, "allowed_historical_evidence_ids": sorted(allowed_ids), "current_candidates": [{"candidate_id": item["plan"]["algorithm_id"], "plan": item["plan"], "validation": {k: item["validation"][k] for k in ("status", "metrics", "errors", "runtime_seconds")}} for item in candidates], "actual_selected_candidate": winner_id, "json_schema": schema}
         for attempt in range(2):
             try:
-                raw = self.llm.complete("You are ExplanationAgent. Explain why these plans were tried, which history informed them, current measured comparisons and limitations. Return strict JSON. Never invent measurements or evidence IDs; put numbers only in metric_claims.", json.dumps(payload, ensure_ascii=False), purpose="explanation", generation_config={"json_schema": ExplanationContract.model_json_schema(), "max_new_tokens": 2600})
+                raw = self.llm.complete("You are ExplanationAgent. Explain why these plans were tried, which history informed them, current measured comparisons and limitations. Return strict JSON. Never invent measurements or evidence IDs; put numbers only in metric_claims.", json.dumps(payload, ensure_ascii=False), purpose="explanation", generation_config={"json_schema": schema, "max_new_tokens": 2600})
                 explanation = ExplanationContract.model_validate(extract_json_object(raw))
                 if explanation.selected_candidate != winner_id:
                     raise ValueError("explanation changes actual winner")
                 if set(explanation.historical_evidence_used) - allowed_ids:
                     raise ValueError("unknown historical evidence id")
                 if set(explanation.candidate_comparison) - set(actual):
-                    raise ValueError("unknown candidate")
+                    raise ValueError(f"unknown current candidates: {sorted(set(explanation.candidate_comparison) - set(actual))}; allowed: {list(actual)}")
                 for claim in explanation.metric_claims:
                     measured = actual.get(claim.candidate_id, {}).get(claim.metric)
                     if measured is None or not math.isclose(measured, claim.score, rel_tol=1e-5, abs_tol=1e-5):

@@ -30,6 +30,12 @@ def verify(output: Path) -> dict:
                 if review["original_comparison_error"]:
                     assert any(c["purpose"] == "explanation" and c["status"] == "ok" and "mock" not in c["provider"] for c in review["llm_calls"])
             validate_comparative_claims(checked_explanation, report["candidate_results"])
+            if revision := report.get("report_revision"):
+                original_path = output / "report_revisions" / Path(revision["previous_report"]).name
+                assert hashlib.sha256(original_path.read_bytes()).hexdigest() == revision["previous_report_sha256"]
+                original = json.loads(original_path.read_text())
+                for field in ("run_id", "spec", "candidate_results", "selected_plan", "validation", "writeback", "generated_files"):
+                    assert original[field] == report[field], f"explanation recovery changed {field}"
             reports[name] = report
             counts["runs"] += 1
             for candidate in report["candidate_results"]:
