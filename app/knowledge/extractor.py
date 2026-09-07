@@ -110,6 +110,11 @@ class CapabilityExtractor:
             local_id = str(entity.get("id", entity.get("name", "entity")))
             node_type = entity.get("type", "SourceDocument")
             global_id = self._node_id(node_type, entity.get("name", local_id))
+            # Labels such as "validation run" or "v1" are not globally unique.
+            # Scope report-specific observations to immutable source identity.
+            if node_type in {"ValidationRun", "FailureExperience", "RepairExperience", "AlgorithmVersion", "HyperparameterConfig", "Dataset"}:
+                identity = f"{source_id}:{result.get('source_sha256', '')}:{node_type}:{local_id}"
+                global_id = f"{node_type.lower()}_{hashlib.sha256(identity.encode()).hexdigest()[:20]}"
             id_map[local_id] = global_id
             payload = {**entity.get("properties", {}), "id": global_id, "name": entity.get("name", local_id), "origin": "llm_extracted" if result.get("extraction_trace", {}).get("status") == "ok" else "deterministic_extracted", "confidence": entity.get("confidence"), "provenance": entity.get("provenance", {"source": result.get("provenance", {}).get("source"), "evidence_span": entity.get("evidence_span")}), "provenance_records": entity.get("provenance_records", [])}
             if node_type == "Algorithm":

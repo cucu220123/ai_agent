@@ -58,3 +58,16 @@ def test_report_endpoint_error_is_actionable_and_retry_keeps_provenance(tmp_path
     assert result["entities"][0]["properties"]["metrics"]["roc_auc"] == 0.87
     assert result["relations"][0]["provenance"]["evidence_span"] == "Logistic Regression"
     assert trace["chunks"][0]["attempts"][0]["raw_response"]
+
+
+def test_same_experiment_label_in_distinct_sources_does_not_overwrite(tmp_path):
+    from app.knowledge.extractor import CapabilityExtractor
+    from app.knowledge.store import KnowledgeStore
+    store = KnowledgeStore(tmp_path / 'kg.sqlite', tmp_path / 'kg.graphml')
+    extractor = CapabilityExtractor()
+    for source, score in [('source_a', 0.81), ('source_b', 0.91)]:
+        extractor._materialize({'source_sha256': source, 'extraction_trace': {'status': 'ok'}, 'provenance': {'source': source}, 'entities': [{'id': 'run1', 'type': 'ValidationRun', 'name': 'Validation Run', 'properties': {'metrics': {'roc_auc': score}, 'status': 'passed'}, 'evidence_span': 'Validation Run', 'confidence': 1}], 'relations': []}, source, store)
+    runs = store.list_validation_runs(10)
+    assert len(runs) == 2
+    assert {r['metrics']['roc_auc'] for r in runs} == {0.81, 0.91}
+    assert len({r['run_id'] for r in runs}) == 2

@@ -50,7 +50,9 @@ ROC-AUC=0.86 是某次运行在特定切分、配置和代码版本下的结果�
 
 `origin=llm_extracted` 表示文档声称的实验；`origin=measured_workflow` 表示本验证器实际执行。文档中的声称不得变成实测统计；ExperienceRetriever 排除抽取产生的伪测量。seed historical_metrics 只用于冷启动弱 prior。
 
-同一 workflow 的 winner 最终 ValidationRun 使用 workflow run_id，其余使用 `run_id:candidate:vN`。每轮有独立版本源码和 hash，v2 指向 v1；成功修复后原始失败仍可检索。
+从文档抽取的 ValidationRun、Failure/RepairExperience、AlgorithmVersion、Config 和 Dataset 使用 source ID、内容 hash、实体类型和局部 ID 构成身份；两个文件都叫“Validation Run”不会覆盖彼此。历史验收快照保留当时的节点身份，不追溯重命名。
+
+同一 workflow 的 winner 最终 ValidationRun 使用 workflow run_id，其余使用 `run_id:candidate:vN`。Planner 仅在已知运行元数据能精确证明等价时，把候选版本别名归一到允许的 canonical run_id，并在 trace 记录；不存在的版本仍拒绝。每轮有独立版本源码和 hash，v2 指向 v1；成功修复后原始失败仍可检索。
 
 ## 真正 Graph Retrieval
 

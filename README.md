@@ -201,6 +201,15 @@ python scripts/probe_llm.py --secret-file /path/to/config --output examples/my_a
 python scripts/run_acceptance.py --provider openai --output examples/my_acceptance
 ```
 
+验收后的只读核验：
+
+```bash
+python scripts/review_explanations.py --provider openai --output examples/my_acceptance
+python scripts/verify_evidence.py --output examples/my_acceptance
+```
+
+解释复核检查可识别的指标比较关系；发现文字与实测排序矛盾时，调用真实 LLM 重写解释并单独保存 review，绑定原始报告内容 hash。不会修改原始运行报告或算法版本。Web 对匹配 hash 的 review 明示“复核后解释”。这仍不能证明任意自由文本完全无幻觉。
+
 脚本依次执行 fresh KG 主任务 A、新数据任务 B、真实 LLM 修复案例、文本分类；每阶段有断言，失败非零退出。完成阶段可续跑，重新实验使用新 output 目录。保存 before/after graph、实际 Planner 输入、所有版本、日志、报告、提取知识和 hash manifest。单阶段可用 `--stage first|second|repair|cross|verify`；second/repair 依赖 first。
 
 闭环与修复入口为 `scripts/closed_loop_learning_demo.py`、`scripts/self_repair_demo.py`。旧 benchmarks 和历史 evidence 是当时实验，不能代表当前版本验收；不要用 annotate_evidence 重新标记旧运行。
