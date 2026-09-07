@@ -17,5 +17,14 @@ htmlcov/
 *.sqlite
 generated/*
 reports/*
+docs/evidence/*.json
+!docs/evidence/local_model_benchmark.json
+!docs/evidence/closed_loop_planning.json
+!docs/evidence/empty_kg_bootstrap.json
+!docs/evidence/real_knowledge_extraction.json
+!docs/evidence/real_structured_agents.json
+!docs/evidence/retrieval_backend_comparison.json
+!docs/evidence/cloud_api_attempt.json
+examples/**/evidence.json
 !generated/.gitkeep
 !reports/.gitkeep

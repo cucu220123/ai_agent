@@ -106,7 +106,7 @@ evaluate(model, test_df, target_col)
 
 种子知识在 `app/knowledge/seed_data/knowledge.json`，Schema 说明在 `docs/schema.md`，运行后产生 `knowledge.sqlite` 和 `knowledge.graphml`。
 
-原题要求逐项对应关系见 [验收矩阵](docs/acceptance_matrix.md)，LLM 和安全策略见 [安全说明](docs/llm_and_security.md)，架构图见 [ARCHITECTURE](docs/ARCHITECTURE.md)，知识图谱设计见 [knowledge_graph_schema](docs/knowledge_graph_schema.md)。
+原题要求逐项对应关系见 [验收矩阵](docs/acceptance_matrix.md)，LLM 和安全策略见 [安全说明](docs/llm_and_security.md)，架构图见 [ARCHITECTURE](docs/ARCHITECTURE.md)，知识图谱设计见 [knowledge_graph_schema](docs/knowledge_graph_schema.md)，最终验收定义见 [FINAL_ACCEPTANCE](docs/FINAL_ACCEPTANCE.md)。
 
 ## LLM 配置
 
@@ -131,7 +131,8 @@ export OPENAI_MODEL="your-model"
 
 ```bash
 export LLM_PROVIDER=local
-export LOCAL_MODEL_PATH=/data/public_checkpoints/huggingface_models/Qwen2.5-1.5B-Instruct
+export LOCAL_INSTRUCTION_MODEL_PATH=/data/public_checkpoints/huggingface_models/Qwen2.5-14B-Instruct
+export LOCAL_CODER_MODEL_PATH=/data/public_checkpoints/huggingface_models/Qwen2.5-Coder-3B-Instruct
 ```
 
 较大的本地模型需要空闲 GPU 和显存；项目不会自动下载模型。
