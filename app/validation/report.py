@@ -34,10 +34,13 @@ def write_report(result: WorkflowResult, reports_dir: str | Path) -> tuple[Path,
     for plan in result.plans:
         lines.append(f"- **{plan.algorithm_name}**：{plan.rationale}；历史预期指标 `{plan.expected_metrics}`")
     if result.candidate_results:
-        lines.extend(["", "## 候选算法自动比较", "", "| 算法 | 代码来源 | 状态 | ROC-AUC | F1 | 耗时(s) |", "|---|---|---|---:|---:|---:|"])
+        metric_columns = list(dict.fromkeys([*result.spec.metrics, *result.spec.metric_thresholds]))
+        metric_columns = metric_columns[:4] or ["primary_metric"]
+        lines.extend(["", "## 候选算法自动比较", "", "| 算法 | 代码来源 | 状态 | " + " | ".join(metric_columns) + " | 耗时(s) |", "|---|---|---|" + "---:|" * len(metric_columns) + "---:|"])
         for item in result.candidate_results:
             v = item["validation"]
-            lines.append(f"| {v['algorithm']} | {item.get('code_source', 'unknown')} | {v['status']} | {v['metrics'].get('roc_auc', 0.0):.4f} | {v['metrics'].get('f1', 0.0):.4f} | {v['runtime_seconds']:.3f} |")
+            values = " | ".join(f"{v['metrics'].get(metric, 0.0):.4f}" for metric in metric_columns)
+            lines.append(f"| {v['algorithm']} | {item.get('code_source', 'unknown')} | {v['status']} | {values} | {v['runtime_seconds']:.3f} |")
     if result.search_trace:
         lines.extend(["", "## 方案搜索", "", f"- 策略：`{result.search_trace.get('strategy')}`", f"- Beam width：`{result.search_trace.get('beam_width')}`", f"- 扩展候选数：`{result.search_trace.get('expanded')}`", f"- 入选：`{result.search_trace.get('selected')}`"])
     if validation:
@@ -49,6 +52,6 @@ def write_report(result: WorkflowResult, reports_dir: str | Path) -> tuple[Path,
             lines.extend(["", "### 错误/修复反馈", "", *[f"- {error}" for error in validation.errors]])
     if result.repair_history:
         lines.extend(["", "## 修复历史", "", *[f"- 第 {h.get('round')} 轮：{'; '.join(h.get('changes', []))}" for h in result.repair_history]])
-        lines.extend(["", "## 知识沉淀", "", "本次验证结果、候选方案经验和源材料已写入 SQLite 知识库及 GraphML 图谱。", "", "## GraphRAG evidence", "", f"- Retrieval trace：`{result.knowledge.retrieval_trace}`", f"- Graph nodes/edges：`{len(result.knowledge.graph_evidence.get('nodes', []))}/{len(result.knowledge.graph_evidence.get('edges', []))}`", f"- Historical cases：`{len(result.knowledge.historical_cases)}`", "", "## LLM/搜索轨迹", "", f"- LLM：`{result.llm_trace}`", f"- 搜索：`{result.search_trace}`", "", "## Agent event log", "", *[f"- `{event.get('agent')}`: {event.get('status')}" for event in result.event_log]])
+    lines.extend(["", "## 知识沉淀", "", "本次验证结果、候选方案经验和源材料已写入 SQLite 知识库及 GraphML 图谱。", "", "## GraphRAG evidence", "", f"- Retrieval trace：`{result.knowledge.retrieval_trace}`", f"- Graph nodes/edges：`{len(result.knowledge.graph_evidence.get('nodes', []))}/{len(result.knowledge.graph_evidence.get('edges', []))}`", f"- Historical cases：`{len(result.knowledge.historical_cases)}`", "", "## LLM/搜索轨迹", "", f"- LLM：`{result.llm_trace}`", f"- 搜索：`{result.search_trace}`", "", "## Agent event log", "", *[f"- `{event.get('agent')}`: {event.get('status')}" for event in result.event_log]])
     md_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
     return json_path, md_path

@@ -8,13 +8,13 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import roc_auc_score, f1_score, precision_score, recall_score
 
 def train(train_df, target_col, config=None):
-    # Identify numeric and categorical columns
-    numeric_cols = train_df.select_dtypes(include=[np.number]).columns.tolist()
-    categorical_cols = train_df.select_dtypes(include=['object']).columns.tolist()
-    
     # Drop the target column
     X = train_df.drop(columns=[target_col])
     y = train_df[target_col]
+    
+    # Identify numeric and categorical columns
+    numeric_cols = X.select_dtypes(include=[np.number]).columns.tolist()
+    categorical_cols = X.select_dtypes(include=['object']).columns.tolist()
     
     # Define imputers
     numeric_imputer = SimpleImputer(strategy='median')
