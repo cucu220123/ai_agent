@@ -17,7 +17,7 @@ app = FastAPI(title="AI Algorithm Factory", version="0.1.0")
 class RunRequest(BaseModel):
     description: str = Field(min_length=5)
     data_path: str
-    provider: Literal["mock", "openai", "local"] = "mock"
+    provider: Literal["auto", "mock", "openai", "local"] = "auto"
 
 
 @app.get("/health")
@@ -57,6 +57,15 @@ def sources(limit: int = Query(default=50, ge=1, le=200)) -> dict:
 def catalog() -> dict:
     workflow = AlgorithmFactoryWorkflow()
     return {"summary": workflow.store.graph_summary(), "items": workflow.store.list_knowledge_items(200)}
+
+
+@app.get("/run/{run_id}")
+def run_detail(run_id: str) -> dict:
+    workflow = AlgorithmFactoryWorkflow()
+    for item in workflow.store.list_validation_runs(200):
+        if item.get("run_id") == run_id:
+            return item
+    raise HTTPException(status_code=404, detail="run not found")
 
 
 @app.get("/knowledge/search")

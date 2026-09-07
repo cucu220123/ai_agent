@@ -6,10 +6,14 @@ from pathlib import Path
 from typing import Any
 
 from app.knowledge.store import KnowledgeStore
+from app.agents.knowledge_extraction_agent import KnowledgeExtractionAgent
 
 
 class CapabilityExtractor:
     """Extract lightweight capability/algorithm facts from Markdown and Python files."""
+
+    def __init__(self, llm=None, provider_name: str = "mock"):
+        self.semantic_agent = KnowledgeExtractionAgent(llm, provider_name)
 
     def extract_markdown(self, path: str | Path) -> dict[str, Any]:
         text = Path(path).read_text(encoding="utf-8")
@@ -34,10 +38,18 @@ class CapabilityExtractor:
 
     def ingest(self, path: str | Path, store: KnowledgeStore) -> dict[str, Any]:
         path = Path(path)
-        result = self.extract_python(path) if path.suffix == ".py" else self.extract_markdown(path)
+        deterministic = self.extract_python(path) if path.suffix == ".py" else self.extract_markdown(path)
+        result, extraction_trace = self.semantic_agent.run(path, deterministic)
+        result["extraction_trace"] = extraction_trace
         source_id = "source_" + re.sub(r"[^a-zA-Z0-9_]+", "_", path.stem).strip("_").lower()
         result["id"] = source_id
         store.upsert_knowledge_item(source_id, "SourceDocument", result)
+        for capability in result.get("capabilities", []):
+            if isinstance(capability, dict) and capability.get("id"):
+                store.add_source_support(source_id, capability["id"])
+        for algorithm in result.get("algorithms", []):
+            if isinstance(algorithm, dict) and algorithm.get("id"):
+                store.add_source_support(source_id, algorithm["id"])
         if result.get("has_algorithm_interface"):
             algorithm_id = "algorithm_extracted_" + source_id.removeprefix("source_")
             store.upsert_algorithm({"id": algorithm_id, "name": path.stem, "task_types": ["binary_classification"], "source": str(path), "extracted_functions": result["functions"], "imports": result["imports"], "historical_metrics": {}})

@@ -20,7 +20,7 @@ class RepairAgent:
             try:
                 response = self.llm.complete(
                     "你是安全的 Python 算法修复器。只返回完整代码。",
-                    f"修复以下算法代码的验证错误：{error_text}\n原代码：\n```python\n{code}\n```\n必须保留 train/predict/evaluate 接口，禁止文件、网络和系统调用。",
+                    f"只输出完整 Python 代码，不要解释。修复错误：{error_text[-3000:]}\n原代码：\n{code[-12000:]}\n保留 train/predict/evaluate，禁止文件、网络和系统调用。",
                 )
                 proposed = extract_python_code(response)
                 if proposed and "def train" in proposed and "def evaluate" in proposed:
@@ -31,6 +31,9 @@ class RepairAgent:
         if "unexpected indent" in error_text.lower() or "indentationerror" in error_text.lower():
             code = code.replace("        numeric_steps.append((\"scale\", StandardScaler()))", "    numeric_steps.append((\"scale\", StandardScaler()))")
             changes.append("repair unexpected indentation in preprocessing pipeline")
+        if "missing function: predict" in error_text.lower() or "predict_broken" in code:
+            code = code.replace("def predict_broken", "def predict")
+            changes.append("restore required predict interface")
         if "max_iter" in error_text and "max_iter=1000" not in code:
             code = code.replace("max_iter=500", "max_iter=1000")
             changes.append("increase logistic regression max_iter")

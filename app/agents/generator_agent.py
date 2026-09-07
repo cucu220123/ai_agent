@@ -15,17 +15,18 @@ class GeneratorAgent:
         self.llm = llm
         self.provider_name = provider_name
 
-    def run(self, run_dir: str | Path, spec: CapabilitySpec, plan: AlgorithmPlan) -> Path:
+    def run(self, run_dir: str | Path, spec: CapabilitySpec, plan: AlgorithmPlan, allow_llm: bool = True) -> Path:
         run_dir = Path(run_dir)
         run_dir.mkdir(parents=True, exist_ok=True)
         path = run_dir / "algorithm.py"
         source = None
         generation_trace = {"provider": self.provider_name, "status": "template_fallback", "reason": "no usable LLM code"}
-        if self.llm is not None and self.provider_name != "mock":
+        if allow_llm and self.llm is not None and self.provider_name != "mock":
             prompt = (
-                "生成一个仅依赖 pandas、numpy、scikit-learn 的客户流失二分类 Python 模块。"
-                "必须只返回代码，且提供 train(train_df,target_col,config)、predict(model,test_df)、evaluate(model,test_df,target_col)。"
-                f"算法方案：{plan.to_dict()}；任务规范：{spec.to_dict()}。禁止文件、网络、系统调用。"
+                "只输出完整 Python 代码，不要思考过程、不要 Markdown。"
+                "代码仅允许 pandas、numpy、scikit-learn，必须提供 train(train_df,target_col,config)、predict(model,test_df)、evaluate(model,test_df,target_col)。"
+                f"方案：{plan.algorithm_name}; 参数：{plan.hyperparameters}; 任务：{spec.task_type}; 目标列：{spec.target_column}; 特征：{spec.feature_columns}。"
+                "禁止文件、网络、系统调用。代码必须短小，直接定义三个函数。"
             )
             try:
                 source = extract_python_code(self.llm.complete("你是安全的算法代码生成器。", prompt))
@@ -36,6 +37,8 @@ class GeneratorAgent:
                     generation_trace["reason"] = "LLM code failed extraction or static checks"
             except Exception as exc:
                 generation_trace["reason"] = f"{type(exc).__name__}: {exc}"
+        if not allow_llm:
+            generation_trace = {"provider": self.provider_name, "status": "template_by_budget", "reason": "LLM code budget reserved for top beam candidate"}
         path.write_text(source or render_algorithm(spec, plan), encoding="utf-8")
         metadata = {
             "schema_version": "1.0",
@@ -56,9 +59,16 @@ def static_check_text(source: str) -> dict:
         tree = ast.parse(source)
     except SyntaxError as exc:
         return {"passed": False, "message": str(exc)}
-    functions = {node.name for node in ast.walk(tree) if isinstance(node, ast.FunctionDef)}
+    function_nodes = {node.name: node for node in ast.walk(tree) if isinstance(node, ast.FunctionDef)}
+    functions = set(function_nodes)
     if not {"train", "predict", "evaluate"}.issubset(functions):
         return {"passed": False, "message": "missing required interfaces"}
+    required_arity = {"train": 2, "predict": 2, "evaluate": 3}
+    for name, arity in required_arity.items():
+        args = function_nodes[name].args
+        positional_count = len(args.posonlyargs) + len(args.args)
+        if positional_count < arity:
+            return {"passed": False, "message": f"{name} requires at least {arity} positional parameters"}
     allowed = {"__future__", "typing", "numpy", "pandas", "sklearn"}
     blocked = {"os", "sys", "subprocess", "socket", "shutil", "pathlib", "requests", "urllib", "ctypes"}
     for node in ast.walk(tree):

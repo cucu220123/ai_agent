@@ -93,6 +93,9 @@ class KnowledgeStore:
     def ensure_catalog_nodes(self) -> None:
         """Materialize metric, environment, dataset and feature strategy entities."""
         capability_id = "cap_churn_prediction_v1"
+        task_id = "task_binary_classification"
+        self.upsert_knowledge_item(task_id, "Task", {"id": task_id, "name": "binary classification", "task_type": "binary_classification"})
+        self.add_edge(capability_id, task_id, "SOLVES")
         for metric_id, name, direction in (("metric_roc_auc", "ROC-AUC", "max"), ("metric_pr_auc", "PR-AUC", "max"), ("metric_f1", "F1", "max"), ("metric_precision", "Precision", "max"), ("metric_recall", "Recall", "max")):
             self.upsert_knowledge_item(metric_id, "Metric", {"id": metric_id, "name": name, "direction": direction})
             self.add_edge(capability_id, metric_id, "EVALUATED_BY")
@@ -100,6 +103,13 @@ class KnowledgeStore:
         self.upsert_knowledge_item(env_id, "Environment", {"id": env_id, "python": "3.10+", "dependencies": ["pandas", "numpy", "scikit-learn"]})
         for algorithm in self.list_algorithms():
             self.add_edge(algorithm["id"], env_id, "REQUIRES")
+            for task_type in algorithm.get("task_types", []):
+                task_node = f"task_{task_type}"
+                self.upsert_knowledge_item(task_node, "Task", {"id": task_node, "name": task_type, "task_type": task_type})
+                self.add_edge(algorithm["id"], task_node, "SUITABLE_FOR")
+            dependency_id = "dependency_scikit_learn"
+            self.upsert_knowledge_item(dependency_id, "Dependency", {"id": dependency_id, "name": "scikit-learn", "version": ">=1.2"})
+            self.add_edge(algorithm["id"], dependency_id, "REQUIRES")
         dataset_id = "dataset_churn_demo"
         self.upsert_knowledge_item(dataset_id, "Dataset", {"id": dataset_id, "path": "data/churn_demo.csv", "target": "churn", "task_type": "binary_classification"})
         self.add_edge(capability_id, dataset_id, "VALIDATED_ON")
@@ -163,12 +173,34 @@ class KnowledgeStore:
                 "INSERT OR REPLACE INTO validation_runs(id,capability_id,algorithm_id,status,payload,created_at) VALUES (?,?,?,?,?,?)",
                 (node_id, payload.get("capability_id"), payload.get("algorithm_id"), payload.get("status"), json.dumps(payload, ensure_ascii=False), self._now()),
             )
-        self.graph.add_node(node_id, type="ValidationRun", status=payload.get("status", ""), algorithm_id=payload.get("algorithm_id", ""))
+        metric_attrs = {f"metric_{k}": str(v) for k, v in payload.get("metrics", {}).items() if isinstance(v, (int, float))}
+        self.graph.add_node(node_id, type="ValidationRun", status=payload.get("status", ""), algorithm_id=payload.get("algorithm_id", ""), task_type=payload.get("task_type", ""), timestamp=payload.get("timestamp", ""), **metric_attrs)
+        if payload.get("dataset_id"):
+            self.add_edge(node_id, payload["dataset_id"], "ON_DATASET")
+        if payload.get("config_id"):
+            self.add_edge(node_id, payload["config_id"], "HAS_CONFIG")
         if payload.get("capability_id"):
             self.add_edge(node_id, payload["capability_id"], "VALIDATES")
         if payload.get("algorithm_id"):
             self.add_edge(node_id, payload["algorithm_id"], "RELATED_TO")
         self.export_graph()
+
+    def add_algorithm_version(self, item: dict[str, Any]) -> None:
+        payload = dict(item)
+        node_id = str(payload["id"])
+        self.upsert_knowledge_item(node_id, "AlgorithmVersion", payload)
+        if payload.get("algorithm_id"):
+            self.add_edge(node_id, payload["algorithm_id"], "VERSION_OF")
+
+    def add_repair_experience(self, item: dict[str, Any]) -> None:
+        payload = dict(item)
+        node_id = str(payload["id"])
+        self.upsert_knowledge_item(node_id, "RepairExperience", payload)
+        if payload.get("failure_id"):
+            self.add_edge(node_id, payload["failure_id"], "REPAIRS")
+
+    def add_source_support(self, source_id: str, target_id: str, relation: str = "SUPPORTS") -> None:
+        self.add_edge(source_id, target_id, relation)
 
     def add_experience(self, item: dict[str, Any]) -> None:
         payload = dict(item)
@@ -178,9 +210,13 @@ class KnowledgeStore:
                 "INSERT OR REPLACE INTO experiences(id,algorithm_id,kind,payload,created_at) VALUES (?,?,?,?,?)",
                 (node_id, payload.get("algorithm_id"), payload.get("kind", "failure_or_success"), json.dumps(payload, ensure_ascii=False), self._now()),
             )
-        self.graph.add_node(node_id, type="FailureExperience", kind=payload.get("kind", ""))
+        self.graph.add_node(node_id, type="FailureExperience", kind=payload.get("kind", ""), failure_type=payload.get("failure_type", ""), root_cause=payload.get("root_cause", ""), summary=payload.get("summary", ""))
         if payload.get("algorithm_id"):
             self.add_edge(node_id, payload["algorithm_id"], "RELATED_TO")
+        if payload.get("run_id"):
+            self.add_edge(node_id, payload["run_id"], "OCCURRED_IN")
+        if payload.get("repair_experience_id"):
+            self.add_edge(payload["repair_experience_id"], node_id, "REPAIRS")
         self.export_graph()
 
     def list_capabilities(self) -> list[dict[str, Any]]:

@@ -1,7 +1,7 @@
 # AI Algorithm Factory 技术审计
 
 审计日期：2026-09-07  
-审计版本：`ebdddd2` 及工作区当前代码  
+审计版本：`ebdddd2` 基线；整改进行中（当前 evidence 见 `docs/REAL_LLM_EVIDENCE.md`）  
 审计方式：阅读全部核心模块、运行测试、运行四类 demo、检查数据库/GraphML/生成产物和 LLM 配置。
 
 ## 1. 基线运行结果
@@ -62,13 +62,13 @@
 - 但是 `store.search()` 不做图遍历、实体链接、hop 限制、路径相关性评分或子图序列化；它主要按 JSON 文本 token 命中排序。
 - ValidationRun 节点没有通过图路径参与算法推荐，真实历史数据也没有转化为 algorithm prior。
 
-结论：当前是“SQLite keyword retrieval + NetworkX 存档”，不是合格的 Graph Retrieval/GraphRAG。
+整改后：`GraphRetriever` 先做实体链接，再做 1~2 hop bounded traversal、path score 和 `SubgraphSerializer`；同时 `SemanticRetriever` 做 TF-IDF evidence，`RetrieverAgent` 输出 graph/semantic/history 三类证据。旧 `store.search()` 仍保留作为兼容 fallback。
 
 ## 5. 写回后下一次是否真正使用
 
 写回动作是真实的：`CuratorAgent` 插入 `validation_runs`/`experiences` 并建立边。
 
-但使用链条不完整：下一次任务的 `RetrieverAgent` 只进行浅文本搜索，未计算任务/数据集相似度、算法成功率、最近表现、资源代价或修复成功率。Planner 读取的主要仍是 seed data 中的 `historical_metrics`。因此“写回成功”不等于“经验学习闭环成立”。
+整改后：`ExperienceRetriever` 计算相似度、success rate、historical score、mean runtime 和 exploration bonus；`PlannerAgent` 把这些 prior 注入 Beam Search，但当前任务仍执行候选。`tests/test_closed_loop.py` 和 `scripts/closed_loop_learning_demo.py` 验证写回后重新检索。
 
 ## 6. 代码生成与修复是否真正由 LLM 完成
 
@@ -146,4 +146,3 @@
 5. 统一四类任务的 TaskSpec/AlgorithmProtocol/ValidationReport，加入 robustness matrix；
 6. 补齐可重复 self-repair、closed-loop learning、真实 API、跨场景和安全测试；
 7. 最后更新 README、架构图、验收矩阵和 Git 分阶段提交。
-

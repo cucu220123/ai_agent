@@ -71,4 +71,13 @@ class ValidationRunner:
         if runtime > self.timeout_seconds:
             errors.append(f"validation runtime {runtime:.2f}s exceeded timeout {self.timeout_seconds}s")
         status = "passed" if not errors else "failed"
-        return ValidationResult(status=status, algorithm=algorithm_name, checks=checks, metrics=metrics, runtime_seconds=runtime, errors=errors, stdout=stdout, stderr=stderr, repair_round=repair_round)
+        error_text = " ".join(errors).lower()
+        if status == "passed":
+            failure_type = None
+        elif "runtime" in error_text or "traceback" in error_text or "typeerror" in error_text or "keyerror" in error_text:
+            failure_type = "runtime_failure"
+        elif any("<" in e or ">" in e for e in errors):
+            failure_type = "metric_underperformance"
+        else:
+            failure_type = "validation_failure"
+        return ValidationResult(status=status, algorithm=algorithm_name, checks=checks, metrics=metrics, runtime_seconds=runtime, errors=errors, stdout=stdout, stderr=stderr, repair_round=repair_round, task_type=spec.task_type, dataset_profile={"path": str(data_path), "rows": int(len(df)), "columns": list(df.columns)}, resource_usage={"max_rss_kb": checks.get("resource_usage", {}).get("max_rss_kb")}, failure_type=failure_type)

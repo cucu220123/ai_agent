@@ -15,6 +15,7 @@ except Exception:
     pass
 
 DEFAULT_SECRET_FILE = Path("/data/xiaotianqi/gen_eval/eval/secret.txt")
+DEFAULT_LOCAL_MODEL = Path("/data/public_checkpoints/huggingface_models/Qwen2.5-1.5B-Instruct")
 
 
 @dataclass(frozen=True)
@@ -25,12 +26,12 @@ class Settings:
     reports_dir: Path = PROJECT_ROOT / "reports"
     knowledge_db: Path = PROJECT_ROOT / "knowledge.sqlite"
     graphml_path: Path = PROJECT_ROOT / "knowledge.graphml"
-    llm_provider: str = os.getenv("LLM_PROVIDER", "mock").lower()
+    llm_provider: str = os.getenv("LLM_PROVIDER", "auto").lower()
     openai_base_url: str | None = os.getenv("OPENAI_BASE_URL")
     openai_api_key: str | None = os.getenv("OPENAI_API_KEY")
     openai_model: str = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
     secret_file: Path | None = Path(os.environ["AI_FACTORY_SECRET_FILE"]) if os.getenv("AI_FACTORY_SECRET_FILE") else (DEFAULT_SECRET_FILE if DEFAULT_SECRET_FILE.exists() else None)
-    local_model_path: str | None = os.getenv("LOCAL_MODEL_PATH")
+    local_model_path: str | None = os.getenv("LOCAL_MODEL_PATH", str(DEFAULT_LOCAL_MODEL) if DEFAULT_LOCAL_MODEL.exists() else "") or None
     validation_timeout_seconds: int = int(os.getenv("VALIDATION_TIMEOUT_SECONDS", "90"))
     max_repair_rounds: int = int(os.getenv("MAX_REPAIR_ROUNDS", "3"))
 

@@ -1,0 +1,9 @@
+{
+  "provider": "openai-compatible",
+  "endpoint_host": "115.182.62.174:18888",
+  "model_listing_attempt": "failed",
+  "http_status": 401,
+  "server_reason": "token quota exhausted",
+  "secret_logged": false,
+  "fallback_policy": "auto provider circuit-breaks cloud failure and uses local model or deterministic template"
+}

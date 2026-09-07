@@ -14,7 +14,7 @@ def main() -> int:
     run = sub.add_parser("run", help="run end-to-end capability reproduction")
     run.add_argument("--description", required=True)
     run.add_argument("--data", dest="data_path", required=True)
-    run.add_argument("--provider", choices=["mock", "openai", "local"], default=None)
+    run.add_argument("--provider", choices=["auto", "mock", "openai", "local"], default=None)
     sub.add_parser("knowledge", help="list graph knowledge summary")
     sub.add_parser("plugins", help="list registered task and algorithm plugins")
     sub.add_parser("tasks", help="list registered task plugins")

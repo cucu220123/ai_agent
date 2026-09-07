@@ -1,0 +1,153 @@
+{
+  "before_code": "\"\"\"Generated algorithm for: 客户流失预测.\"\"\"\nfrom __future__ import annotations\n\nfrom typing import Optional\nimport numpy as np\nimport pandas as pd\nfrom sklearn.compose import ColumnTransformer\nfrom sklearn.impute import SimpleImputer\nfrom sklearn.pipeline import Pipeline\nfrom sklearn.preprocessing import OneHotEncoder, StandardScaler\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier\nfrom sklearn.metrics import roc_auc_score, average_precision_score, f1_score, precision_score, recall_score, balanced_accuracy_score, precision_recall_curve\n\nFEATURE_HINT = [\"age\"]\nALGORITHM_NAME = 'Logistic Regression'\n\n\ndef _build_pipeline(train_df: pd.DataFrame, target_col: str, config: Optional[dict] = None):\n    config = config or {}\n    X = train_df.drop(columns=[target_col])\n    numeric = X.select_dtypes(include=[np.number]).columns.tolist()\n    categorical = [c for c in X.columns if c not in numeric]\n    numeric_steps = [(\"impute\", SimpleImputer(strategy=\"median\"))]\n    numeric_steps.append((\"scale\", StandardScaler()))\n    categorical_steps = [\n        (\"impute\", SimpleImputer(strategy=\"most_frequent\")),\n        (\"onehot\", OneHotEncoder(handle_unknown=\"ignore\", sparse_output=False)),\n    ]\n    transformers = []\n    if numeric:\n        transformers.append((\"numeric\", Pipeline(numeric_steps), numeric))\n    if categorical:\n        transformers.append((\"categorical\", Pipeline(categorical_steps), categorical))\n    preprocessor = ColumnTransformer(transformers=transformers, remainder=\"drop\")\n    estimator = LogisticRegression(C=1.0, max_iter=500, random_state=42)\n    return Pipeline([(\"preprocessor\", preprocessor), (\"model\", estimator)])\n\n\ndef train(train_df: pd.DataFrame, target_col: str, config: Optional[dict] = None):\n    if target_col not in train_df.columns:\n        raise ValueError(f\"target column '{target_col}' not found\")\n    if len(train_df) < 10:\n        raise ValueError(\"at least 10 rows are required\")\n    model = _build_pipeline(train_df, target_col, config)\n    model.fit(train_df.drop(columns=[target_col]), train_df[target_col].astype(int))\n    model._ai_factory_threshold = float((config or {}).get(\"threshold\", 0.5))\n    return model\n\n\ndef predict(model, test_df: pd.DataFrame) -> pd.DataFrame:\n    probability = model.predict_proba(test_df)[:, 1]\n    prediction = (probability >= float(getattr(model, \"_ai_factory_threshold\", 0.5))).astype(int)\n    return pd.DataFrame({\"prediction\": prediction.astype(int), \"probability\": probability.astype(float)})\n\n\ndef evaluate(model, test_df: pd.DataFrame, target_col: str) -> dict:\n    if target_col not in test_df.columns:\n        raise ValueError(f\"target column '{target_col}' not found\")\n    y_true = test_df[target_col].astype(int)\n    pred = predict(model, test_df.drop(columns=[target_col]))\n    precision_curve, recall_curve, thresholds = precision_recall_curve(y_true, pred[\"probability\"])\n    f1_curve = 2 * precision_curve * recall_curve / np.maximum(precision_curve + recall_curve, 1e-12)\n    best_idx = int(np.nanargmax(f1_curve)) if len(f1_curve) else 0\n    best_threshold = float(thresholds[min(best_idx, len(thresholds) - 1)]) if len(thresholds) else 0.5\n    return {\n        \"roc_auc\": float(roc_auc_score(y_true, pred[\"probability\"])),\n        \"pr_auc\": float(average_precision_score(y_true, pred[\"probability\"])),\n        \"f1\": float(f1_score(y_true, pred[\"prediction\"], zero_division=0)),\n        \"precision\": float(precision_score(y_true, pred[\"prediction\"], zero_division=0)),\n        \"recall\": float(recall_score(y_true, pred[\"prediction\"], zero_division=0)),\n        \"balanced_accuracy\": float(balanced_accuracy_score(y_true, pred[\"prediction\"])),\n        \"best_f1\": float(f1_curve[best_idx]) if len(f1_curve) else 0.0,\n        \"best_threshold\": best_threshold,\n    }\n",
+  "broken_code": "\"\"\"Generated algorithm for: 客户流失预测.\"\"\"\nfrom __future__ import annotations\n\nfrom typing import Optional\nimport numpy as np\nimport pandas as pd\nfrom sklearn.compose import ColumnTransformer\nfrom sklearn.impute import SimpleImputer\nfrom sklearn.pipeline import Pipeline\nfrom sklearn.preprocessing import OneHotEncoder, StandardScaler\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier\nfrom sklearn.metrics import roc_auc_score, average_precision_score, f1_score, precision_score, recall_score, balanced_accuracy_score, precision_recall_curve\n\nFEATURE_HINT = [\"age\"]\nALGORITHM_NAME = 'Logistic Regression'\n\n\ndef _build_pipeline(train_df: pd.DataFrame, target_col: str, config: Optional[dict] = None):\n    config = config or {}\n    X = train_df.drop(columns=[target_col])\n    numeric = X.select_dtypes(include=[np.number]).columns.tolist()\n    categorical = [c for c in X.columns if c not in numeric]\n    numeric_steps = [(\"impute\", SimpleImputer(strategy=\"median\"))]\n    numeric_steps.append((\"scale\", StandardScaler()))\n    categorical_steps = [\n        (\"impute\", SimpleImputer(strategy=\"most_frequent\")),\n        (\"onehot\", OneHotEncoder(handle_unknown=\"ignore\", sparse_output=False)),\n    ]\n    transformers = []\n    if numeric:\n        transformers.append((\"numeric\", Pipeline(numeric_steps), numeric))\n    if categorical:\n        transformers.append((\"categorical\", Pipeline(categorical_steps), categorical))\n    preprocessor = ColumnTransformer(transformers=transformers, remainder=\"drop\")\n    estimator = LogisticRegression(C=1.0, max_iter=500, random_state=42)\n    return Pipeline([(\"preprocessor\", preprocessor), (\"model\", estimator)])\n\n\ndef train(train_df: pd.DataFrame, target_col: str, config: Optional[dict] = None):\n    if target_col not in train_df.columns:\n        raise ValueError(f\"target column '{target_col}' not found\")\n    if len(train_df) < 10:\n        raise ValueError(\"at least 10 rows are required\")\n    model = _build_pipeline(train_df, target_col, config)\n    model.fit(train_df.drop(columns=[target_col]), train_df[target_col].astype(int))\n    model._ai_factory_threshold = float((config or {}).get(\"threshold\", 0.5))\n    return model\n\n\ndef predict_broken(model, test_df: pd.DataFrame) -> pd.DataFrame:\n    probability = model.predict_proba(test_df)[:, 1]\n    prediction = (probability >= float(getattr(model, \"_ai_factory_threshold\", 0.5))).astype(int)\n    return pd.DataFrame({\"prediction\": prediction.astype(int), \"probability\": probability.astype(float)})\n\n\ndef evaluate(model, test_df: pd.DataFrame, target_col: str) -> dict:\n    if target_col not in test_df.columns:\n        raise ValueError(f\"target column '{target_col}' not found\")\n    y_true = test_df[target_col].astype(int)\n    pred = predict(model, test_df.drop(columns=[target_col]))\n    precision_curve, recall_curve, thresholds = precision_recall_curve(y_true, pred[\"probability\"])\n    f1_curve = 2 * precision_curve * recall_curve / np.maximum(precision_curve + recall_curve, 1e-12)\n    best_idx = int(np.nanargmax(f1_curve)) if len(f1_curve) else 0\n    best_threshold = float(thresholds[min(best_idx, len(thresholds) - 1)]) if len(thresholds) else 0.5\n    return {\n        \"roc_auc\": float(roc_auc_score(y_true, pred[\"probability\"])),\n        \"pr_auc\": float(average_precision_score(y_true, pred[\"probability\"])),\n        \"f1\": float(f1_score(y_true, pred[\"prediction\"], zero_division=0)),\n        \"precision\": float(precision_score(y_true, pred[\"prediction\"], zero_division=0)),\n        \"recall\": float(recall_score(y_true, pred[\"prediction\"], zero_division=0)),\n        \"balanced_accuracy\": float(balanced_accuracy_score(y_true, pred[\"prediction\"])),\n        \"best_f1\": float(f1_curve[best_idx]) if len(f1_curve) else 0.0,\n        \"best_threshold\": best_threshold,\n    }\n",
+  "first_validation": {
+    "status": "failed",
+    "algorithm": "Logistic Regression",
+    "checks": {
+      "static_safety": {
+        "passed": false,
+        "message": "missing function: predict"
+      }
+    },
+    "metrics": {},
+    "runtime_seconds": 0.0040710121393203735,
+    "errors": [
+      "missing function: predict"
+    ],
+    "warnings": [],
+    "stdout": "",
+    "stderr": "",
+    "repair_round": 0,
+    "task_type": "binary_classification",
+    "dataset_profile": {},
+    "resource_usage": {},
+    "failure_type": null,
+    "root_cause": null
+  },
+  "diagnosis": {
+    "failure_type": "interface_failure",
+    "root_cause": "missing function: predict",
+    "triggering_condition": "validation feedback",
+    "observed_error": "missing function: predict\n",
+    "repair_strategy": "restore strict algorithm protocol",
+    "reusable_lesson": "all algorithms must expose the versioned protocol",
+    "provider": "mock"
+  },
+  "repair_event": {
+    "round": 1,
+    "changes": [
+      "restore required predict interface"
+    ],
+    "error": "{\"failure_type\": \"interface_failure\", \"root_cause\": \"missing function: predict\", \"triggering_condition\": \"validation feedback\", \"observed_error\": \"missing function: predict\\n\", \"repair_strategy\": \"restore strict algorithm protocol\", \"reusable_lesson\": \"all algorithms must expose the versioned protocol\", \"provider\": \"mock\"}\nmissing function: predict"
+  },
+  "after_code": "\"\"\"Generated algorithm for: 客户流失预测.\"\"\"\nfrom __future__ import annotations\n\nfrom typing import Optional\nimport numpy as np\nimport pandas as pd\nfrom sklearn.compose import ColumnTransformer\nfrom sklearn.impute import SimpleImputer\nfrom sklearn.pipeline import Pipeline\nfrom sklearn.preprocessing import OneHotEncoder, StandardScaler\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier\nfrom sklearn.metrics import roc_auc_score, average_precision_score, f1_score, precision_score, recall_score, balanced_accuracy_score, precision_recall_curve\n\nFEATURE_HINT = [\"age\"]\nALGORITHM_NAME = 'Logistic Regression'\n\n\ndef _build_pipeline(train_df: pd.DataFrame, target_col: str, config: Optional[dict] = None):\n    config = config or {}\n    X = train_df.drop(columns=[target_col])\n    numeric = X.select_dtypes(include=[np.number]).columns.tolist()\n    categorical = [c for c in X.columns if c not in numeric]\n    numeric_steps = [(\"impute\", SimpleImputer(strategy=\"median\"))]\n    numeric_steps.append((\"scale\", StandardScaler()))\n    categorical_steps = [\n        (\"impute\", SimpleImputer(strategy=\"most_frequent\")),\n        (\"onehot\", OneHotEncoder(handle_unknown=\"ignore\", sparse_output=False)),\n    ]\n    transformers = []\n    if numeric:\n        transformers.append((\"numeric\", Pipeline(numeric_steps), numeric))\n    if categorical:\n        transformers.append((\"categorical\", Pipeline(categorical_steps), categorical))\n    preprocessor = ColumnTransformer(transformers=transformers, remainder=\"drop\")\n    estimator = LogisticRegression(C=1.0, max_iter=500, random_state=42)\n    return Pipeline([(\"preprocessor\", preprocessor), (\"model\", estimator)])\n\n\ndef train(train_df: pd.DataFrame, target_col: str, config: Optional[dict] = None):\n    if target_col not in train_df.columns:\n        raise ValueError(f\"target column '{target_col}' not found\")\n    if len(train_df) < 10:\n        raise ValueError(\"at least 10 rows are required\")\n    model = _build_pipeline(train_df, target_col, config)\n    model.fit(train_df.drop(columns=[target_col]), train_df[target_col].astype(int))\n    model._ai_factory_threshold = float((config or {}).get(\"threshold\", 0.5))\n    return model\n\n\ndef predict(model, test_df: pd.DataFrame) -> pd.DataFrame:\n    probability = model.predict_proba(test_df)[:, 1]\n    prediction = (probability >= float(getattr(model, \"_ai_factory_threshold\", 0.5))).astype(int)\n    return pd.DataFrame({\"prediction\": prediction.astype(int), \"probability\": probability.astype(float)})\n\n\ndef evaluate(model, test_df: pd.DataFrame, target_col: str) -> dict:\n    if target_col not in test_df.columns:\n        raise ValueError(f\"target column '{target_col}' not found\")\n    y_true = test_df[target_col].astype(int)\n    pred = predict(model, test_df.drop(columns=[target_col]))\n    precision_curve, recall_curve, thresholds = precision_recall_curve(y_true, pred[\"probability\"])\n    f1_curve = 2 * precision_curve * recall_curve / np.maximum(precision_curve + recall_curve, 1e-12)\n    best_idx = int(np.nanargmax(f1_curve)) if len(f1_curve) else 0\n    best_threshold = float(thresholds[min(best_idx, len(thresholds) - 1)]) if len(thresholds) else 0.5\n    return {\n        \"roc_auc\": float(roc_auc_score(y_true, pred[\"probability\"])),\n        \"pr_auc\": float(average_precision_score(y_true, pred[\"probability\"])),\n        \"f1\": float(f1_score(y_true, pred[\"prediction\"], zero_division=0)),\n        \"precision\": float(precision_score(y_true, pred[\"prediction\"], zero_division=0)),\n        \"recall\": float(recall_score(y_true, pred[\"prediction\"], zero_division=0)),\n        \"balanced_accuracy\": float(balanced_accuracy_score(y_true, pred[\"prediction\"])),\n        \"best_f1\": float(f1_curve[best_idx]) if len(f1_curve) else 0.0,\n        \"best_threshold\": best_threshold,\n    }\n",
+  "second_validation": {
+    "status": "passed",
+    "algorithm": "Logistic Regression",
+    "checks": {
+      "static_safety": {
+        "passed": true,
+        "message": "static checks passed"
+      },
+      "interface_import": {
+        "passed": true,
+        "message": "static interface checks passed; runtime import deferred to isolated process",
+        "duration": 0.0018369853496551514
+      },
+      "isolated_execution": {
+        "passed": true,
+        "timeout": false,
+        "message": "isolated execution passed",
+        "drift": 0.0,
+        "prediction_rows": 60,
+        "positive_rate": 0.21666666666666667,
+        "runtime_seconds": 0.12309566140174866,
+        "max_rss_kb": 179488
+      },
+      "resource_usage": {
+        "max_rss_kb": 179488,
+        "runtime_seconds_child": 0.12309566140174866
+      },
+      "functional": {
+        "passed": true,
+        "message": "isolated train/predict/evaluate completed",
+        "prediction_rows": 60
+      },
+      "output_contract": {
+        "passed": true,
+        "message": "output schema and probability range passed"
+      },
+      "metrics": {
+        "passed": true,
+        "per_metric": {
+          "roc_auc": true
+        },
+        "thresholds": {
+          "roc_auc": 0.75
+        },
+        "actual": {
+          "roc_auc": 0.8870703764320785,
+          "pr_auc": 0.7717546418090881,
+          "f1": 0.6428571428571429,
+          "precision": 0.6,
+          "recall": 0.6923076923076923,
+          "balanced_accuracy": 0.7823240589198036,
+          "best_f1": 0.7500000000000001,
+          "best_threshold": 0.6697705988806685
+        }
+      },
+      "class_balance": {
+        "positive_rate": 0.21666666666666667,
+        "train_rows": 180,
+        "test_rows": 60,
+        "warning": "class balance acceptable"
+      },
+      "stability": {
+        "passed": true,
+        "max_metric_drift": 0.0
+      },
+      "runtime_budget": {
+        "passed": true,
+        "message": "completed in 1.58s (budget 30s)"
+      }
+    },
+    "metrics": {
+      "roc_auc": 0.8870703764320785,
+      "pr_auc": 0.7717546418090881,
+      "f1": 0.6428571428571429,
+      "precision": 0.6,
+      "recall": 0.6923076923076923,
+      "balanced_accuracy": 0.7823240589198036,
+      "best_f1": 0.7500000000000001,
+      "best_threshold": 0.6697705988806685
+    },
+    "runtime_seconds": 1.5771464854478836,
+    "errors": [],
+    "warnings": [],
+    "stdout": "AI_FACTORY_RESULT={\"metrics\": {\"roc_auc\": 0.8870703764320785, \"pr_auc\": 0.7717546418090881, \"f1\": 0.6428571428571429, \"precision\": 0.6, \"recall\": 0.6923076923076923, \"balanced_accuracy\": 0.7823240589198036, \"best_f1\": 0.7500000000000001, \"best_threshold\": 0.6697705988806685}, \"metrics2\": {\"roc_auc\": 0.8870703764320785, \"pr_auc\": 0.7717546418090881, \"f1\": 0.6428571428571429, \"precision\": 0.6, \"recall\": 0.6923076923076923, \"balanced_accuracy\": 0.7823240589198036, \"best_f1\": 0.7500000000000001, \"best_threshold\": 0.6697705988806685}, \"drift\": 0.0, \"prediction_rows\": 60, \"positive_rate\": 0.21666666666666667, \"runtime_seconds\": 0.12309566140174866, \"max_rss_kb\": 179488}\n",
+    "stderr": "",
+    "repair_round": 1,
+    "task_type": "binary_classification",
+    "dataset_profile": {
+      "path": "examples/self_repair_demo/churn.csv",
+      "rows": 240,
+      "columns": [
+        "age",
+        "region",
+        "login_count_30d",
+        "total_spend",
+        "complaint_count",
+        "membership_level",
+        "tenure_months",
+        "churn"
+      ]
+    },
+    "resource_usage": {
+      "max_rss_kb": 179488
+    },
+    "failure_type": null,
+    "root_cause": null
+  },
+  "repair_status": "passed"
+}

@@ -1,0 +1,35 @@
+{
+  "provider": "local",
+  "model": "Qwen2.5-1.5B-Instruct",
+  "model_path": "/data/public_checkpoints/huggingface_models/Qwen2.5-1.5B-Instruct",
+  "workflow": "customer_churn",
+  "requirement_agent": {
+    "status": "ok",
+    "schema_valid": true,
+    "semantic_corrections": ["metric thresholds filled from deterministic fallback"]
+  },
+  "advisor_agent": {
+    "status": "ok",
+    "provider": "local",
+    "token_usage_recorded": true
+  },
+  "runs": [
+    {
+      "run_id": "359f044c833b",
+      "coder_status": "template_fallback",
+      "fallback_reason": "1.5B LLM code did not pass extraction/static gate",
+      "validation_status": "passed",
+      "roc_auc": 0.9258815474152688,
+      "pr_auc": 0.6994012134044181,
+      "best_f1": 0.6981132075471699
+    },
+    {
+      "run_id": "04446b0204b5",
+      "coder_status": "llm_code_accepted",
+      "validation_status": "failed_then_repair_failed",
+      "failure": "LLM code called train with an incompatible signature",
+      "critic_and_repair": "real local LLM CriticAgent and RepairAgent were invoked; the final gate rejected the revised code"
+    }
+  ],
+  "safety": "No API key, token, or secret value is included. Full raw traces remain local under reports/ and are ignored by Git."
+}

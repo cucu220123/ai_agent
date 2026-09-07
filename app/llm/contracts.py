@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import time
 from dataclasses import asdict, dataclass, field
 from typing import Any
 
@@ -14,6 +15,9 @@ class LLMTrace:
     response_preview: str = ""
     error: str | None = None
     structured: bool = False
+    latency_ms: float = 0.0
+    token_usage: dict[str, int] = field(default_factory=dict)
+    retry_count: int = 0
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -64,12 +68,19 @@ def extract_python_code(text: str) -> str | None:
 
 def complete_with_trace(provider: Any, provider_name: str, model: str | None, purpose: str, system: str, user: str) -> tuple[str, LLMTrace]:
     trace = LLMTrace(provider=provider_name, model=model, purpose=purpose, status="started")
+    started = time.perf_counter()
     try:
         response = provider.complete(system, user) or ""
         trace.status = "ok"
+        trace.provider = getattr(provider, "last_provider", provider_name)
+        trace.model = getattr(provider, "model", model)
         trace.response_preview = response[:1000]
+        trace.latency_ms = round((time.perf_counter() - started) * 1000, 2)
+        trace.token_usage = getattr(provider, "last_usage", {}) or {}
+        trace.retry_count = int(getattr(provider, "last_retry_count", 0) or 0)
         return response, trace
     except Exception as exc:
         trace.status = "fallback"
         trace.error = f"{type(exc).__name__}: {exc}"[:1000]
+        trace.latency_ms = round((time.perf_counter() - started) * 1000, 2)
         return "", trace

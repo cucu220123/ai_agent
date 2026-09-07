@@ -49,6 +49,6 @@ def write_report(result: WorkflowResult, reports_dir: str | Path) -> tuple[Path,
             lines.extend(["", "### 错误/修复反馈", "", *[f"- {error}" for error in validation.errors]])
     if result.repair_history:
         lines.extend(["", "## 修复历史", "", *[f"- 第 {h.get('round')} 轮：{'; '.join(h.get('changes', []))}" for h in result.repair_history]])
-        lines.extend(["", "## 知识沉淀", "", "本次验证结果、候选方案经验和源材料已写入 SQLite 知识库及 GraphML 图谱。", "", f"## LLM/搜索轨迹", "", f"- LLM：`{result.llm_trace}`", f"- 搜索：`{result.search_trace}`"])
+        lines.extend(["", "## 知识沉淀", "", "本次验证结果、候选方案经验和源材料已写入 SQLite 知识库及 GraphML 图谱。", "", "## GraphRAG evidence", "", f"- Retrieval trace：`{result.knowledge.retrieval_trace}`", f"- Graph nodes/edges：`{len(result.knowledge.graph_evidence.get('nodes', []))}/{len(result.knowledge.graph_evidence.get('edges', []))}`", f"- Historical cases：`{len(result.knowledge.historical_cases)}`", "", "## LLM/搜索轨迹", "", f"- LLM：`{result.llm_trace}`", f"- 搜索：`{result.search_trace}`", "", "## Agent event log", "", *[f"- `{event.get('agent')}`: {event.get('status')}" for event in result.event_log]])
     md_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
     return json_path, md_path

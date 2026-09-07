@@ -1,0 +1,70 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-07T02:06:12.391669+00:00",
+  "source_sha256": "8714afd92ace0e8bb3f5d189d6437ff5a2eff52c126d5fe7f931bd3d49ef5475",
+  "spec": {
+    "raw_description": "self repair demo",
+    "domain": "customer_churn",
+    "capability_name": "客户流失预测",
+    "task_type": "binary_classification",
+    "data_type": "tabular",
+    "target_column": "churn",
+    "feature_columns": [
+      "age"
+    ],
+    "input_schema": {},
+    "output_schema": {
+      "prediction": "int",
+      "probability": "float"
+    },
+    "dataset_profile": {},
+    "metrics": [
+      "roc_auc",
+      "f1",
+      "precision",
+      "recall"
+    ],
+    "metric_thresholds": {
+      "roc_auc": 0.75
+    },
+    "output_columns": [
+      "prediction",
+      "probability"
+    ],
+    "constraints": [],
+    "latency_requirement_ms": null,
+    "interpretability_requirement": null,
+    "resource_constraints": {},
+    "probability_output_required": true,
+    "class_imbalance": {},
+    "candidate_hints": [],
+    "uncertainty": [],
+    "understanding_confidence": 0.0,
+    "candidate_algorithms": [],
+    "dataset_path": null
+  },
+  "plan": {
+    "algorithm_id": "algorithm_logistic_regression",
+    "algorithm_name": "Logistic Regression",
+    "rationale": "demo",
+    "preprocessing": [
+      "imputation"
+    ],
+    "hyperparameters": {
+      "C": 1.0,
+      "max_iter": 500
+    },
+    "expected_metrics": {},
+    "priority": 0,
+    "base_algorithm_id": null,
+    "preprocessing_variant": "default",
+    "config_variant": "default",
+    "search_score": 0.0,
+    "evidence_ids": []
+  },
+  "generation": {
+    "provider": "mock",
+    "status": "template_fallback",
+    "reason": "no usable LLM code"
+  }
+}

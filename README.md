@@ -9,9 +9,9 @@
 
 项目默认使用离线 Mock/模板模式，因此无网络、无 API 额度时也能完整复现；同时提供 OpenAI-compatible API 和本地 Transformers 适配器。
 
-增强版还支持结构化 LLM 建议（JSON 合约和调用轨迹）、插件注册表、多个候选算法自动比较、PR-AUC/最佳 F1 阈值、真实子进程隔离与超时、知识查询 API 和内置极简 Web 页面。
+增强版还支持真实 LLM-first 需求理解、结构化 JSON 合约、Hybrid GraphRAG、历史经验 prior + exploration、Critic/Repair 闭环、插件注册表、组合 Beam Search、PR-AUC/最佳 F1 阈值、真实子进程隔离与超时、知识查询 API 和内置极简 Web 页面。真实 API/本地模型状态和 fallback 原因见 [REAL_LLM_EVIDENCE](docs/REAL_LLM_EVIDENCE.md)。
 
-方案规划使用轻量 Beam Search：根据历史指标、可解释性、低延迟约束和资源画像筛选候选分支，并在报告中保留搜索轨迹。
+方案规划使用组合 Beam Search：`algorithm + preprocessing_variant + config_variant` 展开候选，再根据历史 prior、任务约束、资源成本和 exploration bonus 剪枝；当前 validation 仍决定最终 winner。
 
 ## 快速开始
 
@@ -69,6 +69,8 @@ curl -X POST http://127.0.0.1:8000/run \
 app/agents/       解析、检索、规划、生成、修复、沉淀 Agent
 app/generation/   受约束的 sklearn 代码模板
 app/knowledge/    SQLite + NetworkX 知识库/知识图谱
+app/retrieval/    图遍历、子图序列化、TF-IDF 语义检索
+app/experience/   历史案例、闭环学习、自修复演示
 app/llm/          Mock、OpenAI-compatible、本地 Transformers 适配器
 app/validation/   AST 安全、接口、功能、指标和稳定性验证
 app/workflow.py   端到端流程编排
@@ -104,14 +106,14 @@ evaluate(model, test_df, target_col)
 
 种子知识在 `app/knowledge/seed_data/knowledge.json`，Schema 说明在 `docs/schema.md`，运行后产生 `knowledge.sqlite` 和 `knowledge.graphml`。
 
-原题要求逐项对应关系见 [验收矩阵](docs/acceptance_matrix.md)，LLM 和安全策略见 [安全说明](docs/llm_and_security.md)。
+原题要求逐项对应关系见 [验收矩阵](docs/acceptance_matrix.md)，LLM 和安全策略见 [安全说明](docs/llm_and_security.md)，架构图见 [ARCHITECTURE](docs/ARCHITECTURE.md)，知识图谱设计见 [knowledge_graph_schema](docs/knowledge_graph_schema.md)。
 
 ## LLM 配置
 
-默认无需任何配置：
+默认 Provider 为 `auto`：先尝试配置的 OpenAI-compatible API，失败后自动切换本地 Qwen；`mock` 只用于 CI/离线测试。
 
 ```bash
-LLM_PROVIDER=mock
+LLM_PROVIDER=auto
 ```
 
 OpenAI-compatible 模式：
