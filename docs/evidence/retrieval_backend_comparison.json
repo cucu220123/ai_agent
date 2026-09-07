@@ -1,0 +1,94 @@
+{
+  "query": "客户流失预测，表格数据类别不平衡，要求 ROC-AUC 大于 0.8",
+  "tfidf": {
+    "ranking": [
+      "churn_case",
+      "anomaly_case",
+      "inventory_case",
+      "text_case"
+    ],
+    "relevant_rank": 1,
+    "reciprocal_rank": 1.0,
+    "latency_seconds": 0.0074,
+    "scores": [
+      {
+        "score": 0.197124,
+        "source": {
+          "id": "churn_case",
+          "text": "客户流失预测，表格二分类，类别不平衡，使用逻辑回归和 ROC-AUC 评估"
+        }
+      },
+      {
+        "score": 0.176737,
+        "source": {
+          "id": "anomaly_case",
+          "text": "设备传感器异常检测，Isolation Forest"
+        }
+      },
+      {
+        "score": 0.145038,
+        "source": {
+          "id": "inventory_case",
+          "text": "库存需求回归预测，使用随机森林回归并评价 MAE"
+        }
+      },
+      {
+        "score": 0.131641,
+        "source": {
+          "id": "text_case",
+          "text": "文本情感分类，TF-IDF 和 macro F1"
+        }
+      }
+    ]
+  },
+  "embedding": {
+    "ranking": [
+      "churn_case",
+      "anomaly_case",
+      "inventory_case",
+      "text_case"
+    ],
+    "relevant_rank": 1,
+    "reciprocal_rank": 1.0,
+    "latency_seconds": 39.5839,
+    "model": "/data/public_checkpoints/huggingface_models/shibing624-text2vec-base-chinese",
+    "scores": [
+      {
+        "score": 0.798571,
+        "source": {
+          "id": "churn_case",
+          "text": "客户流失预测，表格二分类，类别不平衡，使用逻辑回归和 ROC-AUC 评估"
+        },
+        "backend": "embedding",
+        "model": "/data/public_checkpoints/huggingface_models/shibing624-text2vec-base-chinese"
+      },
+      {
+        "score": 0.733397,
+        "source": {
+          "id": "anomaly_case",
+          "text": "设备传感器异常检测，Isolation Forest"
+        },
+        "backend": "embedding",
+        "model": "/data/public_checkpoints/huggingface_models/shibing624-text2vec-base-chinese"
+      },
+      {
+        "score": 0.724531,
+        "source": {
+          "id": "inventory_case",
+          "text": "库存需求回归预测，使用随机森林回归并评价 MAE"
+        },
+        "backend": "embedding",
+        "model": "/data/public_checkpoints/huggingface_models/shibing624-text2vec-base-chinese"
+      },
+      {
+        "score": 0.721041,
+        "source": {
+          "id": "text_case",
+          "text": "文本情感分类，TF-IDF 和 macro F1"
+        },
+        "backend": "embedding",
+        "model": "/data/public_checkpoints/huggingface_models/shibing624-text2vec-base-chinese"
+      }
+    ]
+  }
+}

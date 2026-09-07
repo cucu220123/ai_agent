@@ -1,0 +1,1673 @@
+{
+  "benchmark_protocol": [
+    "Requirement JSON",
+    "Planner JSON",
+    "Python executable code",
+    "traceback repair"
+  ],
+  "selected_routing": {
+    "requirement_extraction_planner": "Qwen2.5-14B-Instruct",
+    "code_repair": "Qwen2.5-Coder-3B-Instruct",
+    "lightweight_fallback": "Qwen2.5-1.5B-Instruct",
+    "optional_exclusive_gpu": "Qwen3-Coder-30B-A3B-Instruct"
+  },
+  "benchmarks": [
+    {
+      "model": "Qwen2.5-1.5B-Instruct",
+      "path": "/data/public_checkpoints/huggingface_models/Qwen2.5-1.5B-Instruct",
+      "tasks": {
+        "requirement_json": {
+          "success": false,
+          "latency_seconds": 17.252,
+          "usage": {
+            "prompt_tokens": 716,
+            "completion_tokens": 252,
+            "total_tokens": 968
+          },
+          "generation": {
+            "purpose": "requirement",
+            "max_new_tokens": 1024,
+            "finish_reason": "eos",
+            "truncated": false,
+            "eos_reached": true,
+            "input_truncated": false
+          },
+          "error": "ValidationError: 9 validation errors for RequirementContract\ndomain\n  Field required [type=missing, input_value={'requirement_contract': ... [], 'confidence': 0.8}}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.11/v/missing\ncapability_name\n  Field required [type=missing, input_value={'requirement_contract': ... [], 'confidence': 0.8}}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.11/v/missing\ntask_type\n  Field required [type=missing, input_value={'requirement_contract': ... [], 'confidence': 0.8}}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.11/v/missing\ndata_type\n  Field required [type=missing, input_value={'requirement_contract': ... [], 'confidence': 0.8}}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.11/v/missing\ntarget\n  Field required [type=missing, input_value={'requirement_contract': ... [], 'confidence': 0.8}}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.11/v/missing\nmetrics\n  Field required [type=missing, input_value={'requirement_contract': ... [], 'confidence': 0.8}}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.11/v/missing\nprobability_output_required\n  Field required [type=missing, input_value={'requirement_contract': ... [], 'confidence': 0.8}}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.11/v/missing\nconfidenc"
+        },
+        "planner_json": {
+          "success": false,
+          "latency_seconds": 20.284,
+          "usage": {
+            "prompt_tokens": 426,
+            "completion_tokens": 533,
+            "total_tokens": 959
+          },
+          "generation": {
+            "purpose": "planning",
+            "max_new_tokens": 1280,
+            "finish_reason": "eos",
+            "truncated": false,
+            "eos_reached": true,
+            "input_truncated": false
+          },
+          "error": "ValidationError: 1 validation error for PlannerAdviceContract\n  Input should be a valid dictionary or instance of PlannerAdviceContract [type=model_type, input_value=None, input_type=NoneType]\n    For further information visit https://errors.pydantic.dev/2.11/v/model_type"
+        },
+        "code_generation": {
+          "success": false,
+          "latency_seconds": 27.241,
+          "usage": {
+            "prompt_tokens": 92,
+            "completion_tokens": 661,
+            "total_tokens": 753
+          },
+          "generation": {
+            "purpose": "code_generation",
+            "max_new_tokens": 3072,
+            "finish_reason": "eos",
+            "truncated": false,
+            "eos_reached": true,
+            "input_truncated": false
+          },
+          "error": "ValueError: sandbox validation failed: runtime error: RuntimeError: isolated process exit=1: Traceback (most recent call last):\n  File \"<string>\", line 23, in <module>\n  File \"/tmp/model_benchmark_gdnj3fib/algorithm.py\", line 30, in train\n    C = 1.0 / (X.shape[0] * X.nbytes)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/pandas/core/generic.py\", line 6299, in __getattr__\n    return object.__getattribute__(self, name)\nAttributeError: 'DataFrame' object has no attribute 'nbytes'\n"
+        },
+        "traceback_repair": {
+          "success": false,
+          "latency_seconds": 2.782,
+          "usage": {
+            "prompt_tokens": 966,
+            "completion_tokens": 74,
+            "total_tokens": 1040
+          },
+          "generation": {
+            "purpose": "repair",
+            "max_new_tokens": 3072,
+            "finish_reason": "eos",
+            "truncated": false,
+            "eos_reached": true,
+            "input_truncated": false
+          },
+          "error": "ValueError: no complete Python module extracted"
+        }
+      },
+      "latency_seconds": 67.585,
+      "peak_gpu_memory_mb": 3040.94,
+      "success_rate": 0.0,
+      "schema_validity": 0.0,
+      "executable_code_rate": 0.0,
+      "repair_success_rate": 0.0
+    },
+    {
+      "model": "Qwen2.5-Coder-3B-Instruct",
+      "path": "/data/public_checkpoints/huggingface_models/Qwen2.5-Coder-3B-Instruct",
+      "tasks": {
+        "requirement_json": {
+          "success": true,
+          "latency_seconds": 52.271,
+          "usage": {
+            "prompt_tokens": 716,
+            "completion_tokens": 243,
+            "total_tokens": 959
+          },
+          "generation": {
+            "purpose": "requirement",
+            "max_new_tokens": 1024,
+            "finish_reason": "eos",
+            "truncated": false,
+            "eos_reached": true,
+            "input_truncated": false
+          },
+          "output_preview": "```json\n{\n  \"domain\": \"Customer Churn Prediction\",\n  \"capability_name\": \"Age and Login Count Churn Prediction\",\n  \"task_type\": \"binary_classification\",\n  \"data_type\": \"tabular\",\n  \"target\": \"churn\",\n  \"input_schema\": {\n    \"age\": \"int\",\n    \"login_count_30d\": \"int\"\n  },\n  \"output_schema\": {\n    \"probability\": \"float\"\n  },\n  \"dataset\": {\n    \"columns\": [\"age\", \"login_count_30d\", \"churn\"],\n    \"dtypes\": {\n      \"age\": \"int\",\n      \"login_count_30d\": \"int\",\n      \"churn\": \"int\"\n    }\n  },\n  \"metric",
+          "validation": "RequirementContract"
+        },
+        "planner_json": {
+          "success": false,
+          "latency_seconds": 5.562,
+          "usage": {
+            "prompt_tokens": 426,
+            "completion_tokens": 110,
+            "total_tokens": 536
+          },
+          "generation": {
+            "purpose": "planning",
+            "max_new_tokens": 1280,
+            "finish_reason": "eos",
+            "truncated": false,
+            "eos_reached": true,
+            "input_truncated": false
+          },
+          "error": "ValidationError: 1 validation error for PlannerAdviceContract\n  Value error, algorithm_reasons missing ['logistic_regression'] [type=value_error, input_value={'candidate_algorithms': ... [], 'confidence': 0.95}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.11/v/value_error"
+        },
+        "code_generation": {
+          "success": false,
+          "latency_seconds": 26.43,
+          "usage": {
+            "prompt_tokens": 92,
+            "completion_tokens": 513,
+            "total_tokens": 605
+          },
+          "generation": {
+            "purpose": "code_generation",
+            "max_new_tokens": 3072,
+            "finish_reason": "eos",
+            "truncated": false,
+            "eos_reached": true,
+            "input_truncated": false
+          },
+          "error": "ValueError: sandbox validation failed: runtime error: RuntimeError: isolated process exit=1: site-packages/sklearn/pipeline.py\", line 893, in _fit_transform_one\n    res = transformer.fit_transform(X, y, **fit_params)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/utils/_set_output.py\", line 140, in wrapped\n    data_to_wrap = f(self, X, *args, **kwargs)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/compose/_column_transformer.py\", line 724, in fit_transform\n    self._validate_column_callables(X)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/compose/_column_transformer.py\", line 426, in _validate_column_callables\n    transformer_to_input_indices[name] = _get_column_indices(X, columns)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/utils/__init__.py\", line 456, in _get_column_indices\n    raise ValueError(\"A given column is not a column of the dataframe\") from e\nValueE"
+        },
+        "traceback_repair": {
+          "success": true,
+          "latency_seconds": 44.379,
+          "usage": {
+            "prompt_tokens": 966,
+            "completion_tokens": 893,
+            "total_tokens": 1859
+          },
+          "generation": {
+            "purpose": "repair",
+            "max_new_tokens": 3072,
+            "finish_reason": "eos",
+            "truncated": false,
+            "eos_reached": true,
+            "input_truncated": false
+          },
+          "output_preview": "```python\nfrom __future__ import annotations\n\nfrom typing import Optional\nimport numpy as np\nimport pandas as pd\nfrom sklearn.compose import ColumnTransformer\nfrom sklearn.impute import SimpleImputer\nfrom sklearn.pipeline import Pipeline\nfrom sklearn.preprocessing import OneHotEncoder, StandardScaler, RobustScaler\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier\nfrom sklearn.metrics import roc_auc_score, average_p",
+          "validation": "bool"
+        }
+      },
+      "latency_seconds": 128.648,
+      "peak_gpu_memory_mb": 6004.5,
+      "success_rate": 0.5,
+      "schema_validity": 0.5,
+      "executable_code_rate": 0.0,
+      "repair_success_rate": 1.0
+    },
+    {
+      "model": "Qwen2.5-7B-Instruct",
+      "path": "/data/public_checkpoints/huggingface_models/Qwen2.5-7B-Instruct",
+      "tasks": {
+        "requirement_json": {
+          "success": true,
+          "latency_seconds": 65.812,
+          "usage": {
+            "prompt_tokens": 716,
+            "completion_tokens": 265,
+            "total_tokens": 981
+          },
+          "generation": {
+            "purpose": "requirement",
+            "max_new_tokens": 1024,
+            "finish_reason": "eos",
+            "truncated": false,
+            "eos_reached": true,
+            "input_truncated": false
+          },
+          "output_preview": "{\n  \"domain\": \"customer_retention\",\n  \"capability_name\": \"churn_prediction\",\n  \"task_type\": \"binary_classification\",\n  \"data_type\": \"tabular\",\n  \"target\": \"churn\",\n  \"input_schema\": {\n    \"age\": \"客户的年龄\",\n    \"login_count_30d\": \"最近30天的登录次数\"\n  },\n  \"output_schema\": {\n    \"prediction\": \"客户流失的概率\",\n    \"churn_prediction\": \"客户是否流失的预测结果（0或1）\"\n  },\n  \"dataset\": {\n    \"columns\": [\"age\", \"login_count_30d\", \"churn\"],\n    \"dtypes\": {\n      \"age\": \"int\",\n      \"login_count_30d\": \"int\",\n      \"churn\": \"int\"\n ",
+          "validation": "RequirementContract"
+        },
+        "planner_json": {
+          "success": false,
+          "latency_seconds": 2.922,
+          "usage": {
+            "prompt_tokens": 426,
+            "completion_tokens": 81,
+            "total_tokens": 507
+          },
+          "generation": {
+            "purpose": "planning",
+            "max_new_tokens": 1280,
+            "finish_reason": "eos",
+            "truncated": false,
+            "eos_reached": true,
+            "input_truncated": false
+          },
+          "error": "ValidationError: 1 validation error for PlannerAdviceContract\n  Value error, algorithm_reasons missing ['logistic_regression'] [type=value_error, input_value={'candidate_algorithms': ...s': [], 'confidence': 1}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.11/v/value_error"
+        },
+        "code_generation": {
+          "success": false,
+          "latency_seconds": 19.581,
+          "usage": {
+            "prompt_tokens": 92,
+            "completion_tokens": 518,
+            "total_tokens": 610
+          },
+          "generation": {
+            "purpose": "code_generation",
+            "max_new_tokens": 3072,
+            "finish_reason": "eos",
+            "truncated": false,
+            "eos_reached": true,
+            "input_truncated": false
+          },
+          "error": "ValueError: sandbox validation failed: runtime error: RuntimeError: isolated process exit=1: Traceback (most recent call last):\n  File \"<string>\", line 26, in <module>\nAttributeError: 'tuple' object has no attribute 'items'\n"
+        },
+        "traceback_repair": {
+          "success": false,
+          "latency_seconds": 3.653,
+          "usage": {
+            "prompt_tokens": 966,
+            "completion_tokens": 102,
+            "total_tokens": 1068
+          },
+          "generation": {
+            "purpose": "repair",
+            "max_new_tokens": 3072,
+            "finish_reason": "eos",
+            "truncated": false,
+            "eos_reached": true,
+            "input_truncated": false
+          },
+          "error": "ValueError: no complete Python module extracted"
+        }
+      },
+      "latency_seconds": 91.976,
+      "peak_gpu_memory_mb": 14721.73,
+      "success_rate": 0.25,
+      "schema_validity": 0.5,
+      "executable_code_rate": 0.0,
+      "repair_success_rate": 0.0
+    },
+    {
+      "model": "Qwen3-8B",
+      "path": "/data/public_checkpoints/huggingface_models/Qwen3-8B",
+      "tasks": {
+        "requirement_json": {
+          "success": true,
+          "latency_seconds": 82.697,
+          "usage": {
+            "prompt_tokens": 716,
+            "completion_tokens": 664,
+            "total_tokens": 1380
+          },
+          "generation": {
+            "purpose": "requirement",
+            "max_new_tokens": 1024,
+            "finish_reason": "eos",
+            "truncated": false,
+            "eos_reached": true,
+            "input_truncated": false
+          },
+          "output_preview": "<think>\n好的，我现在需要处理用户的请求，根据客户年龄和登录次数预测客户是否流失，并且要求ROC-AUC不低于0.75，同时输出概率。首先，我要理解用户的需求。用户提供的数据集包含三个字段：age（年龄，整数）、login_count_30d（过去30天的登录次数，整数）和churn（是否流失，整数）。目标是构建一个二分类模型，预测churn的情况。\n\n接下来，我需要按照用户提供的JSON Schema来构建响应。首先确定各个字段的值。任务类型是二分类，因为churn是0或1的取值。数据类型是tabular，因为数据是表格形式。目标变量是churn。输入特征包括age和login_count_30d。输出需要概率，所以probability_output_required设为true。指标方面，用户要求ROC-AUC不低于0.75，所以metrics数组里要有\"roc_auc\"，并且thresholds中设置roc_auc的阈值为0.75。约束条件包括模型性能的要求，所以constraints数组里加入\"roc_auc >= 0.75\"。另外，用户需要输出概率，所以probabi",
+          "validation": "RequirementContract"
+        },
+        "planner_json": {
+          "success": true,
+          "latency_seconds": 30.198,
+          "usage": {
+            "prompt_tokens": 426,
+            "completion_tokens": 518,
+            "total_tokens": 944
+          },
+          "generation": {
+            "purpose": "planning",
+            "max_new_tokens": 1280,
+            "finish_reason": "eos",
+            "truncated": false,
+            "eos_reached": true,
+            "input_truncated": false
+          },
+          "output_preview": "<think>\n好的，我现在需要处理用户的这个请求，生成符合他们要求的JSON响应。首先，用户给了一个包含规划上下文的JSON对象，里面有很多字段，比如requirement、graph_candidates、similar_historical_runs等等。用户的要求是只输出严格的JSON，并且evidence_ids只能用run_1。\n\n首先，我需要仔细分析用户提供的JSON结构，确保生成的响应符合他们的schema。用户提到的JSON schema里有多个属性，比如candidate_algorithms、preprocessing_recommendations、metric_strategy等，这些都是必填项。同时，evidence_ids必须是一个包含至少一个字符串的数组，且只能是run_1。\n\n接下来，我需要确定每个字段应该填什么内容。例如，candidate_algorithms应该包含允许的算法，这里allowed_algorithms是[\"logistic_regression\"]，所以对应的算法ID应该是algorithm_logistic_regression",
+          "validation": "PlannerAdviceContract"
+        },
+        "code_generation": {
+          "success": false,
+          "latency_seconds": 184.246,
+          "usage": {
+            "prompt_tokens": 92,
+            "completion_tokens": 3072,
+            "total_tokens": 3164
+          },
+          "generation": {
+            "purpose": "code_generation",
+            "max_new_tokens": 3072,
+            "finish_reason": "length",
+            "truncated": true,
+            "eos_reached": false,
+            "input_truncated": false
+          },
+          "error": "ValueError: invalid character '：' (U+FF1A) (<unknown>, line 7)"
+        },
+        "traceback_repair": {
+          "success": true,
+          "latency_seconds": 95.145,
+          "usage": {
+            "prompt_tokens": 966,
+            "completion_tokens": 1352,
+            "total_tokens": 2318
+          },
+          "generation": {
+            "purpose": "repair",
+            "max_new_tokens": 3072,
+            "finish_reason": "eos",
+            "truncated": false,
+            "eos_reached": true,
+            "input_truncated": false
+          },
+          "output_preview": "<think>\n好的，我现在需要解决用户的问题，他们提供的代码中缺少一个名为predict的函数，而接口要求有train、predict和evaluate三个函数。用户希望只输出修复后的完整Python代码。\n\n首先，我需要仔细查看用户提供的代码。他们已经实现了train和evaluate函数，但predict函数是缺失的。在代码中，有一个名为predict_broken的函数，这可能是一个错误或者占位符。用户可能误将predict_broken当作predict，或者可能想用这个函数来替换。\n\n接下来，我需要确认接口的要求。根据用户提供的严格接口，predict函数的签名应该是predict(model, test_df)。而当前代码中的predict_broken函数虽然功能类似，但名称不正确。因此，正确的做法是将predict_broken重命名为predict，或者删除旧的函数并创建新的。\n\n查看代码中的evaluate函数，里面调用了predict(model, test_df.drop(columns=[target_col]))，这说明在evaluate中使用了predi",
+          "validation": "bool"
+        }
+      },
+      "latency_seconds": 392.295,
+      "peak_gpu_memory_mb": 16084.48,
+      "success_rate": 0.75,
+      "schema_validity": 1.0,
+      "executable_code_rate": 0.0,
+      "repair_success_rate": 1.0
+    },
+    {
+      "model": "Qwen2.5-14B-Instruct",
+      "path": "/data/public_checkpoints/huggingface_models/Qwen2.5-14B-Instruct",
+      "tasks": {
+        "requirement_json": {
+          "success": true,
+          "latency_seconds": 112.324,
+          "usage": {
+            "prompt_tokens": 716,
+            "completion_tokens": 221,
+            "total_tokens": 937
+          },
+          "generation": {
+            "purpose": "requirement",
+            "max_new_tokens": 1024,
+            "finish_reason": "eos",
+            "truncated": false,
+            "eos_reached": true,
+            "input_truncated": false
+          },
+          "output_preview": "{\n  \"domain\": \"customer_retention\",\n  \"capability_name\": \"Customer Churn Prediction\",\n  \"task_type\": \"binary_classification\",\n  \"data_type\": \"tabular\",\n  \"target\": \"churn\",\n  \"input_schema\": {\n    \"age\": \"int\",\n    \"login_count_30d\": \"int\"\n  },\n  \"output_schema\": {\n    \"prediction\": \"int\",\n    \"probability\": \"float\"\n  },\n  \"dataset\": {\n    \"columns\": [\"age\", \"login_count_30d\", \"churn\"],\n    \"dtypes\": {\n      \"age\": \"int\",\n      \"login_count_30d\": \"int\",\n      \"churn\": \"int\"\n    }\n  },\n  \"metrics",
+          "validation": "RequirementContract"
+        },
+        "planner_json": {
+          "success": true,
+          "latency_seconds": 8.031,
+          "usage": {
+            "prompt_tokens": 426,
+            "completion_tokens": 109,
+            "total_tokens": 535
+          },
+          "generation": {
+            "purpose": "planning",
+            "max_new_tokens": 1280,
+            "finish_reason": "eos",
+            "truncated": false,
+            "eos_reached": true,
+            "input_truncated": false
+          },
+          "output_preview": "{\"candidate_algorithms\": [\"logistic_regression\"], \"preprocessing_recommendations\": {}, \"metric_strategy\": {\"roc_auc\": {\"importance\": \"high\", \"threshold\": 0.7}}, \"constraint_analysis\": [\"binary_classification\"], \"evidence_ids\": [\"run_1\"], \"algorithm_reasons\": {\"logistic_regression\": \"Selected based on historical performance with a ROC AUC of 0.84.\"}, \"risks\": [\"Performance may vary on new data.\"], \"confidence\": 0.9}",
+          "validation": "PlannerAdviceContract"
+        },
+        "code_generation": {
+          "success": false,
+          "latency_seconds": 30.871,
+          "usage": {
+            "prompt_tokens": 92,
+            "completion_tokens": 451,
+            "total_tokens": 543
+          },
+          "generation": {
+            "purpose": "code_generation",
+            "max_new_tokens": 3072,
+            "finish_reason": "eos",
+            "truncated": false,
+            "eos_reached": true,
+            "input_truncated": false
+          },
+          "error": "ValueError: sandbox validation failed: runtime error: RuntimeError: isolated process exit=1: Traceback (most recent call last):\n  File \"<string>\", line 29, in <module>\nAttributeError: 'numpy.ndarray' object has no attribute 'columns'\n"
+        },
+        "traceback_repair": {
+          "success": true,
+          "latency_seconds": 60.119,
+          "usage": {
+            "prompt_tokens": 966,
+            "completion_tokens": 904,
+            "total_tokens": 1870
+          },
+          "generation": {
+            "purpose": "repair",
+            "max_new_tokens": 3072,
+            "finish_reason": "eos",
+            "truncated": false,
+            "eos_reached": true,
+            "input_truncated": false
+          },
+          "output_preview": "```python\n\"\"\"Generated algorithm for: 客户流失预测.\"\"\"\nfrom __future__ import annotations\n\nfrom typing import Optional\nimport numpy as np\nimport pandas as pd\nfrom sklearn.compose import ColumnTransformer\nfrom sklearn.impute import SimpleImputer\nfrom sklearn.pipeline import Pipeline\nfrom sklearn.preprocessing import OneHotEncoder, StandardScaler, RobustScaler\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier\nfrom sklearn.",
+          "validation": "bool"
+        }
+      },
+      "latency_seconds": 211.352,
+      "peak_gpu_memory_mb": 28537.87,
+      "success_rate": 0.75,
+      "schema_validity": 1.0,
+      "executable_code_rate": 0.0,
+      "repair_success_rate": 1.0
+    },
+    {
+      "model": "Qwen3-Coder-30B-A3B-Instruct",
+      "path": "/data/public_checkpoints/huggingface_models/Qwen3-Coder-30B-A3B-Instruct",
+      "tasks": {
+        "requirement_json": {
+          "success": false,
+          "latency_seconds": 266.111,
+          "usage": {},
+          "generation": {},
+          "error": "OutOfMemoryError: CUDA out of memory. Tried to allocate 20.00 MiB. GPU 0 has a total capacity of 79.15 GiB of which 9.75 MiB is free. Process 2493335 has 29.27 GiB memory in use. Including non-PyTorch memory, this process has 49.86 GiB memory in use. Of the allocated memory 49.34 GiB is allocated by PyTorch, and 112.63 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)"
+        },
+        "planner_json": {
+          "success": false,
+          "latency_seconds": 33.221,
+          "usage": {},
+          "generation": {},
+          "error": "OutOfMemoryError: CUDA out of memory. Tried to allocate 20.00 MiB. GPU 0 has a total capacity of 79.15 GiB of which 9.75 MiB is free. Process 2493335 has 29.27 GiB memory in use. Including non-PyTorch memory, this process has 49.86 GiB memory in use. Of the allocated memory 49.45 GiB is allocated by PyTorch, and 2.13 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)"
+        },
+        "code_generation": {
+          "success": false,
+          "latency_seconds": 30.59,
+          "usage": {},
+          "generation": {},
+          "error": "OutOfMemoryError: CUDA out of memory. Tried to allocate 20.00 MiB. GPU 0 has a total capacity of 79.15 GiB of which 9.75 MiB is free. Process 2493335 has 29.27 GiB memory in use. Including non-PyTorch memory, this process has 49.86 GiB memory in use. Of the allocated memory 49.45 GiB is allocated by PyTorch, and 2.13 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)"
+        },
+        "traceback_repair": {
+          "success": false,
+          "latency_seconds": 32.177,
+          "usage": {},
+          "generation": {},
+          "error": "OutOfMemoryError: CUDA out of memory. Tried to allocate 20.00 MiB. GPU 0 has a total capacity of 79.15 GiB of which 9.75 MiB is free. Process 2493335 has 29.27 GiB memory in use. Including non-PyTorch memory, this process has 49.86 GiB memory in use. Of the allocated memory 49.45 GiB is allocated by PyTorch, and 2.13 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)"
+        }
+      },
+      "latency_seconds": 362.926,
+      "peak_gpu_memory_mb": 50637.87,
+      "success_rate": 0.0,
+      "schema_validity": 0.0,
+      "executable_code_rate": 0.0,
+      "repair_success_rate": 0.0
+    }
+  ],
+  "scanned_candidates": [
+    {
+      "name": "Baichuan2-13B-Chat",
+      "path": "/data/public_checkpoints/huggingface_models/Baichuan2-13B-Chat",
+      "model_type": "baichuan",
+      "architectures": [
+        "BaichuanForCausalLM"
+      ],
+      "context_length": null,
+      "dtype": "bfloat16",
+      "weight_files": 3,
+      "weight_gb": 27.79,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "Baichuan2-7B-Chat",
+      "path": "/data/public_checkpoints/huggingface_models/Baichuan2-7B-Chat",
+      "model_type": "baichuan",
+      "architectures": [
+        "BaichuanForCausalLM"
+      ],
+      "context_length": 4096,
+      "dtype": "bfloat16",
+      "weight_files": 1,
+      "weight_gb": 15.01,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "DarkIdol-Llama-3.1-8B-Instruct-1.2-Uncensored",
+      "path": "/data/public_checkpoints/huggingface_models/DarkIdol-Llama-3.1-8B-Instruct-1.2-Uncensored",
+      "model_type": "llama",
+      "architectures": [
+        "LlamaForCausalLM"
+      ],
+      "context_length": 131072,
+      "dtype": "bfloat16",
+      "weight_files": 9,
+      "weight_gb": 16.06,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "DeepSeek-R1-0528-Qwen3-8B",
+      "path": "/data/public_checkpoints/huggingface_models/DeepSeek-R1-0528-Qwen3-8B",
+      "model_type": "qwen3",
+      "architectures": [
+        "Qwen3ForCausalLM"
+      ],
+      "context_length": 131072,
+      "dtype": "bfloat16",
+      "weight_files": 2,
+      "weight_gb": 16.38,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "InternVL3_5-8B-Instruct",
+      "path": "/data/public_checkpoints/huggingface_models/InternVL3_5-8B-Instruct",
+      "model_type": "internvl_chat",
+      "architectures": [
+        "InternVLChatModel"
+      ],
+      "context_length": null,
+      "dtype": "bfloat16",
+      "weight_files": 4,
+      "weight_gb": 17.06,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "Kimi-Audio-7B-Instruct",
+      "path": "/data/public_checkpoints/huggingface_models/Kimi-Audio-7B-Instruct",
+      "model_type": null,
+      "architectures": [
+        "MoonshotKimiaForCausalLM"
+      ],
+      "context_length": 8192,
+      "dtype": "bfloat16",
+      "weight_files": 36,
+      "weight_gb": 19.53,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "Llama-2-13b-chat-hf",
+      "path": "/data/public_checkpoints/huggingface_models/Llama-2-13b-chat-hf",
+      "model_type": "llama",
+      "architectures": [
+        "LlamaForCausalLM"
+      ],
+      "context_length": 4096,
+      "dtype": "float16",
+      "weight_files": 3,
+      "weight_gb": 26.03,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "Llama-2-7b-chat-hf",
+      "path": "/data/public_checkpoints/huggingface_models/Llama-2-7b-chat-hf",
+      "model_type": "llama",
+      "architectures": [
+        "LlamaForCausalLM"
+      ],
+      "context_length": 4096,
+      "dtype": "float16",
+      "weight_files": 2,
+      "weight_gb": 13.48,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "Llama-3-8B-Instruct",
+      "path": "/data/public_checkpoints/huggingface_models/Llama-3-8B-Instruct",
+      "model_type": "llama",
+      "architectures": [
+        "LlamaForCausalLM"
+      ],
+      "context_length": 8192,
+      "dtype": "bfloat16",
+      "weight_files": 4,
+      "weight_gb": 16.06,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "Llama-3.1-8B-Instruct",
+      "path": "/data/public_checkpoints/huggingface_models/Llama-3.1-8B-Instruct",
+      "model_type": "llama",
+      "architectures": [
+        "LlamaForCausalLM"
+      ],
+      "context_length": 131072,
+      "dtype": "bfloat16",
+      "weight_files": 4,
+      "weight_gb": 16.06,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "Llama-3.2-11B-Vision-Instruct",
+      "path": "/data/public_checkpoints/huggingface_models/Llama-3.2-11B-Vision-Instruct",
+      "model_type": "mllama",
+      "architectures": [
+        "MllamaForConditionalGeneration"
+      ],
+      "context_length": null,
+      "dtype": "bfloat16",
+      "weight_files": 5,
+      "weight_gb": 21.34,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "Llama-3.2-3B-Instruct",
+      "path": "/data/public_checkpoints/huggingface_models/Llama-3.2-3B-Instruct",
+      "model_type": "llama",
+      "architectures": [
+        "LlamaForCausalLM"
+      ],
+      "context_length": 131072,
+      "dtype": "bfloat16",
+      "weight_files": 2,
+      "weight_gb": 6.43,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "Llama2-Chinese-13b-Chat",
+      "path": "/data/public_checkpoints/huggingface_models/Llama2-Chinese-13b-Chat",
+      "model_type": "llama",
+      "architectures": [
+        "LlamaForCausalLM"
+      ],
+      "context_length": 2048,
+      "dtype": "float16",
+      "weight_files": 3,
+      "weight_gb": 26.03,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "Llama2-Chinese-7b-Chat",
+      "path": "/data/public_checkpoints/huggingface_models/Llama2-Chinese-7b-Chat",
+      "model_type": "llama",
+      "architectures": [
+        "LlamaForCausalLM"
+      ],
+      "context_length": 4096,
+      "dtype": "float16",
+      "weight_files": 2,
+      "weight_gb": 13.48,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "Meta-Llama-3.1-8B-Instruct",
+      "path": "/data/public_checkpoints/huggingface_models/Meta-Llama-3.1-8B-Instruct",
+      "model_type": "llama",
+      "architectures": [
+        "LlamaForCausalLM"
+      ],
+      "context_length": 131072,
+      "dtype": "bfloat16",
+      "weight_files": 4,
+      "weight_gb": 16.06,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "Mistral-7B-Instruct-v0.2",
+      "path": "/data/public_checkpoints/huggingface_models/Mistral-7B-Instruct-v0.2",
+      "model_type": "mistral",
+      "architectures": [
+        "MistralForCausalLM"
+      ],
+      "context_length": 32768,
+      "dtype": "bfloat16",
+      "weight_files": 3,
+      "weight_gb": 14.48,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "Mistral-7B-Instruct-v0.3",
+      "path": "/data/public_checkpoints/huggingface_models/Mistral-7B-Instruct-v0.3",
+      "model_type": "mistral",
+      "architectures": [
+        "MistralForCausalLM"
+      ],
+      "context_length": 32768,
+      "dtype": "bfloat16",
+      "weight_files": 4,
+      "weight_gb": 28.99,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "Phi-3.5-vision-instruct",
+      "path": "/data/public_checkpoints/huggingface_models/Phi-3.5-vision-instruct",
+      "model_type": "phi3_v",
+      "architectures": [
+        "Phi3VForCausalLM"
+      ],
+      "context_length": 131072,
+      "dtype": "bfloat16",
+      "weight_files": 2,
+      "weight_gb": 8.29,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "Phi-4-multimodal-instruct",
+      "path": "/data/public_checkpoints/huggingface_models/Phi-4-multimodal-instruct",
+      "model_type": "phi4mm",
+      "architectures": [
+        "Phi4MMForCausalLM"
+      ],
+      "context_length": 131072,
+      "dtype": "bfloat16",
+      "weight_files": 3,
+      "weight_gb": 11.15,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "Qwen-14B-Chat",
+      "path": "/data/public_checkpoints/huggingface_models/Qwen-14B-Chat",
+      "model_type": "qwen",
+      "architectures": [
+        "QWenLMHeadModel"
+      ],
+      "context_length": 8192,
+      "dtype": null,
+      "weight_files": 15,
+      "weight_gb": 28.33,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "Qwen-7B-Chat",
+      "path": "/data/public_checkpoints/huggingface_models/Qwen-7B-Chat",
+      "model_type": "qwen",
+      "architectures": [
+        "QWenLMHeadModel"
+      ],
+      "context_length": 32768,
+      "dtype": null,
+      "weight_files": 8,
+      "weight_gb": 15.44,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "Qwen-7B-Chat-old",
+      "path": "/data/public_checkpoints/huggingface_models/Qwen-7B-Chat-old",
+      "model_type": "qwen",
+      "architectures": [
+        "QWenLMHeadModel"
+      ],
+      "context_length": null,
+      "dtype": null,
+      "weight_files": 8,
+      "weight_gb": 15.44,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "Qwen-Qwen2-VL-7B-Instruct",
+      "path": "/data/public_checkpoints/huggingface_models/Qwen-Qwen2-VL-7B-Instruct",
+      "model_type": "qwen2_vl",
+      "architectures": [
+        "Qwen2VLForConditionalGeneration"
+      ],
+      "context_length": 32768,
+      "dtype": "bfloat16",
+      "weight_files": 5,
+      "weight_gb": 16.58,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "Qwen1.5-14B-Chat",
+      "path": "/data/public_checkpoints/huggingface_models/Qwen1.5-14B-Chat",
+      "model_type": "qwen2",
+      "architectures": [
+        "Qwen2ForCausalLM"
+      ],
+      "context_length": 32768,
+      "dtype": "bfloat16",
+      "weight_files": 8,
+      "weight_gb": 28.33,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "Qwen1.5-32B-Chat",
+      "path": "/data/public_checkpoints/huggingface_models/Qwen1.5-32B-Chat",
+      "model_type": "qwen2",
+      "architectures": [
+        "Qwen2ForCausalLM"
+      ],
+      "context_length": 32768,
+      "dtype": "bfloat16",
+      "weight_files": 17,
+      "weight_gb": 65.02,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "Qwen1.5-7B-Chat",
+      "path": "/data/public_checkpoints/huggingface_models/Qwen1.5-7B-Chat",
+      "model_type": "qwen2",
+      "architectures": [
+        "Qwen2ForCausalLM"
+      ],
+      "context_length": 32768,
+      "dtype": "bfloat16",
+      "weight_files": 4,
+      "weight_gb": 15.44,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "Qwen2-1.5B-Instruct",
+      "path": "/data/public_checkpoints/huggingface_models/Qwen2-1.5B-Instruct",
+      "model_type": "qwen2",
+      "architectures": [
+        "Qwen2ForCausalLM"
+      ],
+      "context_length": 32768,
+      "dtype": "bfloat16",
+      "weight_files": 1,
+      "weight_gb": 3.09,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "Qwen2-7B-Instruct",
+      "path": "/data/public_checkpoints/huggingface_models/Qwen2-7B-Instruct",
+      "model_type": "qwen2",
+      "architectures": [
+        "Qwen2ForCausalLM"
+      ],
+      "context_length": 32768,
+      "dtype": "bfloat16",
+      "weight_files": 4,
+      "weight_gb": 15.23,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "Qwen2-VL-7B-Instruct_new",
+      "path": "/data/public_checkpoints/huggingface_models/Qwen2-VL-7B-Instruct_new",
+      "model_type": "qwen2_vl",
+      "architectures": [
+        "Qwen2VLForConditionalGeneration"
+      ],
+      "context_length": 32768,
+      "dtype": "bfloat16",
+      "weight_files": 5,
+      "weight_gb": 16.58,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "Qwen2.5-1.5B-Instruct",
+      "path": "/data/public_checkpoints/huggingface_models/Qwen2.5-1.5B-Instruct",
+      "model_type": "qwen2",
+      "architectures": [
+        "Qwen2ForCausalLM"
+      ],
+      "context_length": 32768,
+      "dtype": "bfloat16",
+      "weight_files": 1,
+      "weight_gb": 3.09,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "Qwen2.5-14B-Instruct",
+      "path": "/data/public_checkpoints/huggingface_models/Qwen2.5-14B-Instruct",
+      "model_type": "qwen2",
+      "architectures": [
+        "Qwen2ForCausalLM"
+      ],
+      "context_length": 32768,
+      "dtype": "bfloat16",
+      "weight_files": 8,
+      "weight_gb": 29.54,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "Qwen2.5-14B-Instruct-2",
+      "path": "/data/public_checkpoints/huggingface_models/Qwen2.5-14B-Instruct-2",
+      "model_type": "qwen2",
+      "architectures": [
+        "Qwen2ForCausalLM"
+      ],
+      "context_length": 32768,
+      "dtype": "bfloat16",
+      "weight_files": 8,
+      "weight_gb": 29.54,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "Qwen2.5-32B-Instruct",
+      "path": "/data/public_checkpoints/huggingface_models/Qwen2.5-32B-Instruct",
+      "model_type": "qwen2",
+      "architectures": [
+        "Qwen2ForCausalLM"
+      ],
+      "context_length": 32768,
+      "dtype": "bfloat16",
+      "weight_files": 17,
+      "weight_gb": 65.53,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "Qwen2.5-3B-Instruct",
+      "path": "/data/public_checkpoints/huggingface_models/Qwen2.5-3B-Instruct",
+      "model_type": "qwen2",
+      "architectures": [
+        "Qwen2ForCausalLM"
+      ],
+      "context_length": 32768,
+      "dtype": "bfloat16",
+      "weight_files": 2,
+      "weight_gb": 6.17,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "Qwen2.5-72B-Instruct",
+      "path": "/data/public_checkpoints/huggingface_models/Qwen2.5-72B-Instruct",
+      "model_type": "qwen2",
+      "architectures": [
+        "Qwen2ForCausalLM"
+      ],
+      "context_length": 32768,
+      "dtype": "bfloat16",
+      "weight_files": 8,
+      "weight_gb": 31.55,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "Qwen2.5-7B-Instruct",
+      "path": "/data/public_checkpoints/huggingface_models/Qwen2.5-7B-Instruct",
+      "model_type": "qwen2",
+      "architectures": [
+        "Qwen2ForCausalLM"
+      ],
+      "context_length": 32768,
+      "dtype": "bfloat16",
+      "weight_files": 4,
+      "weight_gb": 15.23,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "Qwen2.5-Coder-3B-Instruct",
+      "path": "/data/public_checkpoints/huggingface_models/Qwen2.5-Coder-3B-Instruct",
+      "model_type": "qwen2",
+      "architectures": [
+        "Qwen2ForCausalLM"
+      ],
+      "context_length": 32768,
+      "dtype": "bfloat16",
+      "weight_files": 2,
+      "weight_gb": 6.17,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation",
+        "code_repair"
+      ]
+    },
+    {
+      "name": "Qwen2.5-VL-3B-Instruct",
+      "path": "/data/public_checkpoints/huggingface_models/Qwen2.5-VL-3B-Instruct",
+      "model_type": "qwen2_5_vl",
+      "architectures": [
+        "Qwen2_5_VLForConditionalGeneration"
+      ],
+      "context_length": 128000,
+      "dtype": "bfloat16",
+      "weight_files": 2,
+      "weight_gb": 7.51,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "Qwen2.5-VL-7B-Instruct",
+      "path": "/data/public_checkpoints/huggingface_models/Qwen2.5-VL-7B-Instruct",
+      "model_type": "qwen2_5_vl",
+      "architectures": [
+        "Qwen2_5_VLForConditionalGeneration"
+      ],
+      "context_length": 128000,
+      "dtype": "bfloat16",
+      "weight_files": 5,
+      "weight_gb": 16.58,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "Qwen3-0.6B",
+      "path": "/data/public_checkpoints/huggingface_models/Qwen3-0.6B",
+      "model_type": "qwen3",
+      "architectures": [
+        "Qwen3ForCausalLM"
+      ],
+      "context_length": 40960,
+      "dtype": "bfloat16",
+      "weight_files": 1,
+      "weight_gb": 1.5,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "Qwen3-1.7B",
+      "path": "/data/public_checkpoints/huggingface_models/Qwen3-1.7B",
+      "model_type": "qwen3",
+      "architectures": [
+        "Qwen3ForCausalLM"
+      ],
+      "context_length": 40960,
+      "dtype": "bfloat16",
+      "weight_files": 2,
+      "weight_gb": 4.06,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "Qwen3-14B",
+      "path": "/data/public_checkpoints/huggingface_models/Qwen3-14B",
+      "model_type": "qwen3",
+      "architectures": [
+        "Qwen3ForCausalLM"
+      ],
+      "context_length": 40960,
+      "dtype": "bfloat16",
+      "weight_files": 8,
+      "weight_gb": 29.54,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "Qwen3-30B-A3B",
+      "path": "/data/public_checkpoints/huggingface_models/Qwen3-30B-A3B",
+      "model_type": "qwen3_moe",
+      "architectures": [
+        "Qwen3MoeForCausalLM"
+      ],
+      "context_length": 40960,
+      "dtype": "bfloat16",
+      "weight_files": 16,
+      "weight_gb": 61.07,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "Qwen3-30B-A3B-Thinking-2507",
+      "path": "/data/public_checkpoints/huggingface_models/Qwen3-30B-A3B-Thinking-2507",
+      "model_type": "qwen3_moe",
+      "architectures": [
+        "Qwen3MoeForCausalLM"
+      ],
+      "context_length": 262144,
+      "dtype": "bfloat16",
+      "weight_files": 16,
+      "weight_gb": 61.07,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "Qwen3-32B",
+      "path": "/data/public_checkpoints/huggingface_models/Qwen3-32B",
+      "model_type": "qwen3",
+      "architectures": [
+        "Qwen3ForCausalLM"
+      ],
+      "context_length": 40960,
+      "dtype": "bfloat16",
+      "weight_files": 17,
+      "weight_gb": 65.52,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "Qwen3-4B",
+      "path": "/data/public_checkpoints/huggingface_models/Qwen3-4B",
+      "model_type": "qwen3",
+      "architectures": [
+        "Qwen3ForCausalLM"
+      ],
+      "context_length": 40960,
+      "dtype": "bfloat16",
+      "weight_files": 3,
+      "weight_gb": 8.04,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "Qwen3-8B",
+      "path": "/data/public_checkpoints/huggingface_models/Qwen3-8B",
+      "model_type": "qwen3",
+      "architectures": [
+        "Qwen3ForCausalLM"
+      ],
+      "context_length": 40960,
+      "dtype": "bfloat16",
+      "weight_files": 5,
+      "weight_gb": 16.38,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "Qwen3-Coder-30B-A3B-Instruct",
+      "path": "/data/public_checkpoints/huggingface_models/Qwen3-Coder-30B-A3B-Instruct",
+      "model_type": "qwen3_moe",
+      "architectures": [
+        "Qwen3MoeForCausalLM"
+      ],
+      "context_length": 262144,
+      "dtype": "bfloat16",
+      "weight_files": 16,
+      "weight_gb": 61.07,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation",
+        "code_repair"
+      ]
+    },
+    {
+      "name": "Qwen3-Embedding-4B",
+      "path": "/data/public_checkpoints/huggingface_models/Qwen3-Embedding-4B",
+      "model_type": "qwen3",
+      "architectures": [
+        "Qwen3ForCausalLM"
+      ],
+      "context_length": 40960,
+      "dtype": "bfloat16",
+      "weight_files": 2,
+      "weight_gb": 3.73,
+      "roles": [
+        "embedding"
+      ]
+    },
+    {
+      "name": "Qwen3-Embedding-8B",
+      "path": "/data/public_checkpoints/huggingface_models/Qwen3-Embedding-8B",
+      "model_type": "qwen3",
+      "architectures": [
+        "Qwen3ForCausalLM"
+      ],
+      "context_length": 40960,
+      "dtype": "bfloat16",
+      "weight_files": 4,
+      "weight_gb": 15.13,
+      "roles": [
+        "embedding"
+      ]
+    },
+    {
+      "name": "Qwen3-Omni-30B-A3B-Instruct",
+      "path": "/data/public_checkpoints/huggingface_models/Qwen3-Omni-30B-A3B-Instruct",
+      "model_type": "qwen3_omni_moe",
+      "architectures": [
+        "Qwen3OmniMoeForConditionalGeneration"
+      ],
+      "context_length": null,
+      "dtype": null,
+      "weight_files": 15,
+      "weight_gb": 70.52,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "Qwen3-Omni-30B-A3B-Thinking",
+      "path": "/data/public_checkpoints/huggingface_models/Qwen3-Omni-30B-A3B-Thinking",
+      "model_type": "qwen3_omni_moe",
+      "architectures": [
+        "Qwen3OmniMoeForConditionalGeneration"
+      ],
+      "context_length": null,
+      "dtype": null,
+      "weight_files": 16,
+      "weight_gb": 63.44,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "Qwen3-VL-2B-Thinking",
+      "path": "/data/public_checkpoints/huggingface_models/Qwen3-VL-2B-Thinking",
+      "model_type": "qwen3_vl",
+      "architectures": [
+        "Qwen3VLForConditionalGeneration"
+      ],
+      "context_length": null,
+      "dtype": null,
+      "weight_files": 1,
+      "weight_gb": 4.26,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "Qwen3-VL-32B-Instruct",
+      "path": "/data/public_checkpoints/huggingface_models/Qwen3-VL-32B-Instruct",
+      "model_type": "qwen3_vl",
+      "architectures": [
+        "Qwen3VLForConditionalGeneration"
+      ],
+      "context_length": null,
+      "dtype": null,
+      "weight_files": 14,
+      "weight_gb": 66.71,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "Qwen3-VL-4B-Instruct",
+      "path": "/data/public_checkpoints/huggingface_models/Qwen3-VL-4B-Instruct",
+      "model_type": "qwen3_vl",
+      "architectures": [
+        "Qwen3VLForConditionalGeneration"
+      ],
+      "context_length": null,
+      "dtype": null,
+      "weight_files": 2,
+      "weight_gb": 8.88,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "Qwen3-VL-8B-Instruct",
+      "path": "/data/public_checkpoints/huggingface_models/Qwen3-VL-8B-Instruct",
+      "model_type": "qwen3_vl",
+      "architectures": [
+        "Qwen3VLForConditionalGeneration"
+      ],
+      "context_length": null,
+      "dtype": null,
+      "weight_files": 4,
+      "weight_gb": 17.53,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "Qwen3-VL-8B-Instruct_size25_vlsbench-mmvet_seed42",
+      "path": "/data/public_checkpoints/huggingface_models/Qwen3-VL-8B-Instruct_size25_vlsbench-mmvet_seed42",
+      "model_type": "qwen3_vl",
+      "architectures": [
+        "Qwen3VLForConditionalGeneration"
+      ],
+      "context_length": null,
+      "dtype": null,
+      "weight_files": 4,
+      "weight_gb": 17.53,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "Qwen3-VL-8B-Instruct_size50_vlsbench-mmvet_seed42",
+      "path": "/data/public_checkpoints/huggingface_models/Qwen3-VL-8B-Instruct_size50_vlsbench-mmvet_seed42",
+      "model_type": "qwen3_vl",
+      "architectures": [
+        "Qwen3VLForConditionalGeneration"
+      ],
+      "context_length": null,
+      "dtype": null,
+      "weight_files": 4,
+      "weight_gb": 17.53,
+      "roles": [
+        "embedding"
+      ]
+    },
+    {
+      "name": "Yi-1.5-9B-Chat",
+      "path": "/data/public_checkpoints/huggingface_models/Yi-1.5-9B-Chat",
+      "model_type": "llama",
+      "architectures": [
+        "LlamaForCausalLM"
+      ],
+      "context_length": 4096,
+      "dtype": "bfloat16",
+      "weight_files": 4,
+      "weight_gb": 17.66,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "chatglm2-6b",
+      "path": "/data/public_checkpoints/huggingface_models/chatglm2-6b",
+      "model_type": "chatglm",
+      "architectures": [
+        "ChatGLMModel"
+      ],
+      "context_length": null,
+      "dtype": "float16",
+      "weight_files": 7,
+      "weight_gb": 12.49,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "chatglm3-6b",
+      "path": "/data/public_checkpoints/huggingface_models/chatglm3-6b",
+      "model_type": "chatglm",
+      "architectures": [
+        "ChatGLMModel"
+      ],
+      "context_length": null,
+      "dtype": "float16",
+      "weight_files": 7,
+      "weight_gb": 12.49,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "dreamllm-7b-chat-v1.0",
+      "path": "/data/public_checkpoints/huggingface_models/dreamllm-7b-chat-v1.0",
+      "model_type": "dreamllm",
+      "architectures": [
+        "DreamLLMForCausalMLM"
+      ],
+      "context_length": 2048,
+      "dtype": "bfloat16",
+      "weight_files": 1,
+      "weight_gb": 13.48,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "ft-mistral-7b-instruct-v0.2-sorry-bench-202406",
+      "path": "/data/public_checkpoints/huggingface_models/ft-mistral-7b-instruct-v0.2-sorry-bench-202406",
+      "model_type": "mistral",
+      "architectures": [
+        "MistralForCausalLM"
+      ],
+      "context_length": 32768,
+      "dtype": "float32",
+      "weight_files": 6,
+      "weight_gb": 28.97,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "glm-4-9b-chat",
+      "path": "/data/public_checkpoints/huggingface_models/glm-4-9b-chat",
+      "model_type": "chatglm",
+      "architectures": [
+        "ChatGLMModel"
+      ],
+      "context_length": null,
+      "dtype": "bfloat16",
+      "weight_files": 10,
+      "weight_gb": 18.8,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "internlm-chat-20b",
+      "path": "/data/public_checkpoints/huggingface_models/internlm-chat-20b",
+      "model_type": "internlm",
+      "architectures": [
+        "InternLMForCausalLM"
+      ],
+      "context_length": 4096,
+      "dtype": "bfloat16",
+      "weight_files": 5,
+      "weight_gb": 40.18,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "internlm2-chat-7b",
+      "path": "/data/public_checkpoints/huggingface_models/internlm2-chat-7b",
+      "model_type": "internlm2",
+      "architectures": [
+        "InternLM2ForCausalLM"
+      ],
+      "context_length": 32768,
+      "dtype": "float16",
+      "weight_files": 8,
+      "weight_gb": 15.48,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "internlm2_5-7b-chat",
+      "path": "/data/public_checkpoints/huggingface_models/internlm2_5-7b-chat",
+      "model_type": "internlm2",
+      "architectures": [
+        "InternLM2ForCausalLM"
+      ],
+      "context_length": 32768,
+      "dtype": "bfloat16",
+      "weight_files": 8,
+      "weight_gb": 15.48,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "llava-onevision-qwen2-7b-ov-chat-hf",
+      "path": "/data/public_checkpoints/huggingface_models/llava-onevision-qwen2-7b-ov-chat-hf",
+      "model_type": "llava_onevision",
+      "architectures": [
+        "LlavaOnevisionForConditionalGeneration"
+      ],
+      "context_length": null,
+      "dtype": "float16",
+      "weight_files": 4,
+      "weight_gb": 16.06,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "miatralai_Mistral_Instruct_v0.3",
+      "path": "/data/public_checkpoints/huggingface_models/miatralai_Mistral_Instruct_v0.3",
+      "model_type": "mistral",
+      "architectures": [
+        "MistralForCausalLM"
+      ],
+      "context_length": 32768,
+      "dtype": "bfloat16",
+      "weight_files": 3,
+      "weight_gb": 14.5,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    },
+    {
+      "name": "openchat_v3.2",
+      "path": "/data/public_checkpoints/huggingface_models/openchat_v3.2",
+      "model_type": "llama",
+      "architectures": [
+        "LlamaForCausalLM"
+      ],
+      "context_length": 4096,
+      "dtype": "bfloat16",
+      "weight_files": 3,
+      "weight_gb": 26.03,
+      "roles": [
+        "general_instruction",
+        "structured_json",
+        "code_generation_secondary"
+      ]
+    }
+  ]
+}

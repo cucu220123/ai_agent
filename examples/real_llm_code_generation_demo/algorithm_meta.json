@@ -1,0 +1,122 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-07T05:22:18.957247+00:00",
+  "source_sha256": "ea4cfb6732186e3e2b1c2acd0f9f36fd1f5d4bd136d1c1a037a56d9b86dbaf8c",
+  "spec": {
+    "raw_description": "客户流失预测",
+    "domain": "customer_churn",
+    "capability_name": "客户流失预测",
+    "task_type": "binary_classification",
+    "data_type": "tabular",
+    "target_column": "churn",
+    "feature_columns": [
+      "age",
+      "region",
+      "login_count_30d",
+      "total_spend",
+      "complaint_count",
+      "membership_level",
+      "tenure_months"
+    ],
+    "input_schema": {
+      "age": "int",
+      "region": "category",
+      "login_count_30d": "float",
+      "total_spend": "float",
+      "complaint_count": "int",
+      "membership_level": "category",
+      "tenure_months": "int"
+    },
+    "output_schema": {
+      "prediction": "int",
+      "probability": "float"
+    },
+    "dataset_profile": {},
+    "metrics": [
+      "roc_auc",
+      "f1",
+      "precision",
+      "recall"
+    ],
+    "metric_thresholds": {
+      "roc_auc": 0.75
+    },
+    "output_columns": [
+      "prediction",
+      "probability"
+    ],
+    "constraints": [],
+    "latency_requirement_ms": null,
+    "interpretability_requirement": null,
+    "resource_constraints": {},
+    "probability_output_required": true,
+    "class_imbalance": {},
+    "candidate_hints": [],
+    "uncertainty": [],
+    "understanding_confidence": 0.0,
+    "candidate_algorithms": [],
+    "dataset_path": null
+  },
+  "plan": {
+    "algorithm_id": "algorithm_logistic_regression__real_llm",
+    "algorithm_name": "Logistic Regression",
+    "rationale": "benchmark-selected coder demo",
+    "preprocessing": [
+      "imputation",
+      "one-hot",
+      "standard scaling"
+    ],
+    "hyperparameters": {
+      "C": 1.0,
+      "max_iter": 500,
+      "class_weight": "balanced",
+      "threshold": 0.4
+    },
+    "expected_metrics": {},
+    "priority": 0,
+    "base_algorithm_id": "algorithm_logistic_regression",
+    "preprocessing_variant": "default",
+    "config_variant": "default",
+    "search_score": 0.0,
+    "evidence_ids": []
+  },
+  "generation": {
+    "provider": "local_coder",
+    "model": "Qwen2.5-Coder-3B-Instruct",
+    "status": "llm_code_accepted",
+    "attempts": [
+      {
+        "attempt": 1,
+        "status": "rejected",
+        "reason": "train must have 1 optional positional argument(s)",
+        "generation": {
+          "purpose": "code_generation",
+          "max_new_tokens": 3072,
+          "context_length": 32768,
+          "finish_reason": "eos",
+          "truncated": false,
+          "eos_reached": true,
+          "input_truncated": false
+        }
+      },
+      {
+        "attempt": 2,
+        "status": "accepted"
+      }
+    ],
+    "token_usage": {
+      "prompt_tokens": 988,
+      "completion_tokens": 602,
+      "total_tokens": 1590
+    },
+    "generation": {
+      "purpose": "code_generation",
+      "max_new_tokens": 3072,
+      "context_length": 32768,
+      "finish_reason": "eos",
+      "truncated": false,
+      "eos_reached": true,
+      "input_truncated": false
+    }
+  }
+}

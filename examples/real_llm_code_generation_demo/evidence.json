@@ -1,0 +1,361 @@
+{
+  "model": "Qwen2.5-Coder-3B-Instruct",
+  "llm_success": false,
+  "raw_llm_executable": false,
+  "final_llm_pipeline_executable": false,
+  "generation": {
+    "provider": "local_coder",
+    "model": "Qwen2.5-Coder-3B-Instruct",
+    "status": "llm_code_accepted",
+    "attempts": [
+      {
+        "attempt": 1,
+        "status": "rejected",
+        "reason": "train must have 1 optional positional argument(s)",
+        "generation": {
+          "purpose": "code_generation",
+          "max_new_tokens": 3072,
+          "context_length": 32768,
+          "finish_reason": "eos",
+          "truncated": false,
+          "eos_reached": true,
+          "input_truncated": false
+        }
+      },
+      {
+        "attempt": 2,
+        "status": "accepted"
+      }
+    ],
+    "token_usage": {
+      "prompt_tokens": 988,
+      "completion_tokens": 602,
+      "total_tokens": 1590
+    },
+    "generation": {
+      "purpose": "code_generation",
+      "max_new_tokens": 3072,
+      "context_length": 32768,
+      "finish_reason": "eos",
+      "truncated": false,
+      "eos_reached": true,
+      "input_truncated": false
+    }
+  },
+  "initial_validation": {
+    "status": "failed",
+    "algorithm": "Logistic Regression",
+    "checks": {
+      "static_safety": {
+        "passed": true,
+        "message": "static checks passed"
+      },
+      "interface_import": {
+        "passed": true,
+        "message": "static interface checks passed; runtime import deferred to isolated process",
+        "duration": 0.000685274600982666
+      },
+      "target_leakage": {
+        "passed": true,
+        "duplicate_target_columns": []
+      },
+      "isolated_execution": {
+        "passed": false,
+        "timeout": false,
+        "message": "isolated process exit=1"
+      },
+      "resource_usage": {
+        "max_rss_kb": null,
+        "runtime_seconds_child": null
+      },
+      "functional": {
+        "passed": false,
+        "message": "isolated process exit=1: Traceback (most recent call last):\n  File \"<string>\", line 25, in <module>\n  File \"/data3/xiaotianqi/ai_algorithm_factory/examples/real_llm_code_generation_demo/algorithm.py\", line 36, in train\n    estimator = LogisticRegression(C=config.get('C', 1.0), max_iter=config.get('max_iter', 500), class_weight=config.get('class_weight', 'balanced'), threshold=config.get('threshold', 0.4))\nTypeError: LogisticRegression.__init__() got an unexpected keyword argument 'threshold'\n"
+      },
+      "runtime_budget": {
+        "passed": true,
+        "message": "completed in 1.66s (budget 60s)"
+      }
+    },
+    "metrics": {},
+    "runtime_seconds": 1.662807583808899,
+    "errors": [
+      "runtime error: RuntimeError: isolated process exit=1: Traceback (most recent call last):\n  File \"<string>\", line 25, in <module>\n  File \"/data3/xiaotianqi/ai_algorithm_factory/examples/real_llm_code_generation_demo/algorithm.py\", line 36, in train\n    estimator = LogisticRegression(C=config.get('C', 1.0), max_iter=config.get('max_iter', 500), class_weight=config.get('class_weight', 'balanced'), threshold=config.get('threshold', 0.4))\nTypeError: LogisticRegression.__init__() got an unexpected keyword argument 'threshold'\n"
+    ],
+    "warnings": [],
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 25, in <module>\n  File \"/data3/xiaotianqi/ai_algorithm_factory/examples/real_llm_code_generation_demo/algorithm.py\", line 36, in train\n    estimator = LogisticRegression(C=config.get('C', 1.0), max_iter=config.get('max_iter', 500), class_weight=config.get('class_weight', 'balanced'), threshold=config.get('threshold', 0.4))\nTypeError: LogisticRegression.__init__() got an unexpected keyword argument 'threshold'\n",
+    "repair_round": 0,
+    "task_type": "binary_classification",
+    "dataset_profile": {
+      "path": "/data3/xiaotianqi/ai_algorithm_factory/data/churn_demo.csv",
+      "rows": 1200,
+      "columns": [
+        "age",
+        "region",
+        "login_count_30d",
+        "total_spend",
+        "complaint_count",
+        "membership_level",
+        "tenure_months",
+        "churn"
+      ],
+      "missing_rates": {
+        "age": 0.0,
+        "region": 0.015,
+        "login_count_30d": 0.01,
+        "total_spend": 0.025,
+        "complaint_count": 0.0,
+        "membership_level": 0.0,
+        "tenure_months": 0.0,
+        "churn": 0.0
+      },
+      "positive_rate": 0.1525
+    },
+    "resource_usage": {
+      "max_rss_kb": null,
+      "cpu_seconds": null
+    },
+    "failure_type": "runtime_failure",
+    "root_cause": null
+  },
+  "retrieved_experiences": [
+    {
+      "relevance_score": 5,
+      "id": "repair_invalid_estimator_parameter",
+      "task_type": "binary_classification",
+      "domain": "customer_churn",
+      "failure_type": "runtime_failure",
+      "triggering_condition": "unexpected keyword argument in sklearn estimator",
+      "repair_action": "remove unsupported estimator kwargs such as threshold; threshold belongs in prediction logic",
+      "repair_success": true
+    },
+    {
+      "relevance_score": 5,
+      "id": "repair_column_transformer_target_leak",
+      "task_type": "binary_classification",
+      "domain": "customer_churn",
+      "failure_type": "runtime_failure",
+      "triggering_condition": "A given column is not a column of the dataframe",
+      "repair_action": "first set X=train_df.drop(target); derive numeric_cols and categorical_cols from X, never train_df; categorical branch must be Pipeline(SimpleImputer, OneHotEncoder); predict receives features only and must not drop target/churn",
+      "repair_success": true
+    }
+  ],
+  "repair_events": [
+    {
+      "round": 1,
+      "changes": [
+        "accepted LLM repair after strict safety/protocol gate"
+      ],
+      "error": "missing_rates\": {\"age\": 0.0, \"region\": 0.015, \"login_count_30d\": 0.01, \"total_spend\": 0.025, \"complaint_count\": 0.0, \"membership_level\": 0.0, \"tenure_months\": 0.0, \"churn\": 0.0}, \"positive_rate\": 0.1525}, \"resource_usage\": {\"max_rss_kb\": null, \"cpu_seconds\": null}, \"failure_type\": \"runtime_failure\", \"root_cause\": null}, \"diagnosis\": {\"failure_type\": \"runtime_failure\", \"root_cause\": \"TypeError: LogisticRegression.__init__() got an unexpected keyword argument 'threshold'\", \"triggering_condition\": \"unexpected keyword argument in sklearn estimator\", \"observed_error\": \"runtime error: RuntimeError: isolated process exit=1: Traceback (most recent call last):\\n  File \\\"<string>\\\", line 25, in <module>\\n  File \\\"/data3/xiaotianqi/ai_algorithm_factory/examples/real_llm_code_generation_demo/algorithm.py\\\", line 36, in train\\n    estimator = LogisticRegression(C=config.get('C', 1.0), max_iter=config.get('max_iter', 500), class_weight=config.get('class_weight', 'balanced'), threshold=config.get('threshold', 0.4))\\nTypeError: LogisticRegression.__init__() got an unexpected keyword argument 'threshold'\\n\\nTraceback (most recent call last):\\n  File \\\"<string>\\\", line 25, in <module>\\n  File \\\"/data3/xiaotianqi/ai_algorithm_factory/examples/real_llm_code_generation_demo/algorithm.py\\\", line 36, in train\\n    estimator = LogisticRegression(C=config.get('C', 1.0), max_iter=config.get('max_iter', 500), class_weight=config.get('class_weight', 'balanced'), threshold=config.get('threshold', 0.4))\\nTypeError: LogisticRegression.__init__() got an unexpected keyword argument 'threshold'\\n\", \"repair_strategy\": \"remove unsupported estimator kwargs such as threshold; threshold belongs in prediction logic\", \"reusable_lesson\": \"Always check for unsupported or deprecated parameters in your machine learning models and ensure they are correctly used in your code.\", \"provider\": \"local_coder\", \"retrieved_experience_ids\": [\"repair_invalid_estimator_parameter\", \"repair_column_transformer_target_leak\"]}}",
+      "provider": "local_coder",
+      "retrieved_experience_ids": [
+        "repair_invalid_estimator_parameter",
+        "repair_column_transformer_target_leak"
+      ],
+      "generation": {
+        "purpose": "repair",
+        "max_new_tokens": 3072,
+        "context_length": 32768,
+        "finish_reason": "eos",
+        "truncated": false,
+        "eos_reached": true,
+        "input_truncated": false
+      },
+      "diagnosis": {
+        "failure_type": "runtime_failure",
+        "root_cause": "TypeError: LogisticRegression.__init__() got an unexpected keyword argument 'threshold'",
+        "triggering_condition": "unexpected keyword argument in sklearn estimator",
+        "observed_error": "runtime error: RuntimeError: isolated process exit=1: Traceback (most recent call last):\n  File \"<string>\", line 25, in <module>\n  File \"/data3/xiaotianqi/ai_algorithm_factory/examples/real_llm_code_generation_demo/algorithm.py\", line 36, in train\n    estimator = LogisticRegression(C=config.get('C', 1.0), max_iter=config.get('max_iter', 500), class_weight=config.get('class_weight', 'balanced'), threshold=config.get('threshold', 0.4))\nTypeError: LogisticRegression.__init__() got an unexpected keyword argument 'threshold'\n\nTraceback (most recent call last):\n  File \"<string>\", line 25, in <module>\n  File \"/data3/xiaotianqi/ai_algorithm_factory/examples/real_llm_code_generation_demo/algorithm.py\", line 36, in train\n    estimator = LogisticRegression(C=config.get('C', 1.0), max_iter=config.get('max_iter', 500), class_weight=config.get('class_weight', 'balanced'), threshold=config.get('threshold', 0.4))\nTypeError: LogisticRegression.__init__() got an unexpected keyword argument 'threshold'\n",
+        "repair_strategy": "remove unsupported estimator kwargs such as threshold; threshold belongs in prediction logic",
+        "reusable_lesson": "Always check for unsupported or deprecated parameters in your machine learning models and ensure they are correctly used in your code.",
+        "provider": "local_coder",
+        "retrieved_experience_ids": [
+          "repair_invalid_estimator_parameter",
+          "repair_column_transformer_target_leak"
+        ]
+      }
+    },
+    {
+      "round": 2,
+      "changes": [
+        "accepted LLM repair after strict safety/protocol gate"
+      ],
+      "error": " Xt = self._fit(X, y, **fit_params_steps)\\n  File \\\"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/pipeline.py\\\", line 359, in _fit\\n    X, fitted_transformer = fit_transform_one_cached(\\n  File \\\"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/joblib/memory.py\\\", line 326, in __call__\\n    return self.func(*args, **kwargs)\\n  File \\\"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/pipeline.py\\\", line 893, in _fit_transform_one\\n    res = transformer.fit_transform(X, y, **fit_params)\\n  File \\\"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/utils/_set_output.py\\\", line 140, in wrapped\\n    data_to_wrap = f(self, X, *args, **kwargs)\\n  File \\\"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/compose/_column_transformer.py\\\", line 724, in fit_transform\\n    self._validate_column_callables(X)\\n  File \\\"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/compose/_column_transformer.py\\\", line 426, in _validate_column_callables\\n    transformer_to_input_indices[name] = _get_column_indices(X, columns)\\n  File \\\"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/utils/__init__.py\\\", line 456, in _get_column_indices\\n    raise ValueError(\\\"A given column is not a column of the dataframe\\\") from e\\nValueError: A given column is not a column of the dataframe\\n\", \"repair_strategy\": \"First set X=train_df.drop(target); derive numeric_cols and categorical_cols from X, never train_df; categorical branch must be Pipeline(SimpleImputer, OneHotEncoder); predict receives features only and must not drop target/churn\", \"reusable_lesson\": \"Always ensure that the target column is removed from the feature set before applying transformations and predictions.\", \"provider\": \"local_coder\", \"retrieved_experience_ids\": [\"repair_invalid_estimator_parameter\", \"repair_column_transformer_target_leak\"]}}",
+      "provider": "local_coder",
+      "retrieved_experience_ids": [
+        "repair_invalid_estimator_parameter",
+        "repair_column_transformer_target_leak"
+      ],
+      "generation": {
+        "purpose": "repair",
+        "max_new_tokens": 3072,
+        "context_length": 32768,
+        "finish_reason": "eos",
+        "truncated": false,
+        "eos_reached": true,
+        "input_truncated": false
+      },
+      "diagnosis": {
+        "failure_type": "runtime_failure",
+        "root_cause": "A given column is not a column of the dataframe",
+        "triggering_condition": "A given column is not a column of the dataframe",
+        "observed_error": "runtime error: RuntimeError: isolated process exit=1: site-packages/sklearn/pipeline.py\", line 893, in _fit_transform_one\n    res = transformer.fit_transform(X, y, **fit_params)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/utils/_set_output.py\", line 140, in wrapped\n    data_to_wrap = f(self, X, *args, **kwargs)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/compose/_column_transformer.py\", line 724, in fit_transform\n    self._validate_column_callables(X)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/compose/_column_transformer.py\", line 426, in _validate_column_callables\n    transformer_to_input_indices[name] = _get_column_indices(X, columns)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/utils/__init__.py\", line 456, in _get_column_indices\n    raise ValueError(\"A given column is not a column of the dataframe\") from e\nValueError: A given column is not a column of the dataframe\n\nTraceback (most recent call last):\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/pandas/core/indexes/base.py\", line 3805, in get_loc\n    return self._engine.get_loc(casted_key)\n  File \"index.pyx\", line 167, in pandas._libs.index.IndexEngine.get_loc\n  File \"index.pyx\", line 196, in pandas._libs.index.IndexEngine.get_loc\n  File \"pandas/_libs/hashtable_class_helper.pxi\", line 7081, in pandas._libs.hashtable.PyObjectHashTable.get_item\n  File \"pandas/_libs/hashtable_class_helper.pxi\", line 7089, in pandas._libs.hashtable.PyObjectHashTable.get_item\nKeyError: 'churn'\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/utils/__init__.py\", line 448, in _get_column_indices\n    col_idx = all_columns.get_loc(col)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/pandas/core/indexes/base.py\", line 3812, in get_loc\n    raise KeyError(key) from err\nKeyError: 'churn'\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"<string>\", line 25, in <module>\n  File \"/data3/xiaotianqi/ai_algorithm_factory/examples/real_llm_code_generation_demo/algorithm.py\", line 42, in train\n    pipeline.fit(X, y)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/pipeline.py\", line 401, in fit\n    Xt = self._fit(X, y, **fit_params_steps)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/pipeline.py\", line 359, in _fit\n    X, fitted_transformer = fit_transform_one_cached(\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/joblib/memory.py\", line 326, in __call__\n    return self.func(*args, **kwargs)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/pipeline.py\", line 893, in _fit_transform_one\n    res = transformer.fit_transform(X, y, **fit_params)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/utils/_set_output.py\", line 140, in wrapped\n    data_to_wrap = f(self, X, *args, **kwargs)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/compose/_column_transformer.py\", line 724, in fit_transform\n    self._validate_column_callables(X)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/compose/_column_transformer.py\", line 426, in _validate_column_callables\n    transformer_to_input_indices[name] = _get_column_indices(X, columns)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/utils/__init__.py\", line 456, in _get_column_indices\n    raise ValueError(\"A given column is not a column of the dataframe\") from e\nValueError: A given column is not a column of the dataframe\n",
+        "repair_strategy": "First set X=train_df.drop(target); derive numeric_cols and categorical_cols from X, never train_df; categorical branch must be Pipeline(SimpleImputer, OneHotEncoder); predict receives features only and must not drop target/churn",
+        "reusable_lesson": "Always ensure that the target column is removed from the feature set before applying transformations and predictions.",
+        "provider": "local_coder",
+        "retrieved_experience_ids": [
+          "repair_invalid_estimator_parameter",
+          "repair_column_transformer_target_leak"
+        ]
+      }
+    },
+    {
+      "round": 3,
+      "changes": [
+        "accepted LLM repair after strict safety/protocol gate"
+      ],
+      "error": " Xt = self._fit(X, y, **fit_params_steps)\\n  File \\\"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/pipeline.py\\\", line 359, in _fit\\n    X, fitted_transformer = fit_transform_one_cached(\\n  File \\\"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/joblib/memory.py\\\", line 326, in __call__\\n    return self.func(*args, **kwargs)\\n  File \\\"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/pipeline.py\\\", line 893, in _fit_transform_one\\n    res = transformer.fit_transform(X, y, **fit_params)\\n  File \\\"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/utils/_set_output.py\\\", line 140, in wrapped\\n    data_to_wrap = f(self, X, *args, **kwargs)\\n  File \\\"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/compose/_column_transformer.py\\\", line 724, in fit_transform\\n    self._validate_column_callables(X)\\n  File \\\"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/compose/_column_transformer.py\\\", line 426, in _validate_column_callables\\n    transformer_to_input_indices[name] = _get_column_indices(X, columns)\\n  File \\\"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/utils/__init__.py\\\", line 456, in _get_column_indices\\n    raise ValueError(\\\"A given column is not a column of the dataframe\\\") from e\\nValueError: A given column is not a column of the dataframe\\n\", \"repair_strategy\": \"First set X=train_df.drop(target); derive numeric_cols and categorical_cols from X, never train_df; categorical branch must be Pipeline(SimpleImputer, OneHotEncoder); predict receives features only and must not drop target/churn\", \"reusable_lesson\": \"Always ensure that the target column is removed from the feature set before applying transformations and predictions.\", \"provider\": \"local_coder\", \"retrieved_experience_ids\": [\"repair_invalid_estimator_parameter\", \"repair_column_transformer_target_leak\"]}}",
+      "provider": "local_coder",
+      "retrieved_experience_ids": [
+        "repair_invalid_estimator_parameter",
+        "repair_column_transformer_target_leak"
+      ],
+      "generation": {
+        "purpose": "repair",
+        "max_new_tokens": 3072,
+        "context_length": 32768,
+        "finish_reason": "eos",
+        "truncated": false,
+        "eos_reached": true,
+        "input_truncated": false
+      },
+      "diagnosis": {
+        "failure_type": "runtime_failure",
+        "root_cause": "A given column is not a column of the dataframe",
+        "triggering_condition": "A given column is not a column of the dataframe",
+        "observed_error": "runtime error: RuntimeError: isolated process exit=1: site-packages/sklearn/pipeline.py\", line 893, in _fit_transform_one\n    res = transformer.fit_transform(X, y, **fit_params)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/utils/_set_output.py\", line 140, in wrapped\n    data_to_wrap = f(self, X, *args, **kwargs)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/compose/_column_transformer.py\", line 724, in fit_transform\n    self._validate_column_callables(X)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/compose/_column_transformer.py\", line 426, in _validate_column_callables\n    transformer_to_input_indices[name] = _get_column_indices(X, columns)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/utils/__init__.py\", line 456, in _get_column_indices\n    raise ValueError(\"A given column is not a column of the dataframe\") from e\nValueError: A given column is not a column of the dataframe\n\nTraceback (most recent call last):\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/pandas/core/indexes/base.py\", line 3805, in get_loc\n    return self._engine.get_loc(casted_key)\n  File \"index.pyx\", line 167, in pandas._libs.index.IndexEngine.get_loc\n  File \"index.pyx\", line 196, in pandas._libs.index.IndexEngine.get_loc\n  File \"pandas/_libs/hashtable_class_helper.pxi\", line 7081, in pandas._libs.hashtable.PyObjectHashTable.get_item\n  File \"pandas/_libs/hashtable_class_helper.pxi\", line 7089, in pandas._libs.hashtable.PyObjectHashTable.get_item\nKeyError: 'churn'\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/utils/__init__.py\", line 448, in _get_column_indices\n    col_idx = all_columns.get_loc(col)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/pandas/core/indexes/base.py\", line 3812, in get_loc\n    raise KeyError(key) from err\nKeyError: 'churn'\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"<string>\", line 25, in <module>\n  File \"/data3/xiaotianqi/ai_algorithm_factory/examples/real_llm_code_generation_demo/algorithm.py\", line 42, in train\n    pipeline.fit(X, y)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/pipeline.py\", line 401, in fit\n    Xt = self._fit(X, y, **fit_params_steps)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/pipeline.py\", line 359, in _fit\n    X, fitted_transformer = fit_transform_one_cached(\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/joblib/memory.py\", line 326, in __call__\n    return self.func(*args, **kwargs)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/pipeline.py\", line 893, in _fit_transform_one\n    res = transformer.fit_transform(X, y, **fit_params)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/utils/_set_output.py\", line 140, in wrapped\n    data_to_wrap = f(self, X, *args, **kwargs)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/compose/_column_transformer.py\", line 724, in fit_transform\n    self._validate_column_callables(X)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/compose/_column_transformer.py\", line 426, in _validate_column_callables\n    transformer_to_input_indices[name] = _get_column_indices(X, columns)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/utils/__init__.py\", line 456, in _get_column_indices\n    raise ValueError(\"A given column is not a column of the dataframe\") from e\nValueError: A given column is not a column of the dataframe\n",
+        "repair_strategy": "First set X=train_df.drop(target); derive numeric_cols and categorical_cols from X, never train_df; categorical branch must be Pipeline(SimpleImputer, OneHotEncoder); predict receives features only and must not drop target/churn",
+        "reusable_lesson": "Always ensure that the target column is removed from the feature set before applying transformations and predictions.",
+        "provider": "local_coder",
+        "retrieved_experience_ids": [
+          "repair_invalid_estimator_parameter",
+          "repair_column_transformer_target_leak"
+        ]
+      }
+    },
+    {
+      "round": 4,
+      "changes": [
+        "accepted LLM repair after strict safety/protocol gate"
+      ],
+      "error": " Xt = self._fit(X, y, **fit_params_steps)\\n  File \\\"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/pipeline.py\\\", line 359, in _fit\\n    X, fitted_transformer = fit_transform_one_cached(\\n  File \\\"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/joblib/memory.py\\\", line 326, in __call__\\n    return self.func(*args, **kwargs)\\n  File \\\"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/pipeline.py\\\", line 893, in _fit_transform_one\\n    res = transformer.fit_transform(X, y, **fit_params)\\n  File \\\"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/utils/_set_output.py\\\", line 140, in wrapped\\n    data_to_wrap = f(self, X, *args, **kwargs)\\n  File \\\"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/compose/_column_transformer.py\\\", line 724, in fit_transform\\n    self._validate_column_callables(X)\\n  File \\\"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/compose/_column_transformer.py\\\", line 426, in _validate_column_callables\\n    transformer_to_input_indices[name] = _get_column_indices(X, columns)\\n  File \\\"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/utils/__init__.py\\\", line 456, in _get_column_indices\\n    raise ValueError(\\\"A given column is not a column of the dataframe\\\") from e\\nValueError: A given column is not a column of the dataframe\\n\", \"repair_strategy\": \"first set X=train_df.drop(target); derive numeric_cols and categorical_cols from X, never train_df; categorical branch must be Pipeline(SimpleImputer, OneHotEncoder); predict receives features only and must not drop target/churn\", \"reusable_lesson\": \"Always ensure that the target column is removed from the feature set before applying transformations and predictions.\", \"provider\": \"local_coder\", \"retrieved_experience_ids\": [\"repair_invalid_estimator_parameter\", \"repair_column_transformer_target_leak\"]}}",
+      "provider": "local_coder",
+      "retrieved_experience_ids": [
+        "repair_invalid_estimator_parameter",
+        "repair_column_transformer_target_leak"
+      ],
+      "generation": {
+        "purpose": "repair",
+        "max_new_tokens": 3072,
+        "context_length": 32768,
+        "finish_reason": "eos",
+        "truncated": false,
+        "eos_reached": true,
+        "input_truncated": false
+      },
+      "diagnosis": {
+        "failure_type": "runtime_failure",
+        "root_cause": "A given column is not a column of the dataframe",
+        "triggering_condition": "A given column is not a column of the dataframe",
+        "observed_error": "runtime error: RuntimeError: isolated process exit=1: site-packages/sklearn/pipeline.py\", line 893, in _fit_transform_one\n    res = transformer.fit_transform(X, y, **fit_params)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/utils/_set_output.py\", line 140, in wrapped\n    data_to_wrap = f(self, X, *args, **kwargs)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/compose/_column_transformer.py\", line 724, in fit_transform\n    self._validate_column_callables(X)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/compose/_column_transformer.py\", line 426, in _validate_column_callables\n    transformer_to_input_indices[name] = _get_column_indices(X, columns)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/utils/__init__.py\", line 456, in _get_column_indices\n    raise ValueError(\"A given column is not a column of the dataframe\") from e\nValueError: A given column is not a column of the dataframe\n\nTraceback (most recent call last):\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/pandas/core/indexes/base.py\", line 3805, in get_loc\n    return self._engine.get_loc(casted_key)\n  File \"index.pyx\", line 167, in pandas._libs.index.IndexEngine.get_loc\n  File \"index.pyx\", line 196, in pandas._libs.index.IndexEngine.get_loc\n  File \"pandas/_libs/hashtable_class_helper.pxi\", line 7081, in pandas._libs.hashtable.PyObjectHashTable.get_item\n  File \"pandas/_libs/hashtable_class_helper.pxi\", line 7089, in pandas._libs.hashtable.PyObjectHashTable.get_item\nKeyError: 'churn'\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/utils/__init__.py\", line 448, in _get_column_indices\n    col_idx = all_columns.get_loc(col)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/pandas/core/indexes/base.py\", line 3812, in get_loc\n    raise KeyError(key) from err\nKeyError: 'churn'\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"<string>\", line 25, in <module>\n  File \"/data3/xiaotianqi/ai_algorithm_factory/examples/real_llm_code_generation_demo/algorithm.py\", line 42, in train\n    pipeline.fit(X, y)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/pipeline.py\", line 401, in fit\n    Xt = self._fit(X, y, **fit_params_steps)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/pipeline.py\", line 359, in _fit\n    X, fitted_transformer = fit_transform_one_cached(\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/joblib/memory.py\", line 326, in __call__\n    return self.func(*args, **kwargs)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/pipeline.py\", line 893, in _fit_transform_one\n    res = transformer.fit_transform(X, y, **fit_params)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/utils/_set_output.py\", line 140, in wrapped\n    data_to_wrap = f(self, X, *args, **kwargs)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/compose/_column_transformer.py\", line 724, in fit_transform\n    self._validate_column_callables(X)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/compose/_column_transformer.py\", line 426, in _validate_column_callables\n    transformer_to_input_indices[name] = _get_column_indices(X, columns)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/utils/__init__.py\", line 456, in _get_column_indices\n    raise ValueError(\"A given column is not a column of the dataframe\") from e\nValueError: A given column is not a column of the dataframe\n",
+        "repair_strategy": "first set X=train_df.drop(target); derive numeric_cols and categorical_cols from X, never train_df; categorical branch must be Pipeline(SimpleImputer, OneHotEncoder); predict receives features only and must not drop target/churn",
+        "reusable_lesson": "Always ensure that the target column is removed from the feature set before applying transformations and predictions.",
+        "provider": "local_coder",
+        "retrieved_experience_ids": [
+          "repair_invalid_estimator_parameter",
+          "repair_column_transformer_target_leak"
+        ]
+      }
+    }
+  ],
+  "validation": {
+    "status": "failed",
+    "algorithm": "Logistic Regression",
+    "checks": {
+      "static_safety": {
+        "passed": true,
+        "message": "static checks passed"
+      },
+      "interface_import": {
+        "passed": true,
+        "message": "static interface checks passed; runtime import deferred to isolated process",
+        "duration": 0.00070972740650177
+      },
+      "target_leakage": {
+        "passed": true,
+        "duplicate_target_columns": []
+      },
+      "isolated_execution": {
+        "passed": false,
+        "timeout": false,
+        "message": "isolated process exit=1"
+      },
+      "resource_usage": {
+        "max_rss_kb": null,
+        "runtime_seconds_child": null
+      },
+      "functional": {
+        "passed": false,
+        "message": "isolated process exit=1: site-packages/sklearn/pipeline.py\", line 893, in _fit_transform_one\n    res = transformer.fit_transform(X, y, **fit_params)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/utils/_set_output.py\", line 140, in wrapped\n    data_to_wrap = f(self, X, *args, **kwargs)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/compose/_column_transformer.py\", line 724, in fit_transform\n    self._validate_column_callables(X)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/compose/_column_transformer.py\", line 426, in _validate_column_callables\n    transformer_to_input_indices[name] = _get_column_indices(X, columns)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/utils/__init__.py\", line 456, in _get_column_indices\n    raise ValueError(\"A given column is not a column of the dataframe\") from e\nValueError: A given column is not a column of the dataframe\n"
+      },
+      "runtime_budget": {
+        "passed": true,
+        "message": "completed in 1.81s (budget 60s)"
+      }
+    },
+    "metrics": {},
+    "runtime_seconds": 1.8132908940315247,
+    "errors": [
+      "runtime error: RuntimeError: isolated process exit=1: site-packages/sklearn/pipeline.py\", line 893, in _fit_transform_one\n    res = transformer.fit_transform(X, y, **fit_params)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/utils/_set_output.py\", line 140, in wrapped\n    data_to_wrap = f(self, X, *args, **kwargs)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/compose/_column_transformer.py\", line 724, in fit_transform\n    self._validate_column_callables(X)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/compose/_column_transformer.py\", line 426, in _validate_column_callables\n    transformer_to_input_indices[name] = _get_column_indices(X, columns)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/utils/__init__.py\", line 456, in _get_column_indices\n    raise ValueError(\"A given column is not a column of the dataframe\") from e\nValueError: A given column is not a column of the dataframe\n"
+    ],
+    "warnings": [],
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/pandas/core/indexes/base.py\", line 3805, in get_loc\n    return self._engine.get_loc(casted_key)\n  File \"index.pyx\", line 167, in pandas._libs.index.IndexEngine.get_loc\n  File \"index.pyx\", line 196, in pandas._libs.index.IndexEngine.get_loc\n  File \"pandas/_libs/hashtable_class_helper.pxi\", line 7081, in pandas._libs.hashtable.PyObjectHashTable.get_item\n  File \"pandas/_libs/hashtable_class_helper.pxi\", line 7089, in pandas._libs.hashtable.PyObjectHashTable.get_item\nKeyError: 'churn'\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/utils/__init__.py\", line 448, in _get_column_indices\n    col_idx = all_columns.get_loc(col)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/pandas/core/indexes/base.py\", line 3812, in get_loc\n    raise KeyError(key) from err\nKeyError: 'churn'\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"<string>\", line 25, in <module>\n  File \"/data3/xiaotianqi/ai_algorithm_factory/examples/real_llm_code_generation_demo/algorithm.py\", line 42, in train\n    pipeline.fit(X, y)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/pipeline.py\", line 401, in fit\n    Xt = self._fit(X, y, **fit_params_steps)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/pipeline.py\", line 359, in _fit\n    X, fitted_transformer = fit_transform_one_cached(\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/joblib/memory.py\", line 326, in __call__\n    return self.func(*args, **kwargs)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/pipeline.py\", line 893, in _fit_transform_one\n    res = transformer.fit_transform(X, y, **fit_params)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/utils/_set_output.py\", line 140, in wrapped\n    data_to_wrap = f(self, X, *args, **kwargs)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/compose/_column_transformer.py\", line 724, in fit_transform\n    self._validate_column_callables(X)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/compose/_column_transformer.py\", line 426, in _validate_column_callables\n    transformer_to_input_indices[name] = _get_column_indices(X, columns)\n  File \"/data/xiaotianqi/miniconda3/envs/ada_qwen/lib/python3.10/site-packages/sklearn/utils/__init__.py\", line 456, in _get_column_indices\n    raise ValueError(\"A given column is not a column of the dataframe\") from e\nValueError: A given column is not a column of the dataframe\n",
+    "repair_round": 4,
+    "task_type": "binary_classification",
+    "dataset_profile": {
+      "path": "/data3/xiaotianqi/ai_algorithm_factory/data/churn_demo.csv",
+      "rows": 1200,
+      "columns": [
+        "age",
+        "region",
+        "login_count_30d",
+        "total_spend",
+        "complaint_count",
+        "membership_level",
+        "tenure_months",
+        "churn"
+      ],
+      "missing_rates": {
+        "age": 0.0,
+        "region": 0.015,
+        "login_count_30d": 0.01,
+        "total_spend": 0.025,
+        "complaint_count": 0.0,
+        "membership_level": 0.0,
+        "tenure_months": 0.0,
+        "churn": 0.0
+      },
+      "positive_rate": 0.1525
+    },
+    "resource_usage": {
+      "max_rss_kb": null,
+      "cpu_seconds": null
+    },
+    "failure_type": "runtime_failure",
+    "root_cause": null
+  },
+  "elapsed_seconds": 237.714,
+  "code_path": "final_llm_code.py"
+}

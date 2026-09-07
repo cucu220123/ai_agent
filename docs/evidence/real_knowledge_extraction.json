@@ -1,0 +1,278 @@
+{
+  "model": "Qwen2.5-14B-Instruct",
+  "elapsed_seconds": 206.76,
+  "extraction_status": "ok",
+  "chunk_trace": [
+    {
+      "chunk_id": "chunk-0",
+      "status": "accepted",
+      "attempts": [
+        {
+          "attempt": 1,
+          "status": "rejected",
+          "error": "ValueError: missing known Metric entities: ['f1', 'precision', 'recall', 'roc_auc']; document-level extraction requires Capability or Task; explicit relationships in source require at least one grounded relation"
+        },
+        {
+          "attempt": 2,
+          "status": "rejected",
+          "error": "ValueError: document-level extraction requires Capability or Task; explicit relationships in source require at least one grounded relation"
+        },
+        {
+          "attempt": 3,
+          "status": "accepted"
+        }
+      ],
+      "entities": 13,
+      "relations": 4,
+      "token_usage": {
+        "prompt_tokens": 2254,
+        "completion_tokens": 1163,
+        "total_tokens": 3417
+      },
+      "generation": {
+        "purpose": "extraction",
+        "max_new_tokens": 1792,
+        "context_length": 32768,
+        "finish_reason": "eos",
+        "truncated": false,
+        "eos_reached": true,
+        "input_truncated": false
+      }
+    }
+  ],
+  "entities": [
+    {
+      "id": "feature_age",
+      "type": "Feature",
+      "name": "age",
+      "properties": {
+        "dtype": "numeric"
+      },
+      "evidence_span": "age | 数值 | 客户年龄",
+      "confidence": 0.9,
+      "provenance": {
+        "source": "data/business_material.md",
+        "evidence_span": "age | 数值 | 客户年龄"
+      }
+    },
+    {
+      "id": "feature_region",
+      "type": "Feature",
+      "name": "region",
+      "properties": {
+        "dtype": "categorical"
+      },
+      "evidence_span": "region | 类别 | 客户所在区域",
+      "confidence": 0.9,
+      "provenance": {
+        "source": "data/business_material.md",
+        "evidence_span": "region | 类别 | 客户所在区域"
+      }
+    },
+    {
+      "id": "feature_login_count_30d",
+      "type": "Feature",
+      "name": "login_count_30d",
+      "properties": {
+        "dtype": "numeric"
+      },
+      "evidence_span": "login_count_30d | 数值 | 近 30 天登录次数",
+      "confidence": 0.9,
+      "provenance": {
+        "source": "data/business_material.md",
+        "evidence_span": "login_count_30d | 数值 | 近 30 天登录次数"
+      }
+    },
+    {
+      "id": "feature_total_spend",
+      "type": "Feature",
+      "name": "total_spend",
+      "properties": {
+        "dtype": "numeric"
+      },
+      "evidence_span": "total_spend | 数值 | 历史累计消费金额",
+      "confidence": 0.9,
+      "provenance": {
+        "source": "data/business_material.md",
+        "evidence_span": "total_spend | 数值 | 历史累计消费金额"
+      }
+    },
+    {
+      "id": "feature_complaint_count",
+      "type": "Feature",
+      "name": "complaint_count",
+      "properties": {
+        "dtype": "numeric"
+      },
+      "evidence_span": "complaint_count | 数值 | 历史投诉次数",
+      "confidence": 0.9,
+      "provenance": {
+        "source": "data/business_material.md",
+        "evidence_span": "complaint_count | 数值 | 历史投诉次数"
+      }
+    },
+    {
+      "id": "feature_membership_level",
+      "type": "Feature",
+      "name": "membership_level",
+      "properties": {
+        "dtype": "categorical"
+      },
+      "evidence_span": "membership_level | 类别 | 会员等级",
+      "confidence": 0.9,
+      "provenance": {
+        "source": "data/business_material.md",
+        "evidence_span": "membership_level | 类别 | 会员等级"
+      }
+    },
+    {
+      "id": "feature_tenure_months",
+      "type": "Feature",
+      "name": "tenure_months",
+      "properties": {
+        "dtype": "numeric"
+      },
+      "evidence_span": "tenure_months | 数值 | 使用时长（月）",
+      "confidence": 0.9,
+      "provenance": {
+        "source": "data/business_material.md",
+        "evidence_span": "tenure_months | 数值 | 使用时长（月）"
+      }
+    },
+    {
+      "id": "metric_churn",
+      "type": "Metric",
+      "name": "churn",
+      "properties": {
+        "dtype": "binary"
+      },
+      "evidence_span": "churn | 0/1 | 未来 30 天是否流失",
+      "confidence": 0.9,
+      "provenance": {
+        "source": "data/business_material.md",
+        "evidence_span": "churn | 0/1 | 未来 30 天是否流失"
+      }
+    },
+    {
+      "id": "metric_f1",
+      "type": "Metric",
+      "name": "F1",
+      "properties": {},
+      "evidence_span": "F1",
+      "confidence": 0.9,
+      "provenance": {
+        "source": "data/business_material.md",
+        "evidence_span": "F1"
+      }
+    },
+    {
+      "id": "metric_precision",
+      "type": "Metric",
+      "name": "Precision",
+      "properties": {},
+      "evidence_span": "Precision",
+      "confidence": 0.9,
+      "provenance": {
+        "source": "data/business_material.md",
+        "evidence_span": "Precision"
+      }
+    },
+    {
+      "id": "metric_recall",
+      "type": "Metric",
+      "name": "Recall",
+      "properties": {},
+      "evidence_span": "Recall",
+      "confidence": 0.9,
+      "provenance": {
+        "source": "data/business_material.md",
+        "evidence_span": "Recall"
+      }
+    },
+    {
+      "id": "metric_roc_auc",
+      "type": "Metric",
+      "name": "ROC-AUC",
+      "properties": {},
+      "evidence_span": "ROC-AUC",
+      "confidence": 0.9,
+      "provenance": {
+        "source": "data/business_material.md",
+        "evidence_span": "ROC-AUC"
+      }
+    },
+    {
+      "id": "task_customer_churn_prediction",
+      "type": "Task",
+      "name": "客户流失预测",
+      "properties": {},
+      "evidence_span": "客户流失预测业务材料（模拟）",
+      "confidence": 0.9,
+      "provenance": {
+        "source": "data/business_material.md",
+        "evidence_span": "客户流失预测业务材料（模拟）"
+      }
+    }
+  ],
+  "relations": [
+    {
+      "source": "task_customer_churn_prediction",
+      "relation": "EVALUATED_BY",
+      "target": "metric_roc_auc",
+      "evidence_span": "重点关注 ROC-AUC",
+      "confidence": 0.9,
+      "provenance": {
+        "source": "data/business_material.md",
+        "evidence_span": "重点关注 ROC-AUC"
+      }
+    },
+    {
+      "source": "task_customer_churn_prediction",
+      "relation": "EVALUATED_BY",
+      "target": "metric_f1",
+      "evidence_span": "同时保留 F1",
+      "confidence": 0.9,
+      "provenance": {
+        "source": "data/business_material.md",
+        "evidence_span": "同时保留 F1"
+      }
+    },
+    {
+      "source": "task_customer_churn_prediction",
+      "relation": "EVALUATED_BY",
+      "target": "metric_precision",
+      "evidence_span": "同时保留 Precision",
+      "confidence": 0.9,
+      "provenance": {
+        "source": "data/business_material.md",
+        "evidence_span": "同时保留 Precision"
+      }
+    },
+    {
+      "source": "task_customer_churn_prediction",
+      "relation": "EVALUATED_BY",
+      "target": "metric_recall",
+      "evidence_span": "同时保留 Recall",
+      "confidence": 0.9,
+      "provenance": {
+        "source": "data/business_material.md",
+        "evidence_span": "同时保留 Recall"
+      }
+    }
+  ],
+  "graph_summary": {
+    "nodes": 14,
+    "edges": 17,
+    "node_types": {
+      "SourceDocument": 1,
+      "Feature": 7,
+      "Metric": 5,
+      "Task": 1
+    },
+    "relations": {
+      "SUPPORTS": 13,
+      "EVALUATED_BY": 4
+    }
+  },
+  "source": "data/business_material.md"
+}

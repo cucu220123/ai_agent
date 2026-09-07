@@ -1,24 +1,25 @@
 <?xml version='1.0' encoding='utf-8'?>
 <graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
-  <key id="d33" for="edge" attr.name="payload" attr.type="string" />
-  <key id="d32" for="edge" attr.name="relation" attr.type="string" />
-  <key id="d31" for="node" attr.name="root_cause" attr.type="string" />
-  <key id="d30" for="node" attr.name="failure_type" attr.type="string" />
-  <key id="d29" for="node" attr.name="config_id" attr.type="string" />
-  <key id="d28" for="node" attr.name="dataset_id" attr.type="string" />
-  <key id="d27" for="node" attr.name="data_type" attr.type="string" />
-  <key id="d26" for="node" attr.name="domain" attr.type="string" />
-  <key id="d25" for="node" attr.name="repair_round" attr.type="string" />
-  <key id="d24" for="node" attr.name="runtime_seconds" attr.type="string" />
-  <key id="d23" for="node" attr.name="capability_id" attr.type="string" />
-  <key id="d22" for="node" attr.name="run_id" attr.type="string" />
-  <key id="d21" for="node" attr.name="resource_profile" attr.type="string" />
-  <key id="d20" for="node" attr.name="interpretability" attr.type="string" />
-  <key id="d19" for="node" attr.name="target" attr.type="string" />
-  <key id="d18" for="node" attr.name="path" attr.type="string" />
-  <key id="d17" for="node" attr.name="task_type" attr.type="string" />
-  <key id="d16" for="node" attr.name="python" attr.type="string" />
-  <key id="d15" for="node" attr.name="direction" attr.type="string" />
+  <key id="d34" for="edge" attr.name="payload" attr.type="string" />
+  <key id="d33" for="edge" attr.name="relation" attr.type="string" />
+  <key id="d32" for="node" attr.name="root_cause" attr.type="string" />
+  <key id="d31" for="node" attr.name="failure_type" attr.type="string" />
+  <key id="d30" for="node" attr.name="config_id" attr.type="string" />
+  <key id="d29" for="node" attr.name="dataset_id" attr.type="string" />
+  <key id="d28" for="node" attr.name="data_type" attr.type="string" />
+  <key id="d27" for="node" attr.name="domain" attr.type="string" />
+  <key id="d26" for="node" attr.name="repair_round" attr.type="string" />
+  <key id="d25" for="node" attr.name="runtime_seconds" attr.type="string" />
+  <key id="d24" for="node" attr.name="capability_id" attr.type="string" />
+  <key id="d23" for="node" attr.name="run_id" attr.type="string" />
+  <key id="d22" for="node" attr.name="resource_profile" attr.type="string" />
+  <key id="d21" for="node" attr.name="interpretability" attr.type="string" />
+  <key id="d20" for="node" attr.name="target" attr.type="string" />
+  <key id="d19" for="node" attr.name="path" attr.type="string" />
+  <key id="d18" for="node" attr.name="task_type" attr.type="string" />
+  <key id="d17" for="node" attr.name="python" attr.type="string" />
+  <key id="d16" for="node" attr.name="direction" attr.type="string" />
+  <key id="d15" for="node" attr.name="confidence" attr.type="string" />
   <key id="d14" for="node" attr.name="name" attr.type="string" />
   <key id="d13" for="node" attr.name="summary" attr.type="string" />
   <key id="d12" for="node" attr.name="kind" attr.type="string" />
@@ -263,46 +264,122 @@
 </data>
       <data key="d1">source_business_material</data>
     </node>
+    <node id="source_business_material_cef5e946">
+      <data key="d0">SourceDocument</data>
+      <data key="d13"># 客户流失预测业务材料（模拟）
+
+业务目标：根据客户近 30 天行为预测未来 30 天是否流失，用于客户召回活动排序。模型必须输出二分类标签和流失概率，重点关注 ROC-AUC，同时保留 F1、Precision、Recall 供运营团队分析。
+
+字段说明：
+
+| 字段 | 类型 | 含义 |
+|---|---|---|
+| age | 数值 | 客户年龄 |
+| region | 类别 | 客户所在区域 |
+| login_count_30d | 数值 | 近 30 天登录次数 |
+| total_spend | 数值 | 历史累计消费金额 |
+| complaint_count | 数值 | 历史投诉次数 |
+| membership_level | 类别 | 会员等级 |
+| tenure_months | 数值 | 使用时长（月） |
+| churn | 0/1 | 未来 30 天是否流失 |
+
+历史经验：登录较少、投诉较多、低会员等级和较短使用时长通常对应较高流失风险；类别字段需要未知值兼容，数值字段需要缺失值填充。
+
+</data>
+      <data key="d1">source_business_material_cef5e946</data>
+    </node>
+    <node id="feature_age">
+      <data key="d0">Feature</data>
+      <data key="d1">feature_age</data>
+      <data key="d14">age</data>
+      <data key="d15">0.7</data>
+    </node>
+    <node id="feature_region">
+      <data key="d0">Feature</data>
+      <data key="d1">feature_region</data>
+      <data key="d14">region</data>
+      <data key="d15">0.7</data>
+    </node>
+    <node id="feature_login_count_30d">
+      <data key="d0">Feature</data>
+      <data key="d1">feature_login_count_30d</data>
+      <data key="d14">login_count_30d</data>
+      <data key="d15">0.7</data>
+    </node>
+    <node id="feature_total_spend">
+      <data key="d0">Feature</data>
+      <data key="d1">feature_total_spend</data>
+      <data key="d14">total_spend</data>
+      <data key="d15">0.7</data>
+    </node>
+    <node id="feature_complaint_count">
+      <data key="d0">Feature</data>
+      <data key="d1">feature_complaint_count</data>
+      <data key="d14">complaint_count</data>
+      <data key="d15">0.7</data>
+    </node>
+    <node id="feature_membership_level">
+      <data key="d0">Feature</data>
+      <data key="d1">feature_membership_level</data>
+      <data key="d14">membership_level</data>
+      <data key="d15">0.7</data>
+    </node>
+    <node id="feature_tenure_months">
+      <data key="d0">Feature</data>
+      <data key="d1">feature_tenure_months</data>
+      <data key="d14">tenure_months</data>
+      <data key="d15">0.7</data>
+    </node>
+    <node id="feature_churn">
+      <data key="d0">Feature</data>
+      <data key="d1">feature_churn</data>
+      <data key="d14">churn</data>
+      <data key="d15">0.7</data>
+    </node>
     <node id="metric_roc_auc">
       <data key="d0">Metric</data>
       <data key="d1">metric_roc_auc</data>
       <data key="d14">ROC-AUC</data>
-      <data key="d15">max</data>
+      <data key="d16">max</data>
+      <data key="d15">0.7</data>
     </node>
     <node id="metric_pr_auc">
       <data key="d0">Metric</data>
       <data key="d1">metric_pr_auc</data>
       <data key="d14">PR-AUC</data>
-      <data key="d15">max</data>
+      <data key="d16">max</data>
     </node>
     <node id="metric_f1">
       <data key="d0">Metric</data>
       <data key="d1">metric_f1</data>
       <data key="d14">F1</data>
-      <data key="d15">max</data>
+      <data key="d16">max</data>
+      <data key="d15">0.7</data>
     </node>
     <node id="metric_precision">
       <data key="d0">Metric</data>
       <data key="d1">metric_precision</data>
       <data key="d14">Precision</data>
-      <data key="d15">max</data>
+      <data key="d16">max</data>
+      <data key="d15">0.7</data>
     </node>
     <node id="metric_recall">
       <data key="d0">Metric</data>
       <data key="d1">metric_recall</data>
       <data key="d14">Recall</data>
-      <data key="d15">max</data>
+      <data key="d16">max</data>
+      <data key="d15">0.7</data>
     </node>
     <node id="environment_python_sklearn">
       <data key="d0">Environment</data>
       <data key="d1">environment_python_sklearn</data>
-      <data key="d16">3.10+</data>
+      <data key="d17">3.10+</data>
     </node>
     <node id="task_binary_classification">
       <data key="d0">Task</data>
       <data key="d1">task_binary_classification</data>
       <data key="d14">binary_classification</data>
-      <data key="d17">binary_classification</data>
+      <data key="d18">binary_classification</data>
     </node>
     <node id="dependency_scikit_learn">
       <data key="d0">Dependency</data>
@@ -313,9 +390,9 @@
     <node id="dataset_churn_demo">
       <data key="d0">Dataset</data>
       <data key="d1">dataset_churn_demo</data>
-      <data key="d18">data/churn_demo.csv</data>
-      <data key="d19">churn</data>
-      <data key="d17">binary_classification</data>
+      <data key="d19">data/churn_demo.csv</data>
+      <data key="d20">churn</data>
+      <data key="d18">binary_classification</data>
     </node>
     <node id="feature_numeric_imputation">
       <data key="d0">FeatureStrategy</data>
@@ -341,456 +418,456 @@
       <data key="d0">Capability</data>
       <data key="d1">cap_churn_prediction_v1</data>
       <data key="d14">客户流失预测</data>
-      <data key="d17">binary_classification</data>
+      <data key="d18">binary_classification</data>
     </node>
     <node id="algorithm_logistic_regression">
       <data key="d0">Algorithm</data>
       <data key="d1">algorithm_logistic_regression</data>
       <data key="d14">Logistic Regression</data>
-      <data key="d20">high</data>
-      <data key="d21">low</data>
+      <data key="d21">high</data>
+      <data key="d22">low</data>
     </node>
     <node id="algorithm_random_forest">
       <data key="d0">Algorithm</data>
       <data key="d1">algorithm_random_forest</data>
       <data key="d14">Random Forest</data>
-      <data key="d20">medium</data>
       <data key="d21">medium</data>
+      <data key="d22">medium</data>
     </node>
     <node id="algorithm_gradient_boosting">
       <data key="d0">Algorithm</data>
       <data key="d1">algorithm_gradient_boosting</data>
       <data key="d14">Gradient Boosting</data>
-      <data key="d20">medium</data>
       <data key="d21">medium</data>
+      <data key="d22">medium</data>
     </node>
     <node id="263ffbd0db13">
       <data key="d0">ValidationRun</data>
-      <data key="d22">263ffbd0db13</data>
-      <data key="d23">cap_churn_prediction_v1</data>
+      <data key="d23">263ffbd0db13</data>
+      <data key="d24">cap_churn_prediction_v1</data>
       <data key="d2">algorithm_logistic_regression</data>
       <data key="d7">failed</data>
-      <data key="d24">0.0007641464471817017</data>
-      <data key="d25">3</data>
+      <data key="d25">0.0007641464471817017</data>
+      <data key="d26">3</data>
     </node>
     <node id="658240416858">
       <data key="d0">ValidationRun</data>
-      <data key="d22">658240416858</data>
-      <data key="d23">cap_churn_prediction_v1</data>
+      <data key="d23">658240416858</data>
+      <data key="d24">cap_churn_prediction_v1</data>
       <data key="d2">algorithm_logistic_regression</data>
       <data key="d7">failed</data>
-      <data key="d24">1.970391646027565</data>
-      <data key="d25">3</data>
+      <data key="d25">1.970391646027565</data>
+      <data key="d26">3</data>
     </node>
     <node id="116eedc944ea">
       <data key="d0">ValidationRun</data>
-      <data key="d22">116eedc944ea</data>
-      <data key="d23">cap_churn_prediction_v1</data>
+      <data key="d23">116eedc944ea</data>
+      <data key="d24">cap_churn_prediction_v1</data>
       <data key="d2">algorithm_logistic_regression</data>
       <data key="d7">passed</data>
-      <data key="d24">1.9851694703102112</data>
-      <data key="d25">0</data>
+      <data key="d25">1.9851694703102112</data>
+      <data key="d26">0</data>
     </node>
     <node id="b4257ac2b488">
       <data key="d0">ValidationRun</data>
-      <data key="d22">b4257ac2b488</data>
-      <data key="d23">cap_churn_prediction_v1</data>
+      <data key="d23">b4257ac2b488</data>
+      <data key="d24">cap_churn_prediction_v1</data>
       <data key="d2">algorithm_logistic_regression</data>
       <data key="d7">passed</data>
-      <data key="d24">2.060498222708702</data>
-      <data key="d25">0</data>
+      <data key="d25">2.060498222708702</data>
+      <data key="d26">0</data>
     </node>
     <node id="0ab21a8f8fba">
       <data key="d0">ValidationRun</data>
-      <data key="d22">0ab21a8f8fba</data>
-      <data key="d23">cap_churn_prediction_v1</data>
+      <data key="d23">0ab21a8f8fba</data>
+      <data key="d24">cap_churn_prediction_v1</data>
       <data key="d2">algorithm_logistic_regression</data>
       <data key="d7">passed</data>
-      <data key="d24">1.8323539942502975</data>
-      <data key="d25">0</data>
+      <data key="d25">1.8323539942502975</data>
+      <data key="d26">0</data>
     </node>
     <node id="6a19e45050a9">
       <data key="d0">ValidationRun</data>
-      <data key="d22">6a19e45050a9</data>
-      <data key="d23">cap_churn_prediction_v1</data>
+      <data key="d23">6a19e45050a9</data>
+      <data key="d24">cap_churn_prediction_v1</data>
       <data key="d2">algorithm_logistic_regression</data>
       <data key="d7">passed</data>
-      <data key="d24">1.7952977567911148</data>
-      <data key="d25">0</data>
+      <data key="d25">1.7952977567911148</data>
+      <data key="d26">0</data>
     </node>
     <node id="0976703f0a87">
       <data key="d0">ValidationRun</data>
-      <data key="d22">0976703f0a87</data>
-      <data key="d23">cap_churn_prediction_v1</data>
+      <data key="d23">0976703f0a87</data>
+      <data key="d24">cap_churn_prediction_v1</data>
       <data key="d2">algorithm_logistic_regression</data>
       <data key="d7">passed</data>
-      <data key="d24">2.47077214717865</data>
-      <data key="d25">0</data>
+      <data key="d25">2.47077214717865</data>
+      <data key="d26">0</data>
     </node>
     <node id="024db7ef6ee3">
       <data key="d0">ValidationRun</data>
-      <data key="d22">024db7ef6ee3</data>
-      <data key="d23">cap_churn_prediction_v1</data>
+      <data key="d23">024db7ef6ee3</data>
+      <data key="d24">cap_churn_prediction_v1</data>
       <data key="d2">algorithm_logistic_regression</data>
       <data key="d7">passed</data>
-      <data key="d24">1.5885425060987473</data>
-      <data key="d25">0</data>
+      <data key="d25">1.5885425060987473</data>
+      <data key="d26">0</data>
     </node>
     <node id="f4a513f76553">
       <data key="d0">ValidationRun</data>
-      <data key="d22">f4a513f76553</data>
-      <data key="d23">cap_churn_prediction_v1</data>
+      <data key="d23">f4a513f76553</data>
+      <data key="d24">cap_churn_prediction_v1</data>
       <data key="d2">algorithm_logistic_regression</data>
       <data key="d7">passed</data>
-      <data key="d24">3.716209188103676</data>
-      <data key="d25">0</data>
+      <data key="d25">3.716209188103676</data>
+      <data key="d26">0</data>
     </node>
     <node id="5fe9b6c0a549">
       <data key="d0">ValidationRun</data>
-      <data key="d22">5fe9b6c0a549</data>
-      <data key="d23">cap_churn_prediction_v1</data>
+      <data key="d23">5fe9b6c0a549</data>
+      <data key="d24">cap_churn_prediction_v1</data>
       <data key="d2">algorithm_logistic_regression</data>
       <data key="d7">passed</data>
-      <data key="d24">3.7111084908246994</data>
-      <data key="d25">0</data>
+      <data key="d25">3.7111084908246994</data>
+      <data key="d26">0</data>
     </node>
     <node id="90648fa14eb0">
       <data key="d0">ValidationRun</data>
-      <data key="d22">90648fa14eb0</data>
-      <data key="d23">cap_churn_prediction_v1</data>
+      <data key="d23">90648fa14eb0</data>
+      <data key="d24">cap_churn_prediction_v1</data>
       <data key="d2">algorithm_logistic_regression</data>
       <data key="d7">passed</data>
-      <data key="d24">3.2131648510694504</data>
-      <data key="d25">0</data>
+      <data key="d25">3.2131648510694504</data>
+      <data key="d26">0</data>
     </node>
     <node id="c6668843ac97">
       <data key="d0">ValidationRun</data>
-      <data key="d22">c6668843ac97</data>
-      <data key="d23">cap_churn_prediction_v1</data>
+      <data key="d23">c6668843ac97</data>
+      <data key="d24">cap_churn_prediction_v1</data>
       <data key="d2">algorithm_logistic_regression</data>
       <data key="d7">passed</data>
-      <data key="d24">3.1704230159521103</data>
-      <data key="d25">0</data>
+      <data key="d25">3.1704230159521103</data>
+      <data key="d26">0</data>
     </node>
     <node id="10ac44fe1b83">
       <data key="d0">ValidationRun</data>
-      <data key="d22">10ac44fe1b83</data>
-      <data key="d23">cap_churn_prediction_v1</data>
+      <data key="d23">10ac44fe1b83</data>
+      <data key="d24">cap_churn_prediction_v1</data>
       <data key="d2">algorithm_logistic_regression</data>
       <data key="d7">passed</data>
-      <data key="d24">3.093614771962166</data>
-      <data key="d25">0</data>
+      <data key="d25">3.093614771962166</data>
+      <data key="d26">0</data>
     </node>
     <node id="28e05b370dc0">
       <data key="d0">ValidationRun</data>
-      <data key="d22">28e05b370dc0</data>
-      <data key="d23">cap_</data>
+      <data key="d23">28e05b370dc0</data>
+      <data key="d24">cap_</data>
       <data key="d2">algorithm_isolation_forest</data>
       <data key="d7">failed</data>
-      <data key="d24">1.7817468792200089</data>
-      <data key="d25">3</data>
+      <data key="d25">1.7817468792200089</data>
+      <data key="d26">3</data>
     </node>
     <node id="90ed52b0cf5d">
       <data key="d0">ValidationRun</data>
-      <data key="d22">90ed52b0cf5d</data>
-      <data key="d23">cap_</data>
+      <data key="d23">90ed52b0cf5d</data>
+      <data key="d24">cap_</data>
       <data key="d2">algorithm_isolation_forest</data>
       <data key="d7">failed</data>
-      <data key="d24">2.5087917000055313</data>
-      <data key="d25">3</data>
+      <data key="d25">2.5087917000055313</data>
+      <data key="d26">3</data>
     </node>
     <node id="8d55d49f848b">
       <data key="d0">ValidationRun</data>
-      <data key="d22">8d55d49f848b</data>
-      <data key="d23">cap_</data>
+      <data key="d23">8d55d49f848b</data>
+      <data key="d24">cap_</data>
       <data key="d2">algorithm_isolation_forest</data>
       <data key="d7">passed</data>
-      <data key="d24">1.9957230687141418</data>
-      <data key="d25">0</data>
+      <data key="d25">1.9957230687141418</data>
+      <data key="d26">0</data>
     </node>
     <node id="83df1ea17a2c">
       <data key="d0">ValidationRun</data>
-      <data key="d22">83df1ea17a2c</data>
-      <data key="d23">cap_spend</data>
+      <data key="d23">83df1ea17a2c</data>
+      <data key="d24">cap_spend</data>
       <data key="d2">algorithm_random_forest_regressor</data>
       <data key="d7">failed</data>
-      <data key="d24">0.00821387767791748</data>
-      <data key="d25">3</data>
+      <data key="d25">0.00821387767791748</data>
+      <data key="d26">3</data>
     </node>
     <node id="be96f7f2084e">
       <data key="d0">ValidationRun</data>
-      <data key="d22">be96f7f2084e</data>
-      <data key="d23">cap_spend</data>
+      <data key="d23">be96f7f2084e</data>
+      <data key="d24">cap_spend</data>
       <data key="d2">algorithm_random_forest_regressor</data>
       <data key="d7">passed</data>
-      <data key="d24">2.8203493654727936</data>
-      <data key="d25">0</data>
+      <data key="d25">2.8203493654727936</data>
+      <data key="d26">0</data>
     </node>
     <node id="e5a9a4d02081">
       <data key="d0">ValidationRun</data>
-      <data key="d22">e5a9a4d02081</data>
-      <data key="d23">cap_label</data>
+      <data key="d23">e5a9a4d02081</data>
+      <data key="d24">cap_label</data>
       <data key="d2">algorithm_tfidf_logistic_regression</data>
       <data key="d7">passed</data>
-      <data key="d24">1.7749415189027786</data>
-      <data key="d25">0</data>
+      <data key="d25">1.7749415189027786</data>
+      <data key="d26">0</data>
     </node>
     <node id="3950a3db3457">
       <data key="d0">ValidationRun</data>
-      <data key="d22">3950a3db3457</data>
-      <data key="d23">cap_churn_prediction_v1</data>
+      <data key="d23">3950a3db3457</data>
+      <data key="d24">cap_churn_prediction_v1</data>
       <data key="d2">algorithm_logistic_regression</data>
       <data key="d7">passed</data>
-      <data key="d24">3.3631723672151566</data>
-      <data key="d25">0</data>
+      <data key="d25">3.3631723672151566</data>
+      <data key="d26">0</data>
     </node>
     <node id="2f732fc638d1">
       <data key="d0">ValidationRun</data>
-      <data key="d22">2f732fc638d1</data>
-      <data key="d23">cap_label</data>
+      <data key="d23">2f732fc638d1</data>
+      <data key="d24">cap_label</data>
       <data key="d2">algorithm_tfidf_logistic_regression</data>
       <data key="d7">passed</data>
-      <data key="d24">1.633733108639717</data>
-      <data key="d25">0</data>
+      <data key="d25">1.633733108639717</data>
+      <data key="d26">0</data>
     </node>
     <node id="ecc21080487d">
       <data key="d0">ValidationRun</data>
-      <data key="d22">ecc21080487d</data>
-      <data key="d23">cap_spend</data>
+      <data key="d23">ecc21080487d</data>
+      <data key="d24">cap_spend</data>
       <data key="d2">algorithm_random_forest_regressor</data>
       <data key="d7">passed</data>
-      <data key="d24">1.9961725175380707</data>
-      <data key="d25">0</data>
+      <data key="d25">1.9961725175380707</data>
+      <data key="d26">0</data>
     </node>
     <node id="2551748f3699">
       <data key="d0">ValidationRun</data>
-      <data key="d22">2551748f3699</data>
-      <data key="d23">cap_</data>
+      <data key="d23">2551748f3699</data>
+      <data key="d24">cap_</data>
       <data key="d2">algorithm_isolation_forest</data>
       <data key="d7">passed</data>
-      <data key="d24">2.6227970719337463</data>
-      <data key="d25">0</data>
+      <data key="d25">2.6227970719337463</data>
+      <data key="d26">0</data>
     </node>
     <node id="2ed72d825fa6">
       <data key="d0">ValidationRun</data>
-      <data key="d22">2ed72d825fa6</data>
-      <data key="d23">cap_churn_prediction_v1</data>
+      <data key="d23">2ed72d825fa6</data>
+      <data key="d24">cap_churn_prediction_v1</data>
       <data key="d2">algorithm_logistic_regression</data>
       <data key="d7">passed</data>
-      <data key="d24">3.533312439918518</data>
-      <data key="d25">0</data>
+      <data key="d25">3.533312439918518</data>
+      <data key="d26">0</data>
     </node>
     <node id="956f1160b7cd">
       <data key="d0">ValidationRun</data>
-      <data key="d22">956f1160b7cd</data>
-      <data key="d23">cap_label</data>
+      <data key="d23">956f1160b7cd</data>
+      <data key="d24">cap_label</data>
       <data key="d2">algorithm_tfidf_logistic_regression</data>
       <data key="d7">passed</data>
-      <data key="d24">1.5681235045194626</data>
-      <data key="d25">0</data>
+      <data key="d25">1.5681235045194626</data>
+      <data key="d26">0</data>
     </node>
     <node id="0a1c42dca7d0">
       <data key="d0">ValidationRun</data>
-      <data key="d22">0a1c42dca7d0</data>
-      <data key="d23">cap_spend</data>
+      <data key="d23">0a1c42dca7d0</data>
+      <data key="d24">cap_spend</data>
       <data key="d2">algorithm_random_forest_regressor</data>
       <data key="d7">passed</data>
-      <data key="d24">2.154228135943413</data>
-      <data key="d25">0</data>
+      <data key="d25">2.154228135943413</data>
+      <data key="d26">0</data>
     </node>
     <node id="715d9bdd4414">
       <data key="d0">ValidationRun</data>
-      <data key="d22">715d9bdd4414</data>
-      <data key="d23">cap_</data>
+      <data key="d23">715d9bdd4414</data>
+      <data key="d24">cap_</data>
       <data key="d2">algorithm_isolation_forest</data>
       <data key="d7">passed</data>
-      <data key="d24">2.1024902760982513</data>
-      <data key="d25">0</data>
+      <data key="d25">2.1024902760982513</data>
+      <data key="d26">0</data>
     </node>
     <node id="0134166363a1">
       <data key="d0">ValidationRun</data>
-      <data key="d22">0134166363a1</data>
-      <data key="d23">cap_churn_prediction_v1</data>
+      <data key="d23">0134166363a1</data>
+      <data key="d24">cap_churn_prediction_v1</data>
       <data key="d2">algorithm_logistic_regression</data>
       <data key="d7">passed</data>
-      <data key="d24">3.5713092386722565</data>
-      <data key="d25">0</data>
+      <data key="d25">3.5713092386722565</data>
+      <data key="d26">0</data>
     </node>
     <node id="8aa73a421e63">
       <data key="d0">ValidationRun</data>
-      <data key="d22">8aa73a421e63</data>
-      <data key="d23">cap_churn_prediction_v1</data>
+      <data key="d23">8aa73a421e63</data>
+      <data key="d24">cap_churn_prediction_v1</data>
       <data key="d2">algorithm_logistic_regression</data>
       <data key="d7">passed</data>
-      <data key="d24">3.288516253232956</data>
-      <data key="d25">0</data>
-      <data key="d17">binary_classification</data>
-      <data key="d26">customer_churn</data>
-      <data key="d19">churn</data>
-      <data key="d27">tabular</data>
+      <data key="d25">3.288516253232956</data>
+      <data key="d26">0</data>
+      <data key="d18">binary_classification</data>
+      <data key="d27">customer_churn</data>
+      <data key="d20">churn</data>
+      <data key="d28">tabular</data>
       <data key="d8">2026-09-07T01:10:56.143321+00:00</data>
-      <data key="d28">dataset_churn_demo</data>
-      <data key="d29">config_algorithm_logistic_regression__robust_missing__resource_light_0</data>
+      <data key="d29">dataset_churn_demo</data>
+      <data key="d30">config_algorithm_logistic_regression__robust_missing__resource_light_0</data>
     </node>
     <node id="359f044c833b">
       <data key="d0">ValidationRun</data>
-      <data key="d22">359f044c833b</data>
-      <data key="d23">cap_churn_prediction_v1</data>
+      <data key="d23">359f044c833b</data>
+      <data key="d24">cap_churn_prediction_v1</data>
       <data key="d2">algorithm_logistic_regression</data>
       <data key="d7">passed</data>
-      <data key="d24">3.3717946112155914</data>
-      <data key="d25">0</data>
-      <data key="d17">binary_classification</data>
-      <data key="d26">general</data>
-      <data key="d19">churn</data>
-      <data key="d27">tabular</data>
+      <data key="d25">3.3717946112155914</data>
+      <data key="d26">0</data>
+      <data key="d18">binary_classification</data>
+      <data key="d27">general</data>
+      <data key="d20">churn</data>
+      <data key="d28">tabular</data>
       <data key="d8">2026-09-07T01:19:29.680504+00:00</data>
-      <data key="d28">dataset_churn_demo</data>
-      <data key="d29">config_359f044c833b</data>
+      <data key="d29">dataset_churn_demo</data>
+      <data key="d30">config_359f044c833b</data>
     </node>
     <node id="02ada0a61532">
       <data key="d0">ValidationRun</data>
-      <data key="d22">02ada0a61532</data>
-      <data key="d23">cap_churn_prediction_v1</data>
+      <data key="d23">02ada0a61532</data>
+      <data key="d24">cap_churn_prediction_v1</data>
       <data key="d2">algorithm_random_forest</data>
       <data key="d7">passed</data>
-      <data key="d24">2.0469999611377716</data>
-      <data key="d25">0</data>
-      <data key="d17">binary_classification</data>
-      <data key="d26">general</data>
-      <data key="d19">churn</data>
-      <data key="d27">tabular</data>
+      <data key="d25">2.0469999611377716</data>
+      <data key="d26">0</data>
+      <data key="d18">binary_classification</data>
+      <data key="d27">general</data>
+      <data key="d20">churn</data>
+      <data key="d28">tabular</data>
       <data key="d8">2026-09-07T01:33:59.315039+00:00</data>
-      <data key="d28">dataset_churn_demo</data>
-      <data key="d29">config_02ada0a61532</data>
+      <data key="d29">dataset_churn_demo</data>
+      <data key="d30">config_02ada0a61532</data>
     </node>
     <node id="c40665f87315">
       <data key="d0">ValidationRun</data>
-      <data key="d22">c40665f87315</data>
-      <data key="d23">cap_churn_prediction_v1</data>
+      <data key="d23">c40665f87315</data>
+      <data key="d24">cap_churn_prediction_v1</data>
       <data key="d2">algorithm_logistic_regression</data>
       <data key="d7">passed</data>
-      <data key="d24">3.4771078675985336</data>
-      <data key="d25">0</data>
-      <data key="d17">binary_classification</data>
-      <data key="d26">customer_churn</data>
-      <data key="d19">churn</data>
-      <data key="d27">tabular</data>
+      <data key="d25">3.4771078675985336</data>
+      <data key="d26">0</data>
+      <data key="d18">binary_classification</data>
+      <data key="d27">customer_churn</data>
+      <data key="d20">churn</data>
+      <data key="d28">tabular</data>
       <data key="d8">2026-09-07T01:44:15.663280+00:00</data>
-      <data key="d28">dataset_churn_demo</data>
-      <data key="d29">config_c40665f87315</data>
+      <data key="d29">dataset_churn_demo</data>
+      <data key="d30">config_c40665f87315</data>
     </node>
     <node id="04446b0204b5">
       <data key="d0">ValidationRun</data>
-      <data key="d22">04446b0204b5</data>
-      <data key="d23">cap_churn_prediction_v1</data>
+      <data key="d23">04446b0204b5</data>
+      <data key="d24">cap_churn_prediction_v1</data>
       <data key="d2">algorithm_logistic_regression</data>
       <data key="d7">failed</data>
-      <data key="d24">1.4852366894483566</data>
-      <data key="d25">1</data>
-      <data key="d17">binary_classification</data>
-      <data key="d26">general</data>
-      <data key="d19">churn</data>
-      <data key="d27">tabular</data>
+      <data key="d25">1.4852366894483566</data>
+      <data key="d26">1</data>
+      <data key="d18">binary_classification</data>
+      <data key="d27">general</data>
+      <data key="d20">churn</data>
+      <data key="d28">tabular</data>
       <data key="d8">2026-09-07T01:57:17.051851+00:00</data>
-      <data key="d28">dataset_churn_demo</data>
-      <data key="d29">config_04446b0204b5</data>
+      <data key="d29">dataset_churn_demo</data>
+      <data key="d30">config_04446b0204b5</data>
     </node>
     <node id="b287297692b0">
       <data key="d0">ValidationRun</data>
-      <data key="d22">b287297692b0</data>
-      <data key="d23">cap_churn_prediction_v1</data>
+      <data key="d23">b287297692b0</data>
+      <data key="d24">cap_churn_prediction_v1</data>
       <data key="d2">algorithm_logistic_regression</data>
       <data key="d7">failed</data>
-      <data key="d24">1.2508327960968018</data>
-      <data key="d25">2</data>
-      <data key="d17">binary_classification</data>
-      <data key="d26">general</data>
-      <data key="d19">churn</data>
-      <data key="d27">tabular</data>
+      <data key="d25">1.2508327960968018</data>
+      <data key="d26">2</data>
+      <data key="d18">binary_classification</data>
+      <data key="d27">general</data>
+      <data key="d20">churn</data>
+      <data key="d28">tabular</data>
       <data key="d8">2026-09-07T01:59:00.586047+00:00</data>
-      <data key="d28">dataset_churn_demo</data>
-      <data key="d29">config_b287297692b0</data>
+      <data key="d29">dataset_churn_demo</data>
+      <data key="d30">config_b287297692b0</data>
     </node>
     <node id="f2f7e9fec37d">
       <data key="d0">ValidationRun</data>
-      <data key="d22">f2f7e9fec37d</data>
-      <data key="d23">cap_churn_prediction_v1</data>
+      <data key="d23">f2f7e9fec37d</data>
+      <data key="d24">cap_churn_prediction_v1</data>
       <data key="d2">algorithm_random_forest</data>
       <data key="d7">passed</data>
-      <data key="d24">1.747551754117012</data>
-      <data key="d25">2</data>
-      <data key="d17">binary_classification</data>
-      <data key="d26">customer_churn</data>
-      <data key="d19">churn</data>
-      <data key="d27">tabular</data>
+      <data key="d25">1.747551754117012</data>
+      <data key="d26">2</data>
+      <data key="d18">binary_classification</data>
+      <data key="d27">customer_churn</data>
+      <data key="d20">churn</data>
+      <data key="d28">tabular</data>
       <data key="d8">2026-09-07T02:01:35.293502+00:00</data>
-      <data key="d28">dataset_churn_demo</data>
-      <data key="d29">config_f2f7e9fec37d</data>
+      <data key="d29">dataset_churn_demo</data>
+      <data key="d30">config_f2f7e9fec37d</data>
     </node>
     <node id="b996f1c35820">
       <data key="d0">ValidationRun</data>
-      <data key="d22">b996f1c35820</data>
-      <data key="d23">cap_churn_prediction_v1</data>
+      <data key="d23">b996f1c35820</data>
+      <data key="d24">cap_churn_prediction_v1</data>
       <data key="d2">algorithm_logistic_regression</data>
       <data key="d7">passed</data>
-      <data key="d24">3.6681475937366486</data>
-      <data key="d25">0</data>
-      <data key="d17">binary_classification</data>
-      <data key="d26">customer_churn</data>
-      <data key="d19">churn</data>
-      <data key="d27">tabular</data>
+      <data key="d25">3.6681475937366486</data>
+      <data key="d26">0</data>
+      <data key="d18">binary_classification</data>
+      <data key="d27">customer_churn</data>
+      <data key="d20">churn</data>
+      <data key="d28">tabular</data>
       <data key="d8">2026-09-07T02:06:09.318343+00:00</data>
-      <data key="d28">dataset_churn_demo</data>
-      <data key="d29">config_b996f1c35820</data>
+      <data key="d29">dataset_churn_demo</data>
+      <data key="d30">config_b996f1c35820</data>
     </node>
     <node id="bfda7b830d85">
       <data key="d0">ValidationRun</data>
-      <data key="d22">bfda7b830d85</data>
-      <data key="d23">cap_churn_prediction_v1</data>
+      <data key="d23">bfda7b830d85</data>
+      <data key="d24">cap_churn_prediction_v1</data>
       <data key="d2">algorithm_random_forest</data>
       <data key="d7">passed</data>
-      <data key="d24">1.9046521484851837</data>
-      <data key="d25">2</data>
-      <data key="d17">binary_classification</data>
-      <data key="d26">customer_churn</data>
-      <data key="d19">churn</data>
-      <data key="d27">tabular</data>
+      <data key="d25">1.9046521484851837</data>
+      <data key="d26">2</data>
+      <data key="d18">binary_classification</data>
+      <data key="d27">customer_churn</data>
+      <data key="d20">churn</data>
+      <data key="d28">tabular</data>
       <data key="d8">2026-09-07T02:07:47.774148+00:00</data>
-      <data key="d28">dataset_churn_demo</data>
-      <data key="d29">config_bfda7b830d85</data>
+      <data key="d29">dataset_churn_demo</data>
+      <data key="d30">config_bfda7b830d85</data>
     </node>
     <node id="c34294d60f68">
       <data key="d0">ValidationRun</data>
-      <data key="d22">c34294d60f68</data>
-      <data key="d23">cap_churn_prediction_v1</data>
+      <data key="d23">c34294d60f68</data>
+      <data key="d24">cap_churn_prediction_v1</data>
       <data key="d2">algorithm_logistic_regression</data>
       <data key="d7">passed</data>
-      <data key="d24">3.440184101462364</data>
-      <data key="d25">0</data>
-      <data key="d17">binary_classification</data>
-      <data key="d26">customer_churn</data>
-      <data key="d19">churn</data>
-      <data key="d27">tabular</data>
+      <data key="d25">3.440184101462364</data>
+      <data key="d26">0</data>
+      <data key="d18">binary_classification</data>
+      <data key="d27">customer_churn</data>
+      <data key="d20">churn</data>
+      <data key="d28">tabular</data>
       <data key="d8">2026-09-07T02:12:53.619877+00:00</data>
-      <data key="d28">dataset_churn_demo</data>
-      <data key="d29">config_c34294d60f68</data>
+      <data key="d29">dataset_churn_demo</data>
+      <data key="d30">config_c34294d60f68</data>
     </node>
     <node id="705085a2a14f">
       <data key="d0">ValidationRun</data>
-      <data key="d22">705085a2a14f</data>
-      <data key="d23">cap_churn_prediction_v1</data>
+      <data key="d23">705085a2a14f</data>
+      <data key="d24">cap_churn_prediction_v1</data>
       <data key="d2">algorithm_logistic_regression</data>
       <data key="d7">passed</data>
-      <data key="d24">4.109872967004776</data>
-      <data key="d25">0</data>
-      <data key="d17">binary_classification</data>
-      <data key="d26">customer_churn</data>
-      <data key="d19">churn</data>
-      <data key="d27">tabular</data>
+      <data key="d25">4.109872967004776</data>
+      <data key="d26">0</data>
+      <data key="d18">binary_classification</data>
+      <data key="d27">customer_churn</data>
+      <data key="d20">churn</data>
+      <data key="d28">tabular</data>
       <data key="d8">2026-09-07T02:13:12.773601+00:00</data>
-      <data key="d28">dataset_churn_demo</data>
-      <data key="d29">config_705085a2a14f</data>
+      <data key="d29">dataset_churn_demo</data>
+      <data key="d30">config_705085a2a14f</data>
     </node>
     <node id="experience_263ffbd0db13">
       <data key="d0">FailureExperience</data>
@@ -915,9 +992,9 @@ KeyError: ''
     raise ValueError("Missing algorithm configuration parameters")
 ValueError: Missing algorithm configuration parameters
 </data>
-      <data key="d22">02ada0a61532</data>
-      <data key="d30">metric_underperformance</data>
-      <data key="d31">runtime error: RuntimeError: isolated process exit=1: Traceback (most recent call last):
+      <data key="d23">02ada0a61532</data>
+      <data key="d31">metric_underperformance</data>
+      <data key="d32">runtime error: RuntimeError: isolated process exit=1: Traceback (most recent call last):
   File "&lt;string&gt;", line 23, in &lt;module&gt;
   File "/data3/xiaotianqi/ai_algorithm_factory/generated/02ada0a61532/algorithm_logistic_regression__default__resource_light/algorithm.py", line 12, in train
     raise ValueError("Missing algorithm configuration parameters")
@@ -930,8 +1007,8 @@ ValueError: Missing algorithm configuration parameters
       <data key="d2">algorithm_gradient_boosting__default__resource_light</data>
       <data key="d12">candidate_failure</data>
       <data key="d13">syntax error: '(' was never closed (&lt;unknown&gt;, line 47)</data>
-      <data key="d22">02ada0a61532</data>
-      <data key="d31">syntax error: '(' was never closed (&lt;unknown&gt;, line 47)</data>
+      <data key="d23">02ada0a61532</data>
+      <data key="d32">syntax error: '(' was never closed (&lt;unknown&gt;, line 47)</data>
     </node>
     <node id="experience_04446b0204b5">
       <data key="d0">FailureExperience</data>
@@ -942,9 +1019,9 @@ ValueError: Missing algorithm configuration parameters
   File "&lt;string&gt;", line 23, in &lt;module&gt;
 TypeError: train() missing 1 required positional argument: 'max_iter'
 </data>
-      <data key="d22">04446b0204b5</data>
-      <data key="d30">metric_underperformance</data>
-      <data key="d31">runtime error: RuntimeError: isolated process exit=1: Traceback (most recent call last):
+      <data key="d23">04446b0204b5</data>
+      <data key="d31">metric_underperformance</data>
+      <data key="d32">runtime error: RuntimeError: isolated process exit=1: Traceback (most recent call last):
   File "&lt;string&gt;", line 23, in &lt;module&gt;
 TypeError: train() missing 1 required positional argument: 'max_iter'
 </data>
@@ -958,9 +1035,9 @@ TypeError: train() missing 1 required positional argument: 'max_iter'
   File "&lt;string&gt;", line 23, in &lt;module&gt;
 TypeError: train() missing 1 required positional argument: 'max_iter'
 </data>
-      <data key="d22">04446b0204b5</data>
-      <data key="d30">metric_underperformance</data>
-      <data key="d31">runtime error: RuntimeError: isolated process exit=1: Traceback (most recent call last):
+      <data key="d23">04446b0204b5</data>
+      <data key="d31">metric_underperformance</data>
+      <data key="d32">runtime error: RuntimeError: isolated process exit=1: Traceback (most recent call last):
   File "&lt;string&gt;", line 23, in &lt;module&gt;
 TypeError: train() missing 1 required positional argument: 'max_iter'
 </data>
@@ -974,9 +1051,9 @@ TypeError: train() missing 1 required positional argument: 'max_iter'
   File "&lt;string&gt;", line 23, in &lt;module&gt;
 TypeError: train() missing 1 required positional argument: 'max_iter'
 </data>
-      <data key="d22">b287297692b0</data>
-      <data key="d30">metric_underperformance</data>
-      <data key="d31">runtime error: RuntimeError: isolated process exit=1: Traceback (most recent call last):
+      <data key="d23">b287297692b0</data>
+      <data key="d31">metric_underperformance</data>
+      <data key="d32">runtime error: RuntimeError: isolated process exit=1: Traceback (most recent call last):
   File "&lt;string&gt;", line 23, in &lt;module&gt;
 TypeError: train() missing 1 required positional argument: 'max_iter'
 </data>
@@ -990,9 +1067,9 @@ TypeError: train() missing 1 required positional argument: 'max_iter'
   File "&lt;string&gt;", line 23, in &lt;module&gt;
 TypeError: train() missing 1 required positional argument: 'max_iter'
 </data>
-      <data key="d22">b287297692b0</data>
-      <data key="d30">metric_underperformance</data>
-      <data key="d31">runtime error: RuntimeError: isolated process exit=1: Traceback (most recent call last):
+      <data key="d23">b287297692b0</data>
+      <data key="d31">metric_underperformance</data>
+      <data key="d32">runtime error: RuntimeError: isolated process exit=1: Traceback (most recent call last):
   File "&lt;string&gt;", line 23, in &lt;module&gt;
 TypeError: train() missing 1 required positional argument: 'max_iter'
 </data>
@@ -1003,9 +1080,9 @@ TypeError: train() missing 1 required positional argument: 'max_iter'
       <data key="d2">algorithm_random_forest</data>
       <data key="d12">success</data>
       <data key="d13">算法通过验证</data>
-      <data key="d22">f2f7e9fec37d</data>
-      <data key="d30">validation_failure</data>
-      <data key="d31" />
+      <data key="d23">f2f7e9fec37d</data>
+      <data key="d31">validation_failure</data>
+      <data key="d32" />
     </node>
     <node id="experience_f2f7e9fec37d_algorithm_random_forest__default__resource_light">
       <data key="d0">FailureExperience</data>
@@ -1013,8 +1090,8 @@ TypeError: train() missing 1 required positional argument: 'max_iter'
       <data key="d2">algorithm_random_forest__default__resource_light</data>
       <data key="d12">candidate_repaired</data>
       <data key="d13">candidate required repair</data>
-      <data key="d22">f2f7e9fec37d</data>
-      <data key="d31" />
+      <data key="d23">f2f7e9fec37d</data>
+      <data key="d32" />
     </node>
     <node id="experience_bfda7b830d85">
       <data key="d0">FailureExperience</data>
@@ -1022,9 +1099,9 @@ TypeError: train() missing 1 required positional argument: 'max_iter'
       <data key="d2">algorithm_random_forest</data>
       <data key="d12">success</data>
       <data key="d13">算法通过验证</data>
-      <data key="d22">bfda7b830d85</data>
-      <data key="d30">validation_failure</data>
-      <data key="d31" />
+      <data key="d23">bfda7b830d85</data>
+      <data key="d31">validation_failure</data>
+      <data key="d32" />
     </node>
     <node id="experience_bfda7b830d85_algorithm_random_forest__default__resource_light">
       <data key="d0">FailureExperience</data>
@@ -1032,8 +1109,8 @@ TypeError: train() missing 1 required positional argument: 'max_iter'
       <data key="d2">algorithm_random_forest__default__resource_light</data>
       <data key="d12">candidate_repaired</data>
       <data key="d13">candidate required repair</data>
-      <data key="d22">bfda7b830d85</data>
-      <data key="d31" />
+      <data key="d23">bfda7b830d85</data>
+      <data key="d32" />
     </node>
     <node id="cap_" />
     <node id="algorithm_isolation_forest" />
@@ -1046,692 +1123,740 @@ TypeError: train() missing 1 required positional argument: 'max_iter'
     <node id="algorithm_gradient_boosting__default__resource_light" />
     <node id="algorithm_random_forest__default__resource_light" />
     <edge source="version_359f044c833b" target="algorithm_logistic_regression" id="0">
-      <data key="d32">VERSION_OF</data>
-      <data key="d33">{}</data>
+      <data key="d33">VERSION_OF</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="version_02ada0a61532" target="algorithm_random_forest" id="0">
-      <data key="d32">VERSION_OF</data>
-      <data key="d33">{}</data>
+      <data key="d33">VERSION_OF</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="version_c40665f87315" target="algorithm_logistic_regression" id="0">
-      <data key="d32">VERSION_OF</data>
-      <data key="d33">{}</data>
+      <data key="d33">VERSION_OF</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="version_04446b0204b5" target="algorithm_logistic_regression" id="0">
-      <data key="d32">VERSION_OF</data>
-      <data key="d33">{}</data>
+      <data key="d33">VERSION_OF</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="repair_04446b0204b5_1" target="experience_04446b0204b5" id="0">
-      <data key="d32">REPAIRS</data>
-      <data key="d33">{}</data>
+      <data key="d33">REPAIRS</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="version_b287297692b0" target="algorithm_logistic_regression" id="0">
-      <data key="d32">VERSION_OF</data>
-      <data key="d33">{}</data>
+      <data key="d33">VERSION_OF</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="repair_b287297692b0_1" target="experience_b287297692b0" id="0">
-      <data key="d32">REPAIRS</data>
-      <data key="d33">{}</data>
+      <data key="d33">REPAIRS</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="repair_b287297692b0_2" target="experience_b287297692b0" id="0">
-      <data key="d32">REPAIRS</data>
-      <data key="d33">{}</data>
+      <data key="d33">REPAIRS</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="version_f2f7e9fec37d" target="algorithm_random_forest" id="0">
-      <data key="d32">VERSION_OF</data>
-      <data key="d33">{}</data>
+      <data key="d33">VERSION_OF</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="repair_f2f7e9fec37d_1" target="experience_f2f7e9fec37d" id="0">
-      <data key="d32">REPAIRS</data>
-      <data key="d33">{}</data>
+      <data key="d33">REPAIRS</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="repair_f2f7e9fec37d_2" target="experience_f2f7e9fec37d" id="0">
-      <data key="d32">REPAIRS</data>
-      <data key="d33">{}</data>
+      <data key="d33">REPAIRS</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="version_b996f1c35820" target="algorithm_logistic_regression" id="0">
-      <data key="d32">VERSION_OF</data>
-      <data key="d33">{}</data>
+      <data key="d33">VERSION_OF</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="version_bfda7b830d85" target="algorithm_random_forest" id="0">
-      <data key="d32">VERSION_OF</data>
-      <data key="d33">{}</data>
+      <data key="d33">VERSION_OF</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="repair_bfda7b830d85_1" target="experience_bfda7b830d85" id="0">
-      <data key="d32">REPAIRS</data>
-      <data key="d33">{}</data>
+      <data key="d33">REPAIRS</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="repair_bfda7b830d85_2" target="experience_bfda7b830d85" id="0">
-      <data key="d32">REPAIRS</data>
-      <data key="d33">{}</data>
+      <data key="d33">REPAIRS</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="version_c34294d60f68" target="algorithm_logistic_regression" id="0">
-      <data key="d32">VERSION_OF</data>
-      <data key="d33">{}</data>
+      <data key="d33">VERSION_OF</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="version_705085a2a14f" target="algorithm_logistic_regression" id="0">
-      <data key="d32">VERSION_OF</data>
-      <data key="d33">{}</data>
+      <data key="d33">VERSION_OF</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="source_business_material" target="metric_f1" id="0">
-      <data key="d32">SUPPORTS</data>
-      <data key="d33">{}</data>
+      <data key="d33">SUPPORTS</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="source_business_material" target="metric_precision" id="0">
-      <data key="d32">SUPPORTS</data>
-      <data key="d33">{}</data>
+      <data key="d33">SUPPORTS</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="source_business_material" target="metric_roc_auc" id="0">
-      <data key="d32">SUPPORTS</data>
-      <data key="d33">{}</data>
+      <data key="d33">SUPPORTS</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="source_business_material" target="metric_recall" id="0">
-      <data key="d32">SUPPORTS</data>
-      <data key="d33">{}</data>
+      <data key="d33">SUPPORTS</data>
+      <data key="d34">{}</data>
+    </edge>
+    <edge source="source_business_material_cef5e946" target="metric_f1" id="0">
+      <data key="d33">SUPPORTS</data>
+      <data key="d34">{"source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md", "evidence_span": "F1", "confidence": 0.7}</data>
+    </edge>
+    <edge source="source_business_material_cef5e946" target="metric_precision" id="0">
+      <data key="d33">SUPPORTS</data>
+      <data key="d34">{"source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md", "evidence_span": "Precision", "confidence": 0.7}</data>
+    </edge>
+    <edge source="source_business_material_cef5e946" target="metric_roc_auc" id="0">
+      <data key="d33">SUPPORTS</data>
+      <data key="d34">{"source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md", "evidence_span": "ROC-AUC", "confidence": 0.7}</data>
+    </edge>
+    <edge source="source_business_material_cef5e946" target="metric_recall" id="0">
+      <data key="d33">SUPPORTS</data>
+      <data key="d34">{"source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md", "evidence_span": "Recall", "confidence": 0.7}</data>
+    </edge>
+    <edge source="source_business_material_cef5e946" target="feature_age" id="0">
+      <data key="d33">SUPPORTS</data>
+      <data key="d34">{"source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md", "evidence_span": "age", "confidence": 0.7}</data>
+    </edge>
+    <edge source="source_business_material_cef5e946" target="feature_region" id="0">
+      <data key="d33">SUPPORTS</data>
+      <data key="d34">{"source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md", "evidence_span": "region", "confidence": 0.7}</data>
+    </edge>
+    <edge source="source_business_material_cef5e946" target="feature_login_count_30d" id="0">
+      <data key="d33">SUPPORTS</data>
+      <data key="d34">{"source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md", "evidence_span": "login_count_30d", "confidence": 0.7}</data>
+    </edge>
+    <edge source="source_business_material_cef5e946" target="feature_total_spend" id="0">
+      <data key="d33">SUPPORTS</data>
+      <data key="d34">{"source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md", "evidence_span": "total_spend", "confidence": 0.7}</data>
+    </edge>
+    <edge source="source_business_material_cef5e946" target="feature_complaint_count" id="0">
+      <data key="d33">SUPPORTS</data>
+      <data key="d34">{"source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md", "evidence_span": "complaint_count", "confidence": 0.7}</data>
+    </edge>
+    <edge source="source_business_material_cef5e946" target="feature_membership_level" id="0">
+      <data key="d33">SUPPORTS</data>
+      <data key="d34">{"source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md", "evidence_span": "membership_level", "confidence": 0.7}</data>
+    </edge>
+    <edge source="source_business_material_cef5e946" target="feature_tenure_months" id="0">
+      <data key="d33">SUPPORTS</data>
+      <data key="d34">{"source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md", "evidence_span": "tenure_months", "confidence": 0.7}</data>
+    </edge>
+    <edge source="source_business_material_cef5e946" target="feature_churn" id="0">
+      <data key="d33">SUPPORTS</data>
+      <data key="d34">{"source": "/data3/xiaotianqi/ai_algorithm_factory/data/business_material.md", "evidence_span": "churn", "confidence": 0.7}</data>
     </edge>
     <edge source="cap_churn_prediction_v1" target="algorithm_logistic_regression" id="0">
-      <data key="d32">USES_ALGORITHM</data>
-      <data key="d33">{}</data>
+      <data key="d33">USES_ALGORITHM</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="cap_churn_prediction_v1" target="algorithm_random_forest" id="0">
-      <data key="d32">USES_ALGORITHM</data>
-      <data key="d33">{}</data>
+      <data key="d33">USES_ALGORITHM</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="cap_churn_prediction_v1" target="algorithm_gradient_boosting" id="0">
-      <data key="d32">USES_ALGORITHM</data>
-      <data key="d33">{}</data>
+      <data key="d33">USES_ALGORITHM</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="cap_churn_prediction_v1" target="task_binary_classification" id="0">
-      <data key="d32">SOLVES</data>
-      <data key="d33">{}</data>
+      <data key="d33">SOLVES</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="cap_churn_prediction_v1" target="metric_roc_auc" id="0">
-      <data key="d32">EVALUATED_BY</data>
-      <data key="d33">{}</data>
+      <data key="d33">EVALUATED_BY</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="cap_churn_prediction_v1" target="metric_pr_auc" id="0">
-      <data key="d32">EVALUATED_BY</data>
-      <data key="d33">{}</data>
+      <data key="d33">EVALUATED_BY</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="cap_churn_prediction_v1" target="metric_f1" id="0">
-      <data key="d32">EVALUATED_BY</data>
-      <data key="d33">{}</data>
+      <data key="d33">EVALUATED_BY</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="cap_churn_prediction_v1" target="metric_precision" id="0">
-      <data key="d32">EVALUATED_BY</data>
-      <data key="d33">{}</data>
+      <data key="d33">EVALUATED_BY</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="cap_churn_prediction_v1" target="metric_recall" id="0">
-      <data key="d32">EVALUATED_BY</data>
-      <data key="d33">{}</data>
+      <data key="d33">EVALUATED_BY</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="cap_churn_prediction_v1" target="dataset_churn_demo" id="0">
-      <data key="d32">VALIDATED_ON</data>
-      <data key="d33">{}</data>
+      <data key="d33">VALIDATED_ON</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="cap_churn_prediction_v1" target="feature_numeric_imputation" id="0">
-      <data key="d32">REQUIRES_FEATURE</data>
-      <data key="d33">{}</data>
+      <data key="d33">REQUIRES_FEATURE</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="cap_churn_prediction_v1" target="feature_categorical_imputation" id="0">
-      <data key="d32">REQUIRES_FEATURE</data>
-      <data key="d33">{}</data>
+      <data key="d33">REQUIRES_FEATURE</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="cap_churn_prediction_v1" target="feature_one_hot_encoding" id="0">
-      <data key="d32">REQUIRES_FEATURE</data>
-      <data key="d33">{}</data>
+      <data key="d33">REQUIRES_FEATURE</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="cap_churn_prediction_v1" target="feature_standard_scaling" id="0">
-      <data key="d32">REQUIRES_FEATURE</data>
-      <data key="d33">{}</data>
+      <data key="d33">REQUIRES_FEATURE</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="algorithm_logistic_regression" target="environment_python_sklearn" id="0">
-      <data key="d32">REQUIRES</data>
-      <data key="d33">{}</data>
+      <data key="d33">REQUIRES</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="algorithm_logistic_regression" target="task_binary_classification" id="0">
-      <data key="d32">SUITABLE_FOR</data>
-      <data key="d33">{}</data>
+      <data key="d33">SUITABLE_FOR</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="algorithm_logistic_regression" target="dependency_scikit_learn" id="0">
-      <data key="d32">REQUIRES</data>
-      <data key="d33">{}</data>
+      <data key="d33">REQUIRES</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="algorithm_random_forest" target="environment_python_sklearn" id="0">
-      <data key="d32">REQUIRES</data>
-      <data key="d33">{}</data>
+      <data key="d33">REQUIRES</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="algorithm_random_forest" target="task_binary_classification" id="0">
-      <data key="d32">SUITABLE_FOR</data>
-      <data key="d33">{}</data>
+      <data key="d33">SUITABLE_FOR</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="algorithm_random_forest" target="dependency_scikit_learn" id="0">
-      <data key="d32">REQUIRES</data>
-      <data key="d33">{}</data>
+      <data key="d33">REQUIRES</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="algorithm_gradient_boosting" target="environment_python_sklearn" id="0">
-      <data key="d32">REQUIRES</data>
-      <data key="d33">{}</data>
+      <data key="d33">REQUIRES</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="algorithm_gradient_boosting" target="task_binary_classification" id="0">
-      <data key="d32">SUITABLE_FOR</data>
-      <data key="d33">{}</data>
+      <data key="d33">SUITABLE_FOR</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="algorithm_gradient_boosting" target="dependency_scikit_learn" id="0">
-      <data key="d32">REQUIRES</data>
-      <data key="d33">{}</data>
+      <data key="d33">REQUIRES</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="263ffbd0db13" target="cap_churn_prediction_v1" id="0">
-      <data key="d32">VALIDATES</data>
-      <data key="d33">{}</data>
+      <data key="d33">VALIDATES</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="263ffbd0db13" target="algorithm_logistic_regression" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="658240416858" target="cap_churn_prediction_v1" id="0">
-      <data key="d32">VALIDATES</data>
-      <data key="d33">{}</data>
+      <data key="d33">VALIDATES</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="658240416858" target="algorithm_logistic_regression" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="116eedc944ea" target="cap_churn_prediction_v1" id="0">
-      <data key="d32">VALIDATES</data>
-      <data key="d33">{}</data>
+      <data key="d33">VALIDATES</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="116eedc944ea" target="algorithm_logistic_regression" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="b4257ac2b488" target="cap_churn_prediction_v1" id="0">
-      <data key="d32">VALIDATES</data>
-      <data key="d33">{}</data>
+      <data key="d33">VALIDATES</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="b4257ac2b488" target="algorithm_logistic_regression" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="0ab21a8f8fba" target="cap_churn_prediction_v1" id="0">
-      <data key="d32">VALIDATES</data>
-      <data key="d33">{}</data>
+      <data key="d33">VALIDATES</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="0ab21a8f8fba" target="algorithm_logistic_regression" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="6a19e45050a9" target="cap_churn_prediction_v1" id="0">
-      <data key="d32">VALIDATES</data>
-      <data key="d33">{}</data>
+      <data key="d33">VALIDATES</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="6a19e45050a9" target="algorithm_logistic_regression" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="0976703f0a87" target="cap_churn_prediction_v1" id="0">
-      <data key="d32">VALIDATES</data>
-      <data key="d33">{}</data>
+      <data key="d33">VALIDATES</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="0976703f0a87" target="algorithm_logistic_regression" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="024db7ef6ee3" target="cap_churn_prediction_v1" id="0">
-      <data key="d32">VALIDATES</data>
-      <data key="d33">{}</data>
+      <data key="d33">VALIDATES</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="024db7ef6ee3" target="algorithm_logistic_regression" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="f4a513f76553" target="cap_churn_prediction_v1" id="0">
-      <data key="d32">VALIDATES</data>
-      <data key="d33">{}</data>
+      <data key="d33">VALIDATES</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="f4a513f76553" target="algorithm_logistic_regression" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="5fe9b6c0a549" target="cap_churn_prediction_v1" id="0">
-      <data key="d32">VALIDATES</data>
-      <data key="d33">{}</data>
+      <data key="d33">VALIDATES</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="5fe9b6c0a549" target="algorithm_logistic_regression" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="90648fa14eb0" target="cap_churn_prediction_v1" id="0">
-      <data key="d32">VALIDATES</data>
-      <data key="d33">{}</data>
+      <data key="d33">VALIDATES</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="90648fa14eb0" target="algorithm_logistic_regression" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="c6668843ac97" target="cap_churn_prediction_v1" id="0">
-      <data key="d32">VALIDATES</data>
-      <data key="d33">{}</data>
+      <data key="d33">VALIDATES</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="c6668843ac97" target="algorithm_logistic_regression" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="10ac44fe1b83" target="cap_churn_prediction_v1" id="0">
-      <data key="d32">VALIDATES</data>
-      <data key="d33">{}</data>
+      <data key="d33">VALIDATES</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="10ac44fe1b83" target="algorithm_logistic_regression" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="28e05b370dc0" target="cap_" id="0">
-      <data key="d32">VALIDATES</data>
-      <data key="d33">{}</data>
+      <data key="d33">VALIDATES</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="28e05b370dc0" target="algorithm_isolation_forest" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="90ed52b0cf5d" target="cap_" id="0">
-      <data key="d32">VALIDATES</data>
-      <data key="d33">{}</data>
+      <data key="d33">VALIDATES</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="90ed52b0cf5d" target="algorithm_isolation_forest" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="8d55d49f848b" target="cap_" id="0">
-      <data key="d32">VALIDATES</data>
-      <data key="d33">{}</data>
+      <data key="d33">VALIDATES</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="8d55d49f848b" target="algorithm_isolation_forest" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="83df1ea17a2c" target="cap_spend" id="0">
-      <data key="d32">VALIDATES</data>
-      <data key="d33">{}</data>
+      <data key="d33">VALIDATES</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="83df1ea17a2c" target="algorithm_random_forest_regressor" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="be96f7f2084e" target="cap_spend" id="0">
-      <data key="d32">VALIDATES</data>
-      <data key="d33">{}</data>
+      <data key="d33">VALIDATES</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="be96f7f2084e" target="algorithm_random_forest_regressor" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="e5a9a4d02081" target="cap_label" id="0">
-      <data key="d32">VALIDATES</data>
-      <data key="d33">{}</data>
+      <data key="d33">VALIDATES</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="e5a9a4d02081" target="algorithm_tfidf_logistic_regression" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="3950a3db3457" target="cap_churn_prediction_v1" id="0">
-      <data key="d32">VALIDATES</data>
-      <data key="d33">{}</data>
+      <data key="d33">VALIDATES</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="3950a3db3457" target="algorithm_logistic_regression" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="2f732fc638d1" target="cap_label" id="0">
-      <data key="d32">VALIDATES</data>
-      <data key="d33">{}</data>
+      <data key="d33">VALIDATES</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="2f732fc638d1" target="algorithm_tfidf_logistic_regression" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="ecc21080487d" target="cap_spend" id="0">
-      <data key="d32">VALIDATES</data>
-      <data key="d33">{}</data>
+      <data key="d33">VALIDATES</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="ecc21080487d" target="algorithm_random_forest_regressor" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="2551748f3699" target="cap_" id="0">
-      <data key="d32">VALIDATES</data>
-      <data key="d33">{}</data>
+      <data key="d33">VALIDATES</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="2551748f3699" target="algorithm_isolation_forest" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="2ed72d825fa6" target="cap_churn_prediction_v1" id="0">
-      <data key="d32">VALIDATES</data>
-      <data key="d33">{}</data>
+      <data key="d33">VALIDATES</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="2ed72d825fa6" target="algorithm_logistic_regression" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="956f1160b7cd" target="cap_label" id="0">
-      <data key="d32">VALIDATES</data>
-      <data key="d33">{}</data>
+      <data key="d33">VALIDATES</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="956f1160b7cd" target="algorithm_tfidf_logistic_regression" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="0a1c42dca7d0" target="cap_spend" id="0">
-      <data key="d32">VALIDATES</data>
-      <data key="d33">{}</data>
+      <data key="d33">VALIDATES</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="0a1c42dca7d0" target="algorithm_random_forest_regressor" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="715d9bdd4414" target="cap_" id="0">
-      <data key="d32">VALIDATES</data>
-      <data key="d33">{}</data>
+      <data key="d33">VALIDATES</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="715d9bdd4414" target="algorithm_isolation_forest" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="0134166363a1" target="cap_churn_prediction_v1" id="0">
-      <data key="d32">VALIDATES</data>
-      <data key="d33">{}</data>
+      <data key="d33">VALIDATES</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="0134166363a1" target="algorithm_logistic_regression" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="8aa73a421e63" target="dataset_churn_demo" id="0">
-      <data key="d32">ON_DATASET</data>
-      <data key="d33">{}</data>
+      <data key="d33">ON_DATASET</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="8aa73a421e63" target="config_algorithm_logistic_regression__robust_missing__resource_light_0" id="0">
-      <data key="d32">HAS_CONFIG</data>
-      <data key="d33">{}</data>
+      <data key="d33">HAS_CONFIG</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="8aa73a421e63" target="cap_churn_prediction_v1" id="0">
-      <data key="d32">VALIDATES</data>
-      <data key="d33">{}</data>
+      <data key="d33">VALIDATES</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="8aa73a421e63" target="algorithm_logistic_regression" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="359f044c833b" target="dataset_churn_demo" id="0">
-      <data key="d32">ON_DATASET</data>
-      <data key="d33">{}</data>
+      <data key="d33">ON_DATASET</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="359f044c833b" target="config_359f044c833b" id="0">
-      <data key="d32">HAS_CONFIG</data>
-      <data key="d33">{}</data>
+      <data key="d33">HAS_CONFIG</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="359f044c833b" target="cap_churn_prediction_v1" id="0">
-      <data key="d32">VALIDATES</data>
-      <data key="d33">{}</data>
+      <data key="d33">VALIDATES</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="359f044c833b" target="algorithm_logistic_regression" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="02ada0a61532" target="dataset_churn_demo" id="0">
-      <data key="d32">ON_DATASET</data>
-      <data key="d33">{}</data>
+      <data key="d33">ON_DATASET</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="02ada0a61532" target="config_02ada0a61532" id="0">
-      <data key="d32">HAS_CONFIG</data>
-      <data key="d33">{}</data>
+      <data key="d33">HAS_CONFIG</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="02ada0a61532" target="cap_churn_prediction_v1" id="0">
-      <data key="d32">VALIDATES</data>
-      <data key="d33">{}</data>
+      <data key="d33">VALIDATES</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="02ada0a61532" target="algorithm_random_forest" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="c40665f87315" target="dataset_churn_demo" id="0">
-      <data key="d32">ON_DATASET</data>
-      <data key="d33">{}</data>
+      <data key="d33">ON_DATASET</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="c40665f87315" target="config_c40665f87315" id="0">
-      <data key="d32">HAS_CONFIG</data>
-      <data key="d33">{}</data>
+      <data key="d33">HAS_CONFIG</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="c40665f87315" target="cap_churn_prediction_v1" id="0">
-      <data key="d32">VALIDATES</data>
-      <data key="d33">{}</data>
+      <data key="d33">VALIDATES</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="c40665f87315" target="algorithm_logistic_regression" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="04446b0204b5" target="dataset_churn_demo" id="0">
-      <data key="d32">ON_DATASET</data>
-      <data key="d33">{}</data>
+      <data key="d33">ON_DATASET</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="04446b0204b5" target="config_04446b0204b5" id="0">
-      <data key="d32">HAS_CONFIG</data>
-      <data key="d33">{}</data>
+      <data key="d33">HAS_CONFIG</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="04446b0204b5" target="cap_churn_prediction_v1" id="0">
-      <data key="d32">VALIDATES</data>
-      <data key="d33">{}</data>
+      <data key="d33">VALIDATES</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="04446b0204b5" target="algorithm_logistic_regression" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="b287297692b0" target="dataset_churn_demo" id="0">
-      <data key="d32">ON_DATASET</data>
-      <data key="d33">{}</data>
+      <data key="d33">ON_DATASET</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="b287297692b0" target="config_b287297692b0" id="0">
-      <data key="d32">HAS_CONFIG</data>
-      <data key="d33">{}</data>
+      <data key="d33">HAS_CONFIG</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="b287297692b0" target="cap_churn_prediction_v1" id="0">
-      <data key="d32">VALIDATES</data>
-      <data key="d33">{}</data>
+      <data key="d33">VALIDATES</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="b287297692b0" target="algorithm_logistic_regression" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="f2f7e9fec37d" target="dataset_churn_demo" id="0">
-      <data key="d32">ON_DATASET</data>
-      <data key="d33">{}</data>
+      <data key="d33">ON_DATASET</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="f2f7e9fec37d" target="config_f2f7e9fec37d" id="0">
-      <data key="d32">HAS_CONFIG</data>
-      <data key="d33">{}</data>
+      <data key="d33">HAS_CONFIG</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="f2f7e9fec37d" target="cap_churn_prediction_v1" id="0">
-      <data key="d32">VALIDATES</data>
-      <data key="d33">{}</data>
+      <data key="d33">VALIDATES</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="f2f7e9fec37d" target="algorithm_random_forest" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="b996f1c35820" target="dataset_churn_demo" id="0">
-      <data key="d32">ON_DATASET</data>
-      <data key="d33">{}</data>
+      <data key="d33">ON_DATASET</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="b996f1c35820" target="config_b996f1c35820" id="0">
-      <data key="d32">HAS_CONFIG</data>
-      <data key="d33">{}</data>
+      <data key="d33">HAS_CONFIG</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="b996f1c35820" target="cap_churn_prediction_v1" id="0">
-      <data key="d32">VALIDATES</data>
-      <data key="d33">{}</data>
+      <data key="d33">VALIDATES</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="b996f1c35820" target="algorithm_logistic_regression" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="bfda7b830d85" target="dataset_churn_demo" id="0">
-      <data key="d32">ON_DATASET</data>
-      <data key="d33">{}</data>
+      <data key="d33">ON_DATASET</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="bfda7b830d85" target="config_bfda7b830d85" id="0">
-      <data key="d32">HAS_CONFIG</data>
-      <data key="d33">{}</data>
+      <data key="d33">HAS_CONFIG</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="bfda7b830d85" target="cap_churn_prediction_v1" id="0">
-      <data key="d32">VALIDATES</data>
-      <data key="d33">{}</data>
+      <data key="d33">VALIDATES</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="bfda7b830d85" target="algorithm_random_forest" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="c34294d60f68" target="dataset_churn_demo" id="0">
-      <data key="d32">ON_DATASET</data>
-      <data key="d33">{}</data>
+      <data key="d33">ON_DATASET</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="c34294d60f68" target="config_c34294d60f68" id="0">
-      <data key="d32">HAS_CONFIG</data>
-      <data key="d33">{}</data>
+      <data key="d33">HAS_CONFIG</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="c34294d60f68" target="cap_churn_prediction_v1" id="0">
-      <data key="d32">VALIDATES</data>
-      <data key="d33">{}</data>
+      <data key="d33">VALIDATES</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="c34294d60f68" target="algorithm_logistic_regression" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="705085a2a14f" target="dataset_churn_demo" id="0">
-      <data key="d32">ON_DATASET</data>
-      <data key="d33">{}</data>
+      <data key="d33">ON_DATASET</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="705085a2a14f" target="config_705085a2a14f" id="0">
-      <data key="d32">HAS_CONFIG</data>
-      <data key="d33">{}</data>
+      <data key="d33">HAS_CONFIG</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="705085a2a14f" target="cap_churn_prediction_v1" id="0">
-      <data key="d32">VALIDATES</data>
-      <data key="d33">{}</data>
+      <data key="d33">VALIDATES</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="705085a2a14f" target="algorithm_logistic_regression" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="experience_263ffbd0db13" target="algorithm_logistic_regression" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="experience_658240416858" target="algorithm_logistic_regression" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="experience_28e05b370dc0" target="algorithm_isolation_forest" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="experience_28e05b370dc0_algorithm_isolation_forest" target="algorithm_isolation_forest" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="experience_90ed52b0cf5d" target="algorithm_isolation_forest" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="experience_90ed52b0cf5d_algorithm_isolation_forest" target="algorithm_isolation_forest" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="experience_83df1ea17a2c" target="algorithm_random_forest_regressor" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="experience_83df1ea17a2c_algorithm_random_forest_regressor" target="algorithm_random_forest_regressor" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="experience_02ada0a61532_algorithm_logistic_regression__default__resource_light" target="algorithm_logistic_regression__default__resource_light" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="experience_02ada0a61532_algorithm_logistic_regression__default__resource_light" target="02ada0a61532" id="0">
-      <data key="d32">OCCURRED_IN</data>
-      <data key="d33">{}</data>
+      <data key="d33">OCCURRED_IN</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="experience_02ada0a61532_algorithm_gradient_boosting__default__resource_light" target="algorithm_gradient_boosting__default__resource_light" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="experience_02ada0a61532_algorithm_gradient_boosting__default__resource_light" target="02ada0a61532" id="0">
-      <data key="d32">OCCURRED_IN</data>
-      <data key="d33">{}</data>
+      <data key="d33">OCCURRED_IN</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="experience_04446b0204b5" target="algorithm_logistic_regression" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="experience_04446b0204b5" target="04446b0204b5" id="0">
-      <data key="d32">OCCURRED_IN</data>
-      <data key="d33">{}</data>
+      <data key="d33">OCCURRED_IN</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="experience_04446b0204b5_algorithm_logistic_regression__default__resource_light" target="algorithm_logistic_regression__default__resource_light" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="experience_04446b0204b5_algorithm_logistic_regression__default__resource_light" target="04446b0204b5" id="0">
-      <data key="d32">OCCURRED_IN</data>
-      <data key="d33">{}</data>
+      <data key="d33">OCCURRED_IN</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="experience_b287297692b0" target="algorithm_logistic_regression" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="experience_b287297692b0" target="b287297692b0" id="0">
-      <data key="d32">OCCURRED_IN</data>
-      <data key="d33">{}</data>
+      <data key="d33">OCCURRED_IN</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="experience_b287297692b0_algorithm_logistic_regression__default__resource_light" target="algorithm_logistic_regression__default__resource_light" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="experience_b287297692b0_algorithm_logistic_regression__default__resource_light" target="b287297692b0" id="0">
-      <data key="d32">OCCURRED_IN</data>
-      <data key="d33">{}</data>
+      <data key="d33">OCCURRED_IN</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="experience_f2f7e9fec37d" target="algorithm_random_forest" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="experience_f2f7e9fec37d" target="f2f7e9fec37d" id="0">
-      <data key="d32">OCCURRED_IN</data>
-      <data key="d33">{}</data>
+      <data key="d33">OCCURRED_IN</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="experience_f2f7e9fec37d_algorithm_random_forest__default__resource_light" target="algorithm_random_forest__default__resource_light" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="experience_f2f7e9fec37d_algorithm_random_forest__default__resource_light" target="f2f7e9fec37d" id="0">
-      <data key="d32">OCCURRED_IN</data>
-      <data key="d33">{}</data>
+      <data key="d33">OCCURRED_IN</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="experience_bfda7b830d85" target="algorithm_random_forest" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="experience_bfda7b830d85" target="bfda7b830d85" id="0">
-      <data key="d32">OCCURRED_IN</data>
-      <data key="d33">{}</data>
+      <data key="d33">OCCURRED_IN</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="experience_bfda7b830d85_algorithm_random_forest__default__resource_light" target="algorithm_random_forest__default__resource_light" id="0">
-      <data key="d32">RELATED_TO</data>
-      <data key="d33">{}</data>
+      <data key="d33">RELATED_TO</data>
+      <data key="d34">{}</data>
     </edge>
     <edge source="experience_bfda7b830d85_algorithm_random_forest__default__resource_light" target="bfda7b830d85" id="0">
-      <data key="d32">OCCURRED_IN</data>
-      <data key="d33">{}</data>
+      <data key="d33">OCCURRED_IN</data>
+      <data key="d34">{}</data>
     </edge>
   </graph>
 </graphml>

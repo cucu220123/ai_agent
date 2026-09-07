@@ -41,4 +41,6 @@
 - 部署配置：Dockerfile、docker-compose、Makefile；
 - 多智能体协作：Parser/Retriever/Advisor/Planner/Generator/Validator/Repair/Curator 分工。
 - 真实 LLM 证据：本地 Qwen2.5-1.5B 已实际完成 Requirement/Advisor 调用；Coder/Repair 的一次真实失败和安全回退已保存，云 API 额度耗尽也有单独证据。
+- 模型 benchmark：1.5B/3B Coder/7B/8B/14B/30B 已按 Requirement、Planner、可执行代码、Repair 四项严格 gate 测试，路由结论见 `docs/MODEL_SELECTION.md`。
+- 严格 Contract gate：无关 JSON、错误函数签名、错误实体关系、截断代码、错误 metric direction 均有测试或 evidence。
 - 闭环学习证据：`closed_loop_learning_demo` 明确断言写回前不含目标 run、写回后重新检索到目标 run。

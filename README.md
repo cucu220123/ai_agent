@@ -9,7 +9,7 @@
 
 项目默认使用 `auto` Provider：先尝试 OpenAI-compatible API，失败后切换本地 Qwen，再由安全模板兜底；`mock` 仍用于 CI/离线测试。这样无网络、无 API 额度时仍可复现，但正常路径会优先尝试真实 LLM。
 
-增强版还支持真实 LLM-first 需求理解、结构化 JSON 合约、Hybrid GraphRAG、历史经验 prior + exploration、Critic/Repair 闭环、插件注册表、组合 Beam Search、PR-AUC/最佳 F1 阈值、真实子进程隔离与超时、知识查询 API 和内置极简 Web 页面。真实 API/本地模型状态和 fallback 原因见 [REAL_LLM_EVIDENCE](docs/REAL_LLM_EVIDENCE.md)。
+增强版还支持真实 LLM-first 需求理解、严格 JSON 合约、Hybrid GraphRAG、历史经验 prior + exploration、Critic/Repair 闭环、插件注册表、组合 Beam Search、PR-AUC/最佳 F1 阈值、真实子进程隔离与超时、知识查询 API 和内置极简 Web 页面。模型选择不是默认 1.5B，而是 benchmark 驱动的 14B Instruct + Coder 3B 路由，详见 [MODEL_SELECTION](docs/MODEL_SELECTION.md)。真实 API/本地模型状态和 fallback 原因见 [REAL_LLM_EVIDENCE](docs/REAL_LLM_EVIDENCE.md)。
 
 方案规划使用组合 Beam Search：`algorithm + preprocessing_variant + config_variant` 展开候选，再根据历史 prior、任务约束、资源成本和 exploration bonus 剪枝；当前 validation 仍决定最终 winner。
 

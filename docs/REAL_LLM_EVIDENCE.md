@@ -28,3 +28,7 @@ CuratorAgent -> knowledge write-back
 ## Why this is acceptable
 
 真实 LLM 已经进入需求理解、方案建议和证据轨迹；代码生成仍坚持安全门禁。云端额度恢复后，设置 `LLM_PROVIDER=openai` 可以使用同一条路径。更大的本地 Qwen3-Coder 需要约 60GB 权重和较长加载时间，项目保留 adapter 但不默认强制占用 GPU。
+
+## Updated benchmark evidence
+
+完整候选模型扫描与严格四任务 benchmark 见 [MODEL_SELECTION](MODEL_SELECTION.md) 和 `docs/evidence/local_model_benchmark.md`。结论是 14B Instruct + Coder 3B 路由，不再默认 1.5B。

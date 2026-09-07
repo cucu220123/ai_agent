@@ -1,0 +1,233 @@
+{
+  "model": "Qwen2.5-Coder-3B-Instruct",
+  "model_path": "/data/public_checkpoints/huggingface_models/Qwen2.5-Coder-3B-Instruct",
+  "real_llm_success": true,
+  "first_validation": {
+    "status": "failed",
+    "algorithm": "Logistic Regression",
+    "checks": {
+      "static_safety": {
+        "passed": false,
+        "message": "missing function: predict"
+      }
+    },
+    "metrics": {},
+    "runtime_seconds": 0.00361807644367218,
+    "errors": [
+      "missing function: predict"
+    ],
+    "warnings": [],
+    "stdout": "",
+    "stderr": "",
+    "repair_round": 0,
+    "task_type": "binary_classification",
+    "dataset_profile": {},
+    "resource_usage": {},
+    "failure_type": null,
+    "root_cause": null
+  },
+  "retrieved_experiences": [
+    {
+      "relevance_score": 5,
+      "id": "repair_interface_predict_v1",
+      "task_type": "binary_classification",
+      "domain": "customer_churn",
+      "failure_type": "interface_failure",
+      "triggering_condition": "missing function: predict",
+      "repair_action": "restore exact predict(model, test_df) and preserve train/evaluate",
+      "repair_success": true
+    }
+  ],
+  "critic_diagnosis": {
+    "failure_type": "interface_failure",
+    "root_cause": "The function `predict` is missing from the generated code.",
+    "triggering_condition": "The function `predict` is missing from the generated code.",
+    "observed_error": "missing function: predict\n",
+    "repair_strategy": "Restore the exact implementation of the `predict` function from a previously successful repair.",
+    "reusable_lesson": "Always ensure that all necessary functions are implemented in the generated code to avoid interface failures.",
+    "provider": "local_coder",
+    "retrieved_experience_ids": [
+      "repair_interface_predict_v1"
+    ]
+  },
+  "repair_event": {
+    "round": 1,
+    "changes": [
+      "accepted LLM repair after strict safety/protocol gate"
+    ],
+    "error": "{\"validation\": {\"status\": \"failed\", \"algorithm\": \"Logistic Regression\", \"checks\": {\"static_safety\": {\"passed\": false, \"message\": \"missing function: predict\"}}, \"metrics\": {}, \"runtime_seconds\": 0.00361807644367218, \"errors\": [\"missing function: predict\"], \"warnings\": [], \"stdout\": \"\", \"stderr\": \"\", \"repair_round\": 0, \"task_type\": \"binary_classification\", \"dataset_profile\": {}, \"resource_usage\": {}, \"failure_type\": null, \"root_cause\": null}, \"diagnosis\": {\"failure_type\": \"interface_failure\", \"root_cause\": \"The function `predict` is missing from the generated code.\", \"triggering_condition\": \"The function `predict` is missing from the generated code.\", \"observed_error\": \"missing function: predict\\n\", \"repair_strategy\": \"Restore the exact implementation of the `predict` function from a previously successful repair.\", \"reusable_lesson\": \"Always ensure that all necessary functions are implemented in the generated code to avoid interface failures.\", \"provider\": \"local_coder\", \"retrieved_experience_ids\": [\"repair_interface_predict_v1\"]}}",
+    "provider": "local_coder",
+    "retrieved_experience_ids": [
+      "repair_interface_predict_v1"
+    ],
+    "generation": {
+      "purpose": "repair",
+      "max_new_tokens": 3072,
+      "context_length": 32768,
+      "finish_reason": "eos",
+      "truncated": false,
+      "eos_reached": true,
+      "input_truncated": false
+    }
+  },
+  "second_validation": {
+    "status": "passed",
+    "algorithm": "Logistic Regression",
+    "checks": {
+      "static_safety": {
+        "passed": true,
+        "message": "static checks passed"
+      },
+      "interface_import": {
+        "passed": true,
+        "message": "static interface checks passed; runtime import deferred to isolated process",
+        "duration": 0.001226663589477539
+      },
+      "target_leakage": {
+        "passed": true,
+        "duplicate_target_columns": []
+      },
+      "isolated_execution": {
+        "passed": true,
+        "timeout": false,
+        "message": "isolated execution passed",
+        "resource_limits_applied": false,
+        "metrics3": {
+          "roc_auc": 0.8870703764320785,
+          "pr_auc": 0.7717546418090881,
+          "f1": 0.6428571428571429,
+          "precision": 0.6,
+          "recall": 0.6923076923076923,
+          "balanced_accuracy": 0.7823240589198036,
+          "best_f1": 0.7500000000000001,
+          "best_threshold": 0.6697705988806685
+        },
+        "metric_variance": {
+          "roc_auc": 0.0,
+          "pr_auc": 0.0,
+          "f1": 0.0,
+          "precision": 0.0,
+          "recall": 1.232595164407831e-32,
+          "balanced_accuracy": 0.0,
+          "best_f1": 0.0,
+          "best_threshold": 0.0
+        },
+        "drift": 0.0,
+        "prediction_rows": 60,
+        "positive_rate": 0.21666666666666667,
+        "robustness": {
+          "small_batch": true,
+          "missing_values_and_unseen_categories": true,
+          "empty_input": "rejected"
+        },
+        "runtime_seconds": 0.7852946072816849,
+        "cpu_seconds": 6.555618,
+        "max_rss_kb": 5690360
+      },
+      "resource_usage": {
+        "max_rss_kb": 5690360,
+        "runtime_seconds_child": 0.7852946072816849
+      },
+      "functional": {
+        "passed": true,
+        "message": "isolated train/predict/evaluate completed",
+        "prediction_rows": 60
+      },
+      "output_contract": {
+        "passed": true,
+        "message": "output schema and probability range passed"
+      },
+      "robustness": {
+        "passed": true,
+        "small_batch": true,
+        "missing_values_and_unseen_categories": true,
+        "empty_input": "rejected"
+      },
+      "metrics": {
+        "passed": true,
+        "per_metric": {
+          "roc_auc": true
+        },
+        "thresholds": {
+          "roc_auc": 0.65
+        },
+        "actual": {
+          "roc_auc": 0.8870703764320785,
+          "pr_auc": 0.7717546418090881,
+          "f1": 0.6428571428571429,
+          "precision": 0.6,
+          "recall": 0.6923076923076923,
+          "balanced_accuracy": 0.7823240589198036,
+          "best_f1": 0.7500000000000001,
+          "best_threshold": 0.6697705988806685
+        }
+      },
+      "class_balance": {
+        "positive_rate": 0.21666666666666667,
+        "train_rows": 180,
+        "test_rows": 60,
+        "warning": "class balance acceptable"
+      },
+      "stability": {
+        "passed": true,
+        "max_metric_drift": 0.0,
+        "metric_variance": {
+          "roc_auc": 0.0,
+          "pr_auc": 0.0,
+          "f1": 0.0,
+          "precision": 0.0,
+          "recall": 1.232595164407831e-32,
+          "balanced_accuracy": 0.0,
+          "best_f1": 0.0,
+          "best_threshold": 0.0
+        }
+      },
+      "runtime_budget": {
+        "passed": true,
+        "message": "completed in 2.68s (budget 30s)"
+      }
+    },
+    "metrics": {
+      "roc_auc": 0.8870703764320785,
+      "pr_auc": 0.7717546418090881,
+      "f1": 0.6428571428571429,
+      "precision": 0.6,
+      "recall": 0.6923076923076923,
+      "balanced_accuracy": 0.7823240589198036,
+      "best_f1": 0.7500000000000001,
+      "best_threshold": 0.6697705988806685
+    },
+    "runtime_seconds": 2.6822738349437714,
+    "errors": [],
+    "warnings": [],
+    "stdout": "AI_FACTORY_RESULT={\"metrics\": {\"roc_auc\": 0.8870703764320785, \"pr_auc\": 0.7717546418090881, \"f1\": 0.6428571428571429, \"precision\": 0.6, \"recall\": 0.6923076923076923, \"balanced_accuracy\": 0.7823240589198036, \"best_f1\": 0.7500000000000001, \"best_threshold\": 0.6697705988806685}, \"metrics2\": {\"roc_auc\": 0.8870703764320785, \"pr_auc\": 0.7717546418090881, \"f1\": 0.6428571428571429, \"precision\": 0.6, \"recall\": 0.6923076923076923, \"balanced_accuracy\": 0.7823240589198036, \"best_f1\": 0.7500000000000001, \"best_threshold\": 0.6697705988806685}, \"metrics3\": {\"roc_auc\": 0.8870703764320785, \"pr_auc\": 0.7717546418090881, \"f1\": 0.6428571428571429, \"precision\": 0.6, \"recall\": 0.6923076923076923, \"balanced_accuracy\": 0.7823240589198036, \"best_f1\": 0.7500000000000001, \"best_threshold\": 0.6697705988806685}, \"metric_variance\": {\"roc_auc\": 0.0, \"pr_auc\": 0.0, \"f1\": 0.0, \"precision\": 0.0, \"recall\": 1.232595164407831e-32, \"balanced_accuracy\": 0.0, \"best_f1\": 0.0, \"best_threshold\": 0.0}, \"drift\": 0.0, \"prediction_rows\": 60, \"positive_rate\": 0.21666666666666667, \"robustness\": {\"small_batch\": true, \"missing_values_and_unseen_categories\": true, \"empty_input\": \"rejected\"}, \"runtime_seconds\": 0.7852946072816849, \"cpu_seconds\": 6.555618, \"max_rss_kb\": 5690360}\n",
+    "stderr": "",
+    "repair_round": 1,
+    "task_type": "binary_classification",
+    "dataset_profile": {
+      "path": "/data3/xiaotianqi/ai_algorithm_factory/examples/real_llm_self_repair_demo/churn.csv",
+      "rows": 240,
+      "columns": [
+        "age",
+        "region",
+        "login_count_30d",
+        "total_spend",
+        "complaint_count",
+        "membership_level",
+        "tenure_months",
+        "churn"
+      ]
+    },
+    "resource_usage": {
+      "max_rss_kb": 5690360
+    },
+    "failure_type": null,
+    "root_cause": null
+  },
+  "elapsed_seconds": 84.585,
+  "artifacts": {
+    "before": "before.py",
+    "after": "after.py",
+    "data": "churn.csv"
+  }
+}

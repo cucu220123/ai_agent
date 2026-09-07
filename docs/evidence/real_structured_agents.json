@@ -1,0 +1,419 @@
+{
+  "model": "Qwen2.5-14B-Instruct",
+  "success": false,
+  "requirement": {
+    "raw_description": "根据客户年龄、地区、登录频率、消费金额和投诉次数预测客户是否流失，表格数据类别不平衡，要求 ROC-AUC 不低于 0.75，并输出概率，优先可解释方案。",
+    "domain": "customer_churn",
+    "capability_name": "客户流失预测",
+    "task_type": "binary_classification",
+    "data_type": "tabular",
+    "target_column": "churn",
+    "feature_columns": [
+      "age",
+      "region",
+      "login_count_30d",
+      "total_spend",
+      "complaint_count",
+      "membership_level",
+      "tenure_months"
+    ],
+    "input_schema": {
+      "age": "int64",
+      "region": "object",
+      "login_count_30d": "float64",
+      "total_spend": "float64",
+      "complaint_count": "int64",
+      "membership_level": "object",
+      "tenure_months": "int64"
+    },
+    "output_schema": {
+      "prediction": "int",
+      "probability": "float"
+    },
+    "dataset_profile": {
+      "path": "/data3/xiaotianqi/ai_algorithm_factory/data/churn_demo.csv",
+      "row_count": 1200,
+      "column_count": 8,
+      "missing_rates": {
+        "age": 0.0,
+        "region": 0.015,
+        "login_count_30d": 0.01,
+        "total_spend": 0.025,
+        "complaint_count": 0.0,
+        "membership_level": 0.0,
+        "tenure_months": 0.0,
+        "churn": 0.0
+      }
+    },
+    "metrics": [
+      "roc_auc",
+      "f1",
+      "precision",
+      "recall"
+    ],
+    "metric_thresholds": {
+      "roc_auc": 0.75
+    },
+    "output_columns": [
+      "prediction",
+      "probability"
+    ],
+    "constraints": [
+      "prefer_interpretable",
+      "output_probability"
+    ],
+    "latency_requirement_ms": null,
+    "interpretability_requirement": null,
+    "resource_constraints": {},
+    "probability_output_required": true,
+    "class_imbalance": {
+      "positive_rate": 0.1525,
+      "is_imbalanced": true
+    },
+    "candidate_hints": [],
+    "uncertainty": [],
+    "understanding_confidence": 0.0,
+    "candidate_algorithms": [
+      "logistic_regression",
+      "random_forest",
+      "gradient_boosting"
+    ],
+    "dataset_path": "/data3/xiaotianqi/ai_algorithm_factory/data/churn_demo.csv"
+  },
+  "requirement_trace": {
+    "provider": "local_instruction",
+    "status": "fallback",
+    "schema_valid": false,
+    "semantic_valid": false,
+    "attempts": [
+      {
+        "attempt": 1,
+        "status": "rejected",
+        "error": "ValueError: confidence below 0.45"
+      },
+      {
+        "attempt": 2,
+        "status": "rejected",
+        "error": "ValueError: confidence below 0.45"
+      }
+    ],
+    "fallback_reason": "ValueError: confidence below 0.45"
+  },
+  "planner_advice": {
+    "candidate_algorithms": [
+      "logistic_regression",
+      "random_forest",
+      "gradient_boosting"
+    ],
+    "preprocessing_recommendations": {
+      "gradient_boosting": [],
+      "random_forest": [],
+      "logistic_regression": []
+    },
+    "metric_strategy": {
+      "primary": "roc_auc",
+      "thresholds": {
+        "roc_auc": 0.75
+      }
+    },
+    "constraint_analysis": [
+      "prefer_interpretable",
+      "output_probability"
+    ],
+    "evidence_ids": [
+      "environment_python_sklearn",
+      "task_binary_classification",
+      "dependency_scikit_learn",
+      "cap_churn_prediction_v1",
+      "evidence_run_084",
+      "algorithm_logistic_regression",
+      "algorithm_random_forest",
+      "algorithm_gradient_boosting"
+    ],
+    "algorithm_reasons": {
+      "gradient_boosting": "deterministic compatibility fallback",
+      "random_forest": "deterministic compatibility fallback",
+      "logistic_regression": "deterministic compatibility fallback"
+    },
+    "risks": [
+      "LLM planner advice unavailable or rejected"
+    ],
+    "confidence": 0.0
+  },
+  "planner_trace": {
+    "status": "fallback",
+    "schema_valid": false,
+    "semantic_valid": false,
+    "context": {
+      "raw_retrieved_items": {
+        "graph_nodes": 18,
+        "graph_candidates": 3,
+        "historical_runs": 1,
+        "experiences": 0,
+        "semantic_items": 8
+      },
+      "items_after_rerank": {
+        "graph_candidates": 3,
+        "historical_runs": 1,
+        "experiences": 0,
+        "source_evidence": 5
+      },
+      "context_budget_chars": 10000,
+      "final_prompt_chars": 3383,
+      "estimated_prompt_tokens": 1127,
+      "final_evidence_ids": [
+        "environment_python_sklearn",
+        "task_binary_classification",
+        "dependency_scikit_learn",
+        "cap_churn_prediction_v1",
+        "evidence_run_084",
+        "algorithm_logistic_regression",
+        "algorithm_random_forest",
+        "algorithm_gradient_boosting"
+      ]
+    },
+    "attempts": [
+      {
+        "attempt": 1,
+        "status": "rejected",
+        "error": "ValidationError: 3 validation errors for PlannerAdviceContract\npreprocessing_recommendations.handle_imbalance\n  Input should be a valid list [type=list_type, input_value=True, input_type=bool]\n    For further information visit https://errors.pydantic.dev/2.11/v/list_type\npreprocessing_recommendations.encode_categorical_features\n  Input should be a valid list [type=list_type, input_value=True, input_type=bool]\n    For further information visit https://errors.pydantic.dev/2.11/v/list_type\npreprocessing_recommendations.scale_numeric_features\n  Input should be a valid list [type=list_type, input_value=True, input_type=bool]\n    For further information visit https://errors.pydantic.dev/2.11/v/list_type"
+      },
+      {
+        "attempt": 2,
+        "status": "rejected",
+        "error": "ValueError: unsupported algorithms: ['Gradient Boosting', 'Logistic Regression', 'Random Forest']"
+      }
+    ],
+    "raw_retrieved_items": {
+      "graph_nodes": 18,
+      "graph_candidates": 3,
+      "historical_runs": 1,
+      "experiences": 0,
+      "semantic_items": 8
+    },
+    "items_after_rerank": {
+      "graph_candidates": 3,
+      "historical_runs": 1,
+      "experiences": 0,
+      "source_evidence": 5
+    },
+    "final_prompt_evidence": {
+      "requirement": {
+        "domain": "customer_churn",
+        "capability_name": "客户流失预测",
+        "task_type": "binary_classification",
+        "data_type": "tabular",
+        "target": "churn",
+        "features": [
+          "age",
+          "region",
+          "login_count_30d",
+          "total_spend",
+          "complaint_count",
+          "membership_level",
+          "tenure_months"
+        ],
+        "metrics": [
+          "roc_auc",
+          "f1",
+          "precision",
+          "recall"
+        ],
+        "thresholds": {
+          "roc_auc": 0.75
+        },
+        "constraints": [
+          "prefer_interpretable",
+          "output_probability"
+        ],
+        "latency_requirement_ms": null,
+        "interpretability_requirement": null,
+        "resource_constraints": {},
+        "class_imbalance": {
+          "positive_rate": 0.1525,
+          "is_imbalanced": true
+        }
+      },
+      "graph_candidates": [
+        {
+          "algorithm": "Logistic Regression",
+          "algorithm_id": "algorithm_logistic_regression",
+          "applicable_conditions": [
+            "binary_classification"
+          ],
+          "historical_runs": [
+            {
+              "id": "evidence_run_084",
+              "score": 23.0,
+              "type": "ValidationRun",
+              "status": "passed",
+              "algorithm_id": "algorithm_logistic_regression",
+              "task_type": "binary_classification",
+              "timestamp": "",
+              "metric_roc_auc": "0.84",
+              "run_id": "evidence_run_084",
+              "capability_id": "cap_churn_prediction_v1",
+              "domain": "customer_churn",
+              "target": "churn",
+              "feature_columns": [
+                "age",
+                "region",
+                "login_count_30d",
+                "total_spend",
+                "complaint_count",
+                "membership_level",
+                "tenure_months"
+              ],
+              "metrics": {
+                "roc_auc": 0.84
+              },
+              "runtime_seconds": 1.1
+            }
+          ],
+          "failure_experiences": [],
+          "evidence_node_ids": [
+            "environment_python_sklearn",
+            "task_binary_classification",
+            "dependency_scikit_learn",
+            "cap_churn_prediction_v1",
+            "evidence_run_084"
+          ]
+        },
+        {
+          "algorithm": "Random Forest",
+          "algorithm_id": "algorithm_random_forest",
+          "applicable_conditions": [
+            "binary_classification"
+          ],
+          "historical_runs": [],
+          "failure_experiences": [],
+          "evidence_node_ids": [
+            "environment_python_sklearn",
+            "task_binary_classification",
+            "dependency_scikit_learn",
+            "cap_churn_prediction_v1"
+          ]
+        },
+        {
+          "algorithm": "Gradient Boosting",
+          "algorithm_id": "algorithm_gradient_boosting",
+          "applicable_conditions": [
+            "binary_classification"
+          ],
+          "historical_runs": [],
+          "failure_experiences": [],
+          "evidence_node_ids": [
+            "environment_python_sklearn",
+            "task_binary_classification",
+            "dependency_scikit_learn",
+            "cap_churn_prediction_v1"
+          ]
+        }
+      ],
+      "similar_historical_runs": [
+        {
+          "similarity": 0.95,
+          "run_id": "evidence_run_084",
+          "capability_id": "cap_churn_prediction_v1",
+          "algorithm_id": "algorithm_logistic_regression",
+          "status": "passed",
+          "task_type": "binary_classification",
+          "domain": "customer_churn",
+          "target": "churn",
+          "feature_columns": [
+            "age",
+            "region",
+            "login_count_30d",
+            "total_spend",
+            "complaint_count",
+            "membership_level",
+            "tenure_months"
+          ],
+          "metrics": {
+            "roc_auc": 0.84
+          },
+          "runtime_seconds": 1.1
+        }
+      ],
+      "failure_and_repair_experiences": [],
+      "source_evidence": [
+        {
+          "score": 0.678317,
+          "source": {
+            "run_id": "evidence_run_084",
+            "capability_id": "cap_churn_prediction_v1",
+            "algorithm_id": "algorithm_logistic_regression",
+            "status": "passed",
+            "task_type": "binary_classification",
+            "domain": "customer_churn",
+            "target": "churn",
+            "feature_columns": [
+              "age",
+              "region",
+              "login_count_30d",
+              "total_spend",
+              "complaint_count",
+              "membership_level",
+              "tenure_months"
+            ],
+            "metrics": {
+              "roc_auc": 0.84
+            },
+            "runtime_seconds": 1.1
+          },
+          "backend": "tfidf"
+        },
+        {
+          "score": 0.370529,
+          "source": {
+            "id": "dataset_churn_demo",
+            "path": "data/churn_demo.csv",
+            "target": "churn",
+            "task_type": "binary_classification"
+          },
+          "backend": "tfidf"
+        },
+        {
+          "score": 0.251848,
+          "source": {
+            "id": "metric_precision",
+            "name": "Precision",
+            "direction": "max"
+          },
+          "backend": "tfidf"
+        },
+        {
+          "score": 0.246748,
+          "source": {
+            "id": "metric_roc_auc",
+            "name": "ROC-AUC",
+            "direction": "max"
+          },
+          "backend": "tfidf"
+        },
+        {
+          "score": 0.235858,
+          "source": {
+            "id": "metric_pr_auc",
+            "name": "PR-AUC",
+            "direction": "max"
+          },
+          "backend": "tfidf"
+        }
+      ]
+    },
+    "prompt_token_count": 1127,
+    "fallback_reason": "ValueError: unsupported algorithms: ['Gradient Boosting', 'Logistic Regression', 'Random Forest']"
+  },
+  "retrieval_trace": {
+    "strategy": "hybrid_graph_rag",
+    "graph_anchors": 10,
+    "graph_nodes": 18,
+    "graph_edges": 25,
+    "semantic_documents": 8,
+    "semantic_backend": "tfidf",
+    "semantic_fallback_error": null,
+    "historical_cases": 1
+  },
+  "elapsed_seconds": 89.505
+}

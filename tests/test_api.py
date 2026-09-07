@@ -11,3 +11,4 @@ def test_api_read_endpoints():
     assert client.get("/knowledge/search?q=客户流失").status_code == 200
     assert client.get("/ui").status_code == 200
     assert client.get("/runs").status_code == 200
+    assert client.post("/knowledge/ingest", json={"path": "data/business_material.md", "provider": "mock"}).status_code == 200

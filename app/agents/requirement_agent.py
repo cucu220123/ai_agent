@@ -116,7 +116,7 @@ class RequirementUnderstandingAgent:
                     prompt = json.dumps({"instruction": "Repair the previous JSON. Return only a complete object matching the schema.", "previous_output": previous[:8000], "validation_error": trace["attempts"][-1].get("error"), "original_request": json.loads(self._prompt(description, dataset_path))}, ensure_ascii=False)
                 raw = self.llm.complete("你是 RequirementUnderstandingAgent。只返回严格 JSON，不要 Markdown 或思考过程。", prompt, purpose="requirement") or ""
                 previous = raw
-                parsed = extract_json_object(raw)
+                parsed = self._normalize_candidate(extract_json_object(raw))
                 contract = RequirementContract.model_validate(parsed)
                 quality_errors = self._quality_gate(contract, description, dataset_path)
                 if quality_errors:
@@ -132,6 +132,37 @@ class RequirementUnderstandingAgent:
                 break
         trace["fallback_reason"] = trace["attempts"][-1].get("error", "invalid structured output") if trace["attempts"] else "provider unavailable"
         return fallback, trace
+
+    @staticmethod
+    def _normalize_candidate(parsed: dict[str, Any] | None) -> dict[str, Any]:
+        if not isinstance(parsed, dict):
+            return parsed
+        value = dict(parsed)
+        # Only mechanical type repairs are allowed; semantic fields remain required and are never invented here.
+        for key in ("input_schema", "output_schema", "resource_constraint"):
+            if isinstance(value.get(key), str):
+                try:
+                    value[key] = json.loads(value[key])
+                except json.JSONDecodeError:
+                    pass
+        for key in ("input_schema", "output_schema"):
+            if isinstance(value.get(key), dict) and isinstance(value[key].get("fields"), list):
+                value[key] = {str(item.get("name")): str(item.get("type", "unknown")) for item in value[key]["fields"] if isinstance(item, dict) and item.get("name")}
+        if isinstance(value.get("interpretability_requirement"), bool):
+            value["interpretability_requirement"] = "high" if value["interpretability_requirement"] else "none"
+        for key in ("resource_constraint", "class_imbalance"):
+            if value.get(key) is None:
+                value[key] = {}
+        for key in ("constraints", "uncertainty", "candidate_hints"):
+            if isinstance(value.get(key), dict):
+                value[key] = [f"{k}={v}" for k, v in value[key].items()]
+            elif value.get(key) is None:
+                value[key] = []
+        if isinstance(value.get("class_imbalance"), bool):
+            value["class_imbalance"] = {"is_imbalanced": value["class_imbalance"]}
+        if value.get("confidence") is None:
+            value["confidence"] = 0.0
+        return value
 
     def _quality_gate(self, contract: RequirementContract, description: str, dataset_path: str | Path | None) -> list[str]:
         errors = []
@@ -197,4 +228,3 @@ class RequirementUnderstandingAgent:
             uncertainty=contract.uncertainty, understanding_confidence=contract.confidence,
             candidate_algorithms=fallback.candidate_algorithms, dataset_path=str(dataset_path) if dataset_path else None,
         ), corrections
-

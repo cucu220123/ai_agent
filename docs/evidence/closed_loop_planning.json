@@ -1,0 +1,663 @@
+{
+  "written_validation_run": "closed_loop_high_similarity_run",
+  "before": {
+    "planning_priors": {
+      "algorithm_logistic_regression": 0.88,
+      "algorithm_random_forest": 0.9199999999999999,
+      "algorithm_gradient_boosting": 0.9299999999999999
+    },
+    "beam_ranking": [
+      "algorithm_random_forest",
+      "algorithm_gradient_boosting",
+      "algorithm_logistic_regression"
+    ],
+    "beam_scores": {
+      "algorithm_random_forest__rf_fast": 0.96,
+      "algorithm_gradient_boosting__gb_fast": 0.945,
+      "algorithm_logistic_regression__balanced_c1": 0.905
+    },
+    "historical_run_ids": [],
+    "retrieval_trace": {
+      "strategy": "hybrid_graph_rag",
+      "graph_anchors": 6,
+      "graph_nodes": 17,
+      "graph_edges": 23,
+      "semantic_documents": 8,
+      "semantic_backend": "tfidf",
+      "semantic_fallback_error": null,
+      "historical_cases": 0
+    },
+    "search_trace": {
+      "strategy": "combinatorial_beam_search",
+      "beam_width": 3,
+      "expanded": 12,
+      "selected": [
+        "algorithm_random_forest__rf_fast",
+        "algorithm_gradient_boosting__gb_fast",
+        "algorithm_logistic_regression__balanced_c1"
+      ],
+      "scores": {
+        "algorithm_logistic_regression__standard_c1": 0.88,
+        "algorithm_logistic_regression__balanced_c1": 0.905,
+        "algorithm_logistic_regression__regularized_robust": 0.89,
+        "algorithm_logistic_regression__weak_regularization": 0.88,
+        "algorithm_random_forest__rf_fast": 0.96,
+        "algorithm_random_forest__rf_balanced": 0.945,
+        "algorithm_random_forest__rf_deep": 0.945,
+        "algorithm_random_forest__rf_regularized": 0.945,
+        "algorithm_gradient_boosting__gb_fast": 0.945,
+        "algorithm_gradient_boosting__gb_baseline": 0.93,
+        "algorithm_gradient_boosting__gb_slow_deep": 0.93,
+        "algorithm_gradient_boosting__gb_shallow": 0.93
+      },
+      "expansions": [
+        {
+          "parent_state": "algorithm_logistic_regression",
+          "expansion_action": {
+            "name": "standard_c1",
+            "parameters": {
+              "C": 1.0,
+              "class_weight": null,
+              "scaler": "standard",
+              "threshold": 0.5,
+              "numeric_imputer": "median"
+            },
+            "preprocessing_variant": "imputer=median;scaler=standard",
+            "preprocessing": [
+              "median imputation",
+              "standard"
+            ]
+          },
+          "child_state": "algorithm_logistic_regression__standard_c1",
+          "score": 0.88
+        },
+        {
+          "parent_state": "algorithm_logistic_regression",
+          "expansion_action": {
+            "name": "balanced_c1",
+            "parameters": {
+              "C": 1.0,
+              "class_weight": "balanced",
+              "scaler": "standard",
+              "threshold": 0.4,
+              "numeric_imputer": "median"
+            },
+            "preprocessing_variant": "imputer=median;scaler=standard",
+            "preprocessing": [
+              "median imputation",
+              "standard"
+            ]
+          },
+          "child_state": "algorithm_logistic_regression__balanced_c1",
+          "score": 0.905
+        },
+        {
+          "parent_state": "algorithm_logistic_regression",
+          "expansion_action": {
+            "name": "regularized_robust",
+            "parameters": {
+              "C": 0.3,
+              "class_weight": null,
+              "scaler": "robust",
+              "threshold": 0.45,
+              "numeric_imputer": "median"
+            },
+            "preprocessing_variant": "imputer=median;scaler=robust",
+            "preprocessing": [
+              "median imputation",
+              "robust"
+            ]
+          },
+          "child_state": "algorithm_logistic_regression__regularized_robust",
+          "score": 0.89
+        },
+        {
+          "parent_state": "algorithm_logistic_regression",
+          "expansion_action": {
+            "name": "weak_regularization",
+            "parameters": {
+              "C": 3.0,
+              "class_weight": null,
+              "scaler": "standard",
+              "threshold": 0.5,
+              "numeric_imputer": "mean"
+            },
+            "preprocessing_variant": "imputer=mean;scaler=standard",
+            "preprocessing": [
+              "mean imputation",
+              "standard"
+            ]
+          },
+          "child_state": "algorithm_logistic_regression__weak_regularization",
+          "score": 0.88
+        },
+        {
+          "parent_state": "algorithm_random_forest",
+          "expansion_action": {
+            "name": "rf_fast",
+            "parameters": {
+              "n_estimators": 80,
+              "max_depth": 6,
+              "min_samples_leaf": 2,
+              "class_weight": "balanced"
+            },
+            "preprocessing_variant": "imputer=median;scaler=none",
+            "preprocessing": [
+              "median imputation"
+            ]
+          },
+          "child_state": "algorithm_random_forest__rf_fast",
+          "score": 0.96
+        },
+        {
+          "parent_state": "algorithm_random_forest",
+          "expansion_action": {
+            "name": "rf_balanced",
+            "parameters": {
+              "n_estimators": 180,
+              "max_depth": 10,
+              "min_samples_leaf": 2,
+              "class_weight": "balanced"
+            },
+            "preprocessing_variant": "imputer=median;scaler=none",
+            "preprocessing": [
+              "median imputation"
+            ]
+          },
+          "child_state": "algorithm_random_forest__rf_balanced",
+          "score": 0.945
+        },
+        {
+          "parent_state": "algorithm_random_forest",
+          "expansion_action": {
+            "name": "rf_deep",
+            "parameters": {
+              "n_estimators": 240,
+              "max_depth": null,
+              "min_samples_leaf": 1,
+              "class_weight": "balanced_subsample"
+            },
+            "preprocessing_variant": "imputer=median;scaler=none",
+            "preprocessing": [
+              "median imputation"
+            ]
+          },
+          "child_state": "algorithm_random_forest__rf_deep",
+          "score": 0.945
+        },
+        {
+          "parent_state": "algorithm_random_forest",
+          "expansion_action": {
+            "name": "rf_regularized",
+            "parameters": {
+              "n_estimators": 160,
+              "max_depth": 7,
+              "min_samples_leaf": 5,
+              "class_weight": "balanced"
+            },
+            "preprocessing_variant": "imputer=median;scaler=none",
+            "preprocessing": [
+              "median imputation"
+            ]
+          },
+          "child_state": "algorithm_random_forest__rf_regularized",
+          "score": 0.945
+        },
+        {
+          "parent_state": "algorithm_gradient_boosting",
+          "expansion_action": {
+            "name": "gb_fast",
+            "parameters": {
+              "n_estimators": 80,
+              "learning_rate": 0.08,
+              "max_depth": 2
+            },
+            "preprocessing_variant": "imputer=median;scaler=none",
+            "preprocessing": [
+              "median imputation"
+            ]
+          },
+          "child_state": "algorithm_gradient_boosting__gb_fast",
+          "score": 0.945
+        },
+        {
+          "parent_state": "algorithm_gradient_boosting",
+          "expansion_action": {
+            "name": "gb_baseline",
+            "parameters": {
+              "n_estimators": 120,
+              "learning_rate": 0.05,
+              "max_depth": 3
+            },
+            "preprocessing_variant": "imputer=median;scaler=none",
+            "preprocessing": [
+              "median imputation"
+            ]
+          },
+          "child_state": "algorithm_gradient_boosting__gb_baseline",
+          "score": 0.93
+        },
+        {
+          "parent_state": "algorithm_gradient_boosting",
+          "expansion_action": {
+            "name": "gb_slow_deep",
+            "parameters": {
+              "n_estimators": 180,
+              "learning_rate": 0.03,
+              "max_depth": 3
+            },
+            "preprocessing_variant": "imputer=median;scaler=none",
+            "preprocessing": [
+              "median imputation"
+            ]
+          },
+          "child_state": "algorithm_gradient_boosting__gb_slow_deep",
+          "score": 0.93
+        },
+        {
+          "parent_state": "algorithm_gradient_boosting",
+          "expansion_action": {
+            "name": "gb_shallow",
+            "parameters": {
+              "n_estimators": 150,
+              "learning_rate": 0.04,
+              "max_depth": 2
+            },
+            "preprocessing_variant": "imputer=median;scaler=none",
+            "preprocessing": [
+              "median imputation"
+            ]
+          },
+          "child_state": "algorithm_gradient_boosting__gb_shallow",
+          "score": 0.93
+        }
+      ],
+      "pruned": [
+        {
+          "state": "algorithm_random_forest__rf_balanced",
+          "score": 0.945,
+          "prune_reason": "outside_top_diverse_beam"
+        },
+        {
+          "state": "algorithm_random_forest__rf_deep",
+          "score": 0.945,
+          "prune_reason": "outside_top_diverse_beam"
+        },
+        {
+          "state": "algorithm_random_forest__rf_regularized",
+          "score": 0.945,
+          "prune_reason": "outside_top_diverse_beam"
+        },
+        {
+          "state": "algorithm_gradient_boosting__gb_baseline",
+          "score": 0.93,
+          "prune_reason": "outside_top_diverse_beam"
+        },
+        {
+          "state": "algorithm_gradient_boosting__gb_slow_deep",
+          "score": 0.93,
+          "prune_reason": "outside_top_diverse_beam"
+        },
+        {
+          "state": "algorithm_gradient_boosting__gb_shallow",
+          "score": 0.93,
+          "prune_reason": "outside_top_diverse_beam"
+        },
+        {
+          "state": "algorithm_logistic_regression__regularized_robust",
+          "score": 0.89,
+          "prune_reason": "outside_top_diverse_beam"
+        },
+        {
+          "state": "algorithm_logistic_regression__standard_c1",
+          "score": 0.88,
+          "prune_reason": "outside_top_diverse_beam"
+        },
+        {
+          "state": "algorithm_logistic_regression__weak_regularization",
+          "score": 0.88,
+          "prune_reason": "outside_top_diverse_beam"
+        }
+      ]
+    }
+  },
+  "after": {
+    "planning_priors": {
+      "algorithm_logistic_regression": 1.0465685424949238,
+      "algorithm_random_forest": 0.9199999999999999,
+      "algorithm_gradient_boosting": 0.9299999999999999
+    },
+    "beam_ranking": [
+      "algorithm_logistic_regression",
+      "algorithm_random_forest",
+      "algorithm_gradient_boosting"
+    ],
+    "beam_scores": {
+      "algorithm_logistic_regression__balanced_c1": 1.0715685424949237,
+      "algorithm_random_forest__rf_fast": 0.96,
+      "algorithm_gradient_boosting__gb_fast": 0.945
+    },
+    "historical_run_ids": [
+      "closed_loop_high_similarity_run"
+    ],
+    "retrieval_trace": {
+      "strategy": "hybrid_graph_rag",
+      "graph_anchors": 7,
+      "graph_nodes": 18,
+      "graph_edges": 25,
+      "semantic_documents": 8,
+      "semantic_backend": "tfidf",
+      "semantic_fallback_error": null,
+      "historical_cases": 1
+    },
+    "search_trace": {
+      "strategy": "combinatorial_beam_search",
+      "beam_width": 3,
+      "expanded": 12,
+      "selected": [
+        "algorithm_logistic_regression__balanced_c1",
+        "algorithm_random_forest__rf_fast",
+        "algorithm_gradient_boosting__gb_fast"
+      ],
+      "scores": {
+        "algorithm_logistic_regression__standard_c1": 1.046569,
+        "algorithm_logistic_regression__balanced_c1": 1.071569,
+        "algorithm_logistic_regression__regularized_robust": 1.056569,
+        "algorithm_logistic_regression__weak_regularization": 1.046569,
+        "algorithm_random_forest__rf_fast": 0.96,
+        "algorithm_random_forest__rf_balanced": 0.945,
+        "algorithm_random_forest__rf_deep": 0.945,
+        "algorithm_random_forest__rf_regularized": 0.945,
+        "algorithm_gradient_boosting__gb_fast": 0.945,
+        "algorithm_gradient_boosting__gb_baseline": 0.93,
+        "algorithm_gradient_boosting__gb_slow_deep": 0.93,
+        "algorithm_gradient_boosting__gb_shallow": 0.93
+      },
+      "expansions": [
+        {
+          "parent_state": "algorithm_logistic_regression",
+          "expansion_action": {
+            "name": "standard_c1",
+            "parameters": {
+              "C": 1.0,
+              "class_weight": null,
+              "scaler": "standard",
+              "threshold": 0.5,
+              "numeric_imputer": "median"
+            },
+            "preprocessing_variant": "imputer=median;scaler=standard",
+            "preprocessing": [
+              "median imputation",
+              "standard"
+            ]
+          },
+          "child_state": "algorithm_logistic_regression__standard_c1",
+          "score": 1.046569
+        },
+        {
+          "parent_state": "algorithm_logistic_regression",
+          "expansion_action": {
+            "name": "balanced_c1",
+            "parameters": {
+              "C": 1.0,
+              "class_weight": "balanced",
+              "scaler": "standard",
+              "threshold": 0.4,
+              "numeric_imputer": "median"
+            },
+            "preprocessing_variant": "imputer=median;scaler=standard",
+            "preprocessing": [
+              "median imputation",
+              "standard"
+            ]
+          },
+          "child_state": "algorithm_logistic_regression__balanced_c1",
+          "score": 1.071569
+        },
+        {
+          "parent_state": "algorithm_logistic_regression",
+          "expansion_action": {
+            "name": "regularized_robust",
+            "parameters": {
+              "C": 0.3,
+              "class_weight": null,
+              "scaler": "robust",
+              "threshold": 0.45,
+              "numeric_imputer": "median"
+            },
+            "preprocessing_variant": "imputer=median;scaler=robust",
+            "preprocessing": [
+              "median imputation",
+              "robust"
+            ]
+          },
+          "child_state": "algorithm_logistic_regression__regularized_robust",
+          "score": 1.056569
+        },
+        {
+          "parent_state": "algorithm_logistic_regression",
+          "expansion_action": {
+            "name": "weak_regularization",
+            "parameters": {
+              "C": 3.0,
+              "class_weight": null,
+              "scaler": "standard",
+              "threshold": 0.5,
+              "numeric_imputer": "mean"
+            },
+            "preprocessing_variant": "imputer=mean;scaler=standard",
+            "preprocessing": [
+              "mean imputation",
+              "standard"
+            ]
+          },
+          "child_state": "algorithm_logistic_regression__weak_regularization",
+          "score": 1.046569
+        },
+        {
+          "parent_state": "algorithm_random_forest",
+          "expansion_action": {
+            "name": "rf_fast",
+            "parameters": {
+              "n_estimators": 80,
+              "max_depth": 6,
+              "min_samples_leaf": 2,
+              "class_weight": "balanced"
+            },
+            "preprocessing_variant": "imputer=median;scaler=none",
+            "preprocessing": [
+              "median imputation"
+            ]
+          },
+          "child_state": "algorithm_random_forest__rf_fast",
+          "score": 0.96
+        },
+        {
+          "parent_state": "algorithm_random_forest",
+          "expansion_action": {
+            "name": "rf_balanced",
+            "parameters": {
+              "n_estimators": 180,
+              "max_depth": 10,
+              "min_samples_leaf": 2,
+              "class_weight": "balanced"
+            },
+            "preprocessing_variant": "imputer=median;scaler=none",
+            "preprocessing": [
+              "median imputation"
+            ]
+          },
+          "child_state": "algorithm_random_forest__rf_balanced",
+          "score": 0.945
+        },
+        {
+          "parent_state": "algorithm_random_forest",
+          "expansion_action": {
+            "name": "rf_deep",
+            "parameters": {
+              "n_estimators": 240,
+              "max_depth": null,
+              "min_samples_leaf": 1,
+              "class_weight": "balanced_subsample"
+            },
+            "preprocessing_variant": "imputer=median;scaler=none",
+            "preprocessing": [
+              "median imputation"
+            ]
+          },
+          "child_state": "algorithm_random_forest__rf_deep",
+          "score": 0.945
+        },
+        {
+          "parent_state": "algorithm_random_forest",
+          "expansion_action": {
+            "name": "rf_regularized",
+            "parameters": {
+              "n_estimators": 160,
+              "max_depth": 7,
+              "min_samples_leaf": 5,
+              "class_weight": "balanced"
+            },
+            "preprocessing_variant": "imputer=median;scaler=none",
+            "preprocessing": [
+              "median imputation"
+            ]
+          },
+          "child_state": "algorithm_random_forest__rf_regularized",
+          "score": 0.945
+        },
+        {
+          "parent_state": "algorithm_gradient_boosting",
+          "expansion_action": {
+            "name": "gb_fast",
+            "parameters": {
+              "n_estimators": 80,
+              "learning_rate": 0.08,
+              "max_depth": 2
+            },
+            "preprocessing_variant": "imputer=median;scaler=none",
+            "preprocessing": [
+              "median imputation"
+            ]
+          },
+          "child_state": "algorithm_gradient_boosting__gb_fast",
+          "score": 0.945
+        },
+        {
+          "parent_state": "algorithm_gradient_boosting",
+          "expansion_action": {
+            "name": "gb_baseline",
+            "parameters": {
+              "n_estimators": 120,
+              "learning_rate": 0.05,
+              "max_depth": 3
+            },
+            "preprocessing_variant": "imputer=median;scaler=none",
+            "preprocessing": [
+              "median imputation"
+            ]
+          },
+          "child_state": "algorithm_gradient_boosting__gb_baseline",
+          "score": 0.93
+        },
+        {
+          "parent_state": "algorithm_gradient_boosting",
+          "expansion_action": {
+            "name": "gb_slow_deep",
+            "parameters": {
+              "n_estimators": 180,
+              "learning_rate": 0.03,
+              "max_depth": 3
+            },
+            "preprocessing_variant": "imputer=median;scaler=none",
+            "preprocessing": [
+              "median imputation"
+            ]
+          },
+          "child_state": "algorithm_gradient_boosting__gb_slow_deep",
+          "score": 0.93
+        },
+        {
+          "parent_state": "algorithm_gradient_boosting",
+          "expansion_action": {
+            "name": "gb_shallow",
+            "parameters": {
+              "n_estimators": 150,
+              "learning_rate": 0.04,
+              "max_depth": 2
+            },
+            "preprocessing_variant": "imputer=median;scaler=none",
+            "preprocessing": [
+              "median imputation"
+            ]
+          },
+          "child_state": "algorithm_gradient_boosting__gb_shallow",
+          "score": 0.93
+        }
+      ],
+      "pruned": [
+        {
+          "state": "algorithm_logistic_regression__regularized_robust",
+          "score": 1.056569,
+          "prune_reason": "outside_top_diverse_beam"
+        },
+        {
+          "state": "algorithm_logistic_regression__standard_c1",
+          "score": 1.046569,
+          "prune_reason": "outside_top_diverse_beam"
+        },
+        {
+          "state": "algorithm_logistic_regression__weak_regularization",
+          "score": 1.046569,
+          "prune_reason": "outside_top_diverse_beam"
+        },
+        {
+          "state": "algorithm_random_forest__rf_balanced",
+          "score": 0.945,
+          "prune_reason": "outside_top_diverse_beam"
+        },
+        {
+          "state": "algorithm_random_forest__rf_deep",
+          "score": 0.945,
+          "prune_reason": "outside_top_diverse_beam"
+        },
+        {
+          "state": "algorithm_random_forest__rf_regularized",
+          "score": 0.945,
+          "prune_reason": "outside_top_diverse_beam"
+        },
+        {
+          "state": "algorithm_gradient_boosting__gb_baseline",
+          "score": 0.93,
+          "prune_reason": "outside_top_diverse_beam"
+        },
+        {
+          "state": "algorithm_gradient_boosting__gb_slow_deep",
+          "score": 0.93,
+          "prune_reason": "outside_top_diverse_beam"
+        },
+        {
+          "state": "algorithm_gradient_boosting__gb_shallow",
+          "score": 0.93,
+          "prune_reason": "outside_top_diverse_beam"
+        }
+      ]
+    }
+  },
+  "evidence": {
+    "retrieved_after_writeback": true,
+    "logistic_prior_before": 0.88,
+    "logistic_prior_after": 1.0465685424949238,
+    "ranking_before": [
+      "algorithm_random_forest",
+      "algorithm_gradient_boosting",
+      "algorithm_logistic_regression"
+    ],
+    "ranking_after": [
+      "algorithm_logistic_regression",
+      "algorithm_random_forest",
+      "algorithm_gradient_boosting"
+    ],
+    "planning_state_changed": true
+  }
+}

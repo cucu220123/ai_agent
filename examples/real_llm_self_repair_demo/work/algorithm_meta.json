@@ -1,0 +1,76 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-07T04:54:50.081576+00:00",
+  "source_sha256": "7acb2233c869d4ebc78afcdd3370f09fddcb9c09da65e389fc9695c7b073ef67",
+  "spec": {
+    "raw_description": "客户流失预测 self-repair",
+    "domain": "customer_churn",
+    "capability_name": "客户流失预测",
+    "task_type": "binary_classification",
+    "data_type": "tabular",
+    "target_column": "churn",
+    "feature_columns": [
+      "age",
+      "region",
+      "login_count_30d",
+      "total_spend"
+    ],
+    "input_schema": {},
+    "output_schema": {
+      "prediction": "int",
+      "probability": "float"
+    },
+    "dataset_profile": {},
+    "metrics": [
+      "roc_auc",
+      "f1",
+      "precision",
+      "recall"
+    ],
+    "metric_thresholds": {
+      "roc_auc": 0.65
+    },
+    "output_columns": [
+      "prediction",
+      "probability"
+    ],
+    "constraints": [],
+    "latency_requirement_ms": null,
+    "interpretability_requirement": null,
+    "resource_constraints": {},
+    "probability_output_required": true,
+    "class_imbalance": {},
+    "candidate_hints": [],
+    "uncertainty": [],
+    "understanding_confidence": 0.0,
+    "candidate_algorithms": [],
+    "dataset_path": null
+  },
+  "plan": {
+    "algorithm_id": "algorithm_logistic_regression",
+    "algorithm_name": "Logistic Regression",
+    "rationale": "repair fixture",
+    "preprocessing": [
+      "imputation",
+      "one-hot",
+      "scaling"
+    ],
+    "hyperparameters": {
+      "C": 1.0,
+      "max_iter": 500,
+      "scaler": "standard"
+    },
+    "expected_metrics": {},
+    "priority": 0,
+    "base_algorithm_id": "algorithm_logistic_regression",
+    "preprocessing_variant": "default",
+    "config_variant": "default",
+    "search_score": 0.0,
+    "evidence_ids": []
+  },
+  "generation": {
+    "provider": "fixture",
+    "status": "template_by_budget",
+    "reason": "LLM code budget reserved for top beam candidate"
+  }
+}

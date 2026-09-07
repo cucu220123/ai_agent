@@ -39,6 +39,19 @@ class PlannerAdviceContract(BaseModel):
             raise ValueError("confidence below semantic acceptance threshold")
         return self
 
+    @classmethod
+    def normalize_candidate(cls, value: dict[str, Any] | None) -> dict[str, Any] | None:
+        if not isinstance(value, dict):
+            return value
+        value = dict(value)
+        if isinstance(value.get("preprocessing_recommendations"), list):
+            value["preprocessing_recommendations"] = {str(item.get("algorithm", "global")) if isinstance(item, dict) else "global": (item.get("steps", []) if isinstance(item, dict) else [str(item)]) for item in value["preprocessing_recommendations"]}
+        if isinstance(value.get("constraint_analysis"), dict):
+            value["constraint_analysis"] = [f"{key}={item}" for key, item in value["constraint_analysis"].items()]
+        if isinstance(value.get("confidence"), bool) or value.get("confidence") is None:
+            value["confidence"] = 0.0
+        return value
+
 
 class AdvisorAgent:
     """Strict Planner advice with compressed evidence, retry, and explicit fallback."""
@@ -61,7 +74,7 @@ class AdvisorAgent:
             "risks": ["LLM planner advice unavailable or rejected"],
             "confidence": 0.0,
         }
-        trace: dict[str, Any] = {"status": "fallback", "schema_valid": False, "semantic_valid": False, "context": context_trace, "attempts": []}
+        trace: dict[str, Any] = {"status": "fallback", "schema_valid": False, "semantic_valid": False, "context": context_trace, "attempts": [], "raw_retrieved_items": context_trace["raw_retrieved_items"], "items_after_rerank": context_trace["items_after_rerank"], "final_prompt_evidence": context, "prompt_token_count": context_trace["estimated_prompt_tokens"]}
         if self.llm is None:
             return fallback, trace
         previous = ""
@@ -72,7 +85,8 @@ class AdvisorAgent:
                     payload.update({"repair_previous_json": previous[:6000], "validation_error": trace["attempts"][-1].get("error")})
                 raw = self.llm.complete("你是 PlannerAgent。只返回严格 JSON，不要预测结果、Markdown 或思考过程。所有 evidence_ids 必须来自上下文。", json.dumps(payload, ensure_ascii=False), purpose="planning") or ""
                 previous = raw
-                advice = PlannerAdviceContract.model_validate(extract_json_object(raw))
+                parsed = PlannerAdviceContract.normalize_candidate(extract_json_object(raw))
+                advice = PlannerAdviceContract.model_validate(parsed)
                 unknown_algorithms = set(advice.candidate_algorithms) - set(allowed)
                 unknown_evidence = set(advice.evidence_ids) - set(context_trace["final_evidence_ids"])
                 if unknown_algorithms:
@@ -87,4 +101,3 @@ class AdvisorAgent:
                 trace["attempts"].append({"attempt": attempt, "status": "rejected", "error": f"{type(exc).__name__}: {exc}"[:1500]})
         trace["fallback_reason"] = trace["attempts"][-1]["error"] if trace["attempts"] else "no provider"
         return fallback, trace
-
