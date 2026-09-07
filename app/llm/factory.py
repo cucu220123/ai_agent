@@ -4,6 +4,17 @@ from app.config import Settings
 from app.llm.mock import MockLLM
 from app.llm.openai_compatible import OpenAICompatibleLLM, load_openai_settings
 from app.llm.security import sanitize
+import os
+
+
+def api_provider(base_url: str, api_key: str, model: str, settings: Settings):
+    instruction = OpenAICompatibleLLM(base_url, api_key, model, timeout=settings.llm_timeout_seconds)
+    coder_model = os.getenv("OPENAI_CODER_MODEL") or settings.openai_coder_model
+    if not coder_model:
+        return instruction
+    from app.llm.api_router import APIRoleRouter
+    coder = OpenAICompatibleLLM(os.getenv("OPENAI_CODER_BASE_URL") or settings.openai_coder_base_url or base_url, os.getenv("OPENAI_CODER_API_KEY") or settings.openai_coder_api_key or api_key, coder_model, timeout=settings.llm_timeout_seconds)
+    return APIRoleRouter(instruction, coder)
 
 
 class AutoFallbackLLM:
@@ -52,7 +63,7 @@ def _build_llm(settings: Settings):
         values = load_openai_settings(settings.secret_file)
         base_url = values.get("OPENAI_BASE_URL") or settings.openai_base_url
         api_key = values.get("OPENAI_API_KEY") or settings.openai_api_key
-        primary = OpenAICompatibleLLM(base_url, api_key, values.get("OPENAI_MODEL") or settings.openai_model, timeout=settings.llm_timeout_seconds) if base_url and api_key else None
+        primary = api_provider(base_url, api_key, values.get("OPENAI_MODEL") or settings.openai_model, settings) if base_url and api_key else None
         fallback = None
         instruction_path = settings.local_instruction_model_path or settings.local_model_path
         if instruction_path:
@@ -70,7 +81,7 @@ def _build_llm(settings: Settings):
         model = values.get("OPENAI_MODEL") or settings.openai_model
         if not base_url or not api_key:
             raise ValueError("openai provider requires OPENAI_BASE_URL and OPENAI_API_KEY")
-        return OpenAICompatibleLLM(base_url, api_key, model, timeout=settings.llm_timeout_seconds)
+        return api_provider(base_url, api_key, model, settings)
     if provider == "local":
         instruction_path = settings.local_instruction_model_path or settings.local_model_path
         if not instruction_path:

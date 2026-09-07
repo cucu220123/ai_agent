@@ -122,7 +122,7 @@ class KnowledgeExtractionAgent:
                         trace["chunks"].append({"chunk_id": chunk.get("chunk_id"), "status": "rejected", "attempts": attempts, "error": last_error, "generation": getattr(self.llm, "last_generation", {})})
         if accepted:
             merged = self._merge(accepted, source_path)
-            trace.update({"status": "ok", "accepted_chunks": len(accepted), "rejected_chunks": len(chunks) - len(accepted)})
+            trace.update({"status": "ok" if len(accepted) == len(chunks) else "partial", "accepted_chunks": len(accepted), "rejected_chunks": len(chunks) - len(accepted)})
             return merged, sanitize(trace)
         fallback = self._deterministic_fallback(deterministic_facts, source_path)
         trace["fallback_reason"] = "no chunk passed strict extraction contract"
@@ -159,9 +159,17 @@ class KnowledgeExtractionAgent:
     def _quality_gate(contract: KnowledgeExtractionContract, facts: dict[str, Any], chunk: dict[str, Any]) -> list[str]:
         errors = []
         entity_types = {entity.type for entity in contract.entities}
-        metric_names = {entity.name.lower().replace("-", "_") for entity in contract.entities if entity.type == "Metric"}
+        # The deterministic scanner finds metric families, whereas semantic
+        # extraction may correctly retain a qualifier such as weighted F1.
+        # Compare family coverage without rewriting the richer extracted name.
+        def metric_family(value: str) -> str:
+            compact = re.sub(r"[^a-z0-9]", "", value.lower())
+            if compact in {"f1", "f1score", "weightedf1", "f1weighted", "macrof1", "f1macro"}:
+                return "f1"
+            return {"rocauc": "roc_auc", "prauc": "pr_auc", "averageprecision": "pr_auc"}.get(compact, compact)
+        metric_names = {metric_family(entity.name) for entity in contract.entities if entity.type == "Metric"}
         chunk_text = chunk.get("text", "")
-        expected_metrics = {str(metric).lower().replace("-", "_") for metric in facts.get("metrics", []) if str(metric).lower() in chunk_text.lower()}
+        expected_metrics = {metric_family(str(metric)) for metric in facts.get("metrics", []) if str(metric).lower() in chunk_text.lower()}
         if expected_metrics and not expected_metrics.issubset(metric_names):
             errors.append(f"missing known Metric entities: {sorted(expected_metrics - metric_names)}")
         if facts.get("kind") in {"markdown", "validation_report"} and facts.get("headings") and not ({"Capability", "Task"} & entity_types):

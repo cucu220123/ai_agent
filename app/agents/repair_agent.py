@@ -2,6 +2,7 @@
 from __future__ import annotations
 import hashlib
 import json
+import os
 from pathlib import Path
 from typing import Any
 from pydantic import BaseModel, ConfigDict, Field
@@ -32,6 +33,7 @@ class RepairAgent:
             for attempt in range(2):
                 try:
                     raw = self.llm.complete("You are RepairAgent. Diagnose the observed failure and return a complete minimal corrected implementation as strict JSON.", json.dumps(payload, ensure_ascii=False), purpose="repair", generation_config={"json_schema": RepairContract.model_json_schema()})
+                    path.with_name(f"repair_round_{round_no}_attempt_{attempt + 1}.json").write_text(json.dumps({"raw_response": sanitize(raw)}, ensure_ascii=False, indent=2), encoding="utf-8")
                     repair = RepairContract.model_validate(extract_json_object(raw))
                     gate = static_check_text(repair.revised_code, task_type, target_column)
                     if not gate["passed"]:
@@ -44,6 +46,8 @@ class RepairAgent:
                 except Exception as exc:
                     message = sanitize(f"{type(exc).__name__}: {exc}")
                     event["attempts"].append({"attempt": attempt + 1, "status": "rejected", "error": message})
+                    if os.getenv("AI_FACTORY_TRACE", "0") == "1":
+                        print("[RepairAgent] gate rejected: " + message, flush=True)
                     payload["previous_error"] = message
             # Real mode leaves the failure visible. It never pretends a regex repair is LLM repair.
             event.update(provider=self.provider_name, status="repair_rejected", after_sha256=before_hash, changes=["no accepted LLM revision; source unchanged"])

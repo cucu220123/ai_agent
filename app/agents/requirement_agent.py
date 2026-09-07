@@ -230,7 +230,9 @@ class RequirementUnderstandingAgent:
             features = columns if not target else [c for c in columns if c != target]
         thresholds = contract.thresholds
         profile = profile_dataset(dataset_path, target) if dataset_path else contract.dataset
-        balance = dict(contract.class_imbalance)
+        balance = {k: v for k, v in contract.class_imbalance.items() if k in {"is_imbalanced", "positive_rate", "minority_rate", "class_counts", "known"}}
+        if balance != contract.class_imbalance:
+            corrections.append("class_imbalance keeps observations only; planning strategies are not observed requirements")
         if "positive_rate" in profile:
             balance.update(positive_rate=profile["positive_rate"], is_imbalanced=profile["minority_rate"] < 0.25)
         candidates = [p.id for p in DEFAULT_REGISTRY.algorithms_for(contract.task_type) if p.id != "dummy_classifier"]
