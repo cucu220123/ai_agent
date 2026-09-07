@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
@@ -92,10 +93,20 @@ class AdvisorAgent:
         trace: dict[str, Any] = {"status": "fallback", "schema_valid": False, "semantic_valid": False, "context": context_trace, "attempts": [], "raw_retrieved_items": context_trace["raw_retrieved_items"], "items_after_rerank": context_trace["items_after_rerank"], "final_prompt_evidence": context, "prompt_token_count": context_trace["estimated_prompt_tokens"]}
         if self.llm is None:
             return fallback, trace
+        # A selected run has a short canonical id; its exact candidate/version
+        # tuple is a verified alias, not another experiment. Only admit aliases
+        # whose canonical id survives context selection.
+        evidence_aliases = {}
+        for case in knowledge.historical_cases:
+            canonical = case.get("run_id")
+            version = re.search(r"_v(\d+)$", str(case.get("version_id", "")))
+            if canonical in context_trace["final_evidence_ids"] and version and case.get("workflow_run_id") and case.get("candidate_id"):
+                alias = f"{case['workflow_run_id']}:{case['candidate_id']}:v{version.group(1)}"
+                evidence_aliases[alias] = canonical
         previous = ""
         for attempt in range(1, self.max_attempts + 1):
             try:
-                payload = {"planning_context": context, "allowed_algorithms": allowed, "json_schema": PlannerAdviceContract.model_json_schema(), "execution_rules": "For each candidate recommend concrete preprocessing and a small hyperparameter dictionary. Keep user metric thresholds unchanged. Justify candidates using supplied evidence ids; preserve exploration. Supported configuration keys include C, max_iter, n_estimators, max_depth, learning_rate, min_samples_leaf, class_weight, scaler, numeric_imputer, threshold, max_features, ngram_max, contamination."}
+                payload = {"planning_context": context, "allowed_algorithms": allowed, "allowed_evidence_ids": context_trace["final_evidence_ids"], "verified_evidence_aliases": evidence_aliases, "json_schema": PlannerAdviceContract.model_json_schema(), "execution_rules": "For each candidate recommend concrete preprocessing and a small hyperparameter dictionary. Keep user metric thresholds unchanged. Justify candidates using supplied evidence ids; preserve exploration. Supported configuration keys include C, max_iter, n_estimators, max_depth, learning_rate, min_samples_leaf, class_weight, scaler, numeric_imputer, threshold, max_features, ngram_max, contamination."}
                 if attempt > 1:
                     payload.update({"repair_previous_json": previous[:6000], "validation_error": trace["attempts"][-1].get("error")})
                 raw = self.llm.complete("You are PlannerAgent. Return one JSON object matching json_schema. Use double quotes and null/true/false, never Python None/True/False. preprocessing_recommendations and hyperparameter_recommendations must be keyed by candidate algorithm IDs, not feature names. Include concrete parameter dictionaries. All evidence_ids must come from supplied evidence. Do not invent outcomes. Use sklearn-only dependencies, no SMOTE unless explicitly supported.", json.dumps(payload, ensure_ascii=False), purpose="planning", generation_config={"json_schema": PlannerAdviceContract.model_json_schema()}) or ""
@@ -107,6 +118,8 @@ class AdvisorAgent:
                 except ValueError:
                     syntax_correction = parsed is not None
                 advice = PlannerAdviceContract.model_validate(parsed)
+                corrections = {value: evidence_aliases[value] for value in advice.evidence_ids if value not in context_trace["final_evidence_ids"] and value in evidence_aliases}
+                advice.evidence_ids = list(dict.fromkeys(corrections.get(value, value) for value in advice.evidence_ids))
                 unknown_algorithms = set(advice.candidate_algorithms) - set(allowed)
                 unknown_evidence = set(advice.evidence_ids) - set(context_trace["final_evidence_ids"])
                 if set(advice.preprocessing_recommendations) - set(allowed) - {"global"}:
@@ -116,7 +129,7 @@ class AdvisorAgent:
                 if unknown_evidence:
                     raise ValueError(f"hallucinated evidence ids: {sorted(unknown_evidence)}")
                 result = advice.model_dump()
-                trace.update({"status": "ok", "syntax_correction": syntax_correction, "schema_valid": True, "semantic_valid": True, "attempt_count": attempt, "provider": getattr(self.llm, "last_provider", type(self.llm).__name__), "model": getattr(self.llm, "model", None), "token_usage": getattr(self.llm, "last_usage", {}), "generation": getattr(self.llm, "last_generation", {})})
+                trace.update({"status": "ok", "evidence_id_corrections": corrections, "syntax_correction": syntax_correction, "schema_valid": True, "semantic_valid": True, "attempt_count": attempt, "provider": getattr(self.llm, "last_provider", type(self.llm).__name__), "model": getattr(self.llm, "model", None), "token_usage": getattr(self.llm, "last_usage", {}), "generation": getattr(self.llm, "last_generation", {})})
                 trace["attempts"].append({"attempt": attempt, "status": "accepted"})
                 return result, sanitize(trace)
             except Exception as exc:

@@ -1,6 +1,7 @@
 """Local research API. Read-only views never instantiate an LLM."""
 from __future__ import annotations
 import json
+import hashlib
 import re
 import threading
 from dataclasses import replace
@@ -111,7 +112,14 @@ def ingest_knowledge(request: IngestRequest) -> dict:
 
 @app.get("/run/{run_id}")
 def run_detail(run_id: str) -> dict:
-    return sanitize(json.loads(report_path(run_id).read_text()))
+    report = json.loads(report_path(run_id).read_text())
+    review_path = get_settings().reports_dir / f"{run_id}.explanation-review.json"
+    if review_path.is_file():
+        review = json.loads(review_path.read_text())
+        digest = hashlib.sha256(json.dumps(report, sort_keys=True).encode()).hexdigest()
+        if review.get("status") == "passed" and review.get("source_report_semantic_sha256") == digest:
+            report["explanation_review"] = review
+    return sanitize(report)
 
 
 @app.get("/run/{run_id}/code")

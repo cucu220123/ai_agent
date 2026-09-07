@@ -26,3 +26,22 @@ def test_read_views_never_load_model_and_sensitive_paths_are_rejected(monkeypatc
     key_file = get_settings().project_root / "secret_test.txt"
     key_file.write_text("dummy test config")
     assert client.post("/knowledge/ingest", json={"path": "secret_test.txt"}).status_code == 400
+
+
+def test_review_attachment_is_bound_to_original_report_content(tmp_path, monkeypatch):
+    import hashlib, json
+    import app.api as api
+    from app.config import get_settings
+    reports = get_settings().reports_dir
+    run_id = 'abcdef012345'
+    report = {'run_id': run_id, 'explanation': {'why_this_plan': 'original'}}
+    (reports / f'{run_id}.json').write_text(json.dumps(report))
+    digest = hashlib.sha256(json.dumps(report, sort_keys=True).encode()).hexdigest()
+    review_file = reports / f'{run_id}.explanation-review.json'
+    review_file.write_text(json.dumps({'status': 'passed', 'source_report_semantic_sha256': digest, 'explanation': {'why_this_plan': 'reviewed'}}))
+    result = api.run_detail(run_id)
+    assert result['explanation']['why_this_plan'] == 'original'
+    assert result['explanation_review']['explanation']['why_this_plan'] == 'reviewed'
+    report['changed'] = True
+    (reports / f'{run_id}.json').write_text(json.dumps(report))
+    assert 'explanation_review' not in api.run_detail(run_id)

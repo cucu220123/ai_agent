@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 import math
+import re
 from typing import Any
 from pydantic import BaseModel, ConfigDict, Field
 from app.llm.contracts import extract_json_object
@@ -53,8 +54,48 @@ class ExplanationAgent:
                     measured = actual.get(claim.candidate_id, {}).get(claim.metric)
                     if measured is None or not math.isclose(measured, claim.score, rel_tol=1e-5, abs_tol=1e-5):
                         raise ValueError("hallucinated numeric claim")
-                return {**explanation.model_dump(), "status": "ok", "provider": getattr(self.llm, "last_provider", self.provider), "attempts": attempt + 1}
+                validate_comparative_claims(explanation.model_dump(), candidates)
+                return {**explanation.model_dump(), "status": "ok", "comparison_check": "passed", "provider": getattr(self.llm, "last_provider", self.provider), "attempts": attempt + 1}
             except Exception as exc:
                 payload["validation_error"] = sanitize(str(exc))
         fallback["error"] = payload.get("validation_error")
         return fallback
+
+
+def validate_comparative_claims(explanation: dict, candidates: list[dict]) -> None:
+    """Reject observable metric-order contradictions in supported prose patterns.
+
+    This supplements structured numeric/ID checks; it is not a proof of general
+    natural-language entailment. Unchecked narrative still needs human review.
+    """
+    texts = [explanation.get("why_this_plan", ""), *explanation.get("candidate_comparison", {}).values(), *explanation.get("limitations", [])]
+    aliases = {"roc_auc": ["roc-auc", "roc_auc", "auc"], "pr_auc": ["pr-auc", "pr_auc", "average precision"], "f1": ["f1"], "accuracy": ["accuracy"], "r2": ["r2"], "mae": ["mae"], "rmse": ["rmse"]}
+    for text in texts:
+        for sentence in re.split(r"[.!?](?:\s|$)|[。！？]", text):
+            folded = sentence.lower()
+            for left in candidates:
+                left_name = left["plan"]["algorithm_name"].lower()
+                if left_name not in folded:
+                    continue
+                for right in candidates:
+                    right_name = right["plan"]["algorithm_name"].lower()
+                    if left_name == right_name or right_name not in folded:
+                        continue
+                    direction = re.search(re.escape(left_name) + r".{0,150}?\b(lower|higher|better|worse|outperforms|underperforms)\b.{0,50}?" + re.escape(right_name), folded)
+                    if not direction:
+                        continue
+                    for metric, names in aliases.items():
+                        if metric == "roc_auc" and any(name in folded for name in aliases["pr_auc"]):
+                            continue
+                        if not any(name in folded for name in names):
+                            continue
+                        a = left["validation"]["metrics"].get(metric)
+                        b = right["validation"]["metrics"].get(metric)
+                        if a is None or b is None:
+                            raise ValueError(f"unmeasured comparison: {left_name}/{right_name} {metric}")
+                        word = direction.group(1)
+                        greater = word in {"higher", "better", "outperforms"}
+                        if word in {"better", "worse", "outperforms", "underperforms"} and metric in {"mae", "rmse"}:
+                            greater = not greater
+                        if not (a > b if greater else a < b):
+                            raise ValueError(f"contradictory comparison: {left_name} {word} {right_name} for {metric}; actual {a} vs {b}. Correct or remove this claim.")

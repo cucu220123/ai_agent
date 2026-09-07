@@ -19,6 +19,17 @@ def verify(output: Path) -> dict:
         for name in ("first", "second", "repair", "cross"):
             report = json.loads((output / f"{name}.json").read_text())
             assert_real(report)
+            from app.agents.explanation_agent import validate_comparative_claims
+            review_path = output / "explanation_reviews" / f"{report['run_id']}.json"
+            checked_explanation = report["explanation"]
+            if review_path.exists():
+                review = json.loads(review_path.read_text())
+                assert review["source_report_semantic_sha256"] == hashlib.sha256(json.dumps(report, sort_keys=True).encode()).hexdigest()
+                assert review["status"] == "passed" and review["explanation"]["status"] == "ok"
+                checked_explanation = review["explanation"]
+                if review["original_comparison_error"]:
+                    assert any(c["purpose"] == "explanation" and c["status"] == "ok" and "mock" not in c["provider"] for c in review["llm_calls"])
+            validate_comparative_claims(checked_explanation, report["candidate_results"])
             reports[name] = report
             counts["runs"] += 1
             for candidate in report["candidate_results"]:
