@@ -1,95 +1,122 @@
+"""Unified validation: safe execution, independently scored outputs and explicit budgets."""
 from __future__ import annotations
-
+import math
 import time
 from pathlib import Path
-
+import numpy as np
 import pandas as pd
-from sklearn.model_selection import train_test_split
-
 from app.models import CapabilitySpec, ValidationResult
-from app.validation.checks import import_check, static_check
+from app.validation.checks import static_check, import_check
 from app.validation.isolate import run_isolated
+from app.validation.dataset import profile_dataset
+from app.validation.evaluation import split_frames, trusted_metrics
+from app.validation.semantic import GeneratedCodeSemanticValidator
 from app.metrics.registry import METRIC_REGISTRY
 
 
 class ValidationRunner:
-    """Validate generated code in a separate Python process with a hard timeout."""
-
-    def __init__(self, timeout_seconds: int = 90, memory_mb: int = 16384):
+    def __init__(self, timeout_seconds: int = 90, memory_mb: int = 8192, seed_variance: float = .02, repeats: int = 3, cv_folds: int = 0):
         self.timeout_seconds = timeout_seconds
         self.memory_mb = memory_mb
+        self.seed_variance = seed_variance
+        self.repeats = repeats
+        self.cv_folds = cv_folds
 
-    def run(self, algorithm_path: str | Path, data_path: str | Path, spec: CapabilitySpec, algorithm_name: str, repair_round: int = 0) -> ValidationResult:
+    def run(self, algorithm_path: str | Path, data_path: str | Path, spec: CapabilitySpec, algorithm_name: str, repair_round: int = 0, config: dict | None = None) -> ValidationResult:
         started = time.perf_counter()
-        checks: dict[str, dict] = {}
-        errors: list[str] = []
-        stdout, stderr = "", ""
-        static = static_check(algorithm_path)
-        checks["static_safety"] = {k: v for k, v in static.items() if k != "module"}
-        if not static["passed"]:
-            return ValidationResult(status="failed", algorithm=algorithm_name, checks=checks, errors=[static["message"]], runtime_seconds=time.perf_counter() - started, repair_round=repair_round)
-        imported = import_check(algorithm_path)
-        checks["interface_import"] = {k: v for k, v in imported.items() if k != "module"}
-        if not imported["passed"]:
-            return ValidationResult(status="failed", algorithm=algorithm_name, checks=checks, errors=[imported["message"]], runtime_seconds=time.perf_counter() - started, repair_round=repair_round)
-        metrics: dict[str, float] = {}
+        result = ValidationResult(status="failed", algorithm=algorithm_name, task_type=spec.task_type, repair_round=repair_round)
+        checks, errors = result.checks, result.errors
         try:
-            df = pd.read_csv(data_path)
-            if spec.target_column and spec.target_column not in df.columns:
-                raise ValueError(f"target column '{spec.target_column}' not found in dataset")
-            if spec.task_type == "binary_classification" and df[spec.target_column].nunique() < 2:
-                raise ValueError("target must contain at least two classes")
-            leakage_columns = []
+            safety = static_check(algorithm_path)
+            checks["static_safety"] = safety
+            if not safety["passed"]:
+                result.failure_type = "syntax_failure" if "syntax error" in safety["message"] else "interface_failure" if safety.get("category") == "interface" else "security_failure"
+                raise ValueError(safety["message"])
+            checks["interface_import"] = import_check(algorithm_path)
+            semantic = GeneratedCodeSemanticValidator().validate_path(str(algorithm_path), spec.task_type, spec.target_column)
+            checks["semantic_contract"] = semantic.to_dict()
+            if not semantic.passed:
+                result.failure_type = "interface_failure"
+                raise ValueError(semantic.to_dict()["message"])
+            frame = pd.read_csv(data_path)
+            result.dataset_profile = profile_dataset(data_path, spec.target_column)
+            if len(frame) < 8:
+                raise ValueError("validation requires at least 8 rows")
             if spec.target_column:
-                leakage_columns = [column for column in df.columns if column != spec.target_column and df[column].equals(df[spec.target_column])]
-            checks["target_leakage"] = {"passed": not leakage_columns, "duplicate_target_columns": leakage_columns}
-            if leakage_columns:
-                raise ValueError(f"target leakage detected in columns: {leakage_columns}")
-            if spec.target_column:
-                stratify = df[spec.target_column] if spec.task_type == "binary_classification" else None
-                _, test_df = train_test_split(df, test_size=0.25, random_state=42, stratify=stratify)
-            else:
-                test_df = df
-            expected_outputs = list(spec.output_schema) or spec.output_columns or ["prediction"]
-            isolated = run_isolated(algorithm_path, data_path, spec.target_column, self.timeout_seconds, self.memory_mb, expected_outputs, spec.task_type)
-            stdout, stderr = isolated.get("stdout", ""), isolated.get("stderr", "")
-            checks["isolated_execution"] = {k: v for k, v in isolated.items() if k not in {"stdout", "stderr", "metrics", "metrics2"}}
-            checks["resource_usage"] = {"max_rss_kb": isolated.get("max_rss_kb"), "runtime_seconds_child": isolated.get("runtime_seconds")}
+                if spec.target_column not in frame:
+                    raise ValueError("target column not found")
+                if frame[spec.target_column].isna().any():
+                    raise ValueError("target contains missing labels")
+                if spec.task_type in {"binary_classification", "text_classification", "multiclass_classification"} and frame[spec.target_column].nunique() < 2:
+                    raise ValueError("classification requires at least two classes")
+            duplicates = [c for c in frame if c != spec.target_column and spec.target_column and frame[c].equals(frame[spec.target_column])]
+            checks["target_leakage"] = {"passed": not duplicates, "duplicate_target_columns": duplicates, "scope": "exact duplicate label detection; semantic leakage needs domain review"}
+            if duplicates:
+                raise ValueError(f"target leakage detected: {duplicates}")
+            _, test = split_frames(frame, spec.target_column, spec.task_type)
+            timeout = min(self.timeout_seconds, int(spec.resource_constraints.get("max_runtime_seconds", self.timeout_seconds)))
+            memory = min(self.memory_mb, int(spec.resource_constraints.get("max_memory_mb", self.memory_mb)))
+            probability_required = spec.probability_output_required and spec.task_type in {"binary_classification", "text_classification", "multiclass_classification"}
+            outputs = list(spec.output_schema) or spec.output_columns or ["prediction"]
+            if probability_required and "probability" not in outputs:
+                outputs.append("probability")
+            isolated = run_isolated(algorithm_path, data_path, spec.target_column, max(1, timeout), max(64, memory), outputs, spec.task_type, config=config, repeats=self.repeats, cv_folds=self.cv_folds, require_probability=probability_required)
+            result.stdout, result.stderr = isolated.get("stdout", ""), isolated.get("stderr", "")
+            checks["isolated_execution"] = {k: v for k, v in isolated.items() if k not in {"stdout", "stderr", "records", "cv_records", "metrics", "metadata"}}
             if not isolated["passed"]:
-                raise RuntimeError(isolated["message"] + (f": {stderr[-1000:]}" if stderr else ""))
-            metrics = {k: float(v) for k, v in isolated.get("metrics", {}).items()}
-            checks["functional"] = {"passed": True, "message": "isolated train/predict/evaluate completed", "prediction_rows": isolated.get("prediction_rows")}
-            checks["output_contract"] = {"passed": True, "message": "output schema and probability range passed"}
-            checks["robustness"] = {"passed": True, **isolated.get("robustness", {})}
-            metric_pass = {k: METRIC_REGISTRY.passes(k, metrics.get(k), threshold) for k, threshold in spec.metric_thresholds.items()}
-            checks["metrics"] = {"passed": all(metric_pass.values()), "per_metric": metric_pass, "thresholds": spec.metric_thresholds, "actual": metrics}
-            failed_metrics = [f"{k}={metrics.get(k, 0.0):.4f} {'<' if METRIC_REGISTRY.is_maximize(k) else '>'} {threshold:.4f}" for k, threshold in spec.metric_thresholds.items() if not metric_pass.get(k, False)]
-            if failed_metrics:
-                errors.extend(failed_metrics)
-            positive_rate = float(isolated.get("positive_rate", test_df[spec.target_column].mean() if spec.target_column else 0.0))
-            checks["class_balance"] = {"positive_rate": positive_rate, "train_rows": int(len(df) - len(test_df)), "test_rows": int(len(test_df)), "warning": "positive class is below 10%; consider threshold tuning" if spec.target_column and positive_rate < 0.1 else ("unsupervised task; no target balance check" if not spec.target_column else "class balance acceptable")}
-            drift = float(isolated.get("drift", 0.0))
-            checks["stability"] = {"passed": drift <= 1e-9, "max_metric_drift": drift, "metric_variance": isolated.get("metric_variance", {})}
-            if drift > 1e-9:
-                errors.append(f"non-deterministic metric drift={drift}")
+                lower = result.stderr.lower()
+                result.failure_type = "resource_limit" if isolated.get("timeout") or isolated.get("returncode") in {-9, -24, -25} or any(t in lower for t in ("memoryerror", "cannot allocate", "memory allocation")) else "runtime_failure"
+                raise RuntimeError(isolated["message"] + ": " + result.stderr[-2500:])
+            measured = [trusted_metrics(test, record["prediction"], spec.target_column, spec.task_type) for record in isolated["records"]]
+            result.metrics = measured[0]
+            if spec.target_column:
+                for record, metrics in zip(isolated["records"], measured):
+                    metrics.update(METRIC_REGISTRY.compute_custom(spec.task_type, test[spec.target_column].to_numpy(), record["prediction"]))
+            disagreements = {}
+            reported = isolated["records"][0]["reported_metrics"]
+            for metric, actual in measured[0].items():
+                if metric in reported and not math.isclose(actual, reported[metric], rel_tol=1e-6, abs_tol=1e-8):
+                    disagreements[metric] = {"trusted": actual, "generated": reported[metric]}
+            checks["metric_integrity"] = {"passed": not disagreements, "source": "parent_process_trusted_metrics", "disagreements": disagreements}
+            if disagreements:
+                result.failure_type = "metric_integrity_failure"
+                errors.append("generated evaluate metrics disagree with independently recomputed predictions")
+            metric_pass = {metric: METRIC_REGISTRY.passes(metric, result.metrics.get(metric), threshold) for metric, threshold in spec.metric_thresholds.items()}
+            checks["metrics"] = {"passed": all(metric_pass.values()), "per_metric": metric_pass, "thresholds": spec.metric_thresholds, "actual": result.metrics}
+            if not all(metric_pass.values()):
+                result.failure_type = result.failure_type or "metric_underperformance"
+                errors.extend(f"{metric}={result.metrics.get(metric)} violates threshold {spec.metric_thresholds[metric]}" for metric, passed in metric_pass.items() if not passed)
+            drift = max((abs(measured[0][metric] - measured[1][metric]) for metric in measured[0]), default=0)
+            variance = {metric: float(np.var([item[metric] for item in measured])) for metric in measured[0]}
+            normalized_variance = {metric: value / max(1.0, abs(float(np.mean([item[metric] for item in measured]))) ** 2) for metric, value in variance.items()}
+            stable = drift <= 1e-9 and max(normalized_variance.values(), default=0) <= self.seed_variance
+            checks["stability"] = {"passed": stable, "same_seed_drift": drift, "seeds": [r["seed"] for r in isolated["records"]], "metric_variance": variance, "normalized_variance": normalized_variance, "variance_limit": self.seed_variance}
+            if not stable:
+                result.failure_type = result.failure_type or "instability"
+                errors.append(f"stability failure: drift={drift}, normalized variance={normalized_variance}")
+            latency = isolated["records"][0]["latency_ms_per_row"]
+            checks["latency"] = {"passed": spec.latency_requirement_ms is None or latency <= spec.latency_requirement_ms, "ms_per_row": latency, "limit_ms_per_row": spec.latency_requirement_ms}
+            if not checks["latency"]["passed"]:
+                result.failure_type = result.failure_type or "resource_limit"
+                errors.append("prediction latency exceeds requirement")
+            result.resource_usage = {"max_rss_kb": isolated.get("max_rss_kb"), "cpu_seconds": isolated.get("cpu_seconds"), "latency_ms_per_row": latency, "limits": isolated["resource_limits"], "sandbox": isolated["sandbox"]}
+            checks["resource_usage"] = {"passed": not isolated.get("max_rss_kb") or isolated["max_rss_kb"] <= memory * 1024, **result.resource_usage}
+            if not checks["resource_usage"]["passed"]:
+                result.failure_type = result.failure_type or "resource_limit"
+                errors.append("peak RSS exceeds memory budget")
+            checks["functional"] = {"passed": True, "prediction_rows": isolated["prediction_rows"]}
+            checks["output_contract"] = {"passed": True, "required_outputs": outputs, "metadata": isolated.get("metadata", {})}
+            checks["robustness"] = {"passed": True, **isolated["robustness"]}
+            cv = [trusted_metrics(frame.iloc[item["indices"]], item["prediction"], spec.target_column, spec.task_type) for item in isolated["cv_records"]]
+            if cv:
+                checks["cross_validation"] = {"passed": True, "folds": cv, "mean": {k: float(np.mean([v[k] for v in cv])) for k in cv[0]}}
         except Exception as exc:
-            errors.append(f"runtime error: {type(exc).__name__}: {exc}")
-            checks.setdefault("functional", {"passed": False, "message": str(exc)})
-        runtime = time.perf_counter() - started
-        checks["runtime_budget"] = {"passed": runtime <= self.timeout_seconds, "message": f"completed in {runtime:.2f}s (budget {self.timeout_seconds}s)"}
-        if runtime > self.timeout_seconds:
-            errors.append(f"validation runtime {runtime:.2f}s exceeded timeout {self.timeout_seconds}s")
-        status = "passed" if not errors else "failed"
-        error_text = " ".join(errors).lower()
-        if status == "passed":
-            failure_type = None
-        elif "runtime" in error_text or "traceback" in error_text or "typeerror" in error_text or "keyerror" in error_text:
-            failure_type = "runtime_failure"
-        elif any("<" in e or ">" in e for e in errors):
-            failure_type = "metric_underperformance"
-        else:
-            failure_type = "validation_failure"
-        dataset_profile = {"path": str(data_path), "rows": int(len(df)), "columns": list(df.columns), "missing_rates": {column: float(df[column].isna().mean()) for column in df.columns}}
-        if spec.target_column and spec.target_column in df.columns and spec.task_type == "binary_classification":
-            dataset_profile["positive_rate"] = float(df[spec.target_column].mean())
-        return ValidationResult(status=status, algorithm=algorithm_name, checks=checks, metrics=metrics, runtime_seconds=runtime, errors=errors, stdout=stdout, stderr=stderr, repair_round=repair_round, task_type=spec.task_type, dataset_profile=dataset_profile, resource_usage={"max_rss_kb": checks.get("resource_usage", {}).get("max_rss_kb"), "cpu_seconds": checks.get("isolated_execution", {}).get("cpu_seconds")}, failure_type=failure_type)
+            errors.append(f"{type(exc).__name__}: {exc}")
+            result.failure_type = result.failure_type or "runtime_failure"
+            checks.setdefault("functional", {"passed": False, "message": str(exc)[:1000]})
+        result.runtime_seconds = time.perf_counter() - started
+        checks["runtime_budget"] = {"passed": result.runtime_seconds <= self.timeout_seconds + 2, "runtime_seconds": result.runtime_seconds, "timeout_seconds": self.timeout_seconds}
+        result.status = "passed" if not errors else "failed"
+        result.root_cause = errors[0] if errors else None
+        return result
+

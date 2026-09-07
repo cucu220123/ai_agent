@@ -13,6 +13,7 @@ class MetricDefinition:
 
 class MetricRegistry:
     def __init__(self):
+        self.evaluators = {}
         self.metrics = {
             "roc_auc": MetricDefinition("roc_auc", True, ("binary_classification",)),
             "pr_auc": MetricDefinition("pr_auc", True, ("binary_classification",)),
@@ -47,7 +48,8 @@ class MetricRegistry:
         return self.metrics.get(metric, MetricDefinition(metric, True, ())).maximize
 
     def passes(self, metric: str, actual: float | None, threshold: float) -> bool:
-        if actual is None:
+        import math
+        if actual is None or not math.isfinite(actual):
             return False
         return actual >= threshold if self.is_maximize(metric) else actual <= threshold
 
@@ -58,6 +60,15 @@ class MetricRegistry:
             return (-float("inf"), primary)
         return (float(value) if self.is_maximize(primary) else -float(value), primary)
 
+    def register(self, definition: MetricDefinition, evaluator) -> None:
+        """Register trusted parent-side evaluation; generated code cannot supply scores."""
+        if not callable(evaluator):
+            raise TypeError("metric evaluator must be callable")
+        self.metrics[definition.name] = definition
+        self.evaluators[definition.name] = evaluator
+
+    def compute_custom(self, task_type: str, truth, prediction) -> dict[str, float]:
+        return {name: float(fn(truth, prediction)) for name, fn in self.evaluators.items() if task_type in self.metrics[name].tasks}
+
 
 METRIC_REGISTRY = MetricRegistry()
-

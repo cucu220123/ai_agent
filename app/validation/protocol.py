@@ -22,6 +22,7 @@ class AlgorithmProtocolValidator:
         "train": (["train_df", "target_col", "config"], 1),
         "predict": (["model", "test_df"], 0),
         "evaluate": (["model", "test_df", "target_col"], 0),
+        "metadata": ([], 0),
     }
 
     def validate_path(self, path: str | Path) -> ProtocolValidation:
@@ -58,4 +59,3 @@ class AlgorithmProtocolValidator:
             if node.args.vararg or node.args.kwarg or node.args.kwonlyargs:
                 errors.append(f"{name} must not use *args, **kwargs, or keyword-only arguments")
         return ProtocolValidation(not errors, errors)
-

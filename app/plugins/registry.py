@@ -19,6 +19,7 @@ class AlgorithmPlugin:
     search_space: dict[str, list[Any]] = field(default_factory=dict)
     supported_metrics: list[str] = field(default_factory=list)
     codegen_hints: dict[str, Any] = field(default_factory=dict)
+    renderer: Callable[[Any, Any], str] | None = field(default=None, repr=False)
 
 
 @dataclass
