@@ -1,0 +1,16 @@
+{
+  "status": "passed",
+  "timestamp": "2026-09-07T18:02:22.300090+00:00",
+  "git_head": "b803f0f74425e709e0748d19f3da103775e7ddf0",
+  "method": "git archive HEAD into a fresh directory; no ignored SQLite/cache files; read-only portable evidence verification",
+  "verifier": {
+    "status": "passed",
+    "checked": {
+      "runs": 4,
+      "source_versions": 21
+    },
+    "failures": []
+  },
+  "returncode": 0,
+  "stderr": ""
+}

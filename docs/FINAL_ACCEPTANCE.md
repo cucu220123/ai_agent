@@ -118,9 +118,11 @@ v2: exact host interface restored → actual sandbox execution → PASS
 
 ## G. 测试与证据核验
 
-完整 `pytest -q`：**81 passed，0 failed，98 warnings**。JUnit 与完整控制台结果分别保存在 `test-results.xml`、`pytest.log`；warnings 为当前 sklearn/pandas 组合的弃用提示。
+完整 `pytest -q`：**81 passed，0 failed，98 warnings，73.30 秒**。JUnit 与完整控制台结果分别保存在 `test-results.xml`、`pytest.log`；warnings 为当前 sklearn/pandas 组合的弃用提示。
 
 只读 `scripts/verify_evidence.py`：**4 个真实阶段、21 个实际源码版本，全部 hash 和证据断言通过**。检查内容包括真实 provider、源代码 hash、Task A→B Planner 依据、失败经验再次检索、v1 FAILED/v2 PASS、RepairExperience→v2 图关系，以及解释恢复前后的测量字段不变。
+
+随后从 `git archive HEAD` 导出的全新目录（不含未提交 SQLite/cache）再次核验通过，见 `clone_verification.json`。原始模型源码证据保留生成时的空格/换行；不会为消除历史 artifact 的 whitespace 提示而改写已核验 hash。
 
 自动测试不仅检查“不抛异常”：包括实际 sklearn 训练的 A→B 闭环、历史冠军被当前非线性任务淘汰、LLM 无效 JSON 恢复、真实图路径、source grounding、指标造假拒绝、target 泄漏、恶意代码、超时、稳定性失败、资源约束、协议、插件 renderer 与自定义指标。软件测试使用显式 Mock/fixture；真实模型能力的证明是上述独立验收报告。
 
@@ -147,3 +149,14 @@ v2: exact host interface restored → actual sandbox execution → PASS
 6. 任意自由文本业务约束仍需专用验证插件；解释性目前是规划 prior，不是独立解释质量指标。自然语言解释检查是有限模式，不是通用语义证明。
 7. RSS/CPU/runtime 是受控进程观测量，包含依赖载入等开销；不等于单次 estimator 算法复杂度。
 8. API 为本机同步单用户原型，无公开鉴权/任务队列/并发图事务服务。多 Agent 是角色协作工作流，未实现分布式自治。
+
+## 交付后的服务状态
+
+验收结束后停止了本次临时启动的两个 GPU 模型 API 和 coder relay，释放显存；未停止其他用户的任务。报告 API 留在服务器 `127.0.0.1:18080` 供查看已有证据。再次运行实时工作流前，需要按 README 的 vLLM/Transformers 命令重启真实模型服务；不能将停服后的报告浏览当作新的模型运行。实际停服检查见 `service_cleanup.json`。
+
+从自己的电脑查看服务器报告界面：
+
+```bash
+ssh -L 18080:127.0.0.1:18080 xiaotianqi@115.182.62.174
+# 浏览器打开 http://127.0.0.1:18080/ui
+```

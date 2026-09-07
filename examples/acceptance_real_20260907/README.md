@@ -23,9 +23,11 @@
 | `environment.json`、`backend_transition.json`、`serving_32k_probe.json` | 实际依赖、模型和服务变更；初始 NF4 健康文件不是最终 vLLM 配置 |
 | `manifest.json` | 四阶段、58 条调用记录及当时源码快照；不是所有调用都成功 |
 | `verifier.json` | 只读核验 4 runs / 21 source versions 的结果 |
+| `clone_verification.json` | Git 导出的全新目录再次核验，证明已提交产物完整 |
 | `pytest.log`、`test-results.xml` | 最后一次完整自动测试统计 |
 | `ui_checks.json` | 实际 UI 人工检查范围 |
 | `credential_scan.json` | 凭证扫描范围与结果，不保存凭证内容 |
+| `service_cleanup.json` | 验收结束后临时 GPU 服务停服检查；报告界面保留 |
 
 ## 无需模型复查已保存结果
 

@@ -1,0 +1,17 @@
+{
+  "timestamp": "2026-09-07T18:04:27.323647+00:00",
+  "temporary_model_ports_accepting_connections": {
+    "18086": false,
+    "18088": false,
+    "18087": false
+  },
+  "own_service_process_states": {
+    "3739877": "exited",
+    "3741388": "exited",
+    "3629690": "exited",
+    "3740834": "exited",
+    "3742272": "exited"
+  },
+  "report_api_http_status": 200,
+  "note": "Only task-owned temporary model APIs/relay were terminated. Existing reports remain available; restart real models before new generation."
+}
