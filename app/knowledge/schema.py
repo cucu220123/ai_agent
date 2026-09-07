@@ -2,24 +2,39 @@
 
 NODE_TYPES = [
     "Capability",
+    "Task",
     "Algorithm",
+    "AlgorithmVersion",
     "Dataset",
     "FeatureStrategy",
+    "Feature",
     "Metric",
+    "Constraint",
+    "Dependency",
     "Environment",
+    "HyperparameterConfig",
     "ValidationRun",
     "FailureExperience",
-    "Constraint",
+    "RepairExperience",
+    "SourceDocument",
 ]
 
 EDGE_TYPES = [
     "USES_ALGORITHM",
+    "SOLVES",
+    "SUITABLE_FOR",
     "VALIDATED_ON",
+    "ON_DATASET",
     "REQUIRES_FEATURE",
+    "USES_PREPROCESSING",
     "EVALUATED_BY",
     "REQUIRES",
+    "HAS_CONFIG",
     "VALIDATES",
+    "OCCURRED_IN",
+    "REPAIRS",
+    "SUPPORTS",
+    "VERSION_OF",
     "RELATED_TO",
     "FIXED_BY",
 ]
-

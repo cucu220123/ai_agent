@@ -39,7 +39,7 @@ class AlgorithmFactoryWorkflow:
         self.llm = build_llm(self.settings)
         self.generator = GeneratorAgent(self.llm, self.settings.llm_provider)
         self.repair = RepairAgent(self.llm, self.settings.llm_provider)
-        self.validator = ValidationRunner(self.settings.validation_timeout_seconds)
+        self.validator = ValidationRunner(self.settings.validation_timeout_seconds, self.settings.validation_memory_mb)
         self.curator = CuratorAgent(self.store)
         self.critic = CriticAgent(self.llm, self.settings.llm_provider)
         self.advisor = AdvisorAgent(self.llm)
