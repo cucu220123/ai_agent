@@ -38,6 +38,21 @@ python experiments/ablation/summarize_ablation.py --output experiments/ablation/
 
 本地模型名为 `Qwen2.5-14B-Instruct` 和 `Qwen3-Coder-30B-A3B-Instruct`。不需要云端凭据。每个 completed result（包括失败）都保留，恢复时跳过；started 但未完成的中断会停止调度，不能自动重跑掩盖失败。
 
-`result.json` 记录指标与分母；`observed.json`、`llm/`、版本源码、执行日志保留完整路径。SQLite 为运行态文件，不提交二进制；初始 JSON、初始/最终 GraphML 与报告可重建知识。质量指标仅成功 winner 统计，n 明示；完成率包含所有任务。3 seeds 只作描述性 mean ± sample std，不声称统计显著。
+`result.json` 记录指标与分母；`observed.json`、`llm/`、版本源码、执行日志保留完整路径。SQLite 为运行态文件，不提交二进制；初始 JSON、初始/最终 GraphML 与报告可重建知识。质量指标仅成功 winner 统计，n 明示；完成率包含所有已结束任务及其中的失败，行政中断和未启动单列。原计划 3 seeds，只作描述性 mean ± sample std，不声称统计显著。
 
 详见 [实验分析](../../docs/ABLATION_STUDY.md)。正式 acceptance 与独立最终测试结果另行封存，不接受消融反馈。
+
+## 本次研究的提前结束与汇总
+
+`study_20260908` 按预注册随机排程运行至时间预算用尽，共 25 次结束、1 次中断、16 次未启动；客户 14/21、文本 11/21。所有已结束任务均选出了通过验证的算法，但 63 个候选中有 3 个最终失败，不删除任何失败或中断产物。原始 42 次协议保持不变，`study_stop.json` 保存完整状态清单。每组实际 n=1–3，不能宣称完整三种子比较。
+
+```bash
+# 只读原始结果，不启动模型，不执行 final test
+python experiments/ablation/summarize_ablation.py
+```
+
+分析器仅在存在与原协议 SHA256 绑定的停止记录时允许不完整结果；其他意外缺失仍报错。配对分析仅使用共同结束的种子。分析器在停止后增加行政中断处理，执行时原始实现哈希与执行 commit 仍保留；汇总另记录分析脚本 SHA256。
+
+Git clone 不包含两份未跟踪的正式运行 SQLite 时，只读汇总将这两条确切路径列为不可用，不假称验证了不存在的数据库；其他封存源码或数据缺失/改变均拒绝。在原运行服务器上两份数据库与全部核心/正式证据的严格 guard 均通过。
+
+封存研究目录不继续运行；新复现使用新的 output 路径。不可对中断 trial 静默重试，也不可覆盖原始协议或结果。
