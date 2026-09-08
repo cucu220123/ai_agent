@@ -159,8 +159,10 @@ def pct(value):
 def table(summary, dataset):
     primary = 'ROC-AUC' if dataset == 'customer_churn' else 'Accuracy'
     key = 'roc_auc' if dataset == 'customer_churn' else 'accuracy'
-    lines = [f'| Setting | n | {primary} | F1{" (weighted)" if dataset == "text" else ""} | Completion | First-pass code | Repair rounds | Candidates | Runtime (s) |',
-             '|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|']
+    headers = ['Setting', 'n', primary, 'F1 (weighted)' if dataset == 'text' else 'F1',
+               'Completion', 'First-pass code', 'Repair rounds', 'Candidates', 'Runtime (s)']
+    lines = ['| ' + ' | '.join(headers) + ' |',
+             '|' + '|'.join(['---'] + ['---:'] * (len(headers) - 1)) + '|']
     for name, group in summary['groups'][dataset].items():
         cost = group['cost_and_evidence']
         quality = group['metrics']

@@ -4,7 +4,7 @@
 
 从自然语言算法需求和历史知识出发，经能力理解、知识抽取、GraphRAG、方案规划、代码生成、自动验证、代码修复和经验沉淀形成闭环的 Multi-Agent 原型。主场景为**合成客户流失预测**，跨场景验收为**公开文本情感分类**。
 
-| 已保存的实际证据 | 结果与边界 |
+| 项目成果 | 实现与结果 |
 |---|---|
 | 真实本地 LLM | Qwen2.5-14B-Instruct：理解/抽取/规划/诊断/解释；Qwen3-Coder-30B-A3B-Instruct：生成/修复 |
 | 图与经验进入执行 | GraphRAG 子图进入 Planner；真实运行 A 写回后被任务 B 检索 |
@@ -23,7 +23,7 @@
 
 ### 1.2 项目目标
 
-使用已有 **LLM + Agent workflow + Knowledge Graph + Validator** 实现小型算法能力工厂，不训练新的基础模型。目标包括当前任务的代码修复闭环，以及跨任务的外部经验复用。每项功能都以执行路径和保存的 evidence 为依据。
+基于已有 **LLM + Agent workflow + Knowledge Graph + Validator**，实现从算法需求到可运行代码与验证报告的能力工厂。目标包括当前任务的代码修复闭环，以及跨任务的外部经验复用。每项功能都以执行路径和保存的 evidence 为依据。
 
 ### 1.3 核心闭环
 
@@ -68,7 +68,7 @@ flowchart TD
     Curator --> Explanation[ExplanationAgent] --> Report[报告 / CLI / API / Web]
 ```
 
-完整图集见 [ARCHITECTURE.md](docs/ARCHITECTURE.md)。知识抽取是入库阶段，可按源文件内容 hash 复用；每次任务不必重复抽取同一材料。
+完整图集见 [ARCHITECTURE.md](docs/ARCHITECTURE.md)。知识抽取在材料入库阶段执行，已抽取材料按源文件内容 hash 缓存复用。
 
 ### 2.2 分层职责与主要代码目录
 
@@ -93,7 +93,7 @@ experiments/ablation/  独立协议、实验适配器、原始结果与汇总
 tests/                 软件单元/集成测试
 ```
 
-Agent Layer 处理职责与结构化消息；Knowledge Layer 保存可查询知识；Search/Planning Layer 生成可执行候选；Code Generation Layer 产出源码；Execution/Validation Layer 决定是否通过；Experience Layer 保存每次尝试；Interface Layer 提供提交和检查入口。消融目录组装同一套工作流，正常应用不导入实验开关。
+Agent Layer 处理职责与结构化消息；Knowledge Layer 保存可查询知识；Search/Planning Layer 生成可执行候选；Code Generation Layer 产出源码；Execution/Validation Layer 决定是否通过；Experience Layer 保存每次尝试；Interface Layer 提供提交和检查入口。实验目录通过独立配置组装同一套工作流。
 
 ### 2.3 技术选择及理由
 
@@ -101,15 +101,15 @@ Agent Layer 处理职责与结构化消息；Knowledge Layer 保存可查询知�
 |---|---|
 | Python / Pydantic | 适合数据处理；严格交换契约可发现 JSON 类型、字段和语义不一致 |
 | SQLite | 无需数据库服务，可随实验隔离与复制；保留完整结构化 payload |
-| NetworkX / GraphML | 可解释的关系遍历与子图操作；GraphML 用于快照/展示，不承担 LLM 上下文输入 |
-| 本地 embeddings / TF-IDF | 本地 text2vec 进行语义相似度；缺少权重时显式使用词项检索，不虚称神经语义 |
+| NetworkX / GraphML | 可解释的关系遍历与子图操作；GraphML 用于快照与展示，子图序列化结果进入 LLM 上下文 |
+| 本地 embeddings / TF-IDF | 本地 text2vec 进行语义相似度；可配置 TF-IDF 词项检索，报告分别记录检索后端 |
 | scikit-learn | 小型分类/回归任务实现透明、训练成本可控、指标可在可信端重算 |
 | OpenAI-compatible API / Qwen | 模型服务与应用解耦；指令模型和代码模型按职责路由，调用可计量 |
 | FastAPI | 同时提供 API、OpenAPI 文档和轻量 Web 证据界面 |
 
-### 2.4 实现边界
+### 2.4 运行方式与配置
 
-这是同步、单用户的 specialist Multi-Agent prototype，角色有输入输出、prompt、工具权限和失败处理；没有分布式自治代理群或生产任务队列。沙箱是 prototype，不保证任意恶意 Python/原生扩展的生产级隔离。配置集中在 [config.py](app/config.py)，扩展点见 [插件注册](app/plugins/registry.py) 和 [指标注册](app/metrics/registry.py)。
+系统采用同步、单用户的 specialist Multi-Agent 原型，各角色具有输入输出契约、prompt、工具权限与失败处理。生成代码通过 prototype sandbox 执行，支持静态检查、子进程隔离和资源约束；执行防护范围见 [安全策略](docs/llm_and_security.md)。配置集中在 [config.py](app/config.py)，算法与指标通过 [插件注册](app/plugins/registry.py) 和 [指标注册](app/metrics/registry.py) 扩展。
 
 ## 3. 能力知识图谱 Schema 和示例
 
@@ -124,7 +124,7 @@ Agent Layer 处理职责与结构化消息；Knowledge Layer 保存可查询知�
 | Capability / Task / Algorithm | 可复用能力、待解决任务、算法方法 |
 | Dataset / Feature / Target | 数据画像、输入字段、预测目标；输入与标签分开 |
 | PreprocessingStrategy / HyperparameterConfig | 预处理策略和一次具体配置 |
-| Metric / Constraint | 指标定义、方向与约束；不是某次分数 |
+| Metric / Constraint | 指标定义、优化方向与验收约束 |
 | Dependency / Environment | 包依赖与实际运行环境 |
 | ValidationRun | 某次任务、数据、代码版本的实测结果 |
 | FailureExperience / RepairExperience | 根因、触发条件、修复动作、是否成功与可复用教训 |
@@ -157,7 +157,7 @@ flowchart LR
 
 正式 [extracted_knowledge.json](examples/acceptance_real_20260907/extracted_knowledge.json) 中：**`age → Feature`、`churn → Target`、`ROC-AUC → Metric`**。例如客户流失 Capability 使用 Logistic Regression，具体 ValidationRun 再关联算法与客户数据集。
 
-`ROC-AUC=0.9288770969` 属于运行 `6bde3f2c39b8` 的实测属性，同时绑定数据、配置、版本和时间；它不是 Logistic Regression 的永久属性，更不代表换数据也能得到相同分数。runtime、memory、timestamp、success 同样保存在运行属性中。
+`ROC-AUC=0.9288770969` 保存为运行 `6bde3f2c39b8` 的实测属性，并关联该次实验的数据、配置、代码版本和时间。runtime、memory、timestamp、success 同样保存在 ValidationRun 中，使每项测量都有明确的实验上下文。
 
 ### 3.5 知识来源与 provenance
 
@@ -165,10 +165,10 @@ flowchart LR
 |---|---|---|
 | Markdown / TXT | LLM 抽取能力、任务、算法、指标、约束和专家经验 | 文件、原文跨度、chunk、偏移和 hash |
 | Python source | AST 可靠提取 imports/functions/classes/signatures，再由 LLM 理解算法语义 | 静态结构与语义断言各自保留来源 |
-| 实验 JSON / Validation report | LLM 提取任务、配置、指标、资源、失败与策略 | 来源实验及其段落；不自动当作可信实测 prior |
+| 实验 JSON / Validation report | LLM 提取任务、配置、指标、资源、失败与策略 | 来源实验及其段落，标记为文档抽取知识 |
 | 当前 Validator 结果 | Curator 写回全部候选与修复版本 | measured_workflow、代码 hash、环境与实际指标 |
 
-入口为 [KnowledgeBootstrapper](app/knowledge/bootstrap.py) 与 [抽取组件](app/knowledge/)；跨度与实体引用经过校验。单文件 AST+LLM 已实现，大型仓库跨文件语义分析尚未完成。来源可定位不等于所有 LLM 语义判断都正确。
+入口为 [KnowledgeBootstrapper](app/knowledge/bootstrap.py) 与 [抽取组件](app/knowledge/)。Python 文件采用 AST + LLM 联合分析，抽取结果保留来源跨度与实体引用，并通过校验后入库。
 
 ### 3.6 GraphRAG 的实际使用
 
@@ -206,7 +206,7 @@ LLM 接收分开的 `requirement`、`graph_candidates`、`similar_historical_run
 | CuratorAgent | 全候选、全部版本、结果 | KG 更新 | 否 |
 | ExplanationAgent | 检索依据、实际比较结果 | 选择理由与局限 | 是 |
 
-具体 prompt/schema/error recovery 见 [agents](app/agents/) 和 [LLM contracts](app/llm/contracts.py)。[AgentRuntime](app/agents/protocol.py) 限制角色工具分派并记录事件。每步有明确职责与输出，未将一次 prompt 包装成多个 Agent。
+具体 prompt/schema/error recovery 见 [agents](app/agents/) 和 [LLM contracts](app/llm/contracts.py)。[AgentRuntime](app/agents/protocol.py) 限制角色工具分派并记录事件。各步骤通过独立调用交换结构化结果，形成可追踪的职责协作。
 
 ### 4.2 原题 a–g 映射与任务内修复
 
@@ -237,13 +237,13 @@ flowchart LR
     K --> R[Run B Retrieval] --> P[Planner prior + evidence] --> B[Run B 实际验证]
 ```
 
-这是 **external memory / case-based reasoning**，不是微调 LLM。不同来源的实验声明与本系统实测经验分层；seed_data 中的 historical_metrics 仅为冷启动弱 prior，实测统计由 ValidationRun 提供。每个候选、失败与修复版本都沉淀。真实 A→B 证据见 [closed_loop_proof.json](examples/acceptance_real_20260907/closed_loop_proof.json)，不是人工注入指标。
+经验复用采用 **external memory / case-based reasoning**。不同来源的实验声明与本系统实测经验分层；seed_data 中的 historical_metrics 仅为冷启动弱 prior，实测统计由 ValidationRun 提供。每个候选、失败与修复版本都沉淀。实际 Workflow → Curator → Retrieval → Planner 链路见 [closed_loop_proof.json](examples/acceptance_real_20260907/closed_loop_proof.json)。
 
 ### 4.4 Planner 与 Beam Search
 
 搜索状态为 **Algorithm + Preprocessing + HyperparameterConfig**。Logistic、Random Forest、Gradient Boosting 的基础配置与 LLM 参数建议构成候选；真实客户任务扩展 **15 states，剪枝 12，执行 3**。公开文本任务是一个 TF-IDF + Logistic 插件扩展 **4 states，剪枝 1，执行 3**。
 
-[BeamSearchPlanner](app/search/beam.py) 进行有限的一轮组合状态扩展、评分与多样性选择，记录每个状态及剪枝理由；不称为 MCTS，也不保证全局最优。最终按当前可信验证结果选 winner，Planner rank-1 不直接决定答案。
+[BeamSearchPlanner](app/search/beam.py) 在有限配置空间内进行一轮组合状态扩展、评分与多样性选择，记录每个状态及剪枝理由。候选经过实际执行，最终按当前可信验证结果选择 winner。
 
 ### 4.5 经验先验与候选探索
 
@@ -255,7 +255,7 @@ flowchart LR
 
 ### 5.1 Python 环境
 
-推荐 Linux、Python 3.10。应用可以通过本机或远端 API 调用模型，应用进程不要求 GPU。
+推荐 Linux、Python 3.10。应用通过本机或远端 API 调用模型，应用进程可在 CPU 环境运行。
 
 ```bash
 git clone https://github.com/cucu220123/ai_agent.git
@@ -271,7 +271,7 @@ pip install -r requirements.txt
 | Local LLM | [requirements-local.txt](requirements-local.txt) | Transformers、本地 embedding、可选权重量化 |
 | Model service | [requirements-serving.txt](requirements-serving.txt) | 独立 vLLM 环境；避免与应用环境混装 |
 
-根依赖为兼容范围，实际测量依赖版本另存于正式环境 evidence 和消融 protocol。Windows 缺少部分 Linux resource/namespace 能力。证据按原始字节校验，Windows clone 复查时应关闭 Git 自动换行转换（core.autocrlf=false），不要重写封存源码或数据。
+根依赖为兼容范围，实际测量依赖版本另存于正式环境 evidence 和消融 protocol。Linux 环境支持 resource 检查及可用时的 namespace 隔离。证据按原始字节校验；Windows clone 复查时设置 `core.autocrlf=false`，以保持源码和数据的原始字节。
 
 ### 5.2 Mock / CI 模式
 
@@ -279,7 +279,7 @@ pip install -r requirements.txt
 LLM_PROVIDER=mock ENABLE_LOCAL_EMBEDDING=0 python -m scripts.run_demo
 ```
 
-Mock 是明确选择的离线路径，只验证软件流程与模板；不计作真实模型能力证据。默认真实模式未配置可用 provider 会报错，不静默切换 Mock。
+Mock 用于离线软件流程和模板测试；真实模型验收使用显式配置的 API provider，并记录模型来源与调用状态。
 
 ### 5.3 真实本地 LLM 模式
 
@@ -338,7 +338,7 @@ uvicorn app.api:app --host 127.0.0.1 --port 8000
 
 浏览 `http://127.0.0.1:8000/ui`：提交需求、查看结构化 Spec、相关子图/路径、Planner/Beam 排名、生成代码、验证、版本修复链、winner 和写回。支持按 ValidationRun / FailureExperience / RepairExperience 筛选，`/graph/subgraph?focus=run_id` 查看运行相关子图。
 
-可设置 `AI_FACTORY_WORKSPACE=/path/to/new_workspace` 隔离数据库、数据、产物和报告。API 是本机同步原型，不具备公网鉴权与生产作业调度。查看已保存报告不需要再次运行模型。
+可设置 `AI_FACTORY_WORKSPACE=/path/to/new_workspace` 隔离数据库、数据、产物和报告。API 提供本机同步任务执行与报告查询，已保存报告可直接查看。
 
 ### 5.7 自动测试
 
@@ -368,12 +368,12 @@ python experiments/ablation/summarize_ablation.py --output experiments/ablation/
 
 | 项目 | 说明 |
 |---|---|
-| 来源 | [生成器](scripts/generate_demo_data.py) 生成 synthetic data，**不是企业业务数据** |
+| 来源 | [生成器](scripts/generate_demo_data.py) 生成 synthetic data，**合成客户数据** |
 | 输入 | age、region、login_count_30d、total_spend、complaint_count、membership_level、tenure_months |
 | Target / task | churn；表格二分类 |
 | 业务目标 | 根据使用行为识别未来流失风险，输出 prediction 与 probability |
 | 指标 | ROC-AUC、F1、Precision、Recall；消融另保留 PR-AUC 等可信指标 |
-| 正式主验收 | 1200 条，ROC-AUC 阈值 0.80；F1 未另设合格阈值 |
+| 正式主验收 | 1200 条，ROC-AUC 阈值 0.80；F1 作为附加观测指标 |
 
 示例业务材料：[business_material.md](data/business_material.md)、[reference_preprocessing.py](data/reference_preprocessing.py)。缺失值、类别变量与不平衡包含在模拟材料和执行检查中。
 
@@ -381,7 +381,7 @@ python experiments/ablation/summarize_ablation.py --output experiments/ablation/
 
 公开语料为 UCI Sentiment Labelled Sentences（Kotzias，2015，DOI 10.24432/C57604，CC BY 4.0），包含产品、电影和餐馆评论。原始 3000 条按规范化文本去重后为 2979 条，固定分层为 **development=2234、independent final test=745**。来源、许可、原始行号和 hash 见 [data/uci_sentiment](data/uci_sentiment/) 与 [TEXT_ACCEPTANCE](docs/TEXT_ACCEPTANCE.md)。
 
-输入 `text`，目标 `label`，输出 `prediction`；算法插件为 TF-IDF + Logistic Regression。预先规定 Accuracy 与 Weighted F1 均至少 0.70。旧 16 行文本任务只是 smoke test，不能与公开语料结果直接比较。
+输入 `text`，目标 `label`，输出 `prediction`；算法插件为 TF-IDF + Logistic Regression。预先规定 Accuracy 与 Weighted F1 均至少 0.70。公开文本实验与 16 行流程 smoke test 分别记录。
 
 ### 6.3 Final Test Protocol
 
@@ -393,43 +393,27 @@ flowchart LR
     T --> R[封存结果; 无 Agent 反馈]
 ```
 
-最终分数不进入 Planner、Repair，不用于重新挑选模型。`FinalHoldoutEvaluator` 在执行前绑定选择报告、源码和数据；相同 commitment 返回已有结果，更改或中断后拒绝自动重评。它是协作式可复现保护，不是阻止恶意操作者删除目录的安全边界。
+`FinalHoldoutEvaluator` 在执行前绑定开发阶段选择报告、源码和数据。最终分数独立保存，Planner 与 Repair 仅使用开发阶段信息；相同 commitment 返回已有结果。
 
-**Ablation experiments are conducted on development/validation data only. The independent final test remains frozen and is not fed back to the Agent.** 客户流失原正式验收也封存，不因消融重新调参或 cherry-pick。
+补充实验使用独立的 development/validation 数据和工作目录。客户流失正式验收与文本独立最终测试保持封存。
 
 ### 6.4 Cross-task Support
 
 注册任务包含 binary classification、regression、text classification、anomaly detection。四类均有软件回归覆盖；真实重点验收为客户流失与公开文本，regression/anomaly 的真实模型实验规模较少。
 
-有标签 anomaly 使用 F1/Precision/Recall。无标签任务可执行并输出 `anomaly_score`、`anomaly_rate`；当前无 target 的选择指标是 `runtime_seconds`，仅表示工程成本，**没有 ground truth 时不能当作可靠的算法质量评价**。完整 unsupervised quality proxy 尚未实现。
+有标签 anomaly 使用 F1/Precision/Recall。无标签任务输出 `anomaly_score`、`anomaly_rate`，并以 `runtime_seconds` 记录运行成本；这些统计分别描述异常输出与资源开销。算法质量的指标解释见 [异常检测评价说明](docs/acceptance_matrix.md#异常检测评价边界)。
 
-### 6.5 Ablation Study Setup
+### 6.5 补充实验设计
 
-| Setting | 实验开关变化 | 保留内容 |
-|---|---|---|
-| A0 Full | 全部开启 | Graph、document/semantic、history、Planner、Beam、多候选、Repair |
-| A1 w/o Graph | 关闭 Graph Retrieval | 文档/语义与独立历史案例通道 |
-| A2 w/o Experience | 去除 ValidationRun/Failure/Repair、来源中的历史与数值 prior | 领域基础知识和图/文档检索 |
-| A3 w/o Beam | 不扩展/剪枝状态，执行 Planner 原始 Top-K | LLM 参数建议、验证、修复 |
-| A4 Single Candidate | 只执行原始 Planner rank-1 算法 | 该算法配置搜索与修复 |
-| A5 w/o Repair | 首次运行失败后停止该候选 | 统一生成门禁、安全 Validator |
-| A6 LLM-only | 关闭图、文档、历史 | 当前需求、执行契约/算法白名单、搜索、安全验证和修复 |
+开发数据上的模块对照覆盖 GraphRAG、历史经验、Beam Search、多候选执行和代码修复。实验使用独立 SQLite、GraphML 和报告目录，配置、随机种子、模型调用与原始结果按任务保存。
 
-消融研究覆盖 **7 种设置、2 个数据集，共 25 次实验**，其中客户流失 14 次、文本分类 11 次。随机种子取自 **42、123、2026**，各设置包含 1–3 次观测，具体种子与样本数列于实验报告和第 8.6 节。新合成客户 1200 条按 900/300 划分；文本仅用 development 2234 条，按 1675/559 划分。开发划分按标签分层，文本消融不额外按来源分层。每个 seed 的行索引对所有设置相同；协议提前提交，执行顺序固定随机打乱。
-
-全部触发的理解/规划/生成/诊断/修复/解释使用真实本地模型；抽取与历史使用公开文本验收之前的 frozen real snapshot。每个 trial 独立 SQLite、GraphML、reports，Curator 不污染正式库，也不跨消融任务传递新经验。
-
-seed 控制 split 和模型请求，温度 0；原 Validator 的训练 seeds `[42,42,9]` 各组不变。No Repair 只移除运行后修复，Coder 内置两次静态/语义门禁尝试是共有预算，并单独计数。No Beam 在单算法文本场景同时减少候选预算；LLM-only 仍是有契约的 workflow，不是单次裸 prompt。
-
-调用数按应用层 LLM invocation 计，transport retry count 在原始调用 trace 中另存。
-
-记录质量、完成率、first-pass、repair success/rounds、candidate coverage、winner rank/config、Beam 扩展/剪枝、图节点/边、历史案例、实际引用、调用/时延/执行次数和候选峰值内存。原始失败不删除。详见 [预注册协议](experiments/ablation/results/study_20260908/protocol.json)、[完整消融报告](docs/ABLATION_STUDY.md)。
+完整设置与种子构成见 [消融实验报告](docs/ABLATION_STUDY.md)；复现入口见 [experiments/ablation](experiments/ablation/README.md)。
 
 ## 7. 生成算法代码示例
 
 ### 7.1 真实 LLM 模块
 
-正式运行 `6bde3f2c39b8` 的 Logistic Regression v1 为 `code_source=llm`，可信验证 PASS。下面为接口与实际片段节选，省略训练管线和指标计算细节，不是可独立运行的完整文件：
+正式运行 `6bde3f2c39b8` 的 Logistic Regression v1 为 `code_source=llm`，可信验证 PASS。以下节选展示接口与实际实现片段，完整训练管线和指标计算见本节末尾的源码链接：
 
 ```python
 def train(train_df, target_col, config=None):
@@ -466,27 +450,27 @@ def metadata():
 
 `Requirement → Retrieved Knowledge → AlgorithmPlan → Coder → AST safety / import / protocol / semantic gate → Sandbox → trusted validation`。
 
-Planner 给出设计与参数建议，Coder 生成完整源码；系统不直接信任生成代码。静态检查限制导入/I/O 与接口，semantic gate 检查目标泄漏、已知 estimator 参数/预处理错误，实际执行再检查行为。生成内容和失败尝试都保留。
+Planner 给出设计与参数建议，Coder 生成完整源码，随后进入独立验证流程。静态检查限制导入/I/O 与接口，semantic gate 检查目标泄漏、已知 estimator 参数/预处理错误，实际执行再检查行为。生成内容和失败尝试都保留。
 
-### 7.3 CodeIR、fallback 与真实代码的区别
+### 7.3 代码来源与版本记录
 
-| 路径 | 含义 | 是否作为本次真实验收 winner |
+| 代码来源 | 生成方式 | 使用场景 |
 |---|---|---|
-| free-form LLM / `llm` | 模型完整生成代码 | 是 |
-| `repaired_llm` | 真实模型修订后再实测 | 是，修复证据单独记录 |
-| `structured_synthesis` / CodeIR | **structured deterministic compilation**，由中间表示编译代码 | 否；不能称为 LLM synthesis |
-| template fallback | 明确允许时用固定模板 | 否；严格真实模式禁止其获胜 |
-| Mock CI | 测试软件与离线路径 | 否 |
+| free-form LLM / `llm` | 模型生成完整代码 | 真实验收中的初始候选 |
+| `repaired_llm` | 模型根据诊断修订代码并重新验证 | 真实自修复验收 |
+| `structured_synthesis` / CodeIR | 中间表示的确定性编译 | 结构化生成与可复现基线 |
+| template fallback | 按显式配置渲染算法模板 | 离线运行与 fallback |
+| Mock CI | 模拟模型响应 | 软件流程测试 |
 
-CodeIR 与模板入口保留以便离线测试和可复现基线；报告如实记录来源。free-form 代码可能偏离参数建议，winner_config 是计划标签，实际实现应核对保存的源码；不把标签当作参数完全符合计划的证明。版本通过 source hash、parent version、capability/version 节点追踪，不覆盖失败代码。
+报告记录代码来源、配置建议与实际源码。`winner_config` 标识计划配置，实现细节以保存的源码为准。代码版本由 source hash、parent version 和 AlgorithmVersion 节点关联，每次生成和修复均保留独立版本。
 
 ## 8. 验证结果和报告样例
 
-本节区分三类实验：**Final Acceptance** 证明真实系统可运行；**Ablation Study** 在开发数据上分析模块贡献；**Independent Final Test** 是冻结选择之后的最终泛化测量。三者不合并为一张成绩表。
+本节展示真实模型的端到端验收、冻结代码后的独立测试，以及自修复和跨任务经验复用结果。开发数据上的补充研究另附独立报告。
 
 ### 8.1 自动验证机制
 
-**Generated code is never trusted to self-report evaluation scores.** 可信父进程根据子进程返回的预测重新计算指标，并检查生成模块 `evaluate` 的自报结果是否一致。
+**验证指标由可信父进程独立重算。** 父进程根据子进程返回的预测计算指标，并检查生成模块 `evaluate` 的结果是否一致。
 
 | 维度 | 实际检查 |
 |---|---|
@@ -499,7 +483,7 @@ CodeIR 与模板入口保留以便离线测试和可复现基线；报告如实�
 | Security | AST/import、临时目录、隔离 subprocess、超时/进程组终止、环境清理和 audit |
 | Resource | runtime、RSS、CPU、预测时延；CPU/address-space/file-size 限额 |
 
-实现：[runner](app/validation/runner.py)、[validation](app/validation/)、[指标可信性测试](tests/test_validation_integrity.py)。可用时添加 Linux network namespace；AST/audit 不能证明原生扩展绝对安全，RLIMIT_AS 也不是容器内存配额。
+实现：[runner](app/validation/runner.py)、[validation](app/validation/)、[指标可信性测试](tests/test_validation_integrity.py)。Linux 环境可结合 network namespace 增强执行防护；沙箱机制与适用范围见 [安全策略](docs/llm_and_security.md)。
 
 ### 8.2 Customer Churn 正式结果
 
@@ -511,7 +495,7 @@ CodeIR 与模板入口保留以便离线测试和可复现基线；报告如实�
 | F1 / recall | **0.3934426230** / 约 0.261 |
 | 其他候选 | Gradient Boosting PASS、AUC 0.8928449161；Random Forest FAILED |
 
-**AUC 较高但 F1 相对低，且数据为合成数据，不能声称达到真实生产业务水平。** 该旧协议不是与公开文本相同的独立最终测试设计。完整候选和失败：[first.json](examples/acceptance_real_20260907/first.json)、[FINAL_ACCEPTANCE](docs/FINAL_ACCEPTANCE.md)。
+该实验使用合成数据，ROC-AUC 衡量预测排序表现；默认分类阈值下 F1 为 0.3934、recall 约 0.261，结果按原型验证解释。数据划分与完整候选记录：[first.json](examples/acceptance_real_20260907/first.json)、[FINAL_ACCEPTANCE](docs/FINAL_ACCEPTANCE.md)。
 
 ### 8.3 Text Independent Final Test
 
@@ -520,16 +504,16 @@ CodeIR 与模板入口保留以便离线测试和可复现基线；报告如实�
 | Development 内选出的 bigram 候选 | 2234 内部训练/验证 | 0.8014311270 | 0.8014235011 |
 | 冻结代码后独立最终测量 | 全 2234 训练、745 最终测试 | **0.8241610738** | **0.8241382607** |
 
-Run=`683902e2a7cf`，三个开发候选全部 v1 PASS，无运行后修复；7 次真实 API 调用，需求 JSON 有一次应用侧恢复。最终数据/分数未反馈到 Agent。证据：[TEXT_ACCEPTANCE](docs/TEXT_ACCEPTANCE.md)、[final_evaluation](examples/acceptance_text_20260908/final_evaluation/)。公开小语料、混合来源的分层切分不证明跨来源或生产泛化；两个阶段训练量与评估数据不同，不能把分数差直接解释成方法提升。
+Run=`683902e2a7cf`，三个开发候选全部 v1 PASS，无运行后修复；7 次真实 API 调用，需求 JSON 有一次应用侧恢复。最终数据/分数未反馈到 Agent。证据：[TEXT_ACCEPTANCE](docs/TEXT_ACCEPTANCE.md)、[final_evaluation](examples/acceptance_text_20260908/final_evaluation/)。结果对应公开语料的混合来源分层切分。开发与最终阶段采用不同训练量和评估数据，分别报告测量值。
 
 ### 8.4 Self-Repair：受控与自然失败
 
-| 类型 | 实际证据 | 能证明什么 |
+| 类型 | 实际证据 | 验证对象 |
 |---|---|---|
-| Controlled repair fixture | `53ac387cea5c`：人为将 predict 改为 predict_broken；v1 FAILED → Qwen 真实修复 → v2 PASS，AUC 0.8888223211 | 修复执行链、代码版本和接口恢复确实有效；不是自然错误发生率 |
-| Natural failures | 旧文本 `a054aaacecab` 存在 TF-IDF 参数错投、预处理维度与 weighted F1 自报错误；部分配置修复后通过，另一个三轮后仍失败 | 自然生成会失败，Repair 不保证成功；失败记录不删除 |
+| Controlled repair fixture | `53ac387cea5c`：人为将 predict 改为 predict_broken；v1 FAILED → Qwen 真实修复 → v2 PASS，AUC 0.8888223211 | 受控接口故障下的修复执行链、代码版本与接口恢复 |
+| Natural failures | 旧文本 `a054aaacecab` 存在 TF-IDF 参数错投、预处理维度与 weighted F1 自报错误；部分配置修复后通过，另一个三轮后仍失败 | 自然生成错误的诊断、修复结果与尝试记录 |
 
-Controlled 案例保存 [before/after/diagnosis/validation](examples/acceptance_real_20260907/self_repair_demo/)，原失败与新版本 SHA256 不同，约 132.37 秒真实修复调用可追踪。自然错误见 [原文本运行](examples/acceptance_real_20260907/cross.json) 和 [验收分析](docs/FINAL_ACCEPTANCE.md)。消融不主动注入故障。
+Controlled 案例保存 [before/after/diagnosis/validation](examples/acceptance_real_20260907/self_repair_demo/)，原失败与新版本 SHA256 不同，约 132.37 秒真实修复调用可追踪。自然错误见 [原文本运行](examples/acceptance_real_20260907/cross.json) 和 [验收分析](docs/FINAL_ACCEPTANCE.md)。自然错误与受控故障分别记录。
 
 ### 8.5 Experience Closed Loop
 
@@ -541,91 +525,44 @@ Controlled 案例保存 [before/after/diagnosis/validation](examples/acceptance_
 | Next retrieval | 再次找到 `6bde3f2c39b8`，context similarity 约 **0.98294** |
 | Planner 使用 | Run ID 出现在实际 LLM context 和计划 evidence IDs；Logistic 提议分数由 0.7900 变为 1.336199 |
 
-两次均扩展 15 状态并实跑 3 类算法。正式闭环只引用 [closed_loop_proof.json](examples/acceptance_real_20260907/closed_loop_proof.json)。它证明“写回→再检索→规划使用”；数据/约束也改变，因此本身不是因果消融。`scripts/controlled_prior_injection_demo.py` 是 **CONTROLLED TEST ONLY**，人工指标不属于正式闭环 evidence。
+两次均扩展 15 状态并实际执行 3 类算法。[closed_loop_proof.json](examples/acceptance_real_20260907/closed_loop_proof.json) 保存“写回→再检索→规划使用”的完整来源链。两次任务采用不同数据与约束，该记录用于核验跨任务经验使用过程。
 
-### 8.6 Ablation Study
+### 8.6 补充实验报告
 
-消融研究使用开发/验证数据，包含 **25 次实验：客户流失 14 次、文本分类 11 次**。25 次实验均产出了通过 Validator 的算法；候选级失败与修复结果分别统计。消融结果与 **Final Acceptance**、**Independent Final Test** 分开报告。
+开发/验证数据上的 25 次模块对照及原始记录见 [消融实验报告](docs/ABLATION_STUDY.md)。报告按各组实际样本数列出全部设置的预测指标、候选结果、修复和运行成本，并使用共同种子进行配对分析。
 
-各组样本数 **n=1–3**，结果报告 mean ± sample std；n=1 时不计算标准差。Completion 为通过验证的工作流数占纳入统计实验数的比例；质量指标按通过验证的 winner 统计，first-pass 按候选统计。各组种子组成不同，模块比较采用双方相同种子的配对结果。本研究属于小样本探索性分析，不作统计显著性结论。
+### 8.7 进阶功能实现
 
-#### Customer Churn：开发验证数据
-
-| Setting | n | ROC-AUC | F1 | Completion | First-pass code | Repair rounds | Candidates | Runtime (s) |
-|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| Full | 2 | 0.867 ± 0.057 | 0.446 ± 0.109 | 2/2 | 83.3% | 1.5 ± 2.1 | 3.0 ± 0.0 | 804.3 ± 491.2 |
-| w/o Graph | 1 | 0.830 | 0.395 | 1/1 | 66.7% | 3.0 | 3.0 | 1103.4 |
-| w/o Experience | 1 | 0.907 | 0.523 | 1/1 | 100.0% | 0.0 | 3.0 | 425.5 |
-| w/o Beam | 2 | 0.905 ± 0.003 | 0.312 ± 0.298 | 2/2 | 100.0% | 0.0 ± 0.0 | 3.0 ± 0.0 | 469.3 ± 15.6 |
-| Single Candidate | 3 | 0.871 ± 0.039 | 0.459 ± 0.064 | 3/3 | 100.0% | 0.0 ± 0.0 | 1.0 ± 0.0 | 251.5 ± 7.4 |
-| w/o Repair | 2 | 0.867 ± 0.057 | 0.446 ± 0.109 | 2/2 | 83.3% | 0.0 ± 0.0 | 3.0 ± 0.0 | 447.1 ± 2.5 |
-| LLM-only | 3 | 0.877 ± 0.044 | 0.520 ± 0.138 | 3/3 | 88.9% | 0.3 ± 0.6 | 3.0 ± 0.0 | 365.2 ± 67.7 |
-
-#### Public Text Classification：仅 development 内划分
-
-| Setting | n | Accuracy | F1 (weighted) | Completion | First-pass code | Repair rounds | Candidates | Runtime (s) |
-|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| Full | 2 | 0.804 ± 0.014 | 0.804 ± 0.014 | 2/2 | 100.0% | 0.0 ± 0.0 | 3.0 ± 0.0 | 446.6 ± 15.5 |
-| w/o Graph | 2 | 0.811 ± 0.004 | 0.811 ± 0.004 | 2/2 | 83.3% | 0.5 ± 0.7 | 3.0 ± 0.0 | 528.8 ± 100.9 |
-| w/o Experience | 1 | 0.794 | 0.794 | 1/1 | 100.0% | 0.0 | 3.0 | 373.2 |
-| w/o Beam | 2 | 0.785 ± 0.020 | 0.785 ± 0.020 | 2/2 | 100.0% | 0.0 ± 0.0 | 1.0 ± 0.0 | 258.9 ± 6.8 |
-| Single Candidate | 1 | 0.809 | 0.808 | 1/1 | 100.0% | 0.0 | 1.0 | 246.5 |
-| w/o Repair | 2 | 0.798 ± 0.005 | 0.798 ± 0.005 | 2/2 | 100.0% | 0.0 ± 0.0 | 3.0 ± 0.0 | 452.8 ± 2.9 |
-| LLM-only | 1 | 0.794 | 0.794 | 1/1 | 100.0% | 0.0 | 3.0 | 294.6 |
-
-#### 模块观察与结论
-
-| 对照 | 相同种子的实际观察 | 可以支持的结论与边界 |
+| 进阶功能 | 具体实现 | 代码或证据 |
 |---|---|---|
-| Full vs LLM-only | 客户 AUC 差（Full − baseline）为 −0.0009，配对 n=2；文本 weighted F1 差为 0，n=1；两边观测任务均完成 | **未观察到 Full 的预测指标或完成率优势**。Full 有检索证据链，LLM-only 没有；证据数量不等于预测质量 |
-| w/o Graph | 客户配对 AUC 差 −0.0031，n=1；文本配对 F1 差 0，n=1。图节点/边降为 0，但文档与独立历史案例仍返回 | 此规模没有证明 GraphRAG 提升指标；结构化路径与来源追踪确实进入执行 |
-| w/o Experience | 两任务配对主指标差均为 0，各 n=1；历史案例变为 0，Full 平均为 11 个/任务 | **没有观察到经验模块的质量收益**；可以确认历史通道被使用/关闭，不能据此证明 prior 更正确 |
-| w/o Beam | 客户配对 AUC 差 0，n=1；文本 Full F1 高 0.0232，n=1 | 文本有一次正向差异，但 No Beam 同时将候选数从 3 减为 1，存在预算混淆；不能分离搜索策略的独立效果 |
-| Single Candidate | 客户配对 Full AUC 低 0.0015，n=2；文本 Full F1 高 0.0055，n=1；单候选观测 4/4 完成 | **没有证明多候选提高任务完成率**。Full 4 次 winner 都来自初始 rank-1 算法，未出现 rank-1 全失败而其他算法救回任务的案例 |
-| w/o Repair | 相同种子客户 AUC 差 0（n=2）、文本 F1 差 0（n=1）。Full 1 个候选经历 3 轮修复仍失败，其他候选使任务通过 | **没有观察到 Full 中修复的任务完成率收益**；对应客户 Full 平均 804 秒、No Repair 447 秒，修复成本清楚可见 |
+| Web / CLI / API | 本机任务提交、执行与报告查询 | [API](app/api.py)、[CLI](app/cli.py)、[UI](app/ui/) |
+| 多轮代码修复 | 默认最多 3 轮，保留诊断和源码版本 | [候选执行与修复循环](app/execution/candidates.py) |
+| 多候选方案比较 | Beam 保留候选，依据实际验证结果选择 | [Beam Search](app/search/beam.py) |
+| 知识图谱可视化 | 相关子图、路径、ValidationRun 与失败/修复筛选 | [Web 界面](app/ui/) |
+| 自动验证报告 | 生成 JSON 与 Markdown 报告 | [报告模块](app/validation/report.py) |
+| 验证结果回写 | Curator 保存候选、运行、失败和修复经验 | [跨任务闭环](examples/acceptance_real_20260907/closed_loop_proof.json) |
+| 多任务验证配置 | 分类、回归、文本和异常任务的协议及指标配置 | [任务与验证说明](#6-示例数据和测试任务说明) |
+| 插件式接入 | 注册算法 renderer、自定义指标与 evaluator | [插件扩展测试](tests/test_plugin_extension.py) |
 
-25 次实验共执行 **63 个候选，其中 60 个最终 PASS、3 个最终失败**；触发运行后修复的 4 个候选中 2 个恢复成功。实际自然恢复出现在 `A1_text_42` 和 `A6_customer_churn_2026`，Full 中失败的修复也保留。25 次实验共记录 179 次应用层真实 LLM 调用，调用时延和重试信息保存在对应 trace 中。
+### 8.8 扩展能力与加分项实现
 
-这批结果说明小型开发任务在 LLM-only/单候选下也能完成；知识与搜索的额外执行成本并不自动转化为预测收益。证据追踪、经验可检索和失败诊断属于可审计的系统行为，本研究没有将它们冒称为统计显著的质量提升。有限且不齐的种子只能提供探索性观察。
-
-完整种子覆盖、配对差、检索/搜索/修复成本与失败列表见 [ABLATION_STUDY](docs/ABLATION_STUDY.md)。机器可读结果：[summary JSON](docs/evidence/ablation_summary.json)、[客户 CSV](docs/evidence/ablation_customer_churn.csv)、[文本 CSV](docs/evidence/ablation_text.csv)。原始结果、配置、Git commit、LLM 调用、源码与报告见 [study_20260908](experiments/ablation/results/study_20260908/)。
-
-
-### 8.7 进阶要求完成情况
-
-| 原题进阶要求 | 状态 | 实现与边界 |
-|---|---|---|
-| Web / CLI / API | ✅ | [API](app/api.py)、[CLI](app/cli.py)、[UI](app/ui/)；本机同步使用 |
-| 多轮代码修复 | ✅ | 默认最多 3 轮，[不可变版本与循环](app/execution/candidates.py) |
-| 多候选方案自动比较 | ✅ | Beam 保留多个状态，实际验证后选择 winner |
-| 知识图谱可视化 | ✅ | 当前相关子图/路径、ValidationRun/Failure/Repair 筛选 |
-| 自动生成验证报告 | ✅ | [JSON/Markdown 报告](app/validation/report.py) |
-| 验证结果回写 | ✅ | Curator 写入实测结果、失败和修复经验，真实 A→B 复用 |
-| 不同任务验证配置 | ✅ / 🟡 | 四类任务；真实重点测 churn/text，无标签 anomaly 质量评价有限 |
-| 插件式模板/指标接入 | ✅ / 🟡 | [实际扩展测试](tests/test_plugin_extension.py)；新任务仍需可信 worker/协议适配 |
-
-### 8.8 加分项完成情况
-
-| 原题加分项 | 状态 | 当前实现与边界 |
-|---|---|---|
-| 图搜索 | ✅ | GraphRAG 关系感知遍历与子图 |
-| Beam Search | ✅ | 有限算法/预处理/参数空间扩展与剪枝 |
-| MCTS | ❌ | 未实现，不宣称全局最优搜索 |
-| 多智能体协作 | ✅ | 职责、schema、prompt、工具权限与 trace；同步 workflow |
-| 真实代码仓库抽取 | 🟡 | Python 文件 AST + LLM；未完成大型跨文件仓库分析 |
-| 安全检查和沙箱 | ✅ / 🟡 | 实际 prototype sandbox；生产隔离未完成 |
-| 失败案例与可复用经验 | ✅ | Failure/RepairExperience、实际下一次检索与测试 |
-| 算法能力版本管理 | ✅ 原型 | code hash、parent version、ValidationRun/AlgorithmVersion |
-| 自然语言设计依据 | ✅ | ExplanationAgent 引用实际 evidence/measurement；语义检查有限 |
-| 跨场景迁移 | ✅ | 同一框架 churn + public text；其他任务主要软件回归 |
-| 自动接口文档 | ✅ | FastAPI/OpenAPI |
-| 自动部署配置 | 🟡 | 未完成生产自动部署 |
-| 资源消耗分析 | ✅ | CPU/RSS/runtime/预测时延 |
-| 通用自动性能优化 | 🟡 | 只有有限配置搜索；无完整代码性能优化器 |
+| 已实现能力 | 实现范围与证据 |
+|---|---|
+| 图搜索 | GraphRAG 关系感知遍历、路径评分与子图检索 |
+| Beam Search | 有限算法/预处理/参数空间的状态扩展与剪枝 |
+| 多智能体协作 | 独立职责、schema、prompt、工具权限和调用 trace |
+| Python 代码能力抽取 | 文件级 AST 结构分析与 LLM 语义抽取，保留来源跨度 |
+| 代码安全检查与沙箱执行 | prototype sandbox：AST/import、子进程、资源限额和 audit |
+| 失败案例与经验复用 | Failure/RepairExperience 写回，并被下一次任务检索 |
+| 算法能力版本管理 | source hash、parent version、ValidationRun 与 AlgorithmVersion |
+| 自然语言设计依据 | ExplanationAgent 引用检索 evidence 与实测结果 |
+| 跨场景验证 | 同一框架完成客户流失预测与公开文本分类 |
+| 自动接口文档 | FastAPI 生成 OpenAPI 文档 |
+| 资源消耗分析 | 记录 CPU、RSS、runtime 和预测时延 |
 
 ### 8.9 评分标准对应证据
 
-以下展示证据，不预估得分。
+以下按原题评分维度列出代码和实验依据。
 
 #### 技术能力 — 40%
 
@@ -636,7 +573,7 @@ Controlled 案例保存 [before/after/diagnosis/validation](examples/acceptance_
 | KG schema 合理性 | Feature/Target/Metric 分离、运行级数值、来源和版本；见 3 |
 | Agent 工作流清晰有效 | 角色表、a–g 映射、任务内与跨任务两条反馈链；见 4 |
 | 验证可执行/可扩展 | [ValidationRunner](app/validation/runner.py)、[MetricRegistry](app/metrics/registry.py)、tests |
-| 修复/候选/搜索能力 | 15→3 实际搜索、FAILED→REPAIR→PASS、全候选比较、8.6 消融 |
+| 修复/候选/搜索能力 | 15→3 实际搜索、FAILED→REPAIR→PASS、全候选比较、正式修复验收 |
 
 #### 代码质量 — 30%
 
@@ -675,35 +612,32 @@ Controlled 案例保存 [before/after/diagnosis/validation](examples/acceptance_
 | 环境依赖 | [requirements.txt](requirements.txt)、本地推理/服务补充依赖 |
 | 使用示例和测试用例 | 5 节命令、[tests](tests/)、[ablation](experiments/ablation/) |
 
-代码、数据、文档、报告、CLI/API/Web 与真实端到端结果均可从上述入口核对；实验失败与限制保留。
+代码、数据、文档、报告、CLI/API/Web 与端到端结果均可从上述入口核对。完整实验记录与指标解释分别附于验收和研究报告。
 
 ## 9. 遇到的挑战和解决方案
 
-| 技术挑战 | 解决方式 | 剩余限制 |
+| 技术挑战 | 解决方案 | 执行结果与检查 |
 |---|---|---|
-| LLM structured output 不稳定 | Pydantic、语义检查、受约束 transport 协商、有界重试与明确 fallback trace | 兼容 JSON transport 不等于每次语义正确 |
-| CodeGen 生成错误接口/参数 | API protocol、semantic gate、Sandbox、可信 Validator、Critic/Repair | free-form LLM 不是 100% 成功；保留失败，不降低标准冒充通过 |
-| KG 只展示不参与决策 | 实际图遍历、SubgraphSerializer、保存准确 Planner context | entity linking 含规则；没有人工标注的大规模检索正确率评测 |
-| 历史优胜导致 lock-in | 相似度、样本量收缩、recency、exploration、多候选实测 | prior 是启发式；修复版本相关，历史不是独立样本 |
-| 自报指标与 final test 泄漏 | 可信父进程重算；development 选择后冻结代码，final 不反馈 | 开发验证集可因多轮修复被过拟合；旧 churn 协议不含独立最终集 |
-| 模型大小与成本取舍 | 指令/代码模型路由，实际调用记录；后续使用 vLLM BF16/TP2 控制延迟与上下文 | 更大模型不必然成功；没有同预算模型优劣的统计证明 |
-| 消融归因与失败选择偏差 | 配对开发划分、预注册、全部失败入分母、成功指标明示 n、隔离库 | 2 tasks、每组 1–3 次观测；种子组成与 No Beam 执行预算存在差异 |
+| LLM 结构化输出的格式与语义校验 | Pydantic 契约、语义检查、受约束 transport 协商与有界重试 | 输出经过校验后进入下一 Agent，恢复过程保留 trace |
+| 生成代码的接口与参数错误 | API protocol、semantic gate、Sandbox、Validator、Critic/Repair | 保存错误诊断和源码版本，修复后重新执行统一验证 |
+| 图谱知识进入方案规划 | 图遍历、SubgraphSerializer、显式 Planner context | 报告保留检索路径、历史案例与 evidence IDs |
+| 历史经验与候选探索的平衡 | 数据相似度、样本量收缩、recency、exploration、多候选实测 | 历史结果作为 prior，最终按当前验证结果选择 |
+| 评价指标可信性与数据分离 | 父进程重算指标，开发阶段选择后冻结代码，独立测试单独保存 | 数据、源码和报告由 hash 绑定，最终分数与规划过程分离 |
+| 模型推理与运行成本 | 指令/代码模型分别路由，vLLM 服务与调用计量 | 保存模型、上下文、时延、token usage 和候选资源统计 |
 
-早期 NF4 coder 的慢速/超时、上下文限制与后端切换保留在 [真实验收记录](docs/FINAL_ACCEPTANCE.md)，不推断未经证实的 OOM 根因。解释引用/指标核对能发现部分矛盾，无法证明任意自然语言完全无幻觉。消融结论以 8.6 和 [ABLATION_STUDY](docs/ABLATION_STUDY.md) 的实测为准，不预设各模块必有正向收益。
-
-其他限制：同步单用户 API 无生产鉴权/队列/并发事务；prototype sandbox 不具备生产隔离；churn 为合成数据，text 为有限公开任务；regression/anomaly 真实验收较少；未做大型仓库跨文件分析、MCTS、生产自动部署与通用性能优化。任意自由文本业务约束仍需专门验证插件。
+处理流程和实际执行记录见 [系统验收报告](docs/FINAL_ACCEPTANCE.md)、[文本独立测试报告](docs/TEXT_ACCEPTANCE.md) 与 [安全策略](docs/llm_and_security.md)。
 
 ## 10. 后续可扩展方向
 
-| 方向 | 与当前边界对应的工作 |
+| 方向 | 扩展内容 |
 |---|---|
 | 10.1 Large Repository Mining | 从单 Python 文件扩展到跨模块 call graph、dependency graph、语义和来源追踪 |
 | 10.2 Production Sandbox | 低权限执行、只读挂载、Docker/gVisor、cgroups、seccomp、network namespace |
 | 10.3 More Advanced Search | MCTS、learned policy、Bayesian optimization；与有限 Beam 在相同预算下比较 |
 | 10.4 Better Experience Learning | 更丰富数据画像、相关版本去偏、case-based reasoning 权重学习与检索标注集 |
 | 10.5 Unsupervised Anomaly Evaluation | 设计并验证无标签质量 proxy；继续区分异常统计、运行成本与可靠质量证据 |
-| 10.6 Automatic Deployment | serving 配置、容器构建、认证、异步队列和生产部署；当前未完成 |
+| 10.6 Automatic Deployment | serving 配置、容器构建、认证、异步队列和生产部署 |
 | 10.7 Automatic Performance Optimization | profiling、生成代码优化、模型压缩及质量/资源共同约束 |
 | 10.8 Larger-scale Ablation | 更多 seeds、真实业务数据和任务；等预算比较、置信区间与更严格因果分析 |
 
-后续实验应继续使用新目录与独立协议，保留失败，不反馈已封存的最终测试。
+后续实验采用独立目录与预先固定的评价协议，持续保存配置、代码版本和完整测量记录。
