@@ -1,0 +1,40 @@
+{
+  "source_url": "https://archive.ics.uci.edu/static/public/331/sentiment%2Blabelled%2Bsentences.zip",
+  "source_doi": "https://doi.org/10.24432/C57604",
+  "creator": "Dimitrios Kotzias (2015)",
+  "license": "CC BY 4.0",
+  "archive_sha256": "afc26626d710899948693e1a61405dce197f57ffa719fa1130d346b4cc095343",
+  "original_rows": 3000,
+  "unique_rows": 2979,
+  "conflicting_groups_removed": 0,
+  "split_seed": 20260908,
+  "policy": "NFKC/casefold/whitespace duplicate groups removed before source+label stratification; final 25% withheld from all agents",
+  "splits": {
+    "development": {
+      "rows": 2234,
+      "sha256": "1eeb8a0dbf3a7287544f50afa026552c2ea4a05a585901bf883d05de44750483",
+      "class_counts": {
+        "0": 1118,
+        "1": 1116
+      },
+      "source_counts": {
+        "imdb_labelled.txt": 747,
+        "yelp_labelled.txt": 747,
+        "amazon_cells_labelled.txt": 740
+      }
+    },
+    "final_test": {
+      "rows": 745,
+      "sha256": "9da56771c58681b06ab75a2db8d4fa8401e2510668965553affa6e8241bc40f2",
+      "class_counts": {
+        "0": 373,
+        "1": 372
+      },
+      "source_counts": {
+        "imdb_labelled.txt": 249,
+        "yelp_labelled.txt": 249,
+        "amazon_cells_labelled.txt": 247
+      }
+    }
+  }
+}
