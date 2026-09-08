@@ -2,7 +2,7 @@
 
 ## 设计目标
 
-图必须回答“为什么候选适合当前任务、在哪些相似数据上经过验证、曾因什么失败、如何修复”。SQLite 保存完整 JSON payload 和版本；NetworkX MultiDiGraph 保存有方向、有类型的关系。GraphML 是可视化/交换快照，绝不是 LLM 的输入格式。
+知识图谱表达算法适用条件、相似数据上的验证结果、失败原因与修复策略。SQLite 保存完整 JSON payload 和版本；NetworkX MultiDiGraph 保存有方向、有类型的关系。GraphML 用于可视化与数据交换，Planner 接收经序列化的相关子图。
 
 ## 实体
 
@@ -40,13 +40,13 @@ FeatureStrategy 保留兼容旧数据；新主流程使用下列规范关系，�
 
 关系名在 schema 枚举中约束；抽取边必须引用同 chunk 实体并有原文跨度。Store 中部分兼容关系允许多种端点，尚非完整本体推理器或 SHACL 引擎。
 
-## 测量值为什么放属性
+## 验证指标的属性建模
 
 ROC-AUC=0.86 是某次运行在特定切分、配置和代码版本下的结果，不是算法的固有性质。因此 metrics、runtime_seconds、RSS、CPU、success、timestamp 放在 ValidationRun 属性。Metric 节点定义 roc_auc 的语义，Dataset/Config/Version 关系提供条件，避免 “XGBoost → 0.86” 丢失上下文。
 
 ## 来源、标识与可信层级
 
-文件实体使用内容 hash 与规范名称；source 路径、SHA256、chunk、line/character offsets 和 evidence_span 保留。跨度必须在输入原文出现，不能由模型凭空补写。Python AST 提供 imports/functions/classes/signature；LLM 补语义；两者分别保留。
+文件实体使用内容 hash 与规范名称；source 路径、SHA256、chunk、line/character offsets 和 evidence_span 保留。来源跨度经过原文匹配校验。Python AST 提供 imports/functions/classes/signature；LLM 补语义；两者分别保留。
 
 `origin=llm_extracted` 表示文档声称的实验；`origin=measured_workflow` 表示本验证器实际执行。文档中的声称不得变成实测统计；ExperienceRetriever 排除抽取产生的伪测量。seed historical_metrics 只用于冷启动弱 prior。
 
@@ -54,7 +54,7 @@ ROC-AUC=0.86 是某次运行在特定切分、配置和代码版本下的结果�
 
 同一 workflow 的 winner 最终 ValidationRun 使用 workflow run_id，其余使用 `run_id:candidate:vN`。Planner 仅在已知运行元数据能精确证明等价时，把候选版本别名归一到允许的 canonical run_id，并在 trace 记录；不存在的版本仍拒绝。每轮有独立版本源码和 hash，v2 指向 v1；成功修复后原始失败仍可检索。
 
-## 真正 Graph Retrieval
+## 图检索流程
 
 1. CapabilitySpec 的 task/domain/data_type 和显式算法提示链接 Capability/Task/Algorithm anchors。
 2. NetworkX 沿白名单边双向扩展 1–3 hop，记录原方向、遍历方向和完整路径。
@@ -64,11 +64,11 @@ ROC-AUC=0.86 是某次运行在特定切分、配置和代码版本下的结果�
 6. ContextBuilder 区分 requirement、graph_candidates、similar_historical_runs、failure_and_repair_experiences、source_evidence、system_constraints，并按预算删除低排序条目，避免截断无效 JSON。
 7. Planner 和 Coder 收到实际序列化 JSON。报告保存精确 Planner 输入和 evidence IDs。
 
-例如实际边方向是 ValidationRun → VALIDATES → Algorithm。检索可以从 Capability → USES_ALGORITHM → Algorithm，逆向 VALIDATES 到历史 run；paths 记录这个方向。失败和修复若超过 hop 预算，由相似案例经验通道补充，不能伪称所有经验都在三跳内。
+例如实际边方向是 ValidationRun → VALIDATES → Algorithm。检索可以从 Capability → USES_ALGORITHM → Algorithm，逆向 VALIDATES 到历史 run；paths 记录这个方向。超过 hop 预算的失败与修复经验由独立的相似案例通道补充。
 
 ## Hybrid 与经验 prior
 
-源文档用本地 Transformer 编码器（mean pooling + cosine） 向量（可选）或明确标记的 TF-IDF lexical similarity；TF-IDF 不冒充神经语义模型。融合考虑 source similarity、graph distance、task compatibility、recency、validation quality。经验另按领域/目标/特征交集、样本量比例、数值特征占比、类别比例、资源匹配计算 context similarity，再按时间衰减计算 success/stability/runtime/memory prior。
+源文档用本地 Transformer 编码器（mean pooling + cosine） 向量（可选）或 TF-IDF lexical similarity；报告分别标明神经语义检索与词项相似度检索。融合考虑 source similarity、graph distance、task compatibility、recency、validation quality。经验另按领域/目标/特征交集、样本量比例、数值特征占比、类别比例、资源匹配计算 context similarity，再按时间衰减计算 success/stability/runtime/memory prior。
 
 图提供可追溯上下文与 prior，当前任务的实际评估才决定 winner。相关性、衰减与 exploration 系数是可解释启发式，目前未通过大规模离线学习校准。
 

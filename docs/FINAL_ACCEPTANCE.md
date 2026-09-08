@@ -1,10 +1,10 @@
-# 实际验收：从审计到真实闭环
+# 系统验收报告
 
-后续补充验收已加入公开文本语料、独立最终测试与 86 项通过的测试，见 [TEXT_ACCEPTANCE.md](TEXT_ACCEPTANCE.md)。以下记录四阶段验收的原始结果。
+本报告记录客户流失、相似任务、自修复和文本流程四个阶段的验收结果。公开文本分类与独立最终测试见 [TEXT_ACCEPTANCE.md](TEXT_ACCEPTANCE.md)。各报告的测试统计对应其验收版本。
 
 本页对应 `examples/acceptance_real_20260907/` 中的原始证据。运行跨越 2026-09-07 UTC 至次日北京时间。证据中的时间使用 UTC；算法版本 hash 绑定实际执行的代码，不把历史运行改标为最新 commit 的运行。
 
-## A. Before / After
+## 基线审计与实现改进
 
 基线为 `7dea7e6` 加服务器已有未提交工作；原有工作已备份、保留。实际 baseline pytest 有 **6 个收集错误**，demo 因 generator 缩进 SyntaxError 失败。更早 README 的通过统计不能代表这个 checkout。完整审计见 [TECHNICAL_AUDIT.md](TECHNICAL_AUDIT.md)。
 
@@ -20,13 +20,13 @@
 | 继承环境凭证，AST 可绕过 I/O；无不可变版本 | 清理子进程环境、临时目录、资源限额、audit、可用时 network namespace；v1→v2 源码/hash/父版本 |
 | Web 偏 JSON 展示，历史 demo 注入手工分数 | 相关子图与路径、候选排名、实际代码、验证、修复链、写回和调用轨迹；本次闭环来自实测 |
 
-## B. Architecture
+## 系统执行链路
 
 `RequirementAgent → Dataset Profile → LLM Knowledge Extraction/bootstrap → Hybrid GraphRAG → PlannerAgent → finite Beam Search → CoderAgent → static gate → Sandbox/ValidatorAgent → CriticAgent/RepairAgent → current-result winner → CuratorAgent → ExplanationAgent/report`。
 
-下一次任务读取 Curator 写入的真实运行和失败经验。AgentRuntime 对各角色的工具分派做权限检查并记录事件；这是有职责、消息契约和证据交换的同步 specialist workflow，不是分布式自主代理群。四张汇报用 Mermaid 图见 [ARCHITECTURE.md](ARCHITECTURE.md)。
+下一次任务读取 Curator 写入的真实运行和失败经验。AgentRuntime 对各角色的工具分派做权限检查并记录事件；这是有职责、消息契约和证据交换的同步 specialist workflow，不是分布式自主代理群。工作流、图谱、修复和经验学习的 Mermaid 图见 [ARCHITECTURE.md](ARCHITECTURE.md)。
 
-## C. Real LLM Evidence
+## 模型配置与调用记录
 
 正式验收使用本地开放权重，通过 OpenAI-compatible API 实际推理：
 
@@ -53,9 +53,9 @@
 
 主任务 RF 未通过；没有把失败候选隐藏或标成成功。所有候选尝试见各阶段 JSON。高 ROC-AUC 也不代表默认分类阈值业务效果好：主 winner recall 约 0.261，F1 约 0.393。
 
-文本任务扩展 4 个配置、beam=3；unigram 经 3 轮真实修复后通过，bigram 经 1 轮后通过且指标相同，LLM-proposed 经过 3 轮仍失败。原错误包含 TF-IDF/ColumnTransformer 维度冲突、配置参数错投以及 weighted F1 自报不一致。未降低验证器要求或手改生成源码。该任务明确没有质量阈值，PASS 只表示协议、运行、指标一致性等检查通过；低指标没有证明文本分类质量达标。最后补强了文本代码契约中的 1D 字符串和参数路由规则，此提示修订不是对已保存运行的追溯重跑。
+文本任务扩展 4 个配置、beam=3；unigram 经 3 轮真实修复后通过，bigram 经 1 轮后通过且指标相同，LLM-proposed 经过 3 轮仍失败。原错误包含 TF-IDF/ColumnTransformer 维度冲突、配置参数错投以及 weighted F1 自报不一致。未降低验证器要求或手改生成源码。该任务明确没有质量阈值，PASS 只表示协议、运行、指标一致性等检查通过；低指标没有证明文本分类质量达标。文本代码契约包含 1D 字符串输入与参数路由规则；本报告中的测量值对应保存的原始代码版本。
 
-## D. GraphRAG Evidence
+## GraphRAG 检索结果
 
 实际查询是“混合数值/类别客户流失预测，ROC-AUC ≥ 0.80，类别不平衡，输出概率”，Task B 另有新客户群、解释性和每行预测延迟约束。
 
@@ -74,7 +74,7 @@ capability_fe3d4b64611b254d
 
 Serialized Context 包含 `graph_candidates`、`similar_historical_runs`、`failure_and_repair_experiences`、`source_evidence` 与 `system_constraints`，而不是把 GraphML 文件交给 LLM。展示用裁剪案例见 [graph_retrieval_example.json](../examples/acceptance_real_20260907/graph_retrieval_example.json)，完整原始子图在 `second.json`，实际 Planner 输入在 `closed_loop_proof.json`。关系方向、来源和数值属性设计见 [knowledge_graph_schema.md](knowledge_graph_schema.md)。正式抽取结果见 [extracted_knowledge.json](../examples/acceptance_real_20260907/extracted_knowledge.json)，其中 `age → Feature`、`churn → Target`、`ROC-AUC → Metric`；旧错误类型样本已归入历史目录。
 
-## E. Closed Loop Evidence
+## 跨任务经验复用
 
 第一次 retrieval 的 `historical_cases=[]`。运行得到 `6bde3f2c39b8`，Curator 写入实际指标、数据 profile、环境、代码 hash，并保留 RF 的失败及所有替代方案。
 
@@ -90,7 +90,7 @@ Serialized Context 包含 `graph_candidates`、`similar_historical_runs`、`fail
 
 这个实验直接证明了写回→再检索→Planner 使用；它不是历史经验的因果消融实验，因为新数据、用户约束和 LLM 输出也发生了变化。另有自动测试在当前非线性数据上实际执行候选，证明即使 fixture 历史偏爱线性模型，当前更合适的非线性算法仍可获胜。
 
-## F. Self-Repair Evidence
+## 代码自修复结果
 
 专门 demo 对真实 LLM 生成的代码明确注入接口错误：将 `predict` 改为 `predict_broken`。此注入只用于证明控制流程，报告有 `DemoFaultInjection` 事件。
 
@@ -108,7 +108,7 @@ v2: exact host interface restored → actual sandbox execution → PASS
 
 `next_retrieval.json` 证明这次失败经验已被下一次 RetrievalAgent 找到。Graph snapshot 中 RepairExperience 通过 `PRODUCED_VERSION` 连接 v2，v2 保留 parent version。
 
-## 解释与中断恢复的完整性
+## 解释校验与报告版本管理
 
 真实 LLM 解释曾出现引用错误、与实测排序矛盾及不受证据支持的历史比较。系统增加动态候选枚举、指标/引用核对与有限比较关系检查。
 
@@ -116,19 +116,19 @@ v2: exact host interface restored → actual sandbox execution → PASS
 
 历史失败尝试、超时、上下文拒绝、代码换行问题和后端切换日志都保留。`examples/acceptance_20260907/` 是开发过程，不能当作本次四阶段通过报告。
 
-## G. 测试与证据核验
+## 自动测试与证据核验
 
 完整 `pytest -q`：**81 passed，0 failed，98 warnings，73.30 秒**。JUnit 与完整控制台结果分别保存在 `test-results.xml`、`pytest.log`；warnings 为当前 sklearn/pandas 组合的弃用提示。
 
 只读 `scripts/verify_evidence.py`：**4 个真实阶段、21 个实际源码版本，全部 hash 和证据断言通过**。检查内容包括真实 provider、源代码 hash、Task A→B Planner 依据、失败经验再次检索、v1 FAILED/v2 PASS、RepairExperience→v2 图关系，以及解释恢复前后的测量字段不变。
 
-随后从 `git archive HEAD` 导出的全新目录（不含未提交 SQLite/cache）再次核验通过，见 `clone_verification.json`。原始模型源码证据保留生成时的空格/换行；不会为消除历史 artifact 的 whitespace 提示而改写已核验 hash。
+从 `git archive HEAD` 导出的独立目录（不含未提交 SQLite/cache）核验通过，见 `clone_verification.json`。原始模型源码证据保留生成时的空格/换行；不会为消除历史 artifact 的 whitespace 提示而改写已核验 hash。
 
-自动测试不仅检查“不抛异常”：包括实际 sklearn 训练的 A→B 闭环、历史冠军被当前非线性任务淘汰、LLM 无效 JSON 恢复、真实图路径、source grounding、指标造假拒绝、target 泄漏、恶意代码、超时、稳定性失败、资源约束、协议、插件 renderer 与自定义指标。软件测试使用显式 Mock/fixture；真实模型能力的证明是上述独立验收报告。
+自动测试覆盖实际 sklearn 训练的 A→B 闭环、历史冠军被当前非线性任务淘汰、LLM 无效 JSON 恢复、真实图路径、source grounding、指标造假拒绝、target 泄漏、恶意代码、超时、稳定性失败、资源约束、协议、插件 renderer 与自定义指标。软件测试使用显式 Mock/fixture；真实模型能力的证明是上述独立验收报告。
 
-通过 SSH tunnel 实际检查 Web 的报告选择、第二次任务的复核解释标识、指标、子图筛选、源码以及自修复 v1/v2/hash/parent 展示。范围记录在 `ui_checks.json`，不把手工浏览验收称作完整浏览器测试套件。
+通过 SSH tunnel 实际检查 Web 的报告选择、第二次任务的复核解释标识、指标、子图筛选、源码以及自修复 v1/v2/hash/parent 展示。范围记录在 `ui_checks.json`，该项属于人工界面验收。
 
-## H. 主要文件
+## 主要模块与文件
 
 - `app/llm/`：安全配置、provider、schema negotiation、实际调用计量。
 - `app/agents/`：需求、抽取、规划、Critic/Repair、解释与工具分派契约。
@@ -139,7 +139,7 @@ v2: exact host interface restored → actual sandbox execution → PASS
 - `scripts/run_acceptance.py`、`verify_evidence.py`、`acceptance_recovery.py`、`review_explanations.py`：可续跑验收、只读证据核验、原报告保留。
 - `tests/`、README、审计/schema/架构文档、示例证据。
 
-## I. Remaining Limitations
+## 实现边界
 
 1. 这是 prototype sandbox，AST/audit/resource/unshare 不能证明对任意恶意 Python/原生扩展的生产级隔离；未实现 Docker/VM/cgroups/seccomp 组合。
 2. 合成客户数据和极小文本数据不证明真实行业泛化；修复反复观察 holdout 会过拟合。公开文本的独立最终测试见 TEXT_ACCEPTANCE；旧客户流失协议仍需独立最终测试、置信区间与业务成本评估。

@@ -34,17 +34,17 @@ Earlier documentation's 12 passing tests refers to a different checkout.
 | Evidence | Historical scripts/artifacts exist | The controlled prior injection demo injects 0.99 rather than measuring a workflow run (current filename: controlled_prior_injection_demo.py); annotate_evidence relabels old commits without rerunning; verifier lacks artifact hashes and execution lineage checks. |
 | Plugins | Registry feeds planning/search | Unknown algorithm falls through to GradientBoosting; registration alone does not prove executable extension. |
 
-## Answers to the central audit questions
+## Core workflow assessment
 LLM participates in requirement, advisor, top-budget code proposals, failure diagnosis and repair, but fallbacks can produce the final PASS. KG does participate through traversal, although entity linking and path filtering are weak. Written winner ValidationRuns affect subsequent deterministic priors; existing automated tests mostly insert hand-authored runs, not Task A -> Task B. Multi-Agent responsibilities are partly real; message contracts and evidence transfer are incomplete. Beam expands real presets and executes selected states, but its breadth and diversity policy are restricted. Existing sandbox/stability are useful prototype checks, not hostile-code isolation or statistically robust generalization evidence.
 
 ## Gaps against scoring criteria
 - Technical (40%): restore execution, require truthful real-provider acceptance, independent metrics, complete candidate/repair provenance, actual learned-history planning loop.
 - Code quality (30%): central configuration/telemetry/sanitization, explicit contracts, split candidate execution from orchestration, isolated regression tests, reproducible dependencies.
-- Innovation (15%): relation-aware GraphRAG with path evidence, contextual priors plus exploration, LLM decisions affecting executed configurations, reusable failure lessons. Do not call fixtures learning or beam MCTS.
+- Innovation (15%): relation-aware GraphRAG with path evidence, contextual priors plus exploration, LLM decisions affecting executed configurations, reusable failure lessons. Controlled fixtures, experience reuse and finite beam search are evaluated separately.
 - Completeness (15%): measured real LLM, self-repair and cross-domain runs; hash-bound artifacts; usable UI and accurate documentation.
 
-## Remediation and acceptance
-1. Audit commit first; retain previous work and baseline logs.
+## Improvement scope and acceptance criteria
+1. Versioned audit, baseline source and execution logs.
 2. Secure API parsing, truthful provider failures, structured agents and full traces.
 3. Provenance-grounded extraction -> relation-aware graph -> serialized Planner/Coder evidence.
 4. Persist all candidates/rounds, context-sensitive priors, exploration, immutable code versions.
@@ -53,4 +53,4 @@ LLM participates in requirement, advisor, top-budget code proposals, failure dia
 7. Artifact hashes bind evidence to actual source digest; never retroactively relabel older experiments.
 8. Keep actual model execution, controlled fixtures and mock tests explicitly distinguishable.
 
-This is the **before** audit. Final measured results belong in FINAL_ACCEPTANCE.md.
+This audit describes the baseline version. The implementation results and measured acceptance are documented in [FINAL_ACCEPTANCE.md](FINAL_ACCEPTANCE.md).

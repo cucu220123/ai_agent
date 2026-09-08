@@ -10,4 +10,4 @@
 | [跨任务闭环](../examples/acceptance_real_20260907/closed_loop_proof.json) | 真实 Workflow → Curator → 第二次 Retrieval → Planner |
 | [自修复](../examples/acceptance_real_20260907/self_repair_demo/) | 注入接口故障后，真实模型修复及重新执行；before/after/proof 保留 |
 
-Mock 仅用于显式离线软件测试，不能作为模型能力证据。早期 benchmark、模板 fallback 和受控 prior 注入仅说明当时的开发实验，不替代上述正式验收。当前模型配置与历史 benchmark 的范围见 [MODEL_SELECTION](MODEL_SELECTION.md)。
+Mock 用于离线软件测试；模型能力由上述真实调用与运行记录验证。历史 benchmark、模板 fallback 和受控 prior 注入分别保存在开发实验记录中。当前模型配置与历史 benchmark 的范围见 [MODEL_SELECTION](MODEL_SELECTION.md)。

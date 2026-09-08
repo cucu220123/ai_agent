@@ -1,12 +1,12 @@
-# 补充验收：真实公开文本数据与独立最终测试
+# 公开文本分类实验与独立测试报告
 
-原 16 条文本 smoke demo 仅用于流程检查，accuracy 0.50、weighted F1 0.333 不能证明分类质量。本页记录公开语料实验 `683902e2a7cf`；原始证据保留，不替换或重新标注旧结果。
+本报告记录公开语料实验 `683902e2a7cf` 的数据协议、候选比较和独立最终测试。16 条文本 smoke demo 的 accuracy 0.50、weighted F1 0.333 属于另行保存的流程检查结果，与本实验分开统计。
 
 ## 数据与预先固定的实验协议
 
 使用 [UCI Sentiment Labelled Sentences](https://archive.ics.uci.edu/dataset/331/sentiment+labelled+sentences)，引用 Kotzias (2015)，DOI [10.24432/C57604](https://doi.org/10.24432/C57604)，许可 CC BY 4.0。来源包括产品、电影和餐馆评论。原始 3000 条、来源文件和行号、许可与下载 archive SHA256 均保留在 `data/uci_sentiment/`。
 
-解析修复了两个真实问题：CSV 引号规则会吞并 IMDB 记录；`str.splitlines()` 会把句内特殊换行字符误当作新记录。现在按文件 LF 分记录、最后一个 TAB 分标签。对规范化文本（NFKC/casefold/空白）去重后得到 **2979 条**，没有发现标签冲突组。
+数据解析采用文件 LF 划分记录、最后一个 TAB 划分标签，以保留 IMDB 文本中的引号和句内特殊换行字符。对规范化文本（NFKC/casefold/空白）去重后得到 **2979 条**，没有发现标签冲突组。
 
 固定 seed=20260908，按来源和类别分层：
 
@@ -23,7 +23,7 @@ Qwen2.5-14B-Instruct 完成理解、规划和解释；Qwen3-Coder-30B-A3B-Instru
 
 GraphRAG 返回 **64 个节点、203 条边、8 条神经向量证据、10 条历史案例和 8 条失败经验**。旧文本运行 `a054aaacecab` 及其各版本被重新找到，context similarity 约 0.744421；包括 TF-IDF 参数错投、预处理维度、weighted F1 不一致的失败。实际 Planner context 和生成代码 metadata 引用了这些经验。
 
-这证明旧经验确实进入新任务；不能据此把当前效果归因于某一条经验，因为数据规模、代码契约和模型输出也变化了，尚未做因果消融。
+检索记录显示旧经验进入了新任务的规划与生成上下文。数据规模、代码契约和模型输出同时存在差异，该验收结果不用于估计单条经验的因果贡献。
 
 ## 候选与测量
 
@@ -39,7 +39,7 @@ GraphRAG 返回 **64 个节点、203 条边、8 条神经向量证据、10 条�
 
 **最终结果：accuracy 0.8241610738，weighted F1 0.8241382607，balanced accuracy 0.8241769725，PASS。** 原代码 evaluate 与父进程重算指标一致，功能、稳定性、资源和 robustness 检查通过。最终分数没有回到 Agent，也没有根据最终分数更换 winner 或修复代码。
 
-重复调用相同 commitment 只返回已有结果；更换代码/数据/选择报告会拒绝；中断后保留 ledger 并拒绝自动重评。本次为补充 Web companion 再次调用 final 阶段时返回的就是缓存，未重复执行最终测量。
+重复调用相同 commitment 只返回已有结果；更换代码/数据/选择报告会拒绝；中断后保留 ledger 并拒绝自动重评。Web companion 读取同一 commitment 对应的缓存结果，独立最终测量保持一次执行。
 
 开发阶段 LLM 解释在最终测试执行前生成，其“final test unavailable”描述只对应 Agent 当时没有最终数据/结果。页面将其与后续独立最终测试结果分开显示；不能把开发解释当作最终测试说明。
 

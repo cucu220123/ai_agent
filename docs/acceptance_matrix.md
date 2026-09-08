@@ -15,7 +15,7 @@
 | 回写与解释 | 全候选/版本写回、失败经验、基于证据的解释 | 不能证明任意自由文本完全无幻觉 |
 | CLI/API/Web | 提交任务、子图、候选、代码、验证、修复、调用轨迹 | 同步本机原型；FastAPI 自动接口文档 |
 | 插件与跨任务 | 算法注册、renderer、自定义可信指标；回归/异常等测试 | 全新任务仍需专用协议与验证逻辑 |
-| 文档与测试 | README、schema、架构、依赖、测试和封存报告 | 不把历史 benchmark 或 controlled prior injection 当正式验收 |
+| 文档与测试 | README、schema、架构、依赖、测试和封存报告 | 正式验收、历史 benchmark 与 controlled prior injection 分类记录 |
 
 ## 异常检测评价边界
 

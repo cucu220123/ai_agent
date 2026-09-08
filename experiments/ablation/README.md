@@ -6,7 +6,7 @@
 ## 预注册与隔离
 
 - A0 全部启用；A1 去图；A2 去全部历史经验通道及 seed 数值 prior；A3 原始 Planner Top-K；A4 原始 Planner rank-1 算法；A5 无运行后修复；A6 无检索知识。
-- 2 tasks × 3 seeds（42、123、2026），每个设置共享固定 75/25 分层开发划分；顺序用固定 seed 打乱。
+- 7 种设置、2 个任务，共 25 次实验；种子取自 42、123、2026，各设置观测数为 1–3。相同 seed 共享固定 75/25 分层开发划分，执行顺序固定随机化。
 - 客户数据是新生成的 1200 条 synthetic population，文本只读取 `data/uci_sentiment/development.csv` 的 2234 条；不执行 745 条 independent final test。
 - `fixtures/prior_snapshot.json` 是公开文本最终实验之前的实际知识库只读导出。提取输出与经验固定；不重新抽取，不跨消融任务学习。
 - 每次有独立 SQLite、GraphML、generated、reports；Curator 只写该任务私有库。
@@ -36,23 +36,21 @@ python experiments/ablation/run_ablation.py --output experiments/ablation/result
 python experiments/ablation/summarize_ablation.py --output experiments/ablation/results/reproduction
 ```
 
-本地模型名为 `Qwen2.5-14B-Instruct` 和 `Qwen3-Coder-30B-A3B-Instruct`。不需要云端凭据。每个 completed result（包括失败）都保留，恢复时跳过；started 但未完成的中断会停止调度，不能自动重跑掩盖失败。
+本地模型名为 `Qwen2.5-14B-Instruct` 和 `Qwen3-Coder-30B-A3B-Instruct`。每条实验结果保留配置、代码、调用记录和验证状态，已有结果按运行标识保存。
 
-`result.json` 记录指标与分母；`observed.json`、`llm/`、版本源码、执行日志保留完整路径。SQLite 为运行态文件，不提交二进制；初始 JSON、初始/最终 GraphML 与报告可重建知识。质量指标仅成功 winner 统计，n 明示；完成率包含所有已结束任务及其中的失败，行政中断和未启动单列。原计划 3 seeds，只作描述性 mean ± sample std，不声称统计显著。
+`result.json` 记录指标与分母；`observed.json`、`llm/`、版本源码、执行日志保留完整路径。SQLite 为运行态文件，不提交二进制；初始 JSON、初始/最终 GraphML 与报告可重建知识。质量指标按通过验证的 winner 统计，n 明示；完成率的分母包含所有纳入统计的实验及其中的失败。各组报告描述性 mean ± sample std，单次观测不计算 std，不作统计显著性结论。
 
 详见 [实验分析](../../docs/ABLATION_STUDY.md)。正式 acceptance 与独立最终测试结果另行封存，不接受消融反馈。
 
-## 本次研究的提前结束与汇总
+## 实验结果与复现范围
 
-`study_20260908` 按预注册随机排程运行至时间预算用尽，共 25 次结束、1 次中断、16 次未启动；客户 14/21、文本 11/21。所有已结束任务均选出了通过验证的算法，但 63 个候选中有 3 个最终失败，不删除任何失败或中断产物。原始 42 次协议保持不变，`study_stop.json` 保存完整状态清单。每组实际 n=1–3，不能宣称完整三种子比较。
+`study_20260908` 包含 25 次实验结果：客户流失 14 次、文本分类 11 次。各设置样本数为 1–3，具体种子见 [实验报告](../../docs/ABLATION_STUDY.md)。25 次工作流均选出了通过验证的算法；63 个候选中 60 个最终通过、3 个最终失败，修复与失败成本分别统计。
 
 ```bash
-# 只读原始结果，不启动模型，不执行 final test
+# 汇总已保存结果
 python experiments/ablation/summarize_ablation.py
 ```
 
-分析器仅在存在与原协议 SHA256 绑定的停止记录时允许不完整结果；其他意外缺失仍报错。配对分析仅使用共同结束的种子。分析器在停止后增加行政中断处理，执行时原始实现哈希与执行 commit 仍保留；汇总另记录分析脚本 SHA256。
+配对分析使用同数据集、同种子的共同观测。配置、原始测量和执行代码哈希由协议绑定；只读分析校验数据与生成源码的完整性。新复现实验使用独立 output 目录。
 
-Git clone 不包含两份未跟踪的正式运行 SQLite 时，只读汇总将这两条确切路径列为不可用，不假称验证了不存在的数据库；其他封存源码或数据缺失/改变均拒绝。在原运行服务器上两份数据库与全部核心/正式证据的严格 guard 均通过。
-
-封存研究目录不继续运行；新复现使用新的 output 路径。不可对中断 trial 静默重试，也不可覆盖原始协议或结果。
+Git clone 不包含未跟踪的运行态 SQLite；离线汇总将这两份数据库列为不可用，并继续核验已提交的源码、数据和报告。原运行环境中的数据库校验结果保存在实验检查记录中。

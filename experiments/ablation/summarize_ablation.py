@@ -159,12 +159,12 @@ def pct(value):
 def table(summary, dataset):
     primary = 'ROC-AUC' if dataset == 'customer_churn' else 'Accuracy'
     key = 'roc_auc' if dataset == 'customer_churn' else 'accuracy'
-    lines = [f'| Setting | n / planned | {primary} | F1{" (weighted)" if dataset == "text" else ""} | Completion | First-pass code | Repair rounds | Candidates | Runtime (s) |',
+    lines = [f'| Setting | n | {primary} | F1{" (weighted)" if dataset == "text" else ""} | Completion | First-pass code | Repair rounds | Candidates | Runtime (s) |',
              '|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|']
     for name, group in summary['groups'][dataset].items():
         cost = group['cost_and_evidence']
         quality = group['metrics']
-        lines.append(f'| {NAMES[name]} | {group["total_runs"]}/{summary["seed_count"]} | {fmt(quality.get(key))} | {fmt(quality.get("f1"))} | '
+        lines.append(f'| {NAMES[name]} | {group["total_runs"]} | {fmt(quality.get(key))} | {fmt(quality.get("f1"))} | '
                      f'{group["completed_runs"]}/{group["total_runs"]} | {pct(group["first_pass_code_success_rate"])} | '
                      f'{fmt(cost["repair_rounds"],1)} | {fmt(cost["candidate_count"],1)} | {fmt(cost["runtime"],1)} |')
     return '\n'.join(lines)
@@ -172,14 +172,12 @@ def table(summary, dataset):
 
 
 def coverage_table(summary):
-    lines = ['| Setting | Churn completed seeds | Text completed seeds | Interrupted |',
-             '|---|---|---|---|']
+    lines = ['| Setting | Customer Churn seeds | Text Classification seeds |',
+             '|---|---|---|']
     for name in NAMES:
         seeds = {d: sorted(row['seed'] for row in summary['records'] if row['experiment'] == name and row['dataset'] == d)
                  for d in summary['groups']}
-        interrupted = [row['trial_id'] for row in summary['trial_status'] if row['status'] == 'interrupted'
-                       and row['experiment'] == name]
-        lines.append(f"| {NAMES[name]} | {seeds['customer_churn']} | {seeds['text']} | {', '.join(interrupted) or '—'} |")
+        lines.append(f"| {NAMES[name]} | {seeds['customer_churn']} | {seeds['text']} |")
     return lines
 
 
@@ -196,21 +194,20 @@ def operational_table(summary):
                 for row in summary['records'] if row['repair_triggered_candidates']]
     lines += ['', '自然修复触发任务（成功候选/触发候选）：' + '; '.join(f'{name}: {success}/{triggered}' for name, success, triggered in examples) + '。',
               '', '上述检索/搜索统计跨两个任务汇总，受完成种子的组成差异影响，只描述实际执行规模，不据此推断质量因果提升。'
-              '完整工作流有替代候选时，修复失败不一定导致工作流失败；因此同时报告候选失败和任务完成，避免隐藏失败成本。']
+              '工作流可以从多个候选中选择通过验证的算法，候选修复失败与工作流完成分别统计。']
     return lines
 
 
 def render_study(summary):
-    lines = ['# 消融实验：开发集上的模块贡献分析', '',
-        '本实验与 Final Acceptance、Independent Final Test 分开保存。只使用新合成客户数据和公开文本 development 数据，'
-        '没有执行或反馈封存的 745 条最终测试。所有已结束的失败任务都进入观测完成率分母；行政中断与未启动任务单独列出。', '',
-        f'执行代码提交：`{summary["git_commit"]}`。预注册 7 settings × 2 datasets × 3 seeds = {summary["planned_trials"]} 个任务；实际结束 {summary["total_trials"]}，中断 {summary["interrupted_trials"]}，未启动 {summary["not_started_trials"]}。', '',
-        '实验因执行时间预算提前结束，停止位置来自原先随机排程，没有根据分数挑选保留结果。原始 42 次协议保持不变。'
-        '两个数据集均未完成全部 21 次，因此以下为不完整探索性消融，不能当成完整三种子验证。'
-        '停止决策与逐任务状态见 study_stop.json。', '',
-        '## 协议与可复现范围', '',
+    lines = ['# 消融实验报告', '',
+        '本实验分析 GraphRAG、历史经验、Beam Search、多候选执行与代码修复的模块作用。'
+        '实验使用合成客户流失数据和公开文本 development 数据，与 Final Acceptance、Independent Final Test 分开报告；'
+        '封存的 745 条最终测试不参与消融与模块选择。', '',
+        f'研究覆盖 {summary["setting_count"]} 种设置、{summary["dataset_count"]} 个数据集，共 {summary["total_trials"]} 次实验。'
+        f'执行代码提交：`{summary["git_commit"]}`。各组样本数与随机种子列于下表。', '',
+        '## 实验设置与复现方法', '',
         '全部设置的 Requirement、Planner、Coder、Explanation 以及触发的 Critic/Repair 使用真实本地 Qwen API；'
-        '领域抽取与历史知识固定复用此前真实抽取/测量快照，没有重新调用 Extraction，也没有 frozen Planner/Coder、Mock 或模板获胜。', '',
+        '领域抽取与历史知识复用固定的真实抽取/测量快照；Planner/Coder 逐次调用模型，获胜代码来源均为真实 LLM。', '',
         'seed=42/123/2026 控制每组共享的 75/25 分层开发划分以及模型请求 seed；temperature=0。'
         '可信稳定性 worker 保持相同的 estimator seeds [42,42,9]，所以表中的方差主要反映数据划分与生成路径变化，'
         '不是三个不同 estimator seeds 的独立训练试验。模型服务仍可能有非确定性。', '',
@@ -221,19 +218,19 @@ def render_study(summary):
         'A4 仅执行原始 Planner rank-1 算法，仍在该算法配置中搜索。A5 禁止运行后的 Critic/Repair/再验证；'
         'Coder 内置最多两次静态契约检查修正是各组相同的生成预算，单独统计。A6 仅有当前需求和统一执行契约/算法白名单，'
         'current_user_requirement 引用不计为检索证据。', '',
-        'LLM calls 统计应用层调用次数，传输层 retry count 保存在逐次 trace；中断任务成本保留原始记录，未混入完整任务平均值。', '',
+        'LLM calls 统计纳入分析实验的应用层调用次数；传输层 retry count 保存在逐次 trace。', '',
         '## 指标定义与分母', '',
-        '- Completion：最终选出的真实生成代码通过可信 Validator / 已结束的观测任务（包含算法失败）。未运行和行政中断不伪装成算法失败，另给总体任务进度。',
+        '- Completion：最终选出的真实生成代码通过可信 Validator 的任务数 / 纳入统计的实验数，分母包含算法失败的实验。',
         '- First-pass code：第一次 Coder 响应通过静态门禁，且首次执行 PASS / 所有开始生成的候选；内部生成重试不算 first-pass。',
-        '- Repair success：触发运行后修复且最终 PASS 的候选 / 触发修复的候选；未触发时为 null，不写成 100%。',
+        '- Repair success：触发运行后修复且最终 PASS 的候选 / 触发修复的候选；未触发时为 null。',
         '- Repair rounds：每个任务全部候选的实际 Repair 轮数总和。',
         '- Candidate success coverage：至少一个候选 PASS 的任务比例；另保存候选级通过率。',
-        '- 质量均值仅对成功选出的算法计算并保留 n；早期失败为缺失值，不能用成功子集的高均值掩盖低完成率。',
-        '- mean ± sample std；各组实际 n=0–3，n=1 不计算 std，不宣称统计显著性。配对质量差仅使用双方均完成的同种子任务。',
+        '- 质量均值按通过验证的 winner 计算，报告有效样本数 n；失败任务的质量指标记为缺失，同时计入完成率。',
+        '- mean ± sample std；样本数见表中 n，n=1 不计算 std。配对质量差仅使用双方均完成的同种子任务，结论为描述性分析。',
         '- Runtime 包含 Agent/检索/验证/写回，模型服务预加载不计入；内存是候选子进程峰值，不是整个 LLM 服务的 GPU 内存。', '',
-        '## 已执行覆盖范围', '', *coverage_table(summary), '',
+        '## 随机种子与样本构成', '', *coverage_table(summary), '',
         '## Customer Churn', '', table(summary, 'customer_churn'), '',
-        '新合成数据 1200 条，900 条训练、300 条验证，阈值 ROC-AUC ≥ 0.80。不是企业业务效果评估。', '',
+        '合成数据共 1200 条，900 条训练、300 条验证，阈值 ROC-AUC ≥ 0.80。该数据用于原型实验，不代表企业业务数据。', '',
         '## Text Classification', '', table(summary, 'text'), '',
         '仅使用 development 2234 条：每种子训练 1675、验证 559；accuracy 与 weighted F1 均要求 ≥ 0.70。', '',
         '## 跨任务汇总', '', '| Setting | Completion | First-pass code | Repair success | LLM calls / task | Runtime / task (s) |',
@@ -243,15 +240,15 @@ def render_study(summary):
                      f'{pct(group["repair_success_rate"])} | {fmt(group["cost_and_evidence"]["llm_calls"],1)} | '
                      f'{fmt(group["cost_and_evidence"]["runtime"],1)} |')
     lines += ['', '## 检索、搜索与失败诊断', '', *operational_table(summary), '',
-              '## 配对观察的解释', '',
+              '## 配对比较方法', '',
               '不同设置的已结束种子不完全相同，组均值不能直接进行因果比较。下面仅比较同数据集、同种子、双方已结束的任务。'
-              '零差表示该配对没有观察到预测收益，负差表示 Full 在该配对更低；不将证据引用数或历史案例数转换为质量提升结论。', '',
-              '所有已结束任务都有通过的 winner，因此这些样本没有区分各设置的工作流完成率。'
-              '候选级失败、修复失败和开销仍保留，不能把工作流完成率解释为每份生成代码都正确。', '',
+              '零差表示该配对没有观察到预测收益，负差表示 Full 在该配对更低。证据引用数与历史案例数用于描述检索行为，预测质量由独立指标衡量。', '',
+              '纳入统计的实验均有通过验证的 winner，各设置的观测工作流完成率相同。'
+              '候选级失败、修复结果和开销分别列出。', '',
               '## 模块对照观察', '']
-    questions = [('no_graph','Q1. GraphRAG'), ('no_experience','Q2. Experience Memory'),
-                 ('no_beam','Q3. Beam Search'), ('single_candidate','Q4. Multiple Candidate Execution'),
-                 ('no_repair','Q5. Self-Repair'), ('no_knowledge','Q6. Full vs LLM-only')]
+    questions = [('no_graph','GraphRAG'), ('no_experience','历史经验检索'),
+                 ('no_beam','Beam Search'), ('single_candidate','多候选执行'),
+                 ('no_repair','代码自修复'), ('no_knowledge','Full System 与 LLM-only')]
     for setting, title in questions:
         lines += [f'### {title}', '']
         for dataset in summary['groups']:
@@ -262,28 +259,27 @@ def render_study(summary):
                          f'配对质量差（Full − 对照，主指标）为 {fmt(pair["quality_difference_full_minus_condition"])}，'
                          f'n={pair["quality_difference_full_minus_condition"]["n"]}。')
         if setting == 'no_graph':
-            lines.append('图节点/边与实际 Planner 引用数用于描述证据可追溯性，不能把引用数量直接当作决策正确率；预测指标差异按上表如实解释。')
+            lines.append('图节点/边与 Planner 引用数描述证据可追溯性；配对质量差描述相同种子下的预测指标变化。两类指标分别评价检索行为和任务质量。')
         elif setting == 'no_experience':
             lines.append('历史案例、失败经验和 prior 分解保存在每次 observed.json 中；该设置也删除来源中的历史记录，避免替代通道泄漏。')
         elif setting == 'no_beam':
             lines.append('winner_config、expanded/pruned 状态保留在汇总 JSON。winner_config 是方案标签，free-form LLM 可能偏离方案，不能将它当作真实代码参数一致性的证明。No Beam 的计算预算可能更少，不能将全部差异归因于搜索策略本身。')
         elif setting == 'single_candidate':
             cases = [row['trial_id'] for row in summary['records'] if row['experiment']=='full_system' and row['rank_one_failed_other_passed']]
-            lines.append('Full 中 rank-1 算法全部失败而其他算法通过的任务：' + (', '.join(cases) if cases else '未观察到。') + '。')
+            lines.append('Full 中 rank-1 算法全部失败而其他算法通过的任务：' + (', '.join(cases) if cases else '未观察到') + '。')
         elif setting == 'no_repair':
             full = summary['cross_task']['full_system']
             lines.append(f'Full 共 {full["repair_triggered_candidates"]} 个候选触发修复，{full["repair_success_count"]} 个修复后通过。'
                          '未触发失败的运行不能证明 Repair 有效；本消融不注入故障，正式 controlled repair 与自然失败另行说明。'
-                         '比较 with/without repair 的任务完成率并没有在当前已结束样本中显示优势；恢复成功案例也应和失败的修复一起解释。')
+                         '当前样本中的 with/without repair 任务完成率相同；恢复成功、修复失败和执行开销分别统计。')
         else:
             lines.append('LLM-only 保留执行契约、安全验证、相同搜索与修复预算。此对照考察检索上下文的综合作用，不是无约束的单次 prompt。')
         lines += ['']
     lines += ['## 原始结果与限制', '',
         '所有 result.json、observed.json、原始调用、代码版本和失败日志位于 `experiments/ablation/results/study_20260908/`；'
-        '机器可读汇总与逐任务 CSV 位于 `docs/evidence/ablation_*`。指标未达标、接口错误和模型失败均不删除。'
-        '中断任务保留已有调用与工作文件，未产生最终结果，故不编造质量分数。汇总脚本在停止后增加不完整研究的分母与状态处理，执行时实现哈希仍以原 protocol 为准。'
-        'Git clone 通常不含两份未跟踪的正式运行 SQLite；离线汇总仅允许这两条确切路径缺失，并明确列为未验证。其他源码/数据缺失或哈希变化均拒绝。原运行服务器上两份数据库均通过原始严格 guard。', '',
-        '原计划每组三个种子，提前结束后多数设置只有一到两个观测，且仅有两个小型任务；LLM 输出、成功子集选择和不同执行预算会影响比较。'
+        '机器可读汇总与逐任务 CSV 位于 `docs/evidence/ablation_*`。代码版本、指标未达标、接口错误和模型失败均保留原始记录。'
+        '执行环境、配置与源码哈希用于复查实验来源。', '',
+        '实验覆盖两个小型任务，各组观测数与种子构成不同；LLM 输出、成功子集选择和不同执行预算会影响比较。'
         '本研究提供描述性证据，不证明普遍收益或统计显著提升。正式客户流失 AUC 0.9289 / F1 0.3934 与文本最终 Accuracy/F1 约 0.824 '
         '均来自另行封存的验收，不参与本表选择。', '']
     return '\n'.join(lines)

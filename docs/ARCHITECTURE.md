@@ -1,6 +1,6 @@
-# AI Algorithm Factory：真实执行架构
+# AI Algorithm Factory 系统架构
 
-本文件描述当前代码。基线缺陷见 [TECHNICAL_AUDIT.md](TECHNICAL_AUDIT.md)，实测验收见 [FINAL_ACCEPTANCE.md](FINAL_ACCEPTANCE.md)。
+系统采用分层模块与同步 Agent 工作流。基线审计见 [TECHNICAL_AUDIT.md](TECHNICAL_AUDIT.md)，实测验收见 [FINAL_ACCEPTANCE.md](FINAL_ACCEPTANCE.md)。
 
 公开文本的补充验收通过 `scripts/run_text_acceptance.py` 在下面的开发工作流之后追加独立测试：冻结开发阶段 winner/源码/数据 hash → 全部开发集重新训练 → 仅评估最终测试集 → 保存独立报告。最终结果不进入规划/修复循环；API 按原报告 hash 附加显示，开发指标不被覆盖。具体协议见 [TEXT_ACCEPTANCE.md](TEXT_ACCEPTANCE.md)。
 
@@ -36,7 +36,7 @@ flowchart TD
 
 ## 实际职责和权限
 
-协调器是同步、顺序执行的 specialist workflow。每个 LLM 角色有独立 system prompt、结构化输入和校验输出；它们共享模型服务但不共享不受控聊天状态。不能把它描述为自主分布式代理群。确定性角色无需重复调用 LLM。
+协调器采用同步、顺序执行的 specialist workflow。各 LLM 角色具有独立 system prompt、结构化输入和输出校验，共享模型服务，通过显式消息契约交换上下文。确定性角色直接执行检索、验证和持久化操作。系统运行于单进程协调模式。
 
 | 角色 | 输入 | 输出及校验 | 协调器允许的工具 |
 |---|---|---|---|

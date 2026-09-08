@@ -113,9 +113,9 @@ Agent Layer 处理职责与结构化消息；Knowledge Layer 保存可查询知�
 
 ## 3. 能力知识图谱 Schema 和示例
 
-### 3.1 为什么需要图谱
+### 3.1 图谱建模目标
 
-普通文档检索主要返回相似文本。本项目还需要回答“哪个算法解决何种任务、在哪种数据与配置上验证过、为何失败、什么修复有效”。`Task → Algorithm → ValidationRun → Dataset / Failure / Repair` 的关系使历史记录与适用条件可以一起检索，而不是只匹配算法名称。
+知识图谱统一表示任务、算法、数据、验证结果和修复经验。`Task → Algorithm → ValidationRun → Dataset / Failure / Repair` 的关系连接算法适用条件、实验配置与历史表现，为方案规划提供结构化检索依据。
 
 ### 3.2 Entity Schema
 
@@ -245,7 +245,7 @@ flowchart LR
 
 [BeamSearchPlanner](app/search/beam.py) 进行有限的一轮组合状态扩展、评分与多样性选择，记录每个状态及剪枝理由；不称为 MCTS，也不保证全局最优。最终按当前可信验证结果选 winner，Planner rank-1 不直接决定答案。
 
-### 4.5 避免历史锁定算法
+### 4.5 经验先验与候选探索
 
 [ExperienceRetriever](app/experience/retriever.py) 综合 task/data/feature/sample-size/class-balance similarity、历史表现、成功率、稳定性、资源、recency，并按有效样本量收缩 prior；加入 `1/sqrt(1+n)` exploration bonus。用户解释性与延迟要求参与排序，Beam 保留不同算法。
 
@@ -346,7 +346,7 @@ uvicorn app.api:app --host 127.0.0.1 --port 8000
 python -m pytest -q
 ```
 
-本轮完整测试 **103 passed，98 warnings，72.11 秒**，见 [pytest 原始输出](docs/ablation_checks/pytest.log)。测试隔离 workspace，使用显式 Mock/fixture；涵盖单元与实际 subprocess 集成检查，不把 pytest 统计称为全部调用真实 LLM。真实模型结果另存于验收和消融 evidence。
+自动测试结果为 **103 passed，98 warnings，72.11 秒**，见 [pytest 原始输出](docs/ablation_checks/pytest.log)。测试使用独立 workspace 和显式 Mock/fixture，覆盖单元测试与 subprocess 集成检查。真实模型调用及结果分别记录于验收和消融报告。
 
 ### 5.8 消融实验
 
@@ -360,7 +360,7 @@ python experiments/ablation/run_ablation.py --output experiments/ablation/result
 python experiments/ablation/summarize_ablation.py --output experiments/ablation/results/reproduction
 ```
 
-运行命令使用 5.3 的两个 loopback 模型服务。默认目录保存已提前结束的本次研究，仅用于读取和汇总，不继续调度。新实验必须使用新的 output 目录；已有成功或失败结果不能覆盖。停止记录与 42 次状态清单见 [study_stop.json](experiments/ablation/results/study_20260908/study_stop.json)。协议、开关定义、复现边界见 [实验说明](experiments/ablation/README.md)。
+运行命令使用 5.3 的两个 loopback 模型服务。默认目录用于读取和汇总已保存结果；复现实验使用独立 output 目录。实验协议、配置开关和复现方法见 [实验说明](experiments/ablation/README.md)。
 
 ## 6. 示例数据和测试任务说明
 
@@ -415,7 +415,7 @@ flowchart LR
 | A5 w/o Repair | 首次运行失败后停止该候选 | 统一生成门禁、安全 Validator |
 | A6 LLM-only | 关闭图、文档、历史 | 当前需求、执行契约/算法白名单、搜索、安全验证和修复 |
 
-**预注册 7 settings × 2 datasets × 3 seeds（42、123、2026）=42 tasks**；因运行时间预算提前结束，实际 **25 次完整结束、1 次中断、16 次未启动**。客户流失完成 14/21，文本完成 11/21；两个数据集均未完成整个矩阵，每组实际 n 在 8.6 明示。新合成客户 1200 条按 900/300 划分；文本仅用 development 2234 条，按 1675/559 划分。开发划分按标签分层，文本消融不额外按来源分层。每个 seed 的行索引对所有设置相同；协议提前提交，执行顺序固定随机打乱。
+消融研究覆盖 **7 种设置、2 个数据集，共 25 次实验**，其中客户流失 14 次、文本分类 11 次。随机种子取自 **42、123、2026**，各设置包含 1–3 次观测，具体种子与样本数列于实验报告和第 8.6 节。新合成客户 1200 条按 900/300 划分；文本仅用 development 2234 条，按 1675/559 划分。开发划分按标签分层，文本消融不额外按来源分层。每个 seed 的行索引对所有设置相同；协议提前提交，执行顺序固定随机打乱。
 
 全部触发的理解/规划/生成/诊断/修复/解释使用真实本地模型；抽取与历史使用公开文本验收之前的 frozen real snapshot。每个 trial 独立 SQLite、GraphML、reports，Curator 不污染正式库，也不跨消融任务传递新经验。
 
@@ -545,33 +545,33 @@ Controlled 案例保存 [before/after/diagnosis/validation](examples/acceptance_
 
 ### 8.6 Ablation Study
 
-本研究与 **Final Acceptance**、**Independent Final Test** 分开保存。原计划 42 次，因执行时间预算在随机排程的当前位置结束：**25 次结束（25 次工作流 PASS）、1 次行政中断、16 次未启动**。停止原因与结果分数无关，失败候选和中断产物均保留。中断任务 `A3_customer_churn_123` 没有最终结果，不能填成算法 PASS 或算法失败。
+消融研究使用开发/验证数据，包含 **25 次实验：客户流失 14 次、文本分类 11 次**。25 次实验均产出了通过 Validator 的算法；候选级失败与修复结果分别统计。消融结果与 **Final Acceptance**、**Independent Final Test** 分开报告。
 
-以下是**不完整探索性消融**，各组实际 n=1–3；mean ± sample std，n=1 不计算标准差。Completion 的分母为所有已结束任务，包含算法失败；未启动和行政中断另列。25/25 是已结束任务的观测完成率，**不等于完成了 42/42 的研究计划**。质量仅统计通过的 winner，first-pass 按候选统计。种子不齐时，组均值不能直接用来推断模块贡献；后面的比较只用双方相同种子。
+各组样本数 **n=1–3**，结果报告 mean ± sample std；n=1 时不计算标准差。Completion 为通过验证的工作流数占纳入统计实验数的比例；质量指标按通过验证的 winner 统计，first-pass 按候选统计。各组种子组成不同，模块比较采用双方相同种子的配对结果。本研究属于小样本探索性分析，不作统计显著性结论。
 
 #### Customer Churn：开发验证数据
 
-| Setting | n / planned | ROC-AUC | F1 | Completion | First-pass code | Repair rounds | Candidates | Runtime (s) |
+| Setting | n | ROC-AUC | F1 | Completion | First-pass code | Repair rounds | Candidates | Runtime (s) |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| Full | 2/3 | 0.867 ± 0.057 | 0.446 ± 0.109 | 2/2 | 83.3% | 1.5 ± 2.1 | 3.0 ± 0.0 | 804.3 ± 491.2 |
-| w/o Graph | 1/3 | 0.830 | 0.395 | 1/1 | 66.7% | 3.0 | 3.0 | 1103.4 |
-| w/o Experience | 1/3 | 0.907 | 0.523 | 1/1 | 100.0% | 0.0 | 3.0 | 425.5 |
-| w/o Beam | 2/3 | 0.905 ± 0.003 | 0.312 ± 0.298 | 2/2 | 100.0% | 0.0 ± 0.0 | 3.0 ± 0.0 | 469.3 ± 15.6 |
-| Single Candidate | 3/3 | 0.871 ± 0.039 | 0.459 ± 0.064 | 3/3 | 100.0% | 0.0 ± 0.0 | 1.0 ± 0.0 | 251.5 ± 7.4 |
-| w/o Repair | 2/3 | 0.867 ± 0.057 | 0.446 ± 0.109 | 2/2 | 83.3% | 0.0 ± 0.0 | 3.0 ± 0.0 | 447.1 ± 2.5 |
-| LLM-only | 3/3 | 0.877 ± 0.044 | 0.520 ± 0.138 | 3/3 | 88.9% | 0.3 ± 0.6 | 3.0 ± 0.0 | 365.2 ± 67.7 |
+| Full | 2 | 0.867 ± 0.057 | 0.446 ± 0.109 | 2/2 | 83.3% | 1.5 ± 2.1 | 3.0 ± 0.0 | 804.3 ± 491.2 |
+| w/o Graph | 1 | 0.830 | 0.395 | 1/1 | 66.7% | 3.0 | 3.0 | 1103.4 |
+| w/o Experience | 1 | 0.907 | 0.523 | 1/1 | 100.0% | 0.0 | 3.0 | 425.5 |
+| w/o Beam | 2 | 0.905 ± 0.003 | 0.312 ± 0.298 | 2/2 | 100.0% | 0.0 ± 0.0 | 3.0 ± 0.0 | 469.3 ± 15.6 |
+| Single Candidate | 3 | 0.871 ± 0.039 | 0.459 ± 0.064 | 3/3 | 100.0% | 0.0 ± 0.0 | 1.0 ± 0.0 | 251.5 ± 7.4 |
+| w/o Repair | 2 | 0.867 ± 0.057 | 0.446 ± 0.109 | 2/2 | 83.3% | 0.0 ± 0.0 | 3.0 ± 0.0 | 447.1 ± 2.5 |
+| LLM-only | 3 | 0.877 ± 0.044 | 0.520 ± 0.138 | 3/3 | 88.9% | 0.3 ± 0.6 | 3.0 ± 0.0 | 365.2 ± 67.7 |
 
 #### Public Text Classification：仅 development 内划分
 
-| Setting | n / planned | Accuracy | F1 (weighted) | Completion | First-pass code | Repair rounds | Candidates | Runtime (s) |
+| Setting | n | Accuracy | F1 (weighted) | Completion | First-pass code | Repair rounds | Candidates | Runtime (s) |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| Full | 2/3 | 0.804 ± 0.014 | 0.804 ± 0.014 | 2/2 | 100.0% | 0.0 ± 0.0 | 3.0 ± 0.0 | 446.6 ± 15.5 |
-| w/o Graph | 2/3 | 0.811 ± 0.004 | 0.811 ± 0.004 | 2/2 | 83.3% | 0.5 ± 0.7 | 3.0 ± 0.0 | 528.8 ± 100.9 |
-| w/o Experience | 1/3 | 0.794 | 0.794 | 1/1 | 100.0% | 0.0 | 3.0 | 373.2 |
-| w/o Beam | 2/3 | 0.785 ± 0.020 | 0.785 ± 0.020 | 2/2 | 100.0% | 0.0 ± 0.0 | 1.0 ± 0.0 | 258.9 ± 6.8 |
-| Single Candidate | 1/3 | 0.809 | 0.808 | 1/1 | 100.0% | 0.0 | 1.0 | 246.5 |
-| w/o Repair | 2/3 | 0.798 ± 0.005 | 0.798 ± 0.005 | 2/2 | 100.0% | 0.0 ± 0.0 | 3.0 ± 0.0 | 452.8 ± 2.9 |
-| LLM-only | 1/3 | 0.794 | 0.794 | 1/1 | 100.0% | 0.0 | 3.0 | 294.6 |
+| Full | 2 | 0.804 ± 0.014 | 0.804 ± 0.014 | 2/2 | 100.0% | 0.0 ± 0.0 | 3.0 ± 0.0 | 446.6 ± 15.5 |
+| w/o Graph | 2 | 0.811 ± 0.004 | 0.811 ± 0.004 | 2/2 | 83.3% | 0.5 ± 0.7 | 3.0 ± 0.0 | 528.8 ± 100.9 |
+| w/o Experience | 1 | 0.794 | 0.794 | 1/1 | 100.0% | 0.0 | 3.0 | 373.2 |
+| w/o Beam | 2 | 0.785 ± 0.020 | 0.785 ± 0.020 | 2/2 | 100.0% | 0.0 ± 0.0 | 1.0 ± 0.0 | 258.9 ± 6.8 |
+| Single Candidate | 1 | 0.809 | 0.808 | 1/1 | 100.0% | 0.0 | 1.0 | 246.5 |
+| w/o Repair | 2 | 0.798 ± 0.005 | 0.798 ± 0.005 | 2/2 | 100.0% | 0.0 ± 0.0 | 3.0 ± 0.0 | 452.8 ± 2.9 |
+| LLM-only | 1 | 0.794 | 0.794 | 1/1 | 100.0% | 0.0 | 3.0 | 294.6 |
 
 #### 模块观察与结论
 
@@ -584,7 +584,7 @@ Controlled 案例保存 [before/after/diagnosis/validation](examples/acceptance_
 | Single Candidate | 客户配对 Full AUC 低 0.0015，n=2；文本 Full F1 高 0.0055，n=1；单候选观测 4/4 完成 | **没有证明多候选提高任务完成率**。Full 4 次 winner 都来自初始 rank-1 算法，未出现 rank-1 全失败而其他算法救回任务的案例 |
 | w/o Repair | 相同种子客户 AUC 差 0（n=2）、文本 F1 差 0（n=1）。Full 1 个候选经历 3 轮修复仍失败，其他候选使任务通过 | **没有观察到 Full 中修复的任务完成率收益**；对应客户 Full 平均 804 秒、No Repair 447 秒，修复成本清楚可见 |
 
-全部已结束试验共执行 **63 个候选，其中 60 个最终 PASS、3 个最终失败**；触发运行后修复的 4 个候选中 2 个恢复成功。实际自然恢复出现在 `A1_text_42` 和 `A6_customer_churn_2026`，Full 中失败的修复也保留。179 次应用层真实 LLM 调用分散在 25 个已结束任务中；中断任务的已有调用单独留档，不混入这组完整任务成本。
+25 次实验共执行 **63 个候选，其中 60 个最终 PASS、3 个最终失败**；触发运行后修复的 4 个候选中 2 个恢复成功。实际自然恢复出现在 `A1_text_42` 和 `A6_customer_churn_2026`，Full 中失败的修复也保留。25 次实验共记录 179 次应用层真实 LLM 调用，调用时延和重试信息保存在对应 trace 中。
 
 这批结果说明小型开发任务在 LLM-only/单候选下也能完成；知识与搜索的额外执行成本并不自动转化为预测收益。证据追踪、经验可检索和失败诊断属于可审计的系统行为，本研究没有将它们冒称为统计显著的质量提升。有限且不齐的种子只能提供探索性观察。
 
@@ -687,7 +687,7 @@ Controlled 案例保存 [before/after/diagnosis/validation](examples/acceptance_
 | 历史优胜导致 lock-in | 相似度、样本量收缩、recency、exploration、多候选实测 | prior 是启发式；修复版本相关，历史不是独立样本 |
 | 自报指标与 final test 泄漏 | 可信父进程重算；development 选择后冻结代码，final 不反馈 | 开发验证集可因多轮修复被过拟合；旧 churn 协议不含独立最终集 |
 | 模型大小与成本取舍 | 指令/代码模型路由，实际调用记录；后续使用 vLLM BF16/TP2 控制延迟与上下文 | 更大模型不必然成功；没有同预算模型优劣的统计证明 |
-| 消融归因与失败选择偏差 | 配对开发划分、预注册、全部失败入分母、成功指标明示 n、隔离库 | 计划 3 seeds、2 tasks，实际每组 1–3 次；提前停止与 No Beam 的预算差异单独披露 |
+| 消融归因与失败选择偏差 | 配对开发划分、预注册、全部失败入分母、成功指标明示 n、隔离库 | 2 tasks、每组 1–3 次观测；种子组成与 No Beam 执行预算存在差异 |
 
 早期 NF4 coder 的慢速/超时、上下文限制与后端切换保留在 [真实验收记录](docs/FINAL_ACCEPTANCE.md)，不推断未经证实的 OOM 根因。解释引用/指标核对能发现部分矛盾，无法证明任意自然语言完全无幻觉。消融结论以 8.6 和 [ABLATION_STUDY](docs/ABLATION_STUDY.md) 的实测为准，不预设各模块必有正向收益。
 
