@@ -1,34 +1,13 @@
-# Real LLM Evidence
+# 正式真实模型证据
 
-## Cloud API attempt
+正式验收使用本地 OpenAI-compatible API：Qwen2.5-14B-Instruct 负责需求、抽取、规划、诊断和解释；Qwen3-Coder-30B-A3B-Instruct 负责代码生成与修复。实际调用的 provider、model、latency、usage 和状态保存在原始报告中。
 
-配置文件：`/data/xiaotianqi/gen_eval/eval/secret.txt`（未复制、未提交、未打印密钥）。
+| 证据 | 来源与范围 |
+|---|---|
+| [四阶段验收](FINAL_ACCEPTANCE.md) | 客户流失、相似任务、自修复、早期文本流程；58 条调用记录含失败与重试 |
+| [公开文本独立测试](TEXT_ACCEPTANCE.md) | 7 次真实 API 调用；745 条最终测试，Accuracy/F1 约 0.824 |
+| [知识抽取](../examples/acceptance_real_20260907/extracted_knowledge.json) | 文档/Python 语义与来源；age → Feature、churn → Target、ROC-AUC → Metric |
+| [跨任务闭环](../examples/acceptance_real_20260907/closed_loop_proof.json) | 真实 Workflow → Curator → 第二次 Retrieval → Planner |
+| [自修复](../examples/acceptance_real_20260907/self_repair_demo/) | 注入接口故障后，真实模型修复及重新执行；before/after/proof 保留 |
 
-2026-09-07 真实 OpenAI-compatible `models.list()` 调用结果：HTTP 401，服务端明确返回 token quota exhausted。项目记录 endpoint host/provider/status，不记录完整 key；不能把云端调用称为成功。
-
-## Local Qwen2.5-1.5B attempt
-
-模型：`/data/public_checkpoints/huggingface_models/Qwen2.5-1.5B-Instruct`。实际完成一次完整 workflow：
-
-```text
-RequirementAgent -> local LLM JSON -> Pydantic validation/correction
-RetrievalAgent -> GraphRAG subgraph + semantic evidence + historical cases
-AdvisorAgent -> local LLM planning advice
-Beam Search -> 3 validated candidate states
-CoderAgent -> local LLM code proposal rejected by safety/interface gate
-            -> deterministic template fallback
-Sandbox/Validator -> PASS
-CuratorAgent -> knowledge write-back
-```
-
-证据文件：`reports/real_local_llm_evidence.json`、`reports/real_local_llm_repair_evidence.json`；Git 中只保留脱敏摘要 `docs/evidence/real_local_llm_summary.json`，原始 reports 被 `.gitignore` 忽略。
-
-关键事实：RequirementAgent 状态为 `ok`，AdvisorAgent 状态为 `ok`，两者均有 token usage 和 latency。一次运行中三个 CoderAgent metadata 标记为 `template_fallback`；另一次运行中 CoderAgent 标记为 `llm_code_accepted`，但运行时参数契约失败，随后 CriticAgent 和 RepairAgent 真实调用本地 LLM 两轮，仍未通过，最终由显式 template recovery 保证安全完成。这个 fallback/失败过程均被记录，绝不是伪装成 LLM code success。
-
-## Why this is acceptable
-
-真实 LLM 已经进入需求理解、方案建议和证据轨迹；代码生成仍坚持安全门禁。云端额度恢复后，设置 `LLM_PROVIDER=openai` 可以使用同一条路径。更大的本地 Qwen3-Coder 需要约 60GB 权重和较长加载时间，项目保留 adapter 但不默认强制占用 GPU。
-
-## Updated benchmark evidence
-
-完整候选模型扫描与严格四任务 benchmark 见 [MODEL_SELECTION](MODEL_SELECTION.md) 和 `docs/evidence/local_model_benchmark.md`。结论是 14B Instruct + Coder 3B 路由，不再默认 1.5B。
+Mock 仅用于显式离线软件测试，不能作为模型能力证据。早期 benchmark、模板 fallback 和受控 prior 注入仅说明当时的开发实验，不替代上述正式验收。当前模型配置与历史 benchmark 的范围见 [MODEL_SELECTION](MODEL_SELECTION.md)。

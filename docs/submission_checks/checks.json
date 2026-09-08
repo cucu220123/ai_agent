@@ -1,0 +1,57 @@
+{
+  "timestamp": "2026-09-08T02:59:08.792293+00:00",
+  "baseline_commit": "34434e0",
+  "scope": "submission naming, evidence navigation, documentation and explicit credential-file configuration; no workflow or metric implementation changes",
+  "protected_files_unchanged": 258,
+  "allowed_configuration_change": "remove implicit machine-specific credential file",
+  "historical_archives_byte_identical": true,
+  "canonical_extraction_roles": {
+    "age": "Feature",
+    "churn": "Target",
+    "ROC-AUC": "Metric"
+  },
+  "private_documentation_matches": [],
+  "credential_pattern_matches": [],
+  "broken_documentation_links": [],
+  "real_llm_acceptance_rerun": false,
+  "sealed_final_evaluation_changed": false,
+  "evidence_verifiers": [
+    {
+      "script": "scripts/verify_evidence.py",
+      "result": {
+        "status": "passed",
+        "checked": {
+          "runs": 4,
+          "source_versions": 21
+        },
+        "failures": []
+      }
+    },
+    {
+      "script": "scripts/verify_text_acceptance.py",
+      "result": {
+        "status": "passed",
+        "run_id": "683902e2a7cf",
+        "source_versions": 3,
+        "llm_calls": 7,
+        "development_metrics": {
+          "accuracy": 0.8014311270125224,
+          "f1": 0.801423501113699,
+          "precision": 0.8014620460839827,
+          "recall": 0.8014311270125224,
+          "balanced_accuracy": 0.80142089093702
+        },
+        "final_metrics": {
+          "accuracy": 0.8241610738255034,
+          "f1": 0.8241382606860495,
+          "precision": 0.8243561094615367,
+          "recall": 0.8241610738255034,
+          "balanced_accuracy": 0.8241769725273141
+        },
+        "training_rows": 2234,
+        "final_rows": 745,
+        "final_feedback_to_agents": false
+      }
+    }
+  ]
+}

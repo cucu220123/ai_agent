@@ -1,6 +1,6 @@
 # 实际验收：从审计到真实闭环
 
-后续补充验收已加入公开文本语料、独立最终测试与 86 项通过的测试，见 [TEXT_ACCEPTANCE.md](TEXT_ACCEPTANCE.md)。以下保留上一轮四阶段的原始结果与当时服务状态。
+后续补充验收已加入公开文本语料、独立最终测试与 86 项通过的测试，见 [TEXT_ACCEPTANCE.md](TEXT_ACCEPTANCE.md)。以下记录四阶段验收的原始结果。
 
 本页对应 `examples/acceptance_real_20260907/` 中的原始证据。运行跨越 2026-09-07 UTC 至次日北京时间。证据中的时间使用 UTC；算法版本 hash 绑定实际执行的代码，不把历史运行改标为最新 commit 的运行。
 
@@ -28,9 +28,7 @@
 
 ## C. Real LLM Evidence
 
-已按实际配置安全读取服务器外部 secret 文件。云端 `models.list`、`gpt-4o-mini`、`gpt-4o` 探测返回 **HTTP 401 / quota_exhausted**，见 [cloud_probe.json](../examples/acceptance_real_20260907/cloud_probe.json)。没有云端成功调用，不能将本次成果称为云 API 验收成功。
-
-随后实际使用服务器已有开放权重，通过本机 OpenAI-compatible API 推理：
+正式验收使用本地开放权重，通过 OpenAI-compatible API 实际推理：
 
 | 职责 | 实际模型 |
 |---|---|
@@ -74,13 +72,13 @@ capability_fe3d4b64611b254d
   ← RELATED_TO ← failure_6bde3f2c39b8_..._v4 # 2 hops
 ```
 
-Serialized Context 包含 `graph_candidates`、`similar_historical_runs`、`failure_and_repair_experiences`、`source_evidence` 与 `system_constraints`，而不是把 GraphML 文件交给 LLM。展示用裁剪案例见 [graph_retrieval_example.json](../examples/acceptance_real_20260907/graph_retrieval_example.json)，完整原始子图在 `second.json`，实际 Planner 输入在 `closed_loop_proof.json`。关系方向、来源和数值属性设计见 [knowledge_graph_schema.md](knowledge_graph_schema.md)。
+Serialized Context 包含 `graph_candidates`、`similar_historical_runs`、`failure_and_repair_experiences`、`source_evidence` 与 `system_constraints`，而不是把 GraphML 文件交给 LLM。展示用裁剪案例见 [graph_retrieval_example.json](../examples/acceptance_real_20260907/graph_retrieval_example.json)，完整原始子图在 `second.json`，实际 Planner 输入在 `closed_loop_proof.json`。关系方向、来源和数值属性设计见 [knowledge_graph_schema.md](knowledge_graph_schema.md)。正式抽取结果见 [extracted_knowledge.json](../examples/acceptance_real_20260907/extracted_knowledge.json)，其中 `age → Feature`、`churn → Target`、`ROC-AUC → Metric`；旧错误类型样本已归入历史目录。
 
 ## E. Closed Loop Evidence
 
 第一次 retrieval 的 `historical_cases=[]`。运行得到 `6bde3f2c39b8`，Curator 写入实际指标、数据 profile、环境、代码 hash，并保留 RF 的失败及所有替代方案。
 
-第二次运行 `9364e416a38a` 的 retrieval 再次返回 `6bde3f2c39b8`，context similarity 约 **0.98294**。它同时出现在实际 LLM Planner 输入和执行计划的 evidence IDs 中。不是只检查数据库里存在一个字符串。
+第二次运行 `9364e416a38a` 的 retrieval 再次返回 `6bde3f2c39b8`，context similarity 约 **0.98294**。它同时出现在实际 LLM Planner 输入和执行计划的 evidence IDs 中。正式证据为 [closed_loop_proof.json](../examples/acceptance_real_20260907/closed_loop_proof.json)，来源链为真实 Workflow → Curator → 第二次 Retrieval/Planner。`scripts/controlled_prior_injection_demo.py` 仅通过人工注入指标检查 prior 敏感性，不作为真实闭环验收。
 
 | LLM 提议状态的规划分数 | 第一次 | 第二次 |
 |---|---:|---:|
@@ -144,7 +142,7 @@ v2: exact host interface restored → actual sandbox execution → PASS
 ## I. Remaining Limitations
 
 1. 这是 prototype sandbox，AST/audit/resource/unshare 不能证明对任意恶意 Python/原生扩展的生产级隔离；未实现 Docker/VM/cgroups/seccomp 组合。
-2. 合成客户数据和极小文本数据不证明真实行业泛化；修复反复观察 holdout 会过拟合。需要独立最终测试集、置信区间与业务成本评估。
+2. 合成客户数据和极小文本数据不证明真实行业泛化；修复反复观察 holdout 会过拟合。公开文本的独立最终测试见 TEXT_ACCEPTANCE；旧客户流失协议仍需独立最终测试、置信区间与业务成本评估。
 3. Beam 是有限一层组合状态扩展与多样性选择；不是 MCTS 或全局最优搜索。经验分数为启发式，重复修复样本相关，未做大规模权重学习。
 4. 向量编码使用单条最多 512 tokens；未实现大规模向量索引。Graph linking 仍有规则信号，尚无人工标注的检索评测集。
 5. 抽取保留原文跨度并结合 AST，但不等于跨任意真实仓库的全程序语义分析。来源真实不保证 LLM 的所有语义解读正确。
@@ -152,13 +150,10 @@ v2: exact host interface restored → actual sandbox execution → PASS
 7. RSS/CPU/runtime 是受控进程观测量，包含依赖载入等开销；不等于单次 estimator 算法复杂度。
 8. API 为本机同步单用户原型，无公开鉴权/任务队列/并发图事务服务。多 Agent 是角色协作工作流，未实现分布式自治。
 
-## 交付后的服务状态
+## 异常检测的评价边界
 
-验收结束后停止了本次临时启动的两个 GPU 模型 API 和 coder relay，释放显存；未停止其他用户的任务。报告 API 留在服务器 `127.0.0.1:18080` 供查看已有证据。再次运行实时工作流前，需要按 README 的 vLLM/Transformers 命令重启真实模型服务；不能将停服后的报告浏览当作新的模型运行。实际停服检查见 `service_cleanup.json`。
+有标签 anomaly detection 使用 F1、Precision、Recall；无标签任务可以执行并输出 `anomaly_score`、`anomaly_rate` 等观测统计。当前 `MetricRegistry` 对无 target 的 anomaly 使用 `runtime_seconds` 进行工程选择；runtime 是运行成本与资源指标，不能在缺少 ground truth 时解释为可靠的算法质量评价。尚未实现完整的 unsupervised quality proxy，属于 Future Work。
 
-从自己的电脑查看服务器报告界面：
+## 报告复查
 
-```bash
-ssh -L 18080:127.0.0.1:18080 xiaotianqi@115.182.62.174
-# 浏览器打开 http://127.0.0.1:18080/ui
-```
+查看封存报告无需启动模型。执行 `python scripts/verify_evidence.py` 可只读核验四阶段证据；执行 `python scripts/verify_text_acceptance.py` 可核验公开文本独立测试。重新生成算法需要按 README 显式配置真实模型服务，并使用新的输出目录。

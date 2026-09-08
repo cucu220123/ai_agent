@@ -1,6 +1,6 @@
 # 真实验收证据导航
 
-完整分析见 [FINAL_ACCEPTANCE](../../docs/FINAL_ACCEPTANCE.md)。四阶段均用真实本地 Qwen API，没有 Mock winner；用户原云端配置返回 401 额度耗尽，探测原因为 `cloud_probe.json`。
+完整分析见 [FINAL_ACCEPTANCE](../../docs/FINAL_ACCEPTANCE.md)。四阶段均使用真实本地 Qwen API，没有 Mock winner。公开文本独立测试另见 [TEXT_ACCEPTANCE](../../docs/TEXT_ACCEPTANCE.md)。
 
 | 文件 | 用途 |
 |---|---|
@@ -13,7 +13,7 @@
 | `self_repair_demo/next_retrieval.json` | 新失败经验被下一次真实图/案例检索找回 |
 | `cross.json` | 16 条文本，三个配置实际执行；accuracy 0.50 / weighted F1 0.333，不能称为高质量分类器 |
 | `report_extraction.json` | first 实测实验报告再次经真实 LLM 抽取，并保留来源 |
-| `extracted_knowledge.json` | 本次材料抽取输出（包括实际 trace/provenance） |
+| `extracted_knowledge.json` | 正式材料抽取输出；age 为 Feature、churn 为 Target、ROC-AUC 为 Metric，包含 trace/provenance |
 | `graph_after_first.graphml`、`knowledge_snapshot.graphml` | 第一次写回与最终图快照 |
 | `workspace/generated/` | 每个 candidate 的生成尝试、repair JSON、不可变 vN.py、meta |
 | `workspace/reports/` | 原始运行报告；包括失败尝试，不隐藏失败 |

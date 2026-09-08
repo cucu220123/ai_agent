@@ -14,7 +14,6 @@ except Exception:
     # python-dotenv is optional for the offline path.
     pass
 
-DEFAULT_SECRET_FILE = Path("/data/xiaotianqi/gen_eval/eval/secret.txt")
 DEFAULT_LOCAL_MODEL = Path("/data/public_checkpoints/huggingface_models/Qwen2.5-14B-Instruct")
 DEFAULT_CODER_MODEL = Path("/data/public_checkpoints/huggingface_models/Qwen2.5-Coder-3B-Instruct")
 DEFAULT_EMBEDDING_MODEL = Path("/data/public_checkpoints/huggingface_models/shibing624-text2vec-base-chinese")
@@ -35,7 +34,7 @@ class Settings:
     openai_coder_base_url: str | None = os.getenv("OPENAI_CODER_BASE_URL")
     openai_coder_model: str | None = os.getenv("OPENAI_CODER_MODEL")
     openai_coder_api_key: str | None = field(default=None, repr=False)
-    secret_file: Path | None = Path(os.environ["AI_FACTORY_SECRET_FILE"]) if os.getenv("AI_FACTORY_SECRET_FILE") else (DEFAULT_SECRET_FILE if DEFAULT_SECRET_FILE.exists() else None)
+    secret_file: Path | None = Path(os.environ["AI_FACTORY_SECRET_FILE"]) if os.getenv("AI_FACTORY_SECRET_FILE") else None
     local_model_path: str | None = os.getenv("LOCAL_MODEL_PATH", str(DEFAULT_LOCAL_MODEL) if DEFAULT_LOCAL_MODEL.exists() else "") or None
     local_instruction_model_path: str | None = os.getenv("LOCAL_INSTRUCTION_MODEL_PATH", str(DEFAULT_LOCAL_MODEL) if DEFAULT_LOCAL_MODEL.exists() else "") or None
     local_coder_model_path: str | None = os.getenv("LOCAL_CODER_MODEL_PATH", str(DEFAULT_CODER_MODEL) if DEFAULT_CODER_MODEL.exists() else "") or None

@@ -1,4 +1,4 @@
-"""Safely probe user-configured cloud API; preserve failures without credential text."""
+"""Optional diagnostic for an explicitly configured OpenAI-compatible endpoint."""
 from __future__ import annotations
 import argparse
 import hashlib
@@ -38,7 +38,7 @@ def probe(secret_file: str | Path) -> dict:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--secret-file", default="/data/xiaotianqi/gen_eval/eval/secret.txt")
+    parser.add_argument("--secret-file", required=True)
     parser.add_argument("--output", required=True)
     args = parser.parse_args()
     result = probe(args.secret_file)

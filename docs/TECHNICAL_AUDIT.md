@@ -1,9 +1,9 @@
 # Technical Audit — 2026-09-07 re-audit
 
 ## Scope and actual baseline
-Server checkout: /data3/xiaotianqi/ai_algorithm_factory, main, HEAD 7dea7e6.
+Baseline checkout: main, HEAD 7dea7e6.
 Read application modules, tests, demo/benchmark/evidence scripts and dependency configuration.
-Five modified tracked files and two untracked modules existed before this work; backed up outside Git and retained.
+Baseline included five modified tracked files and two additional modules; the audit preserved their original contents.
 
 Python 3.10 (ada_qwen), LLM_PROVIDER=mock, ENABLE_LOCAL_EMBEDDING=0:
 - pytest -q: **6 collection errors**, exit 2, 3.48 seconds.
@@ -17,7 +17,7 @@ Earlier documentation's 12 passing tests refers to a different checkout.
 |---|---|---|
 | Requirement | LLM JSON, Pydantic validation/retry, regex/CSV fallback | Prompt omits full schema; LLM profile can replace measured dataset facts; regex candidates survive successful understanding; PR-AUC conflated with ROC-AUC. |
 | LLM | OpenAI-compatible API, local Transformers router, mock | 12-second API timeout; credential-bearing error strings unredacted; auto can silently become mock; only two code candidates use LLM; template recovery can make demo PASS. |
-| Secret | Environment assignment reader | Inline base_url/api_key syntax parsed incorrectly. Effective cloud endpoint returns HTTP 401 quota exhausted for models.list and two chat models. **No cloud success**. |
+| Configuration | Environment assignment reader | Inline base_url/api_key syntax parsed incorrectly; configuration parsing and redaction required verification. |
 | Extraction | Markdown/TXT, AST Python and JSON reports -> LLM entities/relations -> graph | Separate ingest command, absent normal bootstrap; evidence spans unchecked; duplicate entities across chunks lose relation endpoint aliases; report config/runtime associations incomplete; requires whole-document metrics in every chunk. |
 | Graph | Real NetworkX bounded traversal and serializer | Anchors use arbitrary full JSON text across all node types; Chinese tokens dropped; hub traversal crosses incompatible tasks; graph converted per anchor; no relation-path trace; repairs two edges away absent algorithm summaries. |
 | Hybrid | TF-IDF or optional local embedding retrieval | No actual graph/document merge scoring; re-embeds unchanged corpus; database query for every graph node. |
@@ -31,7 +31,7 @@ Earlier documentation's 12 passing tests refers to a different checkout.
 | Curator/version | SQLite writes, GraphML export, final version node | Only winner validation, RELATED_TO instead of VALIDATES algorithm; missing dataset/capability/environment materialization, SATISFIES and parent versions. |
 | Multi-Agent | Specialist modules invoked by synchronous coordinator | No shared typed messages/tool capability enforcement; candidate loop in workflow; inconsistent telemetry. It is cooperating specialist workflow, not distributed autonomous agents. |
 | UI | CLI/FastAPI and HTML | Hardcoded mock, raw JSON dump; no relevant subgraph/run/failure visualization or generated-code inspection. |
-| Evidence | Historical scripts/artifacts exist | closed_loop_planning_demo injects 0.99, not measured learning; annotate_evidence relabels old commits without rerunning; verifier lacks artifact hashes and execution lineage checks. |
+| Evidence | Historical scripts/artifacts exist | The controlled prior injection demo injects 0.99 rather than measuring a workflow run (current filename: controlled_prior_injection_demo.py); annotate_evidence relabels old commits without rerunning; verifier lacks artifact hashes and execution lineage checks. |
 | Plugins | Registry feeds planning/search | Unknown algorithm falls through to GradientBoosting; registration alone does not prove executable extension. |
 
 ## Answers to the central audit questions
@@ -51,7 +51,6 @@ LLM participates in requirement, advisor, top-budget code proposals, failure dia
 5. Independently compute metrics, enforce constraints, harden prototype sandbox.
 6. Run full tests; real LLM tasks A/B, fail->LLM repair->PASS and second task type.
 7. Artifact hashes bind evidence to actual source digest; never retroactively relabel older experiments.
-8. Report cloud quota failure separately from real local success and mock tests.
+8. Keep actual model execution, controlled fixtures and mock tests explicitly distinguishable.
 
 This is the **before** audit. Final measured results belong in FINAL_ACCEPTANCE.md.
-

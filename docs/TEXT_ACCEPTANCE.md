@@ -1,6 +1,6 @@
 # 补充验收：真实公开文本数据与独立最终测试
 
-本次继续完善上一轮的薄弱点：原 16 条文本 smoke demo 只能证明流程可执行，accuracy 0.50、weighted F1 0.333 不能说明分类质量。本页记录新增实验 `683902e2a7cf`；原始证据保留，不替换或重新标注旧结果。
+原 16 条文本 smoke demo 仅用于流程检查，accuracy 0.50、weighted F1 0.333 不能证明分类质量。本页记录公开语料实验 `683902e2a7cf`；原始证据保留，不替换或重新标注旧结果。
 
 ## 数据与预先固定的实验协议
 
@@ -19,7 +19,7 @@
 
 Qwen2.5-14B-Instruct 完成理解、规划和解释；Qwen3-Coder-30B-A3B-Instruct 生成三个完整算法模块。通过本机 vLLM/OpenAI-compatible API 实际推理，**7 次调用记录、全部 API 返回成功**；需求 JSON 有一次应用侧恢复。没有 Mock/模板候选。
 
-本次复制上一轮真实知识库作为起点，保留初始 GraphML hash。三个材料的抽取结果命中内容 hash 缓存，来源是此前真实 LLM 抽取，本轮没有冒称重新调用 Extraction API。
+实验复制既有真实验收知识库作为起点，保留初始 GraphML hash。三个材料的抽取结果命中内容 hash 缓存，来源是此前真实 LLM 抽取，该阶段没有新增 Extraction API 调用。正式源抽取证据为 [extracted_knowledge.json](../examples/acceptance_real_20260907/extracted_knowledge.json)。
 
 GraphRAG 返回 **64 个节点、203 条边、8 条神经向量证据、10 条历史案例和 8 条失败经验**。旧文本运行 `a054aaacecab` 及其各版本被重新找到，context similarity 约 0.744421；包括 TF-IDF 参数错投、预处理维度、weighted F1 不一致的失败。实际 Planner context 和生成代码 metadata 引用了这些经验。
 
@@ -27,7 +27,7 @@ GraphRAG 返回 **64 个节点、203 条边、8 条神经向量证据、10 条�
 
 ## 候选与测量
 
-同一个文本算法插件扩展 4 个配置，beam 选择 3 个并全部实际执行。三个候选均 v1 通过，本轮无需修复。
+同一个文本算法插件扩展 4 个配置，beam 选择 3 个并全部实际执行。三个候选均 v1 通过，该运行无需修复。
 
 | 当前开发集候选 | Accuracy | Weighted F1 | 状态 |
 |---|---:|---:|---|
@@ -69,11 +69,12 @@ AI_FACTORY_WORKSPACE="$PWD/examples/acceptance_text_20260908/workspace" \
 
 本次命令另指定 `--prior-workspace examples/acceptance_real_20260907/workspace`，通过 SQLite backup 复用服务器上的旧真实运行。SQLite 不提交 Git，因此 clone 后可以冷启动；初始 GraphML 与历史引用保留供审核。API 只有在 final companion 的选择报告 hash 匹配时才附加最终结果，开发集指标保持原值。
 
-验收结束后已停止本次临时启动的两个 vLLM 服务及其子进程，释放显存；报告 API 保留在服务器 `127.0.0.1:18081`。本机 SSH 转发 `127.0.0.1:8765` 可查看这份报告。再次生成任务前需按 README 重启真实模型服务；报告浏览不代表新推理。具体进程身份及端口检查见 `service_cleanup.json`。
 
 ## 边界
 
-这是新的数据和实验协议，**不能把旧 smoke demo 的 0.333 与本次 0.824 当作同一数据上的改进幅度**。最终拟合使用更多开发数据，开发与最终分数也不是同一切分的直接比较。候选差异很小，未进行显著性检验，不能声称 bigram 普遍最好。
+该实验验证的是有标签文本分类。其他任务的评价边界：有标签 anomaly detection 使用 F1、Precision、Recall；无标签任务可以执行并输出 `anomaly_score`、`anomaly_rate` 等观测统计。当前 `MetricRegistry` 对无 target 的 anomaly 使用 `runtime_seconds` 进行工程选择；runtime 是运行成本与资源指标，不能在缺少 ground truth 时解释为可靠的算法质量评价。尚未实现完整的 unsupervised quality proxy，属于 Future Work。
+
+两项实验的数据和协议不同，**不能把旧 smoke demo 的 0.333 与公开语料的 0.824 当作同一数据上的改进幅度**。最终拟合使用更多开发数据，开发与最终分数也不是同一切分的直接比较。候选差异很小，未进行显著性检验，不能声称 bigram 普遍最好。
 
 最终 ledger 是可复现性保护，不能阻止操作者删除目录或另起实验来人为反复看分数；不是对恶意操作者的访问控制。原型沙箱限制仍适用。最终阶段保留重复训练以检查稳定性，但没有候选搜索或修复反馈。公开小语料的混合来源分层切分不等于生产测试或跨来源泛化评测；未做置信区间、外部新数据或 adversarial leakage 评测。
 

@@ -2133,7 +2133,7 @@
       "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/self_repair_demo/algorithm.py"
     }
   },
-  "validation_status": "passed",
+  "algorithm_retrieval_succeeded": true,
   "git_commit": "87a6ad348d1f548ce93969fc51287c9574d887af",
   "generated_at": "2026-09-07T09:30:50Z"
 }

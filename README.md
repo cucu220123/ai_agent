@@ -9,11 +9,11 @@
 - [系统架构和四张 Mermaid 图](docs/ARCHITECTURE.md)
 - [知识图谱 schema、来源与检索](docs/knowledge_graph_schema.md)
 - [实际验收结果与限制](docs/FINAL_ACCEPTANCE.md)
-- [本次可复查实验产物](examples/acceptance_real_20260907/)
+- [正式验收实验产物](examples/acceptance_real_20260907/)
 
 ## 1. 背景、目标与技术选择
 
-面向题目中的“能力抽取—复刻—验证—沉淀”闭环。Python/Pydantic 为 Agent 交换提供严格契约；OpenAI-compatible API 方便替换真实 provider；本地 Transformers 可在云端不可用时运行开放权重。scikit-learn 提供透明、可复现的小数据算法。SQLite + NetworkX 保持图查询可解释，避免为小原型引入数据库服务；本地 embeddings/TF-IDF 与图路径融合。FastAPI 同时提供 API、自动 OpenAPI 文档和轻量证据界面。
+面向题目中的“能力抽取—复刻—验证—沉淀”闭环。Python/Pydantic 为 Agent 交换提供严格契约；OpenAI-compatible API 方便替换真实 provider；本地 Transformers 支持直接运行开放权重。scikit-learn 提供透明、可复现的小数据算法。SQLite + NetworkX 保持图查询可解释，避免为小原型引入数据库服务；本地 embeddings/TF-IDF 与图路径融合。FastAPI 同时提供 API、自动 OpenAPI 文档和轻量证据界面。
 
 ## 2. 环境安装
 
@@ -36,7 +36,7 @@ python -m scripts.generate_demo_data --output data/churn_demo.csv
 
 ```bash
 export LLM_PROVIDER=openai
-export AI_FACTORY_SECRET_FILE=/path/outside/repo/secret.txt
+export AI_FACTORY_SECRET_FILE=/path/outside/repo/provider.env
 # 也支持 OPENAI_BASE_URL / OPENAI_API_KEY / OPENAI_MODEL 环境变量
 export AI_FACTORY_TRACE=1
 python -m scripts.run_demo
@@ -46,7 +46,7 @@ python -m scripts.run_demo
 
 支持 JSON schema transport 的服务优先使用它；不支持时明确记录 `json_object` negotiation，再用 Pydantic 与 semantic checks 校验。后者是应用侧严格验收，**不是服务端受约束解码**。语法/语义失败有界重试，不截断 JSON 伪装成功。
 
-本次服务器配置的云端 API 返回额度错误，见验收中的 cloud_probe.json；实际演示使用服务器本地 Qwen2.5-14B-Instruct 的真实 API。这与 Mock 测试明确区分。
+正式验收通过本地 OpenAI-compatible API 使用 Qwen2.5-14B-Instruct 与 Qwen3-Coder-30B-A3B-Instruct，模型调用记录见 [FINAL_ACCEPTANCE](docs/FINAL_ACCEPTANCE.md) 和 [TEXT_ACCEPTANCE](docs/TEXT_ACCEPTANCE.md)。Mock 仅用于明确选择的离线测试。配置文件仅在显式设置 `AI_FACTORY_SECRET_FILE` 时读取。
 
 ### 可选本地 API
 
@@ -130,7 +130,7 @@ python -m app.cli ingest data/business_material.md --provider openai
 python -m app.cli ingest path/to/experiment.json --provider openai
 ```
 
-Markdown/TXT → LLM 能力/任务/算法/指标/约束；Python → AST imports/signatures/classes/functions + LLM 语义；JSON report → LLM 实验/config/metric/failure。每条实体和关系保留文件、原文跨度、chunk、hash 和可定位偏移；语义关系不能引用不存在的实体。局部抽取失败标为 partial，不当作完整成功。
+Markdown/TXT → LLM 能力/任务/算法/指标/约束；Python → AST imports/signatures/classes/functions + LLM 语义；JSON report → LLM 实验/config/metric/failure。每条实体和关系保留文件、原文跨度、chunk、hash 和可定位偏移；语义关系不能引用不存在的实体。局部抽取失败标为 partial，不当作完整成功。正式抽取证据为 [extracted_knowledge.json](examples/acceptance_real_20260907/extracted_knowledge.json)：`age → Feature`、`churn → Target`、`ROC-AUC → Metric`。早期错误类型样本仅保存在 `docs/evidence/archive/`，不作为当前结果。
 
 ## 6. KG 与 Hybrid GraphRAG
 
@@ -187,7 +187,9 @@ metadata()                        # 设计依据、算法、依赖等
 
 这是 prototype sandbox。AST/audit 不能证明任意 Python/原生扩展安全；RLIMIT_AS 是虚拟地址空间而非容器内存配额。对不可信用户或生产执行，应改为隔离容器/VM、低权限账号、只读挂载、cgroups、seccomp 与禁网。当前未实现生产 Docker sandbox。
 
-训练/修复可能反复观察同一 holdout，存在验证集过拟合风险；不能把 synthetic demo 指标视为生产效果。无标签异常检测只报告可观测输出统计，不伪造准确率或质量分数。
+训练/修复可能反复观察同一 holdout，存在验证集过拟合风险；不能把 synthetic demo 指标视为生产效果。
+
+有标签 anomaly detection 使用 F1、Precision、Recall；无标签任务可以执行并输出 `anomaly_score`、`anomaly_rate` 等观测统计。当前 `MetricRegistry` 对无 target 的 anomaly 使用 `runtime_seconds` 进行工程选择；runtime 是运行成本与资源指标，不能在缺少 ground truth 时解释为可靠的算法质量评价。尚未实现完整的 unsupervised quality proxy，属于 Future Work。
 
 ## 11. CLI / API / Web
 
@@ -209,7 +211,6 @@ API 限制数据/材料路径在 workspace 内，报告代码只能从已登记 
 正常主 demo 默认真实路径：`python -m scripts.run_demo`。严格验收（只能选真实 provider）：
 
 ```bash
-python scripts/probe_llm.py --secret-file /path/to/config --output examples/my_acceptance/cloud_probe.json
 python scripts/run_acceptance.py --provider openai --output examples/my_acceptance
 ```
 
@@ -224,7 +225,7 @@ python scripts/verify_evidence.py --output examples/my_acceptance
 
 脚本依次执行 fresh KG 主任务 A、新数据任务 B、真实 LLM 修复案例、文本分类；每阶段有断言，失败非零退出。完成阶段可续跑，重新实验使用新 output 目录。若算法已实测通过、只有解释失败，可单独重试真实解释；原报告保存在 report_revisions，修订记录绑定原始 hash，校验器证明测量、候选、源码与写回没有改变。保存 before/after graph、实际 Planner 输入、所有版本、日志、报告、提取知识和 hash manifest。单阶段可用 `--stage first|second|repair|cross|verify`；second/repair 依赖 first。
 
-闭环与修复入口为 `scripts/closed_loop_learning_demo.py`、`scripts/self_repair_demo.py`。旧 benchmarks 和历史 evidence 是当时实验，不能代表当前版本验收；不要用 annotate_evidence 重新标记旧运行。
+闭环与修复入口为 `scripts/closed_loop_learning_demo.py`、`scripts/self_repair_demo.py`。正式跨任务闭环证据为 [closed_loop_proof.json](examples/acceptance_real_20260907/closed_loop_proof.json)，来自真实 Workflow → Curator → 第二次 Retrieval/Planner。`scripts/controlled_prior_injection_demo.py` 是 CONTROLLED TEST ONLY，人工注入的指标不属于正式闭环证据。旧 benchmarks 和历史 evidence 是当时实验，不能代表当前版本验收；不要用 annotate_evidence 重新标记旧运行。
 
 ## 13. 测试与离线路径
 
@@ -233,7 +234,9 @@ LLM_PROVIDER=mock ENABLE_LOCAL_EMBEDDING=0 pytest -q
 LLM_PROVIDER=mock ENABLE_LOCAL_EMBEDDING=0 python -m scripts.run_demo
 ```
 
-Mock 只验证软件路径和测试 fixture，不是模型能力证据。自动测试隔离 workspace，包含 schema recovery、source grounding、真实图路径、历史再检索、权限分派、插件执行、自修复、多任务、恶意代码阻断、timeout、指标造假、泄漏、资源/CV、稳定性和 actual Task A→B。最新完整统计以 FINAL_ACCEPTANCE 为准。
+Mock 只验证软件路径和测试 fixture，不是模型能力证据。自动测试隔离 workspace，包含 schema recovery、source grounding、真实图路径、历史再检索、权限分派、插件执行、自修复、多任务、恶意代码阻断、timeout、指标造假、泄漏、资源/CV、稳定性和 actual Task A→B。正式验收测试统计见 FINAL_ACCEPTANCE 和 TEXT_ACCEPTANCE；提交前复查不改写封存报告。
+
+提交前复查记录：[完整 pytest 日志](docs/submission_checks/pytest.log)、[封存文件与证据核验](docs/submission_checks/checks.json)。
 
 ## 14. 插件扩展
 
@@ -261,14 +264,10 @@ tests/             确定性软件回归
 
 ## 16. 挑战、限制与扩展
 
-真实调用会遇到 provider 额度、JSON 格式/语义不一致、生成接口错误和资源问题；系统保留失败而不伪装成功，并在同一 gate 下重试。精确来源验证与有限上下文使知识可以追踪，但实体归一化/文本解释仍可能有语义错误。可检查的数值与引用校验不能证明自由文本完全无幻觉。
+真实调用会遇到接口异常、JSON 格式/语义不一致、生成接口错误和资源问题；系统保留失败而不伪装成功，并在同一 gate 下重试。精确来源验证与有限上下文使知识可以追踪，但实体归一化/文本解释仍可能有语义错误。可检查的数值与引用校验不能证明自由文本完全无幻觉。
 
 当前以合成客户数据和小型公开文本数据为实验材料，使用有限 sklearn 插件、同步单用户图存储、启发式 reranking 和有限 beam。未实现 MCTS、分布式自治 agent、全量仓库跨文件语义分析、生产隔离、自动部署或任意多模态任务。
 
 已注册的指标、概率、延迟和资源约束会执行检查；任意自由文本业务约束仍需补充专用验证插件。可解释性目前参与规划先验，尚不是独立的解释质量评估器。
 
-公开文本验收已实现独立最终测试与冻结 ledger，入口是 `scripts/run_text_acceptance.py`；其他旧 demo 仍使用原先协议。后续优先级：统计置信区间、经验权重学习与消融实验、并发事务与作业队列、生产 sandbox、跨仓库版本/来源追踪、大规模图索引与实体链接评测。
-
-
-
-
+公开文本验收已实现独立最终测试与冻结 ledger，入口是 `scripts/run_text_acceptance.py`；其他旧 demo 仍使用原先协议。后续优先级：无标签异常检测的 unsupervised quality proxy、统计置信区间、经验权重学习与消融实验、并发事务与作业队列、生产 sandbox、跨仓库版本/来源追踪、大规模图索引与实体链接评测。

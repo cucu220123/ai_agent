@@ -1,3 +1,4 @@
+"""Extraction/retrieval smoke demo; no algorithm execution or ValidationRunner."""
 from __future__ import annotations
 
 import json
@@ -33,7 +34,7 @@ def main() -> None:
         after = store.graph_summary()
         spec = CapabilitySpec(raw_description="客户流失预测", domain="customer_churn", capability_name="客户流失预测", task_type="binary_classification", target_column="churn", feature_columns=["age", "login_count_30d"], metrics=["roc_auc"])
         retrieval = RetrieverAgent(store).run(spec)
-        evidence = {"nodes_before": before["nodes"], "edges_before": before["edges"], "nodes_after": after["nodes"], "edges_after": after["edges"], "extracted_sources": store.list_knowledge_items(20), "retrieval_trace": retrieval.retrieval_trace, "retrieved_subgraph": retrieval.graph_evidence, "candidate_algorithms": retrieval.algorithms, "selected_algorithm": retrieval.algorithms[0] if retrieval.algorithms else None, "validation_status": "passed" if retrieval.algorithms else "failed"}
+        evidence = {"nodes_before": before["nodes"], "edges_before": before["edges"], "nodes_after": after["nodes"], "edges_after": after["edges"], "extracted_sources": store.list_knowledge_items(20), "retrieval_trace": retrieval.retrieval_trace, "retrieved_subgraph": retrieval.graph_evidence, "candidate_algorithms": retrieval.algorithms, "selected_algorithm": retrieval.algorithms[0] if retrieval.algorithms else None, "algorithm_retrieval_succeeded": bool(retrieval.algorithms)}
         target = PROJECT_ROOT / "docs/evidence/empty_kg_bootstrap.json"
         target.write_text(json.dumps(evidence, ensure_ascii=False, indent=2), encoding="utf-8")
         print(json.dumps({"nodes_before": evidence["nodes_before"], "edges_before": evidence["edges_before"], "nodes_after": evidence["nodes_after"], "edges_after": evidence["edges_after"], "retrieved_nodes": len(retrieval.graph_evidence.get("nodes", []))}, ensure_ascii=False, indent=2))
