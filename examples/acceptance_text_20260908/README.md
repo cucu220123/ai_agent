@@ -17,5 +17,7 @@
 | `execution.log`、`pytest.log`、`test-results.xml` | 脱敏执行日志与 86 项通过的完整测试 |
 | `ui_checks.json` | 实际浏览器检查，分别显示开发与最终测量 |
 | `credential_scan.json` | 工作区及新增 Git 历史的凭证扫描 |
+| `clone_verification.json` | 从已推送 Git 提交导出全新目录后的只读核验 |
+| `service_cleanup.json` | 临时模型服务停止、报告 API 保留的实际检查 |
 
 原始公共数据、归属与固定切分在 [data/uci_sentiment](../../data/uci_sentiment/)。严格区分开发解释和最终评估；最终标签、预测与分数未送给规划/修复 Agent。本轮不用 Mock，也没有修改旧 16 条 smoke demo 的报告。

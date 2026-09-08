@@ -1,0 +1,32 @@
+{
+  "timestamp": "2026-09-08T02:14:42.728735+00:00",
+  "services": [
+    {
+      "pid": 358832,
+      "port": 18086,
+      "model_server_identity_verified": true
+    },
+    {
+      "pid": 358833,
+      "port": 18088,
+      "model_server_identity_verified": true
+    }
+  ],
+  "owned_process_tree": [
+    358832,
+    358833,
+    358953,
+    358954,
+    358963,
+    358964,
+    359056,
+    359057
+  ],
+  "remaining_active_owned_processes": [],
+  "model_ports_closed": {
+    "18086": true,
+    "18088": true
+  },
+  "report_api_18081_available": true,
+  "scope": "Only these two verified temporary vLLM services were signalled; report API retained. Restart real model services before generating new tasks."
+}

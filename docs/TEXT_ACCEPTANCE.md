@@ -49,6 +49,8 @@ GraphRAG 返回 **64 个节点、203 条边、8 条神经向量证据、10 条�
 
 `scripts/verify_text_acceptance.py` 只读核验通过：**3 个不可变代码版本、7 条真实调用、冻结 winner、数据/报告 hash、时间顺序和两个阶段的阈值**。
 
+另从已推送提交 `101fc97` 用 `git archive` 导出全新临时目录，独立运行同一核验也通过，不依赖未提交 SQLite 或临时产物；记录在 `clone_verification.json`。生成源码保留模型输出的原始字节（包括空白），以维持已验证的代码 hash。
+
 ```bash
 # 已提交原数据、固定切分和来源；可选重新下载并检查固定 archive hash
 python scripts/prepare_sentiment_data.py
@@ -66,6 +68,8 @@ AI_FACTORY_WORKSPACE="$PWD/examples/acceptance_text_20260908/workspace" \
 ```
 
 本次命令另指定 `--prior-workspace examples/acceptance_real_20260907/workspace`，通过 SQLite backup 复用服务器上的旧真实运行。SQLite 不提交 Git，因此 clone 后可以冷启动；初始 GraphML 与历史引用保留供审核。API 只有在 final companion 的选择报告 hash 匹配时才附加最终结果，开发集指标保持原值。
+
+验收结束后已停止本次临时启动的两个 vLLM 服务及其子进程，释放显存；报告 API 保留在服务器 `127.0.0.1:18081`。本机 SSH 转发 `127.0.0.1:8765` 可查看这份报告。再次生成任务前需按 README 重启真实模型服务；报告浏览不代表新推理。具体进程身份及端口检查见 `service_cleanup.json`。
 
 ## 边界
 
