@@ -1,0 +1,12 @@
+{
+  "models": {
+    "OPENAI_BASE_URL": [
+      "Qwen2.5-14B-Instruct"
+    ],
+    "OPENAI_CODER_BASE_URL": [
+      "Qwen3-Coder-30B-A3B-Instruct"
+    ]
+  },
+  "checked_at": "2026-09-08T04:20:35.467676+00:00",
+  "transport": "loopback OpenAI-compatible API"
+}

@@ -1,0 +1,137 @@
+{
+  "experiment": "no_repair",
+  "dataset": "customer_churn",
+  "seed": 2026,
+  "trial_id": "A5_customer_churn_2026",
+  "git_commit": "bfbba07ea60024096578ba60ddf065546c430d2d",
+  "working_git_head": "20f48f244c3b8a9e3c4f7edfd582aecdf9af0920",
+  "configuration": {
+    "id": "A5",
+    "name": "no_repair",
+    "rationale": "Disable runtime Critic/Repair and revalidation",
+    "controls": {
+      "enable_graph_retrieval": true,
+      "enable_semantic_retrieval": true,
+      "enable_experience_retrieval": true,
+      "enable_beam_search": true,
+      "enable_multi_candidate": true,
+      "enable_repair": false,
+      "enable_knowledge_context": true
+    }
+  },
+  "protocol_sha256": "b5dbf92809afc7c2b7c1053914ff30ae9f8cdf1d04abd271bc132c870050acee",
+  "started_at": "2026-09-08T04:50:18.098581+00:00",
+  "completion": true,
+  "metrics": {
+    "accuracy": 0.86,
+    "f1": 0.5227272727272728,
+    "precision": 0.71875,
+    "recall": 0.4107142857142857,
+    "balanced_accuracy": 0.6869145199063231,
+    "roc_auc": 0.907347775175644,
+    "pr_auc": 0.6995153989037561
+  },
+  "partial_candidate_metrics": [
+    {
+      "candidate": "algorithm_logistic_regression__llm_proposed",
+      "status": "passed",
+      "metrics": {
+        "accuracy": 0.86,
+        "f1": 0.5227272727272728,
+        "precision": 0.71875,
+        "recall": 0.4107142857142857,
+        "balanced_accuracy": 0.6869145199063231,
+        "roc_auc": 0.907347775175644,
+        "pr_auc": 0.6995153989037561
+      }
+    },
+    {
+      "candidate": "algorithm_gradient_boosting__llm_proposed",
+      "status": "passed",
+      "metrics": {
+        "accuracy": 0.87,
+        "f1": 0.5894736842105263,
+        "precision": 0.717948717948718,
+        "recall": 0.5,
+        "balanced_accuracy": 0.7274590163934427,
+        "roc_auc": 0.8943208430913347,
+        "pr_auc": 0.6691587581555515
+      }
+    },
+    {
+      "candidate": "algorithm_random_forest__llm_proposed",
+      "status": "passed",
+      "metrics": {
+        "accuracy": 0.8233333333333334,
+        "f1": 0.13114754098360656,
+        "precision": 0.8,
+        "recall": 0.07142857142857142,
+        "balanced_accuracy": 0.5336651053864169,
+        "roc_auc": 0.881074355971897,
+        "pr_auc": 0.6211318814493241
+      }
+    }
+  ],
+  "first_pass": true,
+  "first_pass_code_success_count": 3,
+  "first_pass_code_denominator": 3,
+  "first_validation_pass_count": 3,
+  "repair_triggered_candidates": 0,
+  "repair_success_count": 0,
+  "repair_success_rate": null,
+  "repair_rounds": 0,
+  "repair_module_triggered": false,
+  "candidate_success_coverage": true,
+  "candidate_pass_count": 3,
+  "candidate_count": 3,
+  "candidate_execution_count": 3,
+  "planner_rank_of_winner": 1,
+  "winner_id": "algorithm_logistic_regression__llm_proposed",
+  "winner_config": "llm_proposed",
+  "rank_one_failed_other_passed": false,
+  "beam_states_expanded": 15,
+  "beam_states_pruned": 12,
+  "graph_nodes": 64,
+  "graph_edges": 166,
+  "historical_cases": 12,
+  "failure_experiences": 8,
+  "document_evidence": 8,
+  "planner_cited_evidence": 5,
+  "planner_cited_evidence_ids": [
+    "53ac387cea5c",
+    "53ac387cea5c:algorithm_gradient_boosting__llm_proposed:v1",
+    "9364e416a38a:algorithm_gradient_boosting__llm_proposed:v1",
+    "6bde3f2c39b8:algorithm_random_forest__llm_proposed:v4",
+    "source_measured_experiment_693b971c"
+  ],
+  "retrieved_evidence_count": 92,
+  "runtime": 448.8903213888407,
+  "llm_calls": 6,
+  "llm_latency_seconds": 311.52176000000003,
+  "llm_error_calls": 0,
+  "repair_calls": 0,
+  "codegen_calls": 3,
+  "codegen_retry_calls": 0,
+  "peak_candidate_memory_mb": 1747.25,
+  "explanation_status": "ok",
+  "error": null,
+  "control_errors": [],
+  "model_mode": "real_llm_all_settings",
+  "extraction_mode": "frozen_previous_real_extraction",
+  "completed_at": "2026-09-08T04:57:48.460011+00:00",
+  "source_manifest": {
+    "workspace/generated/ae9c175f326c/algorithm_gradient_boosting__llm_proposed/algorithm.py": "fb38b9f70a9db518541a9bbaf5165f2568abfa65547ac986e19a144808d58c64",
+    "workspace/generated/ae9c175f326c/algorithm_gradient_boosting__llm_proposed/algorithm_meta.json": "fb6fe75d1c0a711806c8c62d84905123f7e1b1eab750e2cd25f78e0ceb7c91c4",
+    "workspace/generated/ae9c175f326c/algorithm_gradient_boosting__llm_proposed/generation_attempt_1.txt": "fb38b9f70a9db518541a9bbaf5165f2568abfa65547ac986e19a144808d58c64",
+    "workspace/generated/ae9c175f326c/algorithm_gradient_boosting__llm_proposed/versions/v1.py": "fb38b9f70a9db518541a9bbaf5165f2568abfa65547ac986e19a144808d58c64",
+    "workspace/generated/ae9c175f326c/algorithm_logistic_regression__llm_proposed/algorithm.py": "b5dd0598f0329ef35d3b09225f88d3c1d3e31356d7df1196202153cc67285aeb",
+    "workspace/generated/ae9c175f326c/algorithm_logistic_regression__llm_proposed/algorithm_meta.json": "80b45b48da6c429ef10831c1398d923b943018990d1672fa936357eb6f7df67e",
+    "workspace/generated/ae9c175f326c/algorithm_logistic_regression__llm_proposed/generation_attempt_1.txt": "b5dd0598f0329ef35d3b09225f88d3c1d3e31356d7df1196202153cc67285aeb",
+    "workspace/generated/ae9c175f326c/algorithm_logistic_regression__llm_proposed/versions/v1.py": "b5dd0598f0329ef35d3b09225f88d3c1d3e31356d7df1196202153cc67285aeb",
+    "workspace/generated/ae9c175f326c/algorithm_random_forest__llm_proposed/algorithm.py": "a2b9e0cc6913c03d65c6a4514c9450fbb06637d0aed948f052caac1108205e44",
+    "workspace/generated/ae9c175f326c/algorithm_random_forest__llm_proposed/algorithm_meta.json": "a6a081a983e81b341024d140087aaa03842976d596bb6c252912a10fdd9767d0",
+    "workspace/generated/ae9c175f326c/algorithm_random_forest__llm_proposed/generation_attempt_1.txt": "a2b9e0cc6913c03d65c6a4514c9450fbb06637d0aed948f052caac1108205e44",
+    "workspace/generated/ae9c175f326c/algorithm_random_forest__llm_proposed/versions/v1.py": "a2b9e0cc6913c03d65c6a4514c9450fbb06637d0aed948f052caac1108205e44"
+  },
+  "frozen_guard_passed": true
+}

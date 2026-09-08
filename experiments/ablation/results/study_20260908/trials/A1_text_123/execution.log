@@ -1,0 +1,44 @@
+[RequirementAgent] started {"tool": "understand"}
+[LLM] {"call_id": "llm_0001", "purpose": "requirement", "status": "ok", "provider": "local_openai_compatible", "model": "Qwen2.5-14B-Instruct", "latency_ms": 13706.9, "token_usage": {"prompt_tokens": 999, "completion_tokens": 338, "total_tokens": 1337}, "retry_count": 0}
+[LLM] {"call_id": "llm_0002", "purpose": "requirement", "status": "ok", "provider": "local_openai_compatible", "model": "Qwen2.5-14B-Instruct", "latency_ms": 13539.31, "token_usage": {"prompt_tokens": 1459, "completion_tokens": 336, "total_tokens": 1795}, "retry_count": 0}
+[RequirementAgent] completed {"tool": "understand"}
+[RetrievalAgent] started {"tool": "retrieve"}
+[RetrievalAgent] completed {"tool": "retrieve"}
+[GraphSearch] ok {}
+[PlannerAgent] started {"tool": "advise"}
+[LLM] {"call_id": "llm_0003", "purpose": "planning", "status": "ok", "provider": "local_openai_compatible", "model": "Qwen2.5-14B-Instruct", "latency_ms": 18008.71, "token_usage": {"prompt_tokens": 4719, "completion_tokens": 416, "total_tokens": 5135}, "retry_count": 0}
+[PlannerAgent] completed {"tool": "advise"}
+[PlannerAgent] started {"tool": "plan"}
+[PlannerAgent] completed {"tool": "plan"}
+[PlannerAgent] started {"tool": "search"}
+[PlannerAgent] completed {"tool": "search"}
+[CoderAgent] started {"tool": "generate"}
+[LLM] {"call_id": "llm_0004", "purpose": "code_generation", "status": "ok", "provider": "local_openai_compatible", "model": "Qwen3-Coder-30B-A3B-Instruct", "latency_ms": 72885.6, "token_usage": {"prompt_tokens": 6484, "completion_tokens": 725, "total_tokens": 7209}, "retry_count": 0}
+[CoderAgent] completed {"tool": "generate"}
+[CoderAgent] llm_code_accepted {"algorithm": "algorithm_tfidf_logistic_regression__llm_proposed"}
+[Sandbox] started {"algorithm": "algorithm_tfidf_logistic_regression__llm_proposed", "version_id": "34d3b8a95742_algorithm_tfidf_logistic_regression__llm_proposed_v1"}
+[ValidatorAgent] started {"tool": "validate"}
+[ValidatorAgent] completed {"tool": "validate"}
+[ValidatorAgent] passed {"algorithm": "algorithm_tfidf_logistic_regression__llm_proposed", "round": 0, "version_id": "34d3b8a95742_algorithm_tfidf_logistic_regression__llm_proposed_v1", "metrics": {"accuracy": 0.8085867620751341, "f1": 0.8083991242813157, "precision": 0.8097119395716945, "recall": 0.8085867620751341, "balanced_accuracy": 0.808531746031746}}
+[CoderAgent] started {"tool": "generate"}
+[LLM] {"call_id": "llm_0005", "purpose": "code_generation", "status": "ok", "provider": "local_openai_compatible", "model": "Qwen3-Coder-30B-A3B-Instruct", "latency_ms": 74050.35, "token_usage": {"prompt_tokens": 6477, "completion_tokens": 773, "total_tokens": 7250}, "retry_count": 0}
+[CoderAgent] completed {"tool": "generate"}
+[CoderAgent] llm_code_accepted {"algorithm": "algorithm_tfidf_logistic_regression__tfidf_unigram"}
+[Sandbox] started {"algorithm": "algorithm_tfidf_logistic_regression__tfidf_unigram", "version_id": "34d3b8a95742_algorithm_tfidf_logistic_regression__tfidf_unigram_v1"}
+[ValidatorAgent] started {"tool": "validate"}
+[ValidatorAgent] completed {"tool": "validate"}
+[ValidatorAgent] passed {"algorithm": "algorithm_tfidf_logistic_regression__tfidf_unigram", "round": 0, "version_id": "34d3b8a95742_algorithm_tfidf_logistic_regression__tfidf_unigram_v1", "metrics": {"accuracy": 0.813953488372093, "f1": 0.8138605580466046, "precision": 0.8145190445679759, "recall": 0.813953488372093, "balanced_accuracy": 0.8139144905273938}}
+[CoderAgent] started {"tool": "generate"}
+[LLM] {"call_id": "llm_0006", "purpose": "code_generation", "status": "ok", "provider": "local_openai_compatible", "model": "Qwen3-Coder-30B-A3B-Instruct", "latency_ms": 62913.27, "token_usage": {"prompt_tokens": 6477, "completion_tokens": 679, "total_tokens": 7156}, "retry_count": 0}
+[CoderAgent] completed {"tool": "generate"}
+[CoderAgent] llm_code_accepted {"algorithm": "algorithm_tfidf_logistic_regression__tfidf_bigram"}
+[Sandbox] started {"algorithm": "algorithm_tfidf_logistic_regression__tfidf_bigram", "version_id": "34d3b8a95742_algorithm_tfidf_logistic_regression__tfidf_bigram_v1"}
+[ValidatorAgent] started {"tool": "validate"}
+[ValidatorAgent] completed {"tool": "validate"}
+[ValidatorAgent] passed {"algorithm": "algorithm_tfidf_logistic_regression__tfidf_bigram", "round": 0, "version_id": "34d3b8a95742_algorithm_tfidf_logistic_regression__tfidf_bigram_v1", "metrics": {"accuracy": 0.8085867620751341, "f1": 0.8083991242813157, "precision": 0.8097119395716945, "recall": 0.8085867620751341, "balanced_accuracy": 0.808531746031746}}
+[CuratorAgent] started {"tool": "curate"}
+[CuratorAgent] completed {"tool": "curate"}
+[ExplanationAgent] started {"tool": "explain"}
+[LLM] {"call_id": "llm_0007", "purpose": "explanation", "status": "ok", "provider": "local_openai_compatible", "model": "Qwen2.5-14B-Instruct", "latency_ms": 36727.91, "token_usage": {"prompt_tokens": 8259, "completion_tokens": 858, "total_tokens": 9117}, "retry_count": 0}
+[LLM] {"call_id": "llm_0008", "purpose": "explanation", "status": "ok", "provider": "local_openai_compatible", "model": "Qwen2.5-14B-Instruct", "latency_ms": 33881.8, "token_usage": {"prompt_tokens": 8270, "completion_tokens": 845, "total_tokens": 9115}, "retry_count": 0}
+[ExplanationAgent] completed {"tool": "explain"}

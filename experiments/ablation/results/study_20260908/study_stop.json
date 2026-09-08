@@ -1,0 +1,311 @@
+{
+  "reason": "administrative_time_budget_stop",
+  "selection_policy": "Stop at current position in preregistered randomized schedule; retain every finished and interrupted trial without outcome filtering.",
+  "timestamp": "2026-09-08T07:30:22.273506+00:00",
+  "protocol_sha256": "b5dbf92809afc7c2b7c1053914ff30ae9f8cdf1d04abd271bc132c870050acee",
+  "planned_trials": 42,
+  "finished_trials": 25,
+  "interrupted_trials": 1,
+  "not_started_trials": 16,
+  "terminated_coordinator_and_trial_pids": [
+    774918,
+    567534
+  ],
+  "trial_status": [
+    {
+      "experiment": "no_repair",
+      "dataset": "customer_churn",
+      "seed": 123,
+      "trial_id": "A5_customer_churn_123",
+      "status": "finished"
+    },
+    {
+      "experiment": "single_candidate",
+      "dataset": "customer_churn",
+      "seed": 42,
+      "trial_id": "A4_customer_churn_42",
+      "status": "finished"
+    },
+    {
+      "experiment": "full_system",
+      "dataset": "text",
+      "seed": 2026,
+      "trial_id": "A0_text_2026",
+      "status": "finished"
+    },
+    {
+      "experiment": "no_graph",
+      "dataset": "text",
+      "seed": 42,
+      "trial_id": "A1_text_42",
+      "status": "finished"
+    },
+    {
+      "experiment": "no_repair",
+      "dataset": "customer_churn",
+      "seed": 2026,
+      "trial_id": "A5_customer_churn_2026",
+      "status": "finished"
+    },
+    {
+      "experiment": "single_candidate",
+      "dataset": "customer_churn",
+      "seed": 123,
+      "trial_id": "A4_customer_churn_123",
+      "status": "finished"
+    },
+    {
+      "experiment": "no_graph",
+      "dataset": "text",
+      "seed": 123,
+      "trial_id": "A1_text_123",
+      "status": "finished"
+    },
+    {
+      "experiment": "no_experience",
+      "dataset": "text",
+      "seed": 2026,
+      "trial_id": "A2_text_2026",
+      "status": "finished"
+    },
+    {
+      "experiment": "no_repair",
+      "dataset": "text",
+      "seed": 42,
+      "trial_id": "A5_text_42",
+      "status": "finished"
+    },
+    {
+      "experiment": "no_experience",
+      "dataset": "customer_churn",
+      "seed": 2026,
+      "trial_id": "A2_customer_churn_2026",
+      "status": "finished"
+    },
+    {
+      "experiment": "no_beam",
+      "dataset": "customer_churn",
+      "seed": 2026,
+      "trial_id": "A3_customer_churn_2026",
+      "status": "finished"
+    },
+    {
+      "experiment": "no_knowledge",
+      "dataset": "text",
+      "seed": 2026,
+      "trial_id": "A6_text_2026",
+      "status": "finished"
+    },
+    {
+      "experiment": "no_beam",
+      "dataset": "text",
+      "seed": 2026,
+      "trial_id": "A3_text_2026",
+      "status": "finished"
+    },
+    {
+      "experiment": "full_system",
+      "dataset": "text",
+      "seed": 123,
+      "trial_id": "A0_text_123",
+      "status": "finished"
+    },
+    {
+      "experiment": "no_knowledge",
+      "dataset": "customer_churn",
+      "seed": 42,
+      "trial_id": "A6_customer_churn_42",
+      "status": "finished"
+    },
+    {
+      "experiment": "no_beam",
+      "dataset": "customer_churn",
+      "seed": 42,
+      "trial_id": "A3_customer_churn_42",
+      "status": "finished"
+    },
+    {
+      "experiment": "no_beam",
+      "dataset": "text",
+      "seed": 42,
+      "trial_id": "A3_text_42",
+      "status": "finished"
+    },
+    {
+      "experiment": "full_system",
+      "dataset": "customer_churn",
+      "seed": 123,
+      "trial_id": "A0_customer_churn_123",
+      "status": "finished"
+    },
+    {
+      "experiment": "full_system",
+      "dataset": "customer_churn",
+      "seed": 2026,
+      "trial_id": "A0_customer_churn_2026",
+      "status": "finished"
+    },
+    {
+      "experiment": "no_knowledge",
+      "dataset": "customer_churn",
+      "seed": 123,
+      "trial_id": "A6_customer_churn_123",
+      "status": "finished"
+    },
+    {
+      "experiment": "no_knowledge",
+      "dataset": "customer_churn",
+      "seed": 2026,
+      "trial_id": "A6_customer_churn_2026",
+      "status": "finished"
+    },
+    {
+      "experiment": "no_repair",
+      "dataset": "text",
+      "seed": 2026,
+      "trial_id": "A5_text_2026",
+      "status": "finished"
+    },
+    {
+      "experiment": "single_candidate",
+      "dataset": "customer_churn",
+      "seed": 2026,
+      "trial_id": "A4_customer_churn_2026",
+      "status": "finished"
+    },
+    {
+      "experiment": "no_graph",
+      "dataset": "customer_churn",
+      "seed": 123,
+      "trial_id": "A1_customer_churn_123",
+      "status": "finished"
+    },
+    {
+      "experiment": "single_candidate",
+      "dataset": "text",
+      "seed": 123,
+      "trial_id": "A4_text_123",
+      "status": "finished"
+    },
+    {
+      "experiment": "no_beam",
+      "dataset": "customer_churn",
+      "seed": 123,
+      "trial_id": "A3_customer_churn_123",
+      "status": "interrupted"
+    },
+    {
+      "experiment": "single_candidate",
+      "dataset": "text",
+      "seed": 42,
+      "trial_id": "A4_text_42",
+      "status": "not_started"
+    },
+    {
+      "experiment": "no_experience",
+      "dataset": "customer_churn",
+      "seed": 123,
+      "trial_id": "A2_customer_churn_123",
+      "status": "not_started"
+    },
+    {
+      "experiment": "no_graph",
+      "dataset": "customer_churn",
+      "seed": 42,
+      "trial_id": "A1_customer_churn_42",
+      "status": "not_started"
+    },
+    {
+      "experiment": "no_repair",
+      "dataset": "text",
+      "seed": 123,
+      "trial_id": "A5_text_123",
+      "status": "not_started"
+    },
+    {
+      "experiment": "full_system",
+      "dataset": "text",
+      "seed": 42,
+      "trial_id": "A0_text_42",
+      "status": "not_started"
+    },
+    {
+      "experiment": "no_repair",
+      "dataset": "customer_churn",
+      "seed": 42,
+      "trial_id": "A5_customer_churn_42",
+      "status": "not_started"
+    },
+    {
+      "experiment": "no_graph",
+      "dataset": "text",
+      "seed": 2026,
+      "trial_id": "A1_text_2026",
+      "status": "not_started"
+    },
+    {
+      "experiment": "full_system",
+      "dataset": "customer_churn",
+      "seed": 42,
+      "trial_id": "A0_customer_churn_42",
+      "status": "not_started"
+    },
+    {
+      "experiment": "no_experience",
+      "dataset": "text",
+      "seed": 123,
+      "trial_id": "A2_text_123",
+      "status": "not_started"
+    },
+    {
+      "experiment": "no_knowledge",
+      "dataset": "text",
+      "seed": 42,
+      "trial_id": "A6_text_42",
+      "status": "not_started"
+    },
+    {
+      "experiment": "single_candidate",
+      "dataset": "text",
+      "seed": 2026,
+      "trial_id": "A4_text_2026",
+      "status": "not_started"
+    },
+    {
+      "experiment": "no_knowledge",
+      "dataset": "text",
+      "seed": 123,
+      "trial_id": "A6_text_123",
+      "status": "not_started"
+    },
+    {
+      "experiment": "no_graph",
+      "dataset": "customer_churn",
+      "seed": 2026,
+      "trial_id": "A1_customer_churn_2026",
+      "status": "not_started"
+    },
+    {
+      "experiment": "no_beam",
+      "dataset": "text",
+      "seed": 123,
+      "trial_id": "A3_text_123",
+      "status": "not_started"
+    },
+    {
+      "experiment": "no_experience",
+      "dataset": "customer_churn",
+      "seed": 42,
+      "trial_id": "A2_customer_churn_42",
+      "status": "not_started"
+    },
+    {
+      "experiment": "no_experience",
+      "dataset": "text",
+      "seed": 42,
+      "trial_id": "A2_text_42",
+      "status": "not_started"
+    }
+  ],
+  "frozen_guard_passed": true
+}

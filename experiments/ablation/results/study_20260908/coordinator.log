@@ -1,0 +1,51 @@
+[1/42] A5_customer_churn_123
+{"trial": "A5_customer_churn_123", "completion": true, "metrics": {"accuracy": 0.84, "f1": 0.3684210526315789, "precision": 0.7, "recall": 0.25, "balanced_accuracy": 0.6127049180327868, "roc_auc": 0.8268442622950819, "pr_auc": 0.5123174012682462}, "error": null, "control_errors": []}
+[2/42] A4_customer_churn_42
+{"trial": "A4_customer_churn_42", "completion": true, "metrics": {"accuracy": 0.85, "f1": 0.4578313253012048, "precision": 0.7037037037037037, "recall": 0.3392857142857143, "balanced_accuracy": 0.6532494145199064, "roc_auc": 0.8768296252927401, "pr_auc": 0.5898040878107842}, "error": null, "control_errors": []}
+[3/42] A0_text_2026
+{"trial": "A0_text_2026", "completion": true, "metrics": {"accuracy": 0.7942754919499105, "f1": 0.7941173563684165, "precision": 0.7951058598476809, "recall": 0.7942754919499105, "balanced_accuracy": 0.7942268305171531}, "error": null, "control_errors": []}
+[4/42] A1_text_42
+{"trial": "A1_text_42", "completion": true, "metrics": {"accuracy": 0.8085867620751341, "f1": 0.8085855369402416, "precision": 0.8085894871851358, "recall": 0.8085867620751341, "balanced_accuracy": 0.8085829493087557}, "error": null, "control_errors": []}
+[5/42] A5_customer_churn_2026
+{"trial": "A5_customer_churn_2026", "completion": true, "metrics": {"accuracy": 0.86, "f1": 0.5227272727272728, "precision": 0.71875, "recall": 0.4107142857142857, "balanced_accuracy": 0.6869145199063231, "roc_auc": 0.907347775175644, "pr_auc": 0.6995153989037561}, "error": null, "control_errors": []}
+[6/42] A4_customer_churn_123
+{"trial": "A4_customer_churn_123", "completion": true, "metrics": {"accuracy": 0.8366666666666667, "f1": 0.3950617283950617, "precision": 0.64, "recall": 0.2857142857142857, "balanced_accuracy": 0.6244145199063231, "roc_auc": 0.8299180327868853, "pr_auc": 0.5396752099393907}, "error": null, "control_errors": []}
+[7/42] A1_text_123
+{"trial": "A1_text_123", "completion": true, "metrics": {"accuracy": 0.813953488372093, "f1": 0.8138605580466046, "precision": 0.8145190445679759, "recall": 0.813953488372093, "balanced_accuracy": 0.8139144905273938}, "error": null, "control_errors": []}
+[8/42] A2_text_2026
+{"trial": "A2_text_2026", "completion": true, "metrics": {"accuracy": 0.7942754919499105, "f1": 0.7941173563684165, "precision": 0.7951058598476809, "recall": 0.7942754919499105, "balanced_accuracy": 0.7942268305171531}, "error": null, "control_errors": []}
+[9/42] A5_text_42
+{"trial": "A5_text_42", "completion": true, "metrics": {"accuracy": 0.8014311270125224, "f1": 0.801423501113699, "precision": 0.8014620460839827, "recall": 0.8014311270125224, "balanced_accuracy": 0.80142089093702}, "error": null, "control_errors": []}
+[10/42] A2_customer_churn_2026
+{"trial": "A2_customer_churn_2026", "completion": true, "metrics": {"accuracy": 0.86, "f1": 0.5227272727272728, "precision": 0.71875, "recall": 0.4107142857142857, "balanced_accuracy": 0.6869145199063231, "roc_auc": 0.907347775175644, "pr_auc": 0.6995153989037561}, "error": null, "control_errors": []}
+[11/42] A3_customer_churn_2026
+{"trial": "A3_customer_churn_2026", "completion": true, "metrics": {"accuracy": 0.86, "f1": 0.5227272727272728, "precision": 0.71875, "recall": 0.4107142857142857, "balanced_accuracy": 0.6869145199063231, "roc_auc": 0.907347775175644, "pr_auc": 0.6995153989037561}, "error": null, "control_errors": []}
+[12/42] A6_text_2026
+{"trial": "A6_text_2026", "completion": true, "metrics": {"accuracy": 0.7942754919499105, "f1": 0.7941173563684165, "precision": 0.7951058598476809, "recall": 0.7942754919499105, "balanced_accuracy": 0.7942268305171531}, "error": null, "control_errors": []}
+[13/42] A3_text_2026
+{"trial": "A3_text_2026", "completion": true, "metrics": {"accuracy": 0.7710196779964222, "f1": 0.7709053022112057, "precision": 0.7715026310478237, "recall": 0.7710196779964222, "balanced_accuracy": 0.7709805427547363}, "error": null, "control_errors": []}
+[14/42] A0_text_123
+{"trial": "A0_text_123", "completion": true, "metrics": {"accuracy": 0.813953488372093, "f1": 0.8138605580466046, "precision": 0.8145190445679759, "recall": 0.813953488372093, "balanced_accuracy": 0.8139144905273938}, "error": null, "control_errors": []}
+[15/42] A6_customer_churn_42
+{"trial": "A6_customer_churn_42", "completion": true, "metrics": {"accuracy": 0.8566666666666667, "f1": 0.5567010309278351, "precision": 0.6585365853658537, "recall": 0.48214285714285715, "balanced_accuracy": 0.7123829039812647, "roc_auc": 0.895418618266979, "pr_auc": 0.6934071294027732}, "error": null, "control_errors": []}
+[16/42] A3_customer_churn_42
+{"trial": "A3_customer_churn_42", "completion": true, "metrics": {"accuracy": 0.8233333333333334, "f1": 0.10169491525423728, "precision": 1.0, "recall": 0.05357142857142857, "balanced_accuracy": 0.5267857142857143, "roc_auc": 0.9032494145199064, "pr_auc": 0.6673895530442634}, "error": null, "control_errors": []}
+[17/42] A3_text_42
+{"trial": "A3_text_42", "completion": true, "metrics": {"accuracy": 0.7996422182468694, "f1": 0.7996383710327495, "precision": 0.7996549971481065, "recall": 0.7996422182468694, "balanced_accuracy": 0.7996351766513057}, "error": null, "control_errors": []}
+[18/42] A0_customer_churn_123
+{"trial": "A0_customer_churn_123", "completion": true, "metrics": {"accuracy": 0.84, "f1": 0.3684210526315789, "precision": 0.7, "recall": 0.25, "balanced_accuracy": 0.6127049180327868, "roc_auc": 0.8268442622950819, "pr_auc": 0.5123174012682462}, "error": null, "control_errors": []}
+[19/42] A0_customer_churn_2026
+{"trial": "A0_customer_churn_2026", "completion": true, "metrics": {"accuracy": 0.86, "f1": 0.5227272727272728, "precision": 0.71875, "recall": 0.4107142857142857, "balanced_accuracy": 0.6869145199063231, "roc_auc": 0.907347775175644, "pr_auc": 0.6995153989037561}, "error": null, "control_errors": []}
+[20/42] A6_customer_churn_123
+{"trial": "A6_customer_churn_123", "completion": true, "metrics": {"accuracy": 0.84, "f1": 0.3684210526315789, "precision": 0.7, "recall": 0.25, "balanced_accuracy": 0.6127049180327868, "roc_auc": 0.8268442622950819, "pr_auc": 0.5123174012682462}, "error": null, "control_errors": []}
+[21/42] A6_customer_churn_2026
+{"trial": "A6_customer_churn_2026", "completion": true, "metrics": {"accuracy": 0.8133333333333334, "f1": 0.6363636363636364, "precision": 0.5, "recall": 0.875, "balanced_accuracy": 0.8370901639344263, "roc_auc": 0.9091042154566744, "pr_auc": 0.706733960308746}, "error": null, "control_errors": []}
+[22/42] A5_text_2026
+{"trial": "A5_text_2026", "completion": true, "metrics": {"accuracy": 0.7942754919499105, "f1": 0.7941173563684165, "precision": 0.7951058598476809, "recall": 0.7942754919499105, "balanced_accuracy": 0.7942268305171531}, "error": null, "control_errors": []}
+[23/42] A4_customer_churn_2026
+{"trial": "A4_customer_churn_2026", "completion": true, "metrics": {"accuracy": 0.86, "f1": 0.5227272727272728, "precision": 0.71875, "recall": 0.4107142857142857, "balanced_accuracy": 0.6869145199063231, "roc_auc": 0.907347775175644, "pr_auc": 0.6995153989037561}, "error": null, "control_errors": []}
+[24/42] A1_customer_churn_123
+{"trial": "A1_customer_churn_123", "completion": true, "metrics": {"accuracy": 0.8366666666666667, "f1": 0.3950617283950617, "precision": 0.64, "recall": 0.2857142857142857, "balanced_accuracy": 0.6244145199063231, "roc_auc": 0.8299180327868853, "pr_auc": 0.5396752099393907}, "error": null, "control_errors": []}
+[25/42] A4_text_123
+{"trial": "A4_text_123", "completion": true, "metrics": {"accuracy": 0.8085867620751341, "f1": 0.8083991242813157, "precision": 0.8097119395716945, "recall": 0.8085867620751341, "balanced_accuracy": 0.808531746031746}, "error": null, "control_errors": []}
+[26/42] A3_customer_churn_123

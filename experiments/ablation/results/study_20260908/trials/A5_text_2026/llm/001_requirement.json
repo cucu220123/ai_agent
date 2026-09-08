@@ -1,0 +1,168 @@
+{
+  "purpose": "requirement",
+  "system": "你是 RequirementUnderstandingAgent。理解用户的领域、任务和约束。只返回严格 JSON，不要 Markdown。统计事实以数据画像为准；不确定信息列入 uncertainty。",
+  "user": "{\"user_requirement\": \"对客户评论进行情感二分类。领域 customer_reviews，任务 text_classification。输入 text，目标 label，输出 prediction；不要求概率。使用 TF-IDF + Logistic Regression，可以比较不同词表和正则化配置。评价 accuracy 和 weighted F1，两个指标均要求 >= 0.70。处理缺失文本、未见词和小批量。不要自行增加其他质量阈值。\", \"json_schema\": {\"additionalProperties\": false, \"description\": \"Strict LLM contract: required semantic fields cannot be filled by defaults.\", \"properties\": {\"domain\": {\"minLength\": 2, \"title\": \"Domain\", \"type\": \"string\"}, \"capability_name\": {\"minLength\": 2, \"title\": \"Capability Name\", \"type\": \"string\"}, \"task_type\": {\"enum\": [\"binary_classification\", \"multiclass_classification\", \"regression\", \"anomaly_detection\", \"text_classification\"], \"title\": \"Task Type\", \"type\": \"string\"}, \"data_type\": {\"enum\": [\"tabular\", \"text\", \"image\", \"timeseries\"], \"title\": \"Data Type\", \"type\": \"string\"}, \"target\": {\"title\": \"Target\", \"type\": \"string\"}, \"input_schema\": {\"additionalProperties\": {\"type\": \"string\"}, \"title\": \"Input Schema\", \"type\": \"object\"}, \"output_schema\": {\"additionalProperties\": {\"type\": \"string\"}, \"title\": \"Output Schema\", \"type\": \"object\"}, \"dataset\": {\"additionalProperties\": true, \"title\": \"Dataset\", \"type\": \"object\"}, \"metrics\": {\"items\": {\"type\": \"string\"}, \"minItems\": 1, \"title\": \"Metrics\", \"type\": \"array\"}, \"thresholds\": {\"additionalProperties\": {\"type\": \"number\"}, \"title\": \"Thresholds\", \"type\": \"object\"}, \"constraints\": {\"items\": {\"type\": \"string\"}, \"title\": \"Constraints\", \"type\": \"array\"}, \"latency_requirement_ms\": {\"anyOf\": [{\"minimum\": 0, \"type\": \"number\"}, {\"type\": \"null\"}], \"default\": null, \"title\": \"Latency Requirement Ms\"}, \"interpretability_requirement\": {\"anyOf\": [{\"enum\": [\"none\", \"low\", \"medium\", \"high\"], \"type\": \"string\"}, {\"type\": \"null\"}], \"default\": null, \"title\": \"Interpretability Requirement\"}, \"resource_constraint\": {\"additionalProperties\": true, \"title\": \"Resource Constraint\", \"type\": \"object\"}, \"probability_output_required\": {\"title\": \"Probability Output Required\", \"type\": \"boolean\"}, \"class_imbalance\": {\"additionalProperties\": true, \"title\": \"Class Imbalance\", \"type\": \"object\"}, \"candidate_hints\": {\"items\": {\"type\": \"string\"}, \"title\": \"Candidate Hints\", \"type\": \"array\"}, \"uncertainty\": {\"items\": {\"type\": \"string\"}, \"title\": \"Uncertainty\", \"type\": \"array\"}, \"confidence\": {\"maximum\": 1, \"minimum\": 0, \"title\": \"Confidence\", \"type\": \"number\"}}, \"required\": [\"domain\", \"capability_name\", \"task_type\", \"data_type\", \"target\", \"metrics\", \"probability_output_required\", \"confidence\"], \"title\": \"RequirementContract\", \"type\": \"object\"}, \"dataset\": {\"path\": \"/data3/xiaotianqi/ai_algorithm_factory/experiments/ablation/results/study_20260908/trials/A5_text_2026/workspace/data/train.csv\", \"columns\": [\"text\", \"label\"], \"dtypes\": {\"text\": \"object\", \"label\": \"int64\"}, \"row_count\": 1675}, \"required_fields\": [\"domain\", \"capability_name\", \"task_type\", \"data_type\", \"target\", \"input_schema\", \"output_schema\", \"dataset\", \"metrics\", \"thresholds\", \"constraints\", \"latency_requirement_ms\", \"interpretability_requirement\", \"resource_constraint\", \"probability_output_required\", \"class_imbalance\", \"candidate_hints\", \"uncertainty\", \"confidence\"], \"allowed_task_types\": [\"binary_classification\", \"multiclass_classification\", \"regression\", \"anomaly_detection\", \"text_classification\"], \"allowed_data_types\": [\"tabular\", \"text\", \"image\", \"timeseries\"], \"rule\": \"All required fields must be present. Use empty arrays/objects or null only where appropriate. Do not copy schema examples as values.\"}",
+  "generation_config": {
+    "json_schema": {
+      "additionalProperties": false,
+      "description": "Strict LLM contract: required semantic fields cannot be filled by defaults.",
+      "properties": {
+        "domain": {
+          "minLength": 2,
+          "title": "Domain",
+          "type": "string"
+        },
+        "capability_name": {
+          "minLength": 2,
+          "title": "Capability Name",
+          "type": "string"
+        },
+        "task_type": {
+          "enum": [
+            "binary_classification",
+            "multiclass_classification",
+            "regression",
+            "anomaly_detection",
+            "text_classification"
+          ],
+          "title": "Task Type",
+          "type": "string"
+        },
+        "data_type": {
+          "enum": [
+            "tabular",
+            "text",
+            "image",
+            "timeseries"
+          ],
+          "title": "Data Type",
+          "type": "string"
+        },
+        "target": {
+          "title": "Target",
+          "type": "string"
+        },
+        "input_schema": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Input Schema",
+          "type": "object"
+        },
+        "output_schema": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Output Schema",
+          "type": "object"
+        },
+        "dataset": {
+          "additionalProperties": true,
+          "title": "Dataset",
+          "type": "object"
+        },
+        "metrics": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Metrics",
+          "type": "array"
+        },
+        "thresholds": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "title": "Thresholds",
+          "type": "object"
+        },
+        "constraints": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Constraints",
+          "type": "array"
+        },
+        "latency_requirement_ms": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Latency Requirement Ms"
+        },
+        "interpretability_requirement": {
+          "anyOf": [
+            {
+              "enum": [
+                "none",
+                "low",
+                "medium",
+                "high"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Interpretability Requirement"
+        },
+        "resource_constraint": {
+          "additionalProperties": true,
+          "title": "Resource Constraint",
+          "type": "object"
+        },
+        "probability_output_required": {
+          "title": "Probability Output Required",
+          "type": "boolean"
+        },
+        "class_imbalance": {
+          "additionalProperties": true,
+          "title": "Class Imbalance",
+          "type": "object"
+        },
+        "candidate_hints": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Candidate Hints",
+          "type": "array"
+        },
+        "uncertainty": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Uncertainty",
+          "type": "array"
+        },
+        "confidence": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Confidence",
+          "type": "number"
+        }
+      },
+      "required": [
+        "domain",
+        "capability_name",
+        "task_type",
+        "data_type",
+        "target",
+        "metrics",
+        "probability_output_required",
+        "confidence"
+      ],
+      "title": "RequirementContract",
+      "type": "object"
+    }
+  },
+  "status": "ok",
+  "response": "{\n  \"domain\": \"customer_reviews\",\n  \"capability_name\": \"CustomerReviewSentimentClassifier\",\n  \"task_type\": \"text_classification\",\n  \"data_type\": \"text\",\n  \"target\": \"label\",\n  \"input_schema\": {\n    \"text\": \"string\"\n  },\n  \"output_schema\": {\n    \"prediction\": \"string\"\n  },\n  \"dataset\": {\n    \"path\": \"/data3/xiaotianqi/ai_algorithm_factory/experiments/ablation/results/study_20260908/trials/A5_text_2026/workspace/data/train.csv\",\n    \"columns\": [\n      \"text\",\n      \"label\"\n    ],\n    \"dtypes\": {\n      \"text\": \"object\",\n      \"label\": \"int64\"\n    },\n    \"row_count\": 1675\n  },\n  \"metrics\": [\n    \"accuracy\",\n    \"weighted F1\"\n  ],\n  \"thresholds\": {\n    \"accuracy\": 0.7,\n    \"weighted F1\": 0.7\n  },\n  \"constraints\": [\n    \"use TF-IDF + Logistic Regression\",\n    \"compare different vocabularies and regularization configurations\",\n    \"handle missing texts, unseen words, and small batches\"\n  ],\n  \"latency_requirement_ms\": null,\n  \"interpretability_requirement\": null,\n  \"resource_constraint\": {},\n  \"probability_output_required\": false,\n  \"class_imbalance\": {},\n  \"candidate_hints\": [],\n  \"uncertainty\": [\n    \"different word embeddings may affect performance\"\n  ],\n  \"confidence\": 1\n}"
+}

@@ -1,0 +1,24 @@
+{
+  "experiment": "single_candidate",
+  "dataset": "customer_churn",
+  "seed": 42,
+  "trial_id": "A4_customer_churn_42",
+  "git_commit": "bfbba07ea60024096578ba60ddf065546c430d2d",
+  "working_git_head": "20f48f244c3b8a9e3c4f7edfd582aecdf9af0920",
+  "configuration": {
+    "id": "A4",
+    "name": "single_candidate",
+    "rationale": "Execute original Planner rank-1 algorithm only",
+    "controls": {
+      "enable_graph_retrieval": true,
+      "enable_semantic_retrieval": true,
+      "enable_experience_retrieval": true,
+      "enable_beam_search": true,
+      "enable_multi_candidate": false,
+      "enable_repair": true,
+      "enable_knowledge_context": true
+    }
+  },
+  "protocol_sha256": "b5dbf92809afc7c2b7c1053914ff30ae9f8cdf1d04abd271bc132c870050acee",
+  "started_at": "2026-09-08T04:28:07.629140+00:00"
+}

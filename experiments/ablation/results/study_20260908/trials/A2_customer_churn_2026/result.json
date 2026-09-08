@@ -1,0 +1,139 @@
+{
+  "experiment": "no_experience",
+  "dataset": "customer_churn",
+  "seed": 2026,
+  "trial_id": "A2_customer_churn_2026",
+  "git_commit": "bfbba07ea60024096578ba60ddf065546c430d2d",
+  "working_git_head": "20f48f244c3b8a9e3c4f7edfd582aecdf9af0920",
+  "configuration": {
+    "id": "A2",
+    "name": "no_experience",
+    "rationale": "Remove measured and cold numeric history across all channels",
+    "controls": {
+      "enable_graph_retrieval": true,
+      "enable_semantic_retrieval": true,
+      "enable_experience_retrieval": false,
+      "enable_beam_search": true,
+      "enable_multi_candidate": true,
+      "enable_repair": true,
+      "enable_knowledge_context": true
+    }
+  },
+  "protocol_sha256": "b5dbf92809afc7c2b7c1053914ff30ae9f8cdf1d04abd271bc132c870050acee",
+  "started_at": "2026-09-08T05:23:51.517418+00:00",
+  "completion": true,
+  "metrics": {
+    "accuracy": 0.86,
+    "f1": 0.5227272727272728,
+    "precision": 0.71875,
+    "recall": 0.4107142857142857,
+    "balanced_accuracy": 0.6869145199063231,
+    "roc_auc": 0.907347775175644,
+    "pr_auc": 0.6995153989037561
+  },
+  "partial_candidate_metrics": [
+    {
+      "candidate": "algorithm_logistic_regression__llm_proposed",
+      "status": "passed",
+      "metrics": {
+        "accuracy": 0.86,
+        "f1": 0.5227272727272728,
+        "precision": 0.71875,
+        "recall": 0.4107142857142857,
+        "balanced_accuracy": 0.6869145199063231,
+        "roc_auc": 0.907347775175644,
+        "pr_auc": 0.6995153989037561
+      }
+    },
+    {
+      "candidate": "algorithm_random_forest__llm_proposed",
+      "status": "passed",
+      "metrics": {
+        "accuracy": 0.8233333333333334,
+        "f1": 0.13114754098360656,
+        "precision": 0.8,
+        "recall": 0.07142857142857142,
+        "balanced_accuracy": 0.5336651053864169,
+        "roc_auc": 0.881074355971897,
+        "pr_auc": 0.6211318814493241
+      }
+    },
+    {
+      "candidate": "algorithm_gradient_boosting__llm_proposed",
+      "status": "passed",
+      "metrics": {
+        "accuracy": 0.8766666666666667,
+        "f1": 0.6105263157894737,
+        "precision": 0.7435897435897436,
+        "recall": 0.5178571428571429,
+        "balanced_accuracy": 0.7384367681498829,
+        "roc_auc": 0.897614168618267,
+        "pr_auc": 0.683939138740142
+      }
+    }
+  ],
+  "first_pass": true,
+  "first_pass_code_success_count": 3,
+  "first_pass_code_denominator": 3,
+  "first_validation_pass_count": 3,
+  "repair_triggered_candidates": 0,
+  "repair_success_count": 0,
+  "repair_success_rate": null,
+  "repair_rounds": 0,
+  "repair_module_triggered": false,
+  "candidate_success_coverage": true,
+  "candidate_pass_count": 3,
+  "candidate_count": 3,
+  "candidate_execution_count": 3,
+  "planner_rank_of_winner": 1,
+  "winner_id": "algorithm_logistic_regression__llm_proposed",
+  "winner_config": "llm_proposed",
+  "rank_one_failed_other_passed": false,
+  "beam_states_expanded": 15,
+  "beam_states_pruned": 12,
+  "graph_nodes": 27,
+  "graph_edges": 45,
+  "historical_cases": 0,
+  "failure_experiences": 0,
+  "document_evidence": 8,
+  "planner_cited_evidence": 7,
+  "planner_cited_evidence_ids": [
+    "source_business_material_1c1a6f4d",
+    "preprocessing_3b20f945c980b1ea",
+    "preprocessing_56a78a1499364981",
+    "preprocessing_8817df495c5b2800",
+    "preprocessing_8d29697f8be324cb",
+    "preprocessing_e30ccf02b0837f02",
+    "task_binary_classification"
+  ],
+  "retrieved_evidence_count": 35,
+  "runtime": 425.51308988034725,
+  "llm_calls": 7,
+  "llm_latency_seconds": 335.96965,
+  "llm_error_calls": 0,
+  "repair_calls": 0,
+  "codegen_calls": 3,
+  "codegen_retry_calls": 0,
+  "peak_candidate_memory_mb": 1583.296875,
+  "explanation_status": "ok",
+  "error": null,
+  "control_errors": [],
+  "model_mode": "real_llm_all_settings",
+  "extraction_mode": "frozen_previous_real_extraction",
+  "completed_at": "2026-09-08T05:30:59.062970+00:00",
+  "source_manifest": {
+    "workspace/generated/01fce4fc0ec0/algorithm_gradient_boosting__llm_proposed/algorithm.py": "fff68674ed5846bd17de3ea715885a446687d6154a0f466577ee7a3c5260bace",
+    "workspace/generated/01fce4fc0ec0/algorithm_gradient_boosting__llm_proposed/algorithm_meta.json": "89b667bf2e93a046978563255b7ab9ca85bdb91f64b200412475bd394cfe60c3",
+    "workspace/generated/01fce4fc0ec0/algorithm_gradient_boosting__llm_proposed/generation_attempt_1.txt": "fff68674ed5846bd17de3ea715885a446687d6154a0f466577ee7a3c5260bace",
+    "workspace/generated/01fce4fc0ec0/algorithm_gradient_boosting__llm_proposed/versions/v1.py": "fff68674ed5846bd17de3ea715885a446687d6154a0f466577ee7a3c5260bace",
+    "workspace/generated/01fce4fc0ec0/algorithm_logistic_regression__llm_proposed/algorithm.py": "2e47850f8f67c336128751e5324fbf3b8c7c4a528983a6a023736ded292becae",
+    "workspace/generated/01fce4fc0ec0/algorithm_logistic_regression__llm_proposed/algorithm_meta.json": "2b0c7e245fa7e93e137f6347f2a716b640ddc823945e95bf6b1f7edcd6a1eb6c",
+    "workspace/generated/01fce4fc0ec0/algorithm_logistic_regression__llm_proposed/generation_attempt_1.txt": "2e47850f8f67c336128751e5324fbf3b8c7c4a528983a6a023736ded292becae",
+    "workspace/generated/01fce4fc0ec0/algorithm_logistic_regression__llm_proposed/versions/v1.py": "2e47850f8f67c336128751e5324fbf3b8c7c4a528983a6a023736ded292becae",
+    "workspace/generated/01fce4fc0ec0/algorithm_random_forest__llm_proposed/algorithm.py": "27105db71a2b3c7a1334d4f59b5c382265235b09edfb3ab9f0ed69a7ad3d69c7",
+    "workspace/generated/01fce4fc0ec0/algorithm_random_forest__llm_proposed/algorithm_meta.json": "b14274a66a373de9995f646c8e76ffcf40ad109386fa39d938b7b63a54a4750d",
+    "workspace/generated/01fce4fc0ec0/algorithm_random_forest__llm_proposed/generation_attempt_1.txt": "27105db71a2b3c7a1334d4f59b5c382265235b09edfb3ab9f0ed69a7ad3d69c7",
+    "workspace/generated/01fce4fc0ec0/algorithm_random_forest__llm_proposed/versions/v1.py": "27105db71a2b3c7a1334d4f59b5c382265235b09edfb3ab9f0ed69a7ad3d69c7"
+  },
+  "frozen_guard_passed": true
+}

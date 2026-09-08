@@ -1,0 +1,24 @@
+{
+  "experiment": "full_system",
+  "dataset": "text",
+  "seed": 123,
+  "trial_id": "A0_text_123",
+  "git_commit": "bfbba07ea60024096578ba60ddf065546c430d2d",
+  "working_git_head": "20f48f244c3b8a9e3c4f7edfd582aecdf9af0920",
+  "configuration": {
+    "id": "A0",
+    "name": "full_system",
+    "rationale": "Reference with all controls enabled",
+    "controls": {
+      "enable_graph_retrieval": true,
+      "enable_semantic_retrieval": true,
+      "enable_experience_retrieval": true,
+      "enable_beam_search": true,
+      "enable_multi_candidate": true,
+      "enable_repair": true,
+      "enable_knowledge_context": true
+    }
+  },
+  "protocol_sha256": "b5dbf92809afc7c2b7c1053914ff30ae9f8cdf1d04abd271bc132c870050acee",
+  "started_at": "2026-09-08T05:48:39.718854+00:00"
+}

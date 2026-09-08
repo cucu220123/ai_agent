@@ -1,0 +1,212 @@
+{
+  "schema_version": "1.1",
+  "generated_at": "2026-09-08T07:12:08.388864+00:00",
+  "source_sha256": "08ec58b717c1fc3d57842e57dc31e46e3a4312d6686d203b069be418b3275303",
+  "spec": {
+    "raw_description": "根据客户年龄、地区、近30天登录次数、消费金额、投诉次数、会员等级和使用月数预测未来30天客户流失。这是表格二分类，目标字段 churn，必须输出 prediction 和 probability。比较 Logistic Regression、Random Forest、Gradient Boosting 三种候选。评价 ROC-AUC、F1、PR-AUC、Precision、Recall；唯一质量阈值 ROC-AUC >= 0.80。处理缺失值、类别不平衡和未见类别。不要自行增加其他质量阈值。",
+    "domain": "customer_behavior_analysis",
+    "capability_name": "CustomerChurnPrediction",
+    "task_type": "binary_classification",
+    "data_type": "tabular",
+    "target_column": "churn",
+    "feature_columns": [
+      "age",
+      "region",
+      "login_count_30d",
+      "total_spend",
+      "complaint_count",
+      "membership_level",
+      "tenure_months"
+    ],
+    "input_schema": {
+      "age": "int64",
+      "region": "object",
+      "login_count_30d": "float64",
+      "total_spend": "float64",
+      "complaint_count": "int64",
+      "membership_level": "object",
+      "tenure_months": "int64"
+    },
+    "output_schema": {
+      "prediction": "int64",
+      "probability": "float64"
+    },
+    "dataset_profile": {
+      "dataset_id": "dataset_b4f535eb449922d6",
+      "sha256": "b4f535eb449922d640de0b62663005774ea22e5884b2b54d3d91d7215fcf6a7c",
+      "path": "/data3/xiaotianqi/ai_algorithm_factory/experiments/ablation/results/study_20260908/trials/A1_customer_churn_123/workspace/data/train.csv",
+      "rows": 900,
+      "row_count": 900,
+      "column_count": 8,
+      "columns": [
+        "age",
+        "region",
+        "login_count_30d",
+        "total_spend",
+        "complaint_count",
+        "membership_level",
+        "tenure_months",
+        "churn"
+      ],
+      "feature_columns": [
+        "age",
+        "region",
+        "login_count_30d",
+        "total_spend",
+        "complaint_count",
+        "membership_level",
+        "tenure_months"
+      ],
+      "feature_count": 7,
+      "dtypes": {
+        "age": "int64",
+        "region": "object",
+        "login_count_30d": "float64",
+        "total_spend": "float64",
+        "complaint_count": "int64",
+        "membership_level": "object",
+        "tenure_months": "int64",
+        "churn": "int64"
+      },
+      "missing_rates": {
+        "age": 0.0,
+        "region": 0.013333333333333334,
+        "login_count_30d": 0.012222222222222223,
+        "total_spend": 0.02,
+        "complaint_count": 0.0,
+        "membership_level": 0.0,
+        "tenure_months": 0.0,
+        "churn": 0.0
+      },
+      "numeric_fraction": 0.7142857142857143,
+      "class_count": 2,
+      "class_balance": {
+        "0": 0.8133333333333334,
+        "1": 0.18666666666666668
+      },
+      "minority_rate": 0.18666666666666668,
+      "positive_rate": 0.18666666666666668
+    },
+    "metrics": [
+      "roc_auc",
+      "f1",
+      "pr_auc",
+      "precision",
+      "recall"
+    ],
+    "metric_thresholds": {
+      "roc_auc": 0.8
+    },
+    "output_columns": [
+      "prediction",
+      "probability"
+    ],
+    "constraints": [
+      "处理缺失值",
+      "处理类别不平衡",
+      "处理未见类别"
+    ],
+    "latency_requirement_ms": null,
+    "interpretability_requirement": null,
+    "resource_constraints": {},
+    "probability_output_required": true,
+    "class_imbalance": {
+      "positive_rate": 0.18666666666666668,
+      "is_imbalanced": true
+    },
+    "candidate_hints": [
+      "Logistic Regression",
+      "Random Forest",
+      "Gradient Boosting"
+    ],
+    "uncertainty": [],
+    "understanding_confidence": 1.0,
+    "candidate_algorithms": [
+      "logistic_regression",
+      "random_forest",
+      "gradient_boosting"
+    ],
+    "dataset_path": "/data3/xiaotianqi/ai_algorithm_factory/experiments/ablation/results/study_20260908/trials/A1_customer_churn_123/workspace/data/train.csv"
+  },
+  "plan": {
+    "algorithm_id": "algorithm_random_forest__llm_proposed",
+    "algorithm_name": "Random Forest",
+    "rationale": "随机森林算法能够处理高维度特征空间，且具有较强的抗过拟合能力。尽管之前的一次尝试失败了，但其潜在性能值得进一步探索。",
+    "preprocessing": [
+      "impute_missing_values_with_median",
+      "one_hot_encode_categorical_features"
+    ],
+    "hyperparameters": {
+      "n_estimators": 100,
+      "max_depth": 5,
+      "random_state": 42
+    },
+    "expected_metrics": {
+      "roc_auc": 0.84
+    },
+    "priority": 0,
+    "base_algorithm_id": "algorithm_random_forest",
+    "preprocessing_variant": "llm_proposed",
+    "config_variant": "llm_proposed",
+    "search_score": 0.6444434801614886,
+    "evidence_ids": [
+      "9364e416a38a:algorithm_random_forest__llm_proposed:v1",
+      "6bde3f2c39b8:algorithm_random_forest__llm_proposed:v4",
+      "6bde3f2c39b8:algorithm_random_forest__llm_proposed:v3",
+      "6bde3f2c39b8:algorithm_random_forest__llm_proposed:v2",
+      "6bde3f2c39b8:algorithm_random_forest__llm_proposed:v1",
+      "9364e416a38a:algorithm_gradient_boosting__llm_proposed:v1",
+      "failure_9364e416a38a_algorithm_random_forest__llm_proposed_v1",
+      "failure_0f7edacd5655_algorithm_logistic_regression__llm_proposed_v1",
+      "repair_53ac387cea5c_algorithm_gradient_boosting__llm_proposed_v1",
+      "source_business_material_1c1a6f4d"
+    ],
+    "score_components": {
+      "performance_prior": 0.534,
+      "success": 0.0,
+      "stability": 0.0,
+      "exploration": 0.048989794855663564,
+      "runtime_cost": -0.008546314694175126,
+      "interpretability": 0,
+      "resource_fit": 0,
+      "llm_proposal": 0.03,
+      "historical_case_count": 5,
+      "llm_parameters": {
+        "n_estimators": 100,
+        "max_depth": 5
+      }
+    }
+  },
+  "code_ir": null,
+  "generation": {
+    "provider": "local_openai_compatible",
+    "status": "llm_code_accepted",
+    "attempts": [
+      {
+        "attempt": 1,
+        "status": "accepted",
+        "reason": "generated code semantic contract passed"
+      }
+    ],
+    "model": "Qwen3-Coder-30B-A3B-Instruct",
+    "token_usage": {
+      "prompt_tokens": 7036,
+      "completion_tokens": 958,
+      "total_tokens": 7994
+    },
+    "generation": {
+      "purpose": "code_generation",
+      "max_new_tokens": 6400,
+      "requested_max_new_tokens": 6400,
+      "budget_adjustments": [],
+      "finish_reason": "stop",
+      "truncated": false,
+      "eos_reached": true,
+      "structured_transport": "text",
+      "application_schema_validation": false
+    }
+  },
+  "final_code_sha256": "8f57e7ef33584781bfb45dba0def808eb0ea5496c27fb187cf111c9fe7009916",
+  "final_version": "855c3f5ee349_algorithm_random_forest__llm_proposed_v3",
+  "validation_status": "failed"
+}

@@ -1,0 +1,7 @@
+[RequirementAgent] started {"tool": "understand"}
+[LLM] {"call_id": "llm_0001", "purpose": "requirement", "status": "ok", "provider": "local_openai_compatible", "model": "Qwen2.5-14B-Instruct", "latency_ms": 18410.94, "token_usage": {"prompt_tokens": 1117, "completion_tokens": 528, "total_tokens": 1645}, "retry_count": 0}
+[RequirementAgent] completed {"tool": "understand"}
+[RetrievalAgent] started {"tool": "retrieve"}
+[RetrievalAgent] completed {"tool": "retrieve"}
+[GraphSearch] ok {}
+[PlannerAgent] started {"tool": "advise"}

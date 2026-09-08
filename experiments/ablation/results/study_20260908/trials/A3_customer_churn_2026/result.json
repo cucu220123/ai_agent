@@ -1,0 +1,137 @@
+{
+  "experiment": "no_beam",
+  "dataset": "customer_churn",
+  "seed": 2026,
+  "trial_id": "A3_customer_churn_2026",
+  "git_commit": "bfbba07ea60024096578ba60ddf065546c430d2d",
+  "working_git_head": "20f48f244c3b8a9e3c4f7edfd582aecdf9af0920",
+  "configuration": {
+    "id": "A3",
+    "name": "no_beam",
+    "rationale": "Execute original Planner Top-K without state expansion",
+    "controls": {
+      "enable_graph_retrieval": true,
+      "enable_semantic_retrieval": true,
+      "enable_experience_retrieval": true,
+      "enable_beam_search": false,
+      "enable_multi_candidate": true,
+      "enable_repair": true,
+      "enable_knowledge_context": true
+    }
+  },
+  "protocol_sha256": "b5dbf92809afc7c2b7c1053914ff30ae9f8cdf1d04abd271bc132c870050acee",
+  "started_at": "2026-09-08T05:31:03.029124+00:00",
+  "completion": true,
+  "metrics": {
+    "accuracy": 0.86,
+    "f1": 0.5227272727272728,
+    "precision": 0.71875,
+    "recall": 0.4107142857142857,
+    "balanced_accuracy": 0.6869145199063231,
+    "roc_auc": 0.907347775175644,
+    "pr_auc": 0.6995153989037561
+  },
+  "partial_candidate_metrics": [
+    {
+      "candidate": "algorithm_logistic_regression",
+      "status": "passed",
+      "metrics": {
+        "accuracy": 0.86,
+        "f1": 0.5227272727272728,
+        "precision": 0.71875,
+        "recall": 0.4107142857142857,
+        "balanced_accuracy": 0.6869145199063231,
+        "roc_auc": 0.907347775175644,
+        "pr_auc": 0.6995153989037561
+      }
+    },
+    {
+      "candidate": "algorithm_gradient_boosting",
+      "status": "passed",
+      "metrics": {
+        "accuracy": 0.87,
+        "f1": 0.5894736842105263,
+        "precision": 0.717948717948718,
+        "recall": 0.5,
+        "balanced_accuracy": 0.7274590163934427,
+        "roc_auc": 0.8943208430913347,
+        "pr_auc": 0.6691587581555515
+      }
+    },
+    {
+      "candidate": "algorithm_random_forest",
+      "status": "passed",
+      "metrics": {
+        "accuracy": 0.8233333333333334,
+        "f1": 0.13114754098360656,
+        "precision": 0.8,
+        "recall": 0.07142857142857142,
+        "balanced_accuracy": 0.5336651053864169,
+        "roc_auc": 0.8833430913348946,
+        "pr_auc": 0.6304901358676931
+      }
+    }
+  ],
+  "first_pass": true,
+  "first_pass_code_success_count": 3,
+  "first_pass_code_denominator": 3,
+  "first_validation_pass_count": 3,
+  "repair_triggered_candidates": 0,
+  "repair_success_count": 0,
+  "repair_success_rate": null,
+  "repair_rounds": 0,
+  "repair_module_triggered": false,
+  "candidate_success_coverage": true,
+  "candidate_pass_count": 3,
+  "candidate_count": 3,
+  "candidate_execution_count": 3,
+  "planner_rank_of_winner": 1,
+  "winner_id": "algorithm_logistic_regression",
+  "winner_config": "llm_proposed",
+  "rank_one_failed_other_passed": false,
+  "beam_states_expanded": 0,
+  "beam_states_pruned": 0,
+  "graph_nodes": 64,
+  "graph_edges": 166,
+  "historical_cases": 12,
+  "failure_experiences": 8,
+  "document_evidence": 8,
+  "planner_cited_evidence": 5,
+  "planner_cited_evidence_ids": [
+    "53ac387cea5c",
+    "53ac387cea5c:algorithm_gradient_boosting__llm_proposed:v1",
+    "9364e416a38a:algorithm_gradient_boosting__llm_proposed:v1",
+    "6bde3f2c39b8:algorithm_random_forest__llm_proposed:v4",
+    "source_measured_experiment_693b971c"
+  ],
+  "retrieved_evidence_count": 92,
+  "runtime": 480.36474807560444,
+  "llm_calls": 7,
+  "llm_latency_seconds": 338.64094,
+  "llm_error_calls": 0,
+  "repair_calls": 0,
+  "codegen_calls": 3,
+  "codegen_retry_calls": 0,
+  "peak_candidate_memory_mb": 1752.9453125,
+  "explanation_status": "deterministic_fallback",
+  "error": null,
+  "control_errors": [],
+  "model_mode": "real_llm_all_settings",
+  "extraction_mode": "frozen_previous_real_extraction",
+  "completed_at": "2026-09-08T05:39:07.025721+00:00",
+  "source_manifest": {
+    "workspace/generated/a775b6bfd966/algorithm_gradient_boosting/algorithm.py": "1f5550aa6136ed2aa1605a65584867e941d7c9a635bd9aa37ebe90ec70455291",
+    "workspace/generated/a775b6bfd966/algorithm_gradient_boosting/algorithm_meta.json": "8f30f6e90656ec8a4063385eb4cce7ae6aa04ed8e0af3ba4fcc2e7c6b6ad55b8",
+    "workspace/generated/a775b6bfd966/algorithm_gradient_boosting/generation_attempt_1.txt": "1f5550aa6136ed2aa1605a65584867e941d7c9a635bd9aa37ebe90ec70455291",
+    "workspace/generated/a775b6bfd966/algorithm_gradient_boosting/versions/v1.py": "1f5550aa6136ed2aa1605a65584867e941d7c9a635bd9aa37ebe90ec70455291",
+    "workspace/generated/a775b6bfd966/algorithm_logistic_regression/algorithm.py": "f85e60fa59b4ed89d1a917e4c5e796667ecabc9ef548c9f09f0cdb7a3bad07e2",
+    "workspace/generated/a775b6bfd966/algorithm_logistic_regression/algorithm_meta.json": "5bab7594f3d2ca2758cb6bf0cf6951a54437342a16950eb64cfc4ad9341efcc6",
+    "workspace/generated/a775b6bfd966/algorithm_logistic_regression/generation_attempt_1.txt": "f85e60fa59b4ed89d1a917e4c5e796667ecabc9ef548c9f09f0cdb7a3bad07e2",
+    "workspace/generated/a775b6bfd966/algorithm_logistic_regression/versions/v1.py": "f85e60fa59b4ed89d1a917e4c5e796667ecabc9ef548c9f09f0cdb7a3bad07e2",
+    "workspace/generated/a775b6bfd966/algorithm_random_forest/algorithm.py": "a4e6488957bdcc5f2af5461186653c2214a815b59b69ec3205eb81e3f7a83009",
+    "workspace/generated/a775b6bfd966/algorithm_random_forest/algorithm_meta.json": "2d76cd4dd50390dcf3b7f586fceb66be1f5fbba06873cbc73706466e782f0d31",
+    "workspace/generated/a775b6bfd966/algorithm_random_forest/generation_attempt_1.txt": "a4e6488957bdcc5f2af5461186653c2214a815b59b69ec3205eb81e3f7a83009",
+    "workspace/generated/a775b6bfd966/algorithm_random_forest/versions/v1.py": "a4e6488957bdcc5f2af5461186653c2214a815b59b69ec3205eb81e3f7a83009"
+  },
+  "frozen_guard_passed": true
+}

@@ -1,0 +1,1390 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+  <key id="d51" for="edge" attr.name="payload" attr.type="string" />
+  <key id="d50" for="edge" attr.name="relation" attr.type="string" />
+  <key id="d49" for="node" attr.name="parent_version" attr.type="string" />
+  <key id="d48" for="node" attr.name="to_version" attr.type="string" />
+  <key id="d47" for="node" attr.name="from_version" attr.type="string" />
+  <key id="d46" for="node" attr.name="provider" attr.type="string" />
+  <key id="d45" for="node" attr.name="success" attr.type="string" />
+  <key id="d44" for="node" attr.name="strategy" attr.type="string" />
+  <key id="d43" for="node" attr.name="failure_id" attr.type="string" />
+  <key id="d42" for="node" attr.name="root_cause" attr.type="string" />
+  <key id="d41" for="node" attr.name="failure_type" attr.type="string" />
+  <key id="d40" for="node" attr.name="kind" attr.type="string" />
+  <key id="d39" for="node" attr.name="metric_pr_auc" attr.type="string" />
+  <key id="d38" for="node" attr.name="metric_roc_auc" attr.type="string" />
+  <key id="d37" for="node" attr.name="metric_balanced_accuracy" attr.type="string" />
+  <key id="d36" for="node" attr.name="metric_recall" attr.type="string" />
+  <key id="d35" for="node" attr.name="metric_precision" attr.type="string" />
+  <key id="d34" for="node" attr.name="metric_f1" attr.type="string" />
+  <key id="d33" for="node" attr.name="metric_accuracy" attr.type="string" />
+  <key id="d32" for="node" attr.name="timestamp" attr.type="string" />
+  <key id="d31" for="node" attr.name="status" attr.type="string" />
+  <key id="d30" for="node" attr.name="algorithm_path" attr.type="string" />
+  <key id="d29" for="node" attr.name="code_source" attr.type="string" />
+  <key id="d28" for="node" attr.name="code_hash" attr.type="string" />
+  <key id="d27" for="node" attr.name="positive_rate" attr.type="string" />
+  <key id="d26" for="node" attr.name="minority_rate" attr.type="string" />
+  <key id="d25" for="node" attr.name="class_count" attr.type="string" />
+  <key id="d24" for="node" attr.name="numeric_fraction" attr.type="string" />
+  <key id="d23" for="node" attr.name="feature_count" attr.type="string" />
+  <key id="d22" for="node" attr.name="column_count" attr.type="string" />
+  <key id="d21" for="node" attr.name="row_count" attr.type="string" />
+  <key id="d20" for="node" attr.name="rows" attr.type="string" />
+  <key id="d19" for="node" attr.name="path" attr.type="string" />
+  <key id="d18" for="node" attr.name="sha256" attr.type="string" />
+  <key id="d17" for="node" attr.name="dataset_id" attr.type="string" />
+  <key id="d16" for="node" attr.name="variant" attr.type="string" />
+  <key id="d15" for="node" attr.name="algorithm_id" attr.type="string" />
+  <key id="d14" for="node" attr.name="resource_profile" attr.type="string" />
+  <key id="d13" for="node" attr.name="interpretability" attr.type="string" />
+  <key id="d12" for="node" attr.name="version" attr.type="string" />
+  <key id="d11" for="node" attr.name="target_kind" attr.type="string" />
+  <key id="d10" for="node" attr.name="task_type" attr.type="string" />
+  <key id="d9" for="node" attr.name="python" attr.type="string" />
+  <key id="d8" for="node" attr.name="direction" attr.type="string" />
+  <key id="d7" for="node" attr.name="confidence" attr.type="string" />
+  <key id="d6" for="node" attr.name="origin" attr.type="string" />
+  <key id="d5" for="node" attr.name="id" attr.type="string" />
+  <key id="d4" for="node" attr.name="name" attr.type="string" />
+  <key id="d3" for="node" attr.name="source" attr.type="string" />
+  <key id="d2" for="node" attr.name="source_sha256" attr.type="string" />
+  <key id="d1" for="node" attr.name="summary" attr.type="string" />
+  <key id="d0" for="node" attr.name="type" attr.type="string" />
+  <graph edgedefault="directed">
+    <node id="source_business_material_1c1a6f4d">
+      <data key="d0">SourceDocument</data>
+      <data key="d1">客户流失预测业务材料（模拟）
+
+业务目标：根据客户近 30 天行为预测未来 30 天是否流失，用于客户召回活动排序。模型必须输出二分类标签和流失概率，重点关注 ROC-AUC，同时保留 F1、Precision、Recall 供运营团队分析。
+
+字段说明：
+
+| 字段 | 类型 | 含义 |
+|---|---|---|
+| age | 数值 | 客户年龄 |
+| region | 类别 | 客户所在区域 |
+| login_count_30d | 数值 | 近 30 天登录次数 |
+| total_spend | 数值 | 历史累计消费金额 |
+| complaint_count | 数值 | 历史投诉次数 |
+| membership_level | 类别 | 会员等级 |
+| tenure_months | 数值 | 使用时长（月） |
+| churn | 0/1 | 未来 30 天是否流失 |
+
+历史经验：登录较少、投诉较多、低会员等级和较短使用时长通常对应较高流失风险；类别字段需要未知值兼容，数值字段需要缺失值填充。</data>
+      <data key="d2">316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8</data>
+      <data key="d3">/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md</data>
+      <data key="d4">business_material.md</data>
+      <data key="d5">source_business_material_1c1a6f4d</data>
+    </node>
+    <node id="task_客户流失预测">
+      <data key="d0">Task</data>
+      <data key="d5">task_客户流失预测</data>
+      <data key="d4">客户流失预测</data>
+      <data key="d6">llm_extracted</data>
+      <data key="d7">1.0</data>
+    </node>
+    <node id="feature_age">
+      <data key="d0">Feature</data>
+      <data key="d5">feature_age</data>
+      <data key="d4">age</data>
+      <data key="d6">llm_extracted</data>
+      <data key="d7">1.0</data>
+    </node>
+    <node id="feature_region">
+      <data key="d0">Feature</data>
+      <data key="d5">feature_region</data>
+      <data key="d4">region</data>
+      <data key="d6">llm_extracted</data>
+      <data key="d7">1.0</data>
+    </node>
+    <node id="feature_login_count_30d">
+      <data key="d0">Feature</data>
+      <data key="d5">feature_login_count_30d</data>
+      <data key="d4">login_count_30d</data>
+      <data key="d6">llm_extracted</data>
+      <data key="d7">1.0</data>
+    </node>
+    <node id="feature_total_spend">
+      <data key="d0">Feature</data>
+      <data key="d5">feature_total_spend</data>
+      <data key="d4">total_spend</data>
+      <data key="d6">llm_extracted</data>
+      <data key="d7">1.0</data>
+    </node>
+    <node id="feature_complaint_count">
+      <data key="d0">Feature</data>
+      <data key="d5">feature_complaint_count</data>
+      <data key="d4">complaint_count</data>
+      <data key="d6">llm_extracted</data>
+      <data key="d7">1.0</data>
+    </node>
+    <node id="feature_membership_level">
+      <data key="d0">Feature</data>
+      <data key="d5">feature_membership_level</data>
+      <data key="d4">membership_level</data>
+      <data key="d6">llm_extracted</data>
+      <data key="d7">1.0</data>
+    </node>
+    <node id="feature_tenure_months">
+      <data key="d0">Feature</data>
+      <data key="d5">feature_tenure_months</data>
+      <data key="d4">tenure_months</data>
+      <data key="d6">llm_extracted</data>
+      <data key="d7">1.0</data>
+    </node>
+    <node id="target_churn">
+      <data key="d0">Target</data>
+      <data key="d5">target_churn</data>
+      <data key="d4">churn</data>
+      <data key="d3">/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md</data>
+    </node>
+    <node id="source_text_material_84554427">
+      <data key="d0">SourceDocument</data>
+      <data key="d1">Customer review sentiment classification (synthetic business material)</data>
+      <data key="d2">ec6dc1154474c781b568089c7926fce68183b5eb0b090543bf8cc452ce199ad2</data>
+      <data key="d3">/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/text_material.md</data>
+      <data key="d4">text_material.md</data>
+      <data key="d5">source_text_material_84554427</data>
+    </node>
+    <node id="dataset_customer_reviews">
+      <data key="d0">Dataset</data>
+      <data key="d5">dataset_customer_reviews</data>
+      <data key="d4">customer_reviews</data>
+      <data key="d6">llm_extracted</data>
+      <data key="d7">1.0</data>
+    </node>
+    <node id="feature_customer_comments">
+      <data key="d0">Feature</data>
+      <data key="d5">feature_customer_comments</data>
+      <data key="d4">customer_comments</data>
+      <data key="d6">llm_extracted</data>
+      <data key="d7">1.0</data>
+    </node>
+    <node id="target_supervised_sentiment_target">
+      <data key="d0">Target</data>
+      <data key="d5">target_supervised_sentiment_target</data>
+      <data key="d4">supervised_sentiment_target</data>
+      <data key="d6">llm_extracted</data>
+      <data key="d7">1.0</data>
+    </node>
+    <node id="metric_weighted_f1">
+      <data key="d0">Metric</data>
+      <data key="d5">metric_weighted_f1</data>
+      <data key="d4">weighted F1</data>
+      <data key="d6">llm_extracted</data>
+      <data key="d7">1.0</data>
+    </node>
+    <node id="source_reference_preprocessing_56f7c1fe">
+      <data key="d0">SourceDocument</data>
+      <data key="d1">The function build_preprocessor returns a preprocessing strategy that handles both numerical and categorical data using median imputation for numerical features and most frequent imputation followed by one-hot encoding for categorical features.</data>
+      <data key="d2">8166b78dbccfd398212a1ccd9f4504a73c472282a61c0b07f9cdbafbfaec510f</data>
+      <data key="d3">/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/reference_preprocessing.py</data>
+      <data key="d4">reference_preprocessing.py</data>
+      <data key="d5">source_reference_preprocessing_56f7c1fe</data>
+    </node>
+    <node id="preprocessingstrategy_build_preprocessor">
+      <data key="d0">PreprocessingStrategy</data>
+      <data key="d5">preprocessingstrategy_build_preprocessor</data>
+      <data key="d4">build_preprocessor</data>
+      <data key="d6">llm_extracted</data>
+      <data key="d7">1.0</data>
+    </node>
+    <node id="preprocessing_56a78a1499364981">
+      <data key="d0">PreprocessingStrategy</data>
+      <data key="d4">preprocessingstrategy_build_preprocessor</data>
+      <data key="d5">preprocessing_56a78a1499364981</data>
+    </node>
+    <node id="preprocessing_3b20f945c980b1ea">
+      <data key="d0">PreprocessingStrategy</data>
+      <data key="d4">source_reference_preprocessing_56f7c1fe</data>
+      <data key="d5">preprocessing_3b20f945c980b1ea</data>
+    </node>
+    <node id="preprocessing_8817df495c5b2800">
+      <data key="d0">PreprocessingStrategy</data>
+      <data key="d4">handle_class_imbalance</data>
+      <data key="d5">preprocessing_8817df495c5b2800</data>
+    </node>
+    <node id="preprocessing_8d29697f8be324cb">
+      <data key="d0">PreprocessingStrategy</data>
+      <data key="d4">handle_missing_values</data>
+      <data key="d5">preprocessing_8d29697f8be324cb</data>
+    </node>
+    <node id="preprocessing_e30ccf02b0837f02">
+      <data key="d0">PreprocessingStrategy</data>
+      <data key="d4">encode_categorical_variables</data>
+      <data key="d5">preprocessing_e30ccf02b0837f02</data>
+    </node>
+    <node id="constraint_92fda7bce69b57c8">
+      <data key="d0">Constraint</data>
+      <data key="d4">metrics</data>
+      <data key="d5">constraint_92fda7bce69b57c8</data>
+    </node>
+    <node id="metric_rmse">
+      <data key="d0">Metric</data>
+      <data key="d5">metric_rmse</data>
+      <data key="d4">rmse</data>
+      <data key="d8">min</data>
+    </node>
+    <node id="metric_mae">
+      <data key="d0">Metric</data>
+      <data key="d5">metric_mae</data>
+      <data key="d4">mae</data>
+      <data key="d8">min</data>
+    </node>
+    <node id="metric_r2">
+      <data key="d0">Metric</data>
+      <data key="d5">metric_r2</data>
+      <data key="d4">r2</data>
+      <data key="d8">max</data>
+    </node>
+    <node id="environment_python_sklearn">
+      <data key="d0">Environment</data>
+      <data key="d5">environment_python_sklearn</data>
+      <data key="d9">3.10+</data>
+    </node>
+    <node id="task_multiclass_classification">
+      <data key="d0">Task</data>
+      <data key="d5">task_multiclass_classification</data>
+      <data key="d4">multiclass_classification</data>
+      <data key="d10">multiclass_classification</data>
+    </node>
+    <node id="task_anomaly_detection">
+      <data key="d0">Task</data>
+      <data key="d5">task_anomaly_detection</data>
+      <data key="d4">anomaly_detection</data>
+      <data key="d10">anomaly_detection</data>
+      <data key="d11">unsupervised</data>
+    </node>
+    <node id="task_regression">
+      <data key="d0">Task</data>
+      <data key="d5">task_regression</data>
+      <data key="d4">regression</data>
+      <data key="d10">regression</data>
+      <data key="d11">continuous</data>
+    </node>
+    <node id="dependency_scikit_learn">
+      <data key="d0">Dependency</data>
+      <data key="d5">dependency_scikit_learn</data>
+      <data key="d4">scikit-learn</data>
+      <data key="d12">&gt;=1.2</data>
+    </node>
+    <node id="task_text_classification">
+      <data key="d0">Task</data>
+      <data key="d4">text_classification</data>
+      <data key="d10">text_classification</data>
+      <data key="d5">task_text_classification</data>
+      <data key="d11">binary_or_multiclass</data>
+    </node>
+    <node id="environment_a720b9282e861c0f">
+      <data key="d0">Environment</data>
+      <data key="d9">3.10.19</data>
+      <data key="d5">environment_a720b9282e861c0f</data>
+    </node>
+    <node id="preprocessing_a7ba449fb69f797f">
+      <data key="d0">PreprocessingStrategy</data>
+      <data key="d4">Use TF-IDF vectorization to convert text into numerical features.</data>
+      <data key="d5">preprocessing_a7ba449fb69f797f</data>
+    </node>
+    <node id="preprocessing_5f4db9089bef0887">
+      <data key="d0">PreprocessingStrategy</data>
+      <data key="d4">Handle missing or empty text by replacing them with a placeholder string.</data>
+      <data key="d5">preprocessing_5f4db9089bef0887</data>
+    </node>
+    <node id="preprocessing_9929dd86179e6047">
+      <data key="d0">PreprocessingStrategy</data>
+      <data key="d4">Apply logistic regression without additional preprocessing steps.</data>
+      <data key="d5">preprocessing_9929dd86179e6047</data>
+    </node>
+    <node id="preprocessing_f3eff5a94df7aea4">
+      <data key="d0">PreprocessingStrategy</data>
+      <data key="d4">median imputation</data>
+      <data key="d5">preprocessing_f3eff5a94df7aea4</data>
+    </node>
+    <node id="constraint_c78a38c56bdbd3e9">
+      <data key="d0">Constraint</data>
+      <data key="d4">static_safety</data>
+      <data key="d5">constraint_c78a38c56bdbd3e9</data>
+    </node>
+    <node id="constraint_35548a7d4c450985">
+      <data key="d0">Constraint</data>
+      <data key="d4">interface_import</data>
+      <data key="d5">constraint_35548a7d4c450985</data>
+    </node>
+    <node id="constraint_c971c5b357e330ee">
+      <data key="d0">Constraint</data>
+      <data key="d4">semantic_contract</data>
+      <data key="d5">constraint_c971c5b357e330ee</data>
+    </node>
+    <node id="constraint_fa0889ca320d2750">
+      <data key="d0">Constraint</data>
+      <data key="d4">target_leakage</data>
+      <data key="d5">constraint_fa0889ca320d2750</data>
+    </node>
+    <node id="constraint_4758d9abbeb1a98a">
+      <data key="d0">Constraint</data>
+      <data key="d4">isolated_execution</data>
+      <data key="d5">constraint_4758d9abbeb1a98a</data>
+    </node>
+    <node id="constraint_a1c4d99e5d657c3d">
+      <data key="d0">Constraint</data>
+      <data key="d4">metric_integrity</data>
+      <data key="d5">constraint_a1c4d99e5d657c3d</data>
+    </node>
+    <node id="constraint_68bd5c28a5979aa2">
+      <data key="d0">Constraint</data>
+      <data key="d4">metrics</data>
+      <data key="d5">constraint_68bd5c28a5979aa2</data>
+    </node>
+    <node id="constraint_d8d289dd7e024548">
+      <data key="d0">Constraint</data>
+      <data key="d4">stability</data>
+      <data key="d5">constraint_d8d289dd7e024548</data>
+    </node>
+    <node id="constraint_5cd4dde842e64e26">
+      <data key="d0">Constraint</data>
+      <data key="d4">latency</data>
+      <data key="d5">constraint_5cd4dde842e64e26</data>
+    </node>
+    <node id="constraint_2c92f7254a618f95">
+      <data key="d0">Constraint</data>
+      <data key="d4">resource_usage</data>
+      <data key="d5">constraint_2c92f7254a618f95</data>
+    </node>
+    <node id="constraint_853c7b8c6dcc8a1f">
+      <data key="d0">Constraint</data>
+      <data key="d4">functional</data>
+      <data key="d5">constraint_853c7b8c6dcc8a1f</data>
+    </node>
+    <node id="constraint_37dfad9d34128201">
+      <data key="d0">Constraint</data>
+      <data key="d4">output_contract</data>
+      <data key="d5">constraint_37dfad9d34128201</data>
+    </node>
+    <node id="constraint_2a874b9046c61e42">
+      <data key="d0">Constraint</data>
+      <data key="d4">robustness</data>
+      <data key="d5">constraint_2a874b9046c61e42</data>
+    </node>
+    <node id="constraint_d431d68438640229">
+      <data key="d0">Constraint</data>
+      <data key="d4">runtime_budget</data>
+      <data key="d5">constraint_d431d68438640229</data>
+    </node>
+    <node id="cap_churn_prediction_v1">
+      <data key="d0">Capability</data>
+      <data key="d5">cap_churn_prediction_v1</data>
+      <data key="d4">客户流失预测</data>
+      <data key="d10">binary_classification</data>
+    </node>
+    <node id="algorithm_random_forest">
+      <data key="d0">Algorithm</data>
+      <data key="d5">algorithm_random_forest</data>
+      <data key="d4">Random Forest</data>
+      <data key="d13">medium</data>
+      <data key="d14">medium</data>
+    </node>
+    <node id="algorithm_gradient_boosting">
+      <data key="d0">Algorithm</data>
+      <data key="d5">algorithm_gradient_boosting</data>
+      <data key="d4">Gradient Boosting</data>
+      <data key="d13">medium</data>
+      <data key="d14">medium</data>
+    </node>
+    <node id="algorithm_random_forest_regressor">
+      <data key="d0">Algorithm</data>
+      <data key="d5">algorithm_random_forest_regressor</data>
+      <data key="d4">Random Forest Regressor</data>
+      <data key="d14">medium</data>
+      <data key="d6">plugin_catalog</data>
+    </node>
+    <node id="algorithm_isolation_forest">
+      <data key="d0">Algorithm</data>
+      <data key="d5">algorithm_isolation_forest</data>
+      <data key="d4">Isolation Forest</data>
+      <data key="d14">medium</data>
+      <data key="d6">plugin_catalog</data>
+    </node>
+    <node id="algorithm_dummy_classifier">
+      <data key="d0">Algorithm</data>
+      <data key="d5">algorithm_dummy_classifier</data>
+      <data key="d4">Dummy Classifier</data>
+      <data key="d14">low</data>
+      <data key="d6">plugin_catalog</data>
+    </node>
+    <node id="algorithm_tfidf_logistic_regression">
+      <data key="d0">Algorithm</data>
+      <data key="d5">algorithm_tfidf_logistic_regression</data>
+      <data key="d4">TF-IDF Logistic Regression</data>
+      <data key="d14">low</data>
+      <data key="d6">llm_extracted</data>
+      <data key="d7">1.0</data>
+    </node>
+    <node id="algorithm_logistic_regression">
+      <data key="d0">Algorithm</data>
+      <data key="d4">Logistic Regression</data>
+    </node>
+    <node id="task_binary_classification">
+      <data key="d0">Task</data>
+      <data key="d5">task_binary_classification</data>
+      <data key="d4">binary_classification</data>
+      <data key="d10">binary_classification</data>
+      <data key="d11">binary</data>
+    </node>
+    <node id="metric_roc_auc">
+      <data key="d0">Metric</data>
+      <data key="d5">metric_roc_auc</data>
+      <data key="d4">roc_auc</data>
+      <data key="d8">max</data>
+    </node>
+    <node id="metric_pr_auc">
+      <data key="d0">Metric</data>
+      <data key="d5">metric_pr_auc</data>
+      <data key="d4">pr_auc</data>
+      <data key="d8">max</data>
+    </node>
+    <node id="metric_f1">
+      <data key="d0">Metric</data>
+      <data key="d5">metric_f1</data>
+      <data key="d4">f1</data>
+      <data key="d8">max</data>
+    </node>
+    <node id="metric_balanced_accuracy">
+      <data key="d0">Metric</data>
+      <data key="d5">metric_balanced_accuracy</data>
+      <data key="d4">balanced_accuracy</data>
+      <data key="d8">max</data>
+    </node>
+    <node id="metric_accuracy">
+      <data key="d0">Metric</data>
+      <data key="d5">metric_accuracy</data>
+      <data key="d4">accuracy</data>
+      <data key="d8">max</data>
+    </node>
+    <node id="metric_precision">
+      <data key="d0">Metric</data>
+      <data key="d5">metric_precision</data>
+      <data key="d4">precision</data>
+      <data key="d8">max</data>
+    </node>
+    <node id="metric_recall">
+      <data key="d0">Metric</data>
+      <data key="d5">metric_recall</data>
+      <data key="d4">recall</data>
+      <data key="d8">max</data>
+    </node>
+    <node id="capability_186981664f51a7a8">
+      <data key="d0">Capability</data>
+      <data key="d4">CustomerChurnPrediction</data>
+      <data key="d10">binary_classification</data>
+    </node>
+    <node id="config_be4d780c2448a0de">
+      <data key="d0">HyperparameterConfig</data>
+      <data key="d15">algorithm_logistic_regression</data>
+      <data key="d16">llm_proposed</data>
+      <data key="d5">config_be4d780c2448a0de</data>
+    </node>
+    <node id="preprocessing_9d6de633aba00f76">
+      <data key="d0">PreprocessingStrategy</data>
+      <data key="d4">scale_features</data>
+      <data key="d5">preprocessing_9d6de633aba00f76</data>
+    </node>
+    <node id="preprocessing_6191c8e84ae8e6e2">
+      <data key="d0">PreprocessingStrategy</data>
+      <data key="d4">address_class_imbalance</data>
+      <data key="d5">preprocessing_6191c8e84ae8e6e2</data>
+    </node>
+    <node id="dataset_0d10f1c313632ae5">
+      <data key="d0">Dataset</data>
+      <data key="d17">dataset_0d10f1c313632ae5</data>
+      <data key="d18">0d10f1c313632ae5f5e405ad063e23b0349eb97532993a599edea55e1ad3ccc8</data>
+      <data key="d19">/data3/xiaotianqi/ai_algorithm_factory/experiments/ablation/results/study_20260908/trials/A6_customer_churn_2026/workspace/data/train.csv</data>
+      <data key="d20">900</data>
+      <data key="d21">900</data>
+      <data key="d22">8</data>
+      <data key="d23">7</data>
+      <data key="d24">0.7142857142857143</data>
+      <data key="d25">2</data>
+      <data key="d26">0.18666666666666668</data>
+      <data key="d27">0.18666666666666668</data>
+      <data key="d4">/data3/xiaotianqi/ai_algorithm_factory/experiments/ablation/results/study_20260908/trials/A6_customer_churn_2026/workspace/data/train.csv</data>
+      <data key="d10">binary_classification</data>
+      <data key="d5">dataset_0d10f1c313632ae5</data>
+    </node>
+    <node id="32b66bb05c98_algorithm_logistic_regression__llm_proposed_v1">
+      <data key="d0">AlgorithmVersion</data>
+      <data key="d5">32b66bb05c98_algorithm_logistic_regression__llm_proposed_v1</data>
+      <data key="d15">algorithm_logistic_regression</data>
+      <data key="d12">1</data>
+      <data key="d28">ab4c7261f171153b225bbbf2dd295c1249f076a146d794d8ad3e2ca571fb81af</data>
+      <data key="d29">llm</data>
+      <data key="d30">/data3/xiaotianqi/ai_algorithm_factory/experiments/ablation/results/study_20260908/trials/A6_customer_churn_2026/workspace/generated/32b66bb05c98/algorithm_logistic_regression__llm_proposed/versions/v1.py</data>
+      <data key="d31">passed</data>
+      <data key="d32">2026-09-08T06:52:30.506962+00:00</data>
+    </node>
+    <node id="32b66bb05c98">
+      <data key="d0">ValidationRun</data>
+      <data key="d31">passed</data>
+      <data key="d15">algorithm_logistic_regression</data>
+      <data key="d10">binary_classification</data>
+      <data key="d32">2026-09-08T06:52:31.049545+00:00</data>
+      <data key="d33">0.8133333333333334</data>
+      <data key="d34">0.6363636363636364</data>
+      <data key="d35">0.5</data>
+      <data key="d36">0.875</data>
+      <data key="d37">0.8370901639344263</data>
+      <data key="d38">0.9091042154566744</data>
+      <data key="d39">0.706733960308746</data>
+    </node>
+    <node id="constraint_a5b12227159d677b">
+      <data key="d0">Constraint</data>
+      <data key="d4">evaluation_split</data>
+      <data key="d5">constraint_a5b12227159d677b</data>
+    </node>
+    <node id="config_d1dab672758a3888">
+      <data key="d0">HyperparameterConfig</data>
+      <data key="d15">algorithm_random_forest</data>
+      <data key="d16">llm_proposed</data>
+      <data key="d5">config_d1dab672758a3888</data>
+    </node>
+    <node id="32b66bb05c98_algorithm_random_forest__llm_proposed_v1">
+      <data key="d0">AlgorithmVersion</data>
+      <data key="d5">32b66bb05c98_algorithm_random_forest__llm_proposed_v1</data>
+      <data key="d15">algorithm_random_forest</data>
+      <data key="d12">1</data>
+      <data key="d28">e5f18511385b2a4e91235046af8e0fd776ec0aeac00a7f0c0bd0de514b0fd49e</data>
+      <data key="d29">llm</data>
+      <data key="d30">/data3/xiaotianqi/ai_algorithm_factory/experiments/ablation/results/study_20260908/trials/A6_customer_churn_2026/workspace/generated/32b66bb05c98/algorithm_random_forest__llm_proposed/versions/v1.py</data>
+      <data key="d31">failed</data>
+      <data key="d32">2026-09-08T06:52:38.528547+00:00</data>
+    </node>
+    <node id="32b66bb05c98:algorithm_random_forest__llm_proposed:v1">
+      <data key="d0">ValidationRun</data>
+      <data key="d31">failed</data>
+      <data key="d15">algorithm_random_forest</data>
+      <data key="d10">binary_classification</data>
+      <data key="d32">2026-09-08T06:52:38.661020+00:00</data>
+      <data key="d33">0.82</data>
+      <data key="d34">0.12903225806451613</data>
+      <data key="d35">0.6666666666666666</data>
+      <data key="d36">0.07142857142857142</data>
+      <data key="d37">0.531615925058548</data>
+      <data key="d38">0.8785860655737705</data>
+      <data key="d39">0.6189608415722998</data>
+    </node>
+    <node id="failure_32b66bb05c98_algorithm_random_forest__llm_proposed_v1">
+      <data key="d0">FailureExperience</data>
+      <data key="d40">failure</data>
+      <data key="d41">instability</data>
+      <data key="d42">stability failure: drift=0.0, normalized variance={'accuracy': 2.222222222222226e-05, 'f1': 0.0002707025205816416, 'precision': 0.024691358024691367, 'recall': 7.086167800453519e-05, 'balanced_accuracy': 3.7711324339822346e-05, 'roc_auc': 8.676794421073707e-07, 'pr_auc': 0.0003350372896996855}</data>
+      <data key="d1" />
+    </node>
+    <node id="repair_32b66bb05c98_algorithm_random_forest__llm_proposed_v1">
+      <data key="d0">RepairExperience</data>
+      <data key="d5">repair_32b66bb05c98_algorithm_random_forest__llm_proposed_v1</data>
+      <data key="d43">failure_32b66bb05c98_algorithm_random_forest__llm_proposed_v1</data>
+      <data key="d15">algorithm_random_forest</data>
+      <data key="d10">binary_classification</data>
+      <data key="d44">To improve stability, we will adjust the Random Forest hyperparameters to reduce variance. Specifically, we'll increase the number of estimators and use a higher minimum samples leaf value to prevent overfitting and enhance generalization.</data>
+      <data key="d45">True</data>
+      <data key="d46">local_openai_compatible</data>
+      <data key="d47">32b66bb05c98_algorithm_random_forest__llm_proposed_v1</data>
+      <data key="d48">32b66bb05c98_algorithm_random_forest__llm_proposed_v2</data>
+      <data key="d32">2026-09-08T06:52:46.266090+00:00</data>
+    </node>
+    <node id="32b66bb05c98_algorithm_random_forest__llm_proposed_v2">
+      <data key="d0">AlgorithmVersion</data>
+      <data key="d5">32b66bb05c98_algorithm_random_forest__llm_proposed_v2</data>
+      <data key="d15">algorithm_random_forest</data>
+      <data key="d12">2</data>
+      <data key="d49">32b66bb05c98_algorithm_random_forest__llm_proposed_v1</data>
+      <data key="d28">e1a67cccdd18f7fba64207a5a9ee570157eae74a6b0fa661498e0aa8f9c60e93</data>
+      <data key="d29">repaired_llm</data>
+      <data key="d30">/data3/xiaotianqi/ai_algorithm_factory/experiments/ablation/results/study_20260908/trials/A6_customer_churn_2026/workspace/generated/32b66bb05c98/algorithm_random_forest__llm_proposed/versions/v2.py</data>
+      <data key="d31">passed</data>
+      <data key="d32">2026-09-08T06:52:47.031701+00:00</data>
+    </node>
+    <node id="32b66bb05c98:algorithm_random_forest__llm_proposed:v2">
+      <data key="d0">ValidationRun</data>
+      <data key="d31">passed</data>
+      <data key="d15">algorithm_random_forest</data>
+      <data key="d10">binary_classification</data>
+      <data key="d32">2026-09-08T06:52:47.329890+00:00</data>
+      <data key="d33">0.83</data>
+      <data key="d34">0.26086956521739135</data>
+      <data key="d35">0.6923076923076923</data>
+      <data key="d36">0.16071428571428573</data>
+      <data key="d37">0.5721604215456675</data>
+      <data key="d38">0.8787324355971897</data>
+      <data key="d39">0.6219918143856265</data>
+    </node>
+    <node id="config_9b361e2a0cd343d4">
+      <data key="d0">HyperparameterConfig</data>
+      <data key="d15">algorithm_gradient_boosting</data>
+      <data key="d16">llm_proposed</data>
+      <data key="d5">config_9b361e2a0cd343d4</data>
+    </node>
+    <node id="32b66bb05c98_algorithm_gradient_boosting__llm_proposed_v1">
+      <data key="d0">AlgorithmVersion</data>
+      <data key="d5">32b66bb05c98_algorithm_gradient_boosting__llm_proposed_v1</data>
+      <data key="d15">algorithm_gradient_boosting</data>
+      <data key="d12">1</data>
+      <data key="d28">6bbef14c982b76bbf31d79b96f9af3960f491636588451e63b719b9f168d8929</data>
+      <data key="d29">llm</data>
+      <data key="d30">/data3/xiaotianqi/ai_algorithm_factory/experiments/ablation/results/study_20260908/trials/A6_customer_churn_2026/workspace/generated/32b66bb05c98/algorithm_gradient_boosting__llm_proposed/versions/v1.py</data>
+      <data key="d31">passed</data>
+      <data key="d32">2026-09-08T06:52:55.521007+00:00</data>
+    </node>
+    <node id="32b66bb05c98:algorithm_gradient_boosting__llm_proposed:v1">
+      <data key="d0">ValidationRun</data>
+      <data key="d31">passed</data>
+      <data key="d15">algorithm_gradient_boosting</data>
+      <data key="d10">binary_classification</data>
+      <data key="d32">2026-09-08T06:52:55.814043+00:00</data>
+      <data key="d33">0.8766666666666667</data>
+      <data key="d34">0.6105263157894737</data>
+      <data key="d35">0.7435897435897436</data>
+      <data key="d36">0.5178571428571429</data>
+      <data key="d37">0.7384367681498829</data>
+      <data key="d38">0.897614168618267</data>
+      <data key="d39">0.683939138740142</data>
+    </node>
+    <edge source="source_business_material_1c1a6f4d" target="task_客户流失预测" id="0">
+      <data key="d50">SUPPORTS</data>
+      <data key="d51">{"source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md", "evidence_span": "业务目标：根据客户近 30 天行为预测未来 30 天是否流失，用于客户召回活动排序。", "confidence": 1.0}</data>
+    </edge>
+    <edge source="source_business_material_1c1a6f4d" target="feature_age" id="0">
+      <data key="d50">SUPPORTS</data>
+      <data key="d51">{"source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md", "evidence_span": "age | 数值 | 客户年龄", "confidence": 1.0}</data>
+    </edge>
+    <edge source="source_business_material_1c1a6f4d" target="feature_region" id="0">
+      <data key="d50">SUPPORTS</data>
+      <data key="d51">{"source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md", "evidence_span": "region | 类别 | 客户所在区域", "confidence": 1.0}</data>
+    </edge>
+    <edge source="source_business_material_1c1a6f4d" target="feature_login_count_30d" id="0">
+      <data key="d50">SUPPORTS</data>
+      <data key="d51">{"source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md", "evidence_span": "login_count_30d | 数值 | 近 30 天登录次数", "confidence": 1.0}</data>
+    </edge>
+    <edge source="source_business_material_1c1a6f4d" target="feature_total_spend" id="0">
+      <data key="d50">SUPPORTS</data>
+      <data key="d51">{"source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md", "evidence_span": "total_spend | 数值 | 历史累计消费金额", "confidence": 1.0}</data>
+    </edge>
+    <edge source="source_business_material_1c1a6f4d" target="feature_complaint_count" id="0">
+      <data key="d50">SUPPORTS</data>
+      <data key="d51">{"source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md", "evidence_span": "complaint_count | 数值 | 历史投诉次数", "confidence": 1.0}</data>
+    </edge>
+    <edge source="source_business_material_1c1a6f4d" target="feature_membership_level" id="0">
+      <data key="d50">SUPPORTS</data>
+      <data key="d51">{"source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md", "evidence_span": "membership_level | 类别 | 会员等级", "confidence": 1.0}</data>
+    </edge>
+    <edge source="source_business_material_1c1a6f4d" target="feature_tenure_months" id="0">
+      <data key="d50">SUPPORTS</data>
+      <data key="d51">{"source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md", "evidence_span": "tenure_months | 数值 | 使用时长（月）", "confidence": 1.0}</data>
+    </edge>
+    <edge source="source_business_material_1c1a6f4d" target="target_churn" id="0">
+      <data key="d50">SUPPORTS</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="task_客户流失预测" target="feature_age" id="0">
+      <data key="d50">HAS_INPUT</data>
+      <data key="d51">{"source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md", "evidence_span": "age | 数值 | 客户年龄", "confidence": 1.0}</data>
+    </edge>
+    <edge source="task_客户流失预测" target="feature_region" id="0">
+      <data key="d50">HAS_INPUT</data>
+      <data key="d51">{"source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md", "evidence_span": "region | 类别 | 客户所在区域", "confidence": 1.0}</data>
+    </edge>
+    <edge source="task_客户流失预测" target="feature_login_count_30d" id="0">
+      <data key="d50">HAS_INPUT</data>
+      <data key="d51">{"source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md", "evidence_span": "login_count_30d | 数值 | 近 30 天登录次数", "confidence": 1.0}</data>
+    </edge>
+    <edge source="task_客户流失预测" target="feature_total_spend" id="0">
+      <data key="d50">HAS_INPUT</data>
+      <data key="d51">{"source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md", "evidence_span": "total_spend | 数值 | 历史累计消费金额", "confidence": 1.0}</data>
+    </edge>
+    <edge source="task_客户流失预测" target="feature_complaint_count" id="0">
+      <data key="d50">HAS_INPUT</data>
+      <data key="d51">{"source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md", "evidence_span": "complaint_count | 数值 | 历史投诉次数", "confidence": 1.0}</data>
+    </edge>
+    <edge source="task_客户流失预测" target="feature_membership_level" id="0">
+      <data key="d50">HAS_INPUT</data>
+      <data key="d51">{"source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md", "evidence_span": "membership_level | 类别 | 会员等级", "confidence": 1.0}</data>
+    </edge>
+    <edge source="task_客户流失预测" target="feature_tenure_months" id="0">
+      <data key="d50">HAS_INPUT</data>
+      <data key="d51">{"source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md", "evidence_span": "tenure_months | 数值 | 使用时长（月）", "confidence": 1.0}</data>
+    </edge>
+    <edge source="task_客户流失预测" target="target_churn" id="0">
+      <data key="d50">PREDICTS</data>
+      <data key="d51">{"source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md", "evidence_span": "churn | 0/1 | 未来 30 天是否流失", "confidence": 1.0}</data>
+    </edge>
+    <edge source="source_text_material_84554427" target="task_text_classification" id="0">
+      <data key="d50">SUPPORTS</data>
+      <data key="d51">{"source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/text_material.md", "evidence_span": "Task: text_classification.", "confidence": 1.0}</data>
+    </edge>
+    <edge source="source_text_material_84554427" target="dataset_customer_reviews" id="0">
+      <data key="d50">SUPPORTS</data>
+      <data key="d51">{"source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/text_material.md", "evidence_span": "Domain: customer_reviews.", "confidence": 1.0}</data>
+    </edge>
+    <edge source="source_text_material_84554427" target="feature_customer_comments" id="0">
+      <data key="d50">SUPPORTS</data>
+      <data key="d51">{"source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/text_material.md", "evidence_span": "The text column contains customer comments;", "confidence": 1.0}</data>
+    </edge>
+    <edge source="source_text_material_84554427" target="target_supervised_sentiment_target" id="0">
+      <data key="d50">SUPPORTS</data>
+      <data key="d51">{"source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/text_material.md", "evidence_span": "label is the supervised sentiment target.", "confidence": 1.0}</data>
+    </edge>
+    <edge source="source_text_material_84554427" target="algorithm_tfidf_logistic_regression" id="0">
+      <data key="d50">SUPPORTS</data>
+      <data key="d51">{"source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/text_material.md", "evidence_span": "TF-IDF Logistic Regression uses TF-IDF text features followed by Logistic Regression.", "confidence": 1.0}</data>
+    </edge>
+    <edge source="source_text_material_84554427" target="metric_weighted_f1" id="0">
+      <data key="d50">SUPPORTS</data>
+      <data key="d51">{"source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/text_material.md", "evidence_span": "Evaluate with weighted F1 and accuracy;", "confidence": 1.0}</data>
+    </edge>
+    <edge source="source_reference_preprocessing_56f7c1fe" target="preprocessingstrategy_build_preprocessor" id="0">
+      <data key="d50">SUPPORTS</data>
+      <data key="d51">{"source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/reference_preprocessing.py", "evidence_span": "def build_preprocessor(features, scale=True):\n    \"\"\"Return an unfitted ColumnTransformer; fit on training features only.\"\"\"", "confidence": 1.0}</data>
+    </edge>
+    <edge source="task_anomaly_detection" target="metric_precision" id="0">
+      <data key="d50">EVALUATED_BY</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="task_anomaly_detection" target="metric_recall" id="0">
+      <data key="d50">EVALUATED_BY</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="task_anomaly_detection" target="metric_f1" id="0">
+      <data key="d50">EVALUATED_BY</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="task_regression" target="metric_rmse" id="0">
+      <data key="d50">EVALUATED_BY</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="task_regression" target="metric_mae" id="0">
+      <data key="d50">EVALUATED_BY</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="task_regression" target="metric_r2" id="0">
+      <data key="d50">EVALUATED_BY</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="task_text_classification" target="dataset_customer_reviews" id="0">
+      <data key="d50">HAS_INPUT</data>
+      <data key="d51">{"source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/text_material.md", "evidence_span": "Domain: customer_reviews.", "confidence": 1.0}</data>
+    </edge>
+    <edge source="task_text_classification" target="feature_customer_comments" id="0">
+      <data key="d50">HAS_INPUT</data>
+      <data key="d51">{"source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/text_material.md", "evidence_span": "The text column contains customer comments;", "confidence": 1.0}</data>
+    </edge>
+    <edge source="task_text_classification" target="target_supervised_sentiment_target" id="0">
+      <data key="d50">PREDICTS</data>
+      <data key="d51">{"source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/text_material.md", "evidence_span": "label is the supervised sentiment target.", "confidence": 1.0}</data>
+    </edge>
+    <edge source="task_text_classification" target="metric_weighted_f1" id="0">
+      <data key="d50">EVALUATED_BY</data>
+      <data key="d51">{"source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/text_material.md", "evidence_span": "Evaluate with weighted F1 and accuracy;", "confidence": 1.0}</data>
+    </edge>
+    <edge source="task_text_classification" target="metric_f1" id="0">
+      <data key="d50">EVALUATED_BY</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="task_text_classification" target="metric_accuracy" id="0">
+      <data key="d50">EVALUATED_BY</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="cap_churn_prediction_v1" target="algorithm_random_forest" id="0">
+      <data key="d50">USES_ALGORITHM</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="cap_churn_prediction_v1" target="algorithm_gradient_boosting" id="0">
+      <data key="d50">USES_ALGORITHM</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="algorithm_random_forest" target="preprocessing_56a78a1499364981" id="0">
+      <data key="d50">USES_PREPROCESSING</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="algorithm_random_forest" target="preprocessing_3b20f945c980b1ea" id="0">
+      <data key="d50">USES_PREPROCESSING</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="algorithm_random_forest" target="preprocessing_8817df495c5b2800" id="0">
+      <data key="d50">USES_PREPROCESSING</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="algorithm_random_forest" target="environment_python_sklearn" id="0">
+      <data key="d50">REQUIRES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="algorithm_random_forest" target="dependency_scikit_learn" id="0">
+      <data key="d50">REQUIRES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="algorithm_random_forest" target="task_binary_classification" id="0">
+      <data key="d50">SUITABLE_FOR</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="algorithm_random_forest" target="preprocessing_8d29697f8be324cb" id="0">
+      <data key="d50">USES_PREPROCESSING</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="algorithm_random_forest" target="preprocessing_e30ccf02b0837f02" id="0">
+      <data key="d50">USES_PREPROCESSING</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="algorithm_random_forest" target="preprocessing_6191c8e84ae8e6e2" id="0">
+      <data key="d50">USES_PREPROCESSING</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="algorithm_random_forest" target="dataset_0d10f1c313632ae5" id="0">
+      <data key="d50">VALIDATED_ON</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="algorithm_gradient_boosting" target="preprocessing_56a78a1499364981" id="0">
+      <data key="d50">USES_PREPROCESSING</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="algorithm_gradient_boosting" target="preprocessing_3b20f945c980b1ea" id="0">
+      <data key="d50">USES_PREPROCESSING</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="algorithm_gradient_boosting" target="preprocessing_8817df495c5b2800" id="0">
+      <data key="d50">USES_PREPROCESSING</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="algorithm_gradient_boosting" target="environment_python_sklearn" id="0">
+      <data key="d50">REQUIRES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="algorithm_gradient_boosting" target="dependency_scikit_learn" id="0">
+      <data key="d50">REQUIRES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="algorithm_gradient_boosting" target="task_binary_classification" id="0">
+      <data key="d50">SUITABLE_FOR</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="algorithm_gradient_boosting" target="preprocessing_8d29697f8be324cb" id="0">
+      <data key="d50">USES_PREPROCESSING</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="algorithm_gradient_boosting" target="preprocessing_e30ccf02b0837f02" id="0">
+      <data key="d50">USES_PREPROCESSING</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="algorithm_gradient_boosting" target="preprocessing_6191c8e84ae8e6e2" id="0">
+      <data key="d50">USES_PREPROCESSING</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="algorithm_gradient_boosting" target="dataset_0d10f1c313632ae5" id="0">
+      <data key="d50">VALIDATED_ON</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="algorithm_random_forest_regressor" target="environment_python_sklearn" id="0">
+      <data key="d50">REQUIRES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="algorithm_random_forest_regressor" target="task_regression" id="0">
+      <data key="d50">SUITABLE_FOR</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="algorithm_random_forest_regressor" target="dependency_scikit_learn" id="0">
+      <data key="d50">REQUIRES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="algorithm_isolation_forest" target="environment_python_sklearn" id="0">
+      <data key="d50">REQUIRES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="algorithm_isolation_forest" target="task_anomaly_detection" id="0">
+      <data key="d50">SUITABLE_FOR</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="algorithm_isolation_forest" target="dependency_scikit_learn" id="0">
+      <data key="d50">REQUIRES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="algorithm_dummy_classifier" target="environment_python_sklearn" id="0">
+      <data key="d50">REQUIRES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="algorithm_dummy_classifier" target="task_binary_classification" id="0">
+      <data key="d50">SUITABLE_FOR</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="algorithm_dummy_classifier" target="task_multiclass_classification" id="0">
+      <data key="d50">SUITABLE_FOR</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="algorithm_dummy_classifier" target="dependency_scikit_learn" id="0">
+      <data key="d50">REQUIRES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="algorithm_tfidf_logistic_regression" target="task_text_classification" id="0">
+      <data key="d50">USES_ALGORITHM</data>
+      <data key="d51">{"source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/text_material.md", "evidence_span": "TF-IDF Logistic Regression uses TF-IDF text features followed by Logistic Regression.", "confidence": 1.0}</data>
+    </edge>
+    <edge source="algorithm_tfidf_logistic_regression" target="task_text_classification" id="1">
+      <data key="d50">SUITABLE_FOR</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="algorithm_tfidf_logistic_regression" target="preprocessing_a7ba449fb69f797f" id="0">
+      <data key="d50">USES_PREPROCESSING</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="algorithm_tfidf_logistic_regression" target="preprocessing_5f4db9089bef0887" id="0">
+      <data key="d50">USES_PREPROCESSING</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="algorithm_tfidf_logistic_regression" target="preprocessing_9929dd86179e6047" id="0">
+      <data key="d50">USES_PREPROCESSING</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="algorithm_tfidf_logistic_regression" target="preprocessing_f3eff5a94df7aea4" id="0">
+      <data key="d50">USES_PREPROCESSING</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="algorithm_tfidf_logistic_regression" target="environment_python_sklearn" id="0">
+      <data key="d50">REQUIRES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="algorithm_tfidf_logistic_regression" target="dependency_scikit_learn" id="0">
+      <data key="d50">REQUIRES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="algorithm_logistic_regression" target="environment_python_sklearn" id="0">
+      <data key="d50">REQUIRES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="algorithm_logistic_regression" target="dependency_scikit_learn" id="0">
+      <data key="d50">REQUIRES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="algorithm_logistic_regression" target="task_binary_classification" id="0">
+      <data key="d50">SUITABLE_FOR</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="algorithm_logistic_regression" target="preprocessing_8d29697f8be324cb" id="0">
+      <data key="d50">USES_PREPROCESSING</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="algorithm_logistic_regression" target="preprocessing_9d6de633aba00f76" id="0">
+      <data key="d50">USES_PREPROCESSING</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="algorithm_logistic_regression" target="preprocessing_e30ccf02b0837f02" id="0">
+      <data key="d50">USES_PREPROCESSING</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="algorithm_logistic_regression" target="preprocessing_6191c8e84ae8e6e2" id="0">
+      <data key="d50">USES_PREPROCESSING</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="algorithm_logistic_regression" target="dataset_0d10f1c313632ae5" id="0">
+      <data key="d50">VALIDATED_ON</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="task_binary_classification" target="metric_roc_auc" id="0">
+      <data key="d50">EVALUATED_BY</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="task_binary_classification" target="metric_pr_auc" id="0">
+      <data key="d50">EVALUATED_BY</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="task_binary_classification" target="metric_f1" id="0">
+      <data key="d50">EVALUATED_BY</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="task_binary_classification" target="metric_balanced_accuracy" id="0">
+      <data key="d50">EVALUATED_BY</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="capability_186981664f51a7a8" target="task_binary_classification" id="0">
+      <data key="d50">SOLVES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="capability_186981664f51a7a8" target="algorithm_logistic_regression" id="0">
+      <data key="d50">USES_ALGORITHM</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="capability_186981664f51a7a8" target="algorithm_random_forest" id="0">
+      <data key="d50">USES_ALGORITHM</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="capability_186981664f51a7a8" target="algorithm_gradient_boosting" id="0">
+      <data key="d50">USES_ALGORITHM</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98_algorithm_logistic_regression__llm_proposed_v1" target="algorithm_logistic_regression" id="0">
+      <data key="d50">VERSION_OF</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98" target="dataset_0d10f1c313632ae5" id="0">
+      <data key="d50">ON_DATASET</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98" target="config_be4d780c2448a0de" id="0">
+      <data key="d50">HAS_CONFIG</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98" target="capability_186981664f51a7a8" id="0">
+      <data key="d50">VALIDATES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98" target="algorithm_logistic_regression" id="0">
+      <data key="d50">VALIDATES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98" target="32b66bb05c98_algorithm_logistic_regression__llm_proposed_v1" id="0">
+      <data key="d50">PRODUCED_VERSION</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98" target="environment_a720b9282e861c0f" id="0">
+      <data key="d50">REQUIRES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98" target="constraint_c78a38c56bdbd3e9" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98" target="constraint_35548a7d4c450985" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98" target="constraint_c971c5b357e330ee" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98" target="constraint_fa0889ca320d2750" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98" target="constraint_a5b12227159d677b" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98" target="constraint_4758d9abbeb1a98a" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98" target="constraint_a1c4d99e5d657c3d" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98" target="constraint_92fda7bce69b57c8" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98" target="constraint_d8d289dd7e024548" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98" target="constraint_5cd4dde842e64e26" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98" target="constraint_2c92f7254a618f95" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98" target="constraint_853c7b8c6dcc8a1f" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98" target="constraint_37dfad9d34128201" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98" target="constraint_2a874b9046c61e42" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98" target="constraint_d431d68438640229" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98_algorithm_random_forest__llm_proposed_v1" target="algorithm_random_forest" id="0">
+      <data key="d50">VERSION_OF</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_random_forest__llm_proposed:v1" target="dataset_0d10f1c313632ae5" id="0">
+      <data key="d50">ON_DATASET</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_random_forest__llm_proposed:v1" target="config_d1dab672758a3888" id="0">
+      <data key="d50">HAS_CONFIG</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_random_forest__llm_proposed:v1" target="capability_186981664f51a7a8" id="0">
+      <data key="d50">VALIDATES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_random_forest__llm_proposed:v1" target="algorithm_random_forest" id="0">
+      <data key="d50">VALIDATES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_random_forest__llm_proposed:v1" target="32b66bb05c98_algorithm_random_forest__llm_proposed_v1" id="0">
+      <data key="d50">PRODUCED_VERSION</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_random_forest__llm_proposed:v1" target="environment_a720b9282e861c0f" id="0">
+      <data key="d50">REQUIRES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_random_forest__llm_proposed:v1" target="constraint_c78a38c56bdbd3e9" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_random_forest__llm_proposed:v1" target="constraint_35548a7d4c450985" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_random_forest__llm_proposed:v1" target="constraint_c971c5b357e330ee" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_random_forest__llm_proposed:v1" target="constraint_fa0889ca320d2750" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_random_forest__llm_proposed:v1" target="constraint_a5b12227159d677b" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_random_forest__llm_proposed:v1" target="constraint_4758d9abbeb1a98a" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_random_forest__llm_proposed:v1" target="constraint_a1c4d99e5d657c3d" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_random_forest__llm_proposed:v1" target="constraint_92fda7bce69b57c8" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_random_forest__llm_proposed:v1" target="constraint_5cd4dde842e64e26" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_random_forest__llm_proposed:v1" target="constraint_2c92f7254a618f95" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_random_forest__llm_proposed:v1" target="constraint_853c7b8c6dcc8a1f" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_random_forest__llm_proposed:v1" target="constraint_37dfad9d34128201" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_random_forest__llm_proposed:v1" target="constraint_2a874b9046c61e42" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_random_forest__llm_proposed:v1" target="constraint_d431d68438640229" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="failure_32b66bb05c98_algorithm_random_forest__llm_proposed_v1" target="algorithm_random_forest" id="0">
+      <data key="d50">RELATED_TO</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="failure_32b66bb05c98_algorithm_random_forest__llm_proposed_v1" target="32b66bb05c98:algorithm_random_forest__llm_proposed:v1" id="0">
+      <data key="d50">OCCURRED_IN</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="repair_32b66bb05c98_algorithm_random_forest__llm_proposed_v1" target="failure_32b66bb05c98_algorithm_random_forest__llm_proposed_v1" id="0">
+      <data key="d50">REPAIRS</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="repair_32b66bb05c98_algorithm_random_forest__llm_proposed_v1" target="32b66bb05c98_algorithm_random_forest__llm_proposed_v2" id="0">
+      <data key="d50">PRODUCED_VERSION</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98_algorithm_random_forest__llm_proposed_v2" target="algorithm_random_forest" id="0">
+      <data key="d50">VERSION_OF</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98_algorithm_random_forest__llm_proposed_v2" target="32b66bb05c98_algorithm_random_forest__llm_proposed_v1" id="0">
+      <data key="d50">PARENT_VERSION</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_random_forest__llm_proposed:v2" target="dataset_0d10f1c313632ae5" id="0">
+      <data key="d50">ON_DATASET</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_random_forest__llm_proposed:v2" target="config_d1dab672758a3888" id="0">
+      <data key="d50">HAS_CONFIG</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_random_forest__llm_proposed:v2" target="capability_186981664f51a7a8" id="0">
+      <data key="d50">VALIDATES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_random_forest__llm_proposed:v2" target="algorithm_random_forest" id="0">
+      <data key="d50">VALIDATES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_random_forest__llm_proposed:v2" target="32b66bb05c98_algorithm_random_forest__llm_proposed_v2" id="0">
+      <data key="d50">PRODUCED_VERSION</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_random_forest__llm_proposed:v2" target="environment_a720b9282e861c0f" id="0">
+      <data key="d50">REQUIRES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_random_forest__llm_proposed:v2" target="constraint_c78a38c56bdbd3e9" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_random_forest__llm_proposed:v2" target="constraint_35548a7d4c450985" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_random_forest__llm_proposed:v2" target="constraint_c971c5b357e330ee" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_random_forest__llm_proposed:v2" target="constraint_fa0889ca320d2750" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_random_forest__llm_proposed:v2" target="constraint_a5b12227159d677b" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_random_forest__llm_proposed:v2" target="constraint_4758d9abbeb1a98a" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_random_forest__llm_proposed:v2" target="constraint_a1c4d99e5d657c3d" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_random_forest__llm_proposed:v2" target="constraint_92fda7bce69b57c8" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_random_forest__llm_proposed:v2" target="constraint_d8d289dd7e024548" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_random_forest__llm_proposed:v2" target="constraint_5cd4dde842e64e26" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_random_forest__llm_proposed:v2" target="constraint_2c92f7254a618f95" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_random_forest__llm_proposed:v2" target="constraint_853c7b8c6dcc8a1f" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_random_forest__llm_proposed:v2" target="constraint_37dfad9d34128201" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_random_forest__llm_proposed:v2" target="constraint_2a874b9046c61e42" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_random_forest__llm_proposed:v2" target="constraint_d431d68438640229" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98_algorithm_gradient_boosting__llm_proposed_v1" target="algorithm_gradient_boosting" id="0">
+      <data key="d50">VERSION_OF</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_gradient_boosting__llm_proposed:v1" target="dataset_0d10f1c313632ae5" id="0">
+      <data key="d50">ON_DATASET</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_gradient_boosting__llm_proposed:v1" target="config_9b361e2a0cd343d4" id="0">
+      <data key="d50">HAS_CONFIG</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_gradient_boosting__llm_proposed:v1" target="capability_186981664f51a7a8" id="0">
+      <data key="d50">VALIDATES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_gradient_boosting__llm_proposed:v1" target="algorithm_gradient_boosting" id="0">
+      <data key="d50">VALIDATES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_gradient_boosting__llm_proposed:v1" target="32b66bb05c98_algorithm_gradient_boosting__llm_proposed_v1" id="0">
+      <data key="d50">PRODUCED_VERSION</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_gradient_boosting__llm_proposed:v1" target="environment_a720b9282e861c0f" id="0">
+      <data key="d50">REQUIRES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_gradient_boosting__llm_proposed:v1" target="constraint_c78a38c56bdbd3e9" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_gradient_boosting__llm_proposed:v1" target="constraint_35548a7d4c450985" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_gradient_boosting__llm_proposed:v1" target="constraint_c971c5b357e330ee" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_gradient_boosting__llm_proposed:v1" target="constraint_fa0889ca320d2750" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_gradient_boosting__llm_proposed:v1" target="constraint_a5b12227159d677b" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_gradient_boosting__llm_proposed:v1" target="constraint_4758d9abbeb1a98a" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_gradient_boosting__llm_proposed:v1" target="constraint_a1c4d99e5d657c3d" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_gradient_boosting__llm_proposed:v1" target="constraint_92fda7bce69b57c8" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_gradient_boosting__llm_proposed:v1" target="constraint_d8d289dd7e024548" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_gradient_boosting__llm_proposed:v1" target="constraint_5cd4dde842e64e26" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_gradient_boosting__llm_proposed:v1" target="constraint_2c92f7254a618f95" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_gradient_boosting__llm_proposed:v1" target="constraint_853c7b8c6dcc8a1f" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_gradient_boosting__llm_proposed:v1" target="constraint_37dfad9d34128201" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_gradient_boosting__llm_proposed:v1" target="constraint_2a874b9046c61e42" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+    <edge source="32b66bb05c98:algorithm_gradient_boosting__llm_proposed:v1" target="constraint_d431d68438640229" id="0">
+      <data key="d50">SATISFIES</data>
+      <data key="d51">{}</data>
+    </edge>
+  </graph>
+</graphml>

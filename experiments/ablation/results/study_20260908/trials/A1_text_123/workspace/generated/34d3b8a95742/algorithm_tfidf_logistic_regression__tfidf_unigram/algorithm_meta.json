@@ -1,0 +1,174 @@
+{
+  "schema_version": "1.1",
+  "generated_at": "2026-09-08T05:07:06.742009+00:00",
+  "source_sha256": "e0ff7b7168f8304a2b3aa5d636276b80f6a20dd156e1bf7157c8539251bb86ed",
+  "spec": {
+    "raw_description": "对客户评论进行情感二分类。领域 customer_reviews，任务 text_classification。输入 text，目标 label，输出 prediction；不要求概率。使用 TF-IDF + Logistic Regression，可以比较不同词表和正则化配置。评价 accuracy 和 weighted F1，两个指标均要求 >= 0.70。处理缺失文本、未见词和小批量。不要自行增加其他质量阈值。",
+    "domain": "customer_reviews",
+    "capability_name": "CustomerReviewSentimentClassifier",
+    "task_type": "text_classification",
+    "data_type": "text",
+    "target_column": "label",
+    "feature_columns": [
+      "text"
+    ],
+    "input_schema": {
+      "text": "string"
+    },
+    "output_schema": {
+      "prediction": "string"
+    },
+    "dataset_profile": {
+      "dataset_id": "dataset_729ec0cc7cae1da8",
+      "sha256": "729ec0cc7cae1da8bbed2da3b74a50a6928e0392845ae2519ceb47eebf3fab35",
+      "path": "/data3/xiaotianqi/ai_algorithm_factory/experiments/ablation/results/study_20260908/trials/A1_text_123/workspace/data/train.csv",
+      "rows": 1675,
+      "row_count": 1675,
+      "column_count": 2,
+      "columns": [
+        "text",
+        "label"
+      ],
+      "feature_columns": [
+        "text"
+      ],
+      "feature_count": 1,
+      "dtypes": {
+        "text": "object",
+        "label": "int64"
+      },
+      "missing_rates": {
+        "text": 0.0,
+        "label": 0.0
+      },
+      "numeric_fraction": 0.0,
+      "class_count": 2,
+      "class_balance": {
+        "0": 0.5002985074626866,
+        "1": 0.49970149253731344
+      },
+      "minority_rate": 0.49970149253731344,
+      "positive_rate": 0.49970149253731344
+    },
+    "metrics": [
+      "accuracy",
+      "f1"
+    ],
+    "metric_thresholds": {
+      "accuracy": 0.7,
+      "f1": 0.7
+    },
+    "output_columns": [
+      "prediction"
+    ],
+    "constraints": [
+      "use TF-IDF + Logistic Regression",
+      "compare different vocabularies and regularization configurations",
+      "handle missing texts, unseen words, and small batches"
+    ],
+    "latency_requirement_ms": null,
+    "interpretability_requirement": null,
+    "resource_constraints": {},
+    "probability_output_required": false,
+    "class_imbalance": {
+      "positive_rate": 0.49970149253731344,
+      "is_imbalanced": false
+    },
+    "candidate_hints": [],
+    "uncertainty": [
+      "different word embeddings may affect performance"
+    ],
+    "understanding_confidence": 1.0,
+    "candidate_algorithms": [
+      "tfidf_logistic_regression"
+    ],
+    "dataset_path": "/data3/xiaotianqi/ai_algorithm_factory/experiments/ablation/results/study_20260908/trials/A1_text_123/workspace/data/train.csv"
+  },
+  "plan": {
+    "algorithm_id": "algorithm_tfidf_logistic_regression__tfidf_unigram",
+    "algorithm_name": "TF-IDF Logistic Regression",
+    "rationale": "Based on historical runs, TF-IDF combined with Logistic Regression has been used for similar tasks. The previous runs indicate issues with metric integrity which were resolved by ensuring consistent metric computation.",
+    "preprocessing": [
+      "median imputation"
+    ],
+    "hyperparameters": {
+      "max_features": 3000,
+      "ngram_range": [
+        1,
+        2
+      ],
+      "max_iter": 100,
+      "C": 1.0,
+      "ngram_max": 1
+    },
+    "expected_metrics": {
+      "accuracy": 0.5
+    },
+    "priority": 0,
+    "base_algorithm_id": "algorithm_tfidf_logistic_regression",
+    "preprocessing_variant": "imputer=median;scaler=none",
+    "config_variant": "tfidf_unigram",
+    "search_score": 0.5923461031971154,
+    "evidence_ids": [
+      "a054aaacecab:algorithm_tfidf_logistic_regression__tfidf_bigram:v2",
+      "a054aaacecab:algorithm_tfidf_logistic_regression__tfidf_bigram:v1",
+      "a054aaacecab",
+      "a054aaacecab:algorithm_tfidf_logistic_regression__tfidf_unigram:v3",
+      "a054aaacecab:algorithm_tfidf_logistic_regression__tfidf_unigram:v2",
+      "a054aaacecab:algorithm_tfidf_logistic_regression__tfidf_unigram:v1",
+      "a054aaacecab:algorithm_tfidf_logistic_regression__llm_proposed:v4",
+      "a054aaacecab:algorithm_tfidf_logistic_regression__llm_proposed:v3",
+      "a054aaacecab:algorithm_tfidf_logistic_regression__llm_proposed:v2",
+      "a054aaacecab:algorithm_tfidf_logistic_regression__llm_proposed:v1",
+      "failure_a054aaacecab_algorithm_tfidf_logistic_regression__tfidf_unigram_v3",
+      "failure_a054aaacecab_algorithm_tfidf_logistic_regression__tfidf_bigram_v1"
+    ],
+    "score_components": {
+      "performance_prior": 0.5,
+      "success": 0.02000002478440179,
+      "stability": 0.016000016076945654,
+      "exploration": 0.036181361349331635,
+      "runtime_cost": -0.00983529901356356,
+      "interpretability": 0,
+      "resource_fit": 0,
+      "llm_proposal": 0.03,
+      "historical_case_count": 10,
+      "llm_parameters": {
+        "C": 1.0,
+        "max_iter": 100
+      }
+    }
+  },
+  "code_ir": null,
+  "generation": {
+    "provider": "local_openai_compatible",
+    "status": "llm_code_accepted",
+    "attempts": [
+      {
+        "attempt": 1,
+        "status": "accepted",
+        "reason": "generated code semantic contract passed"
+      }
+    ],
+    "model": "Qwen3-Coder-30B-A3B-Instruct",
+    "token_usage": {
+      "prompt_tokens": 6477,
+      "completion_tokens": 773,
+      "total_tokens": 7250
+    },
+    "generation": {
+      "purpose": "code_generation",
+      "max_new_tokens": 6400,
+      "requested_max_new_tokens": 6400,
+      "budget_adjustments": [],
+      "finish_reason": "stop",
+      "truncated": false,
+      "eos_reached": true,
+      "structured_transport": "text",
+      "application_schema_validation": false
+    }
+  },
+  "final_code_sha256": "e0ff7b7168f8304a2b3aa5d636276b80f6a20dd156e1bf7157c8539251bb86ed",
+  "final_version": "34d3b8a95742_algorithm_tfidf_logistic_regression__tfidf_unigram_v1",
+  "validation_status": "passed"
+}

@@ -1,0 +1,131 @@
+{
+  "experiment": "no_knowledge",
+  "dataset": "customer_churn",
+  "seed": 123,
+  "trial_id": "A6_customer_churn_123",
+  "git_commit": "bfbba07ea60024096578ba60ddf065546c430d2d",
+  "working_git_head": "20f48f244c3b8a9e3c4f7edfd582aecdf9af0920",
+  "configuration": {
+    "id": "A6",
+    "name": "no_knowledge",
+    "rationale": "Current requirement and execution contract only",
+    "controls": {
+      "enable_graph_retrieval": false,
+      "enable_semantic_retrieval": false,
+      "enable_experience_retrieval": false,
+      "enable_beam_search": true,
+      "enable_multi_candidate": true,
+      "enable_repair": true,
+      "enable_knowledge_context": false
+    }
+  },
+  "protocol_sha256": "b5dbf92809afc7c2b7c1053914ff30ae9f8cdf1d04abd271bc132c870050acee",
+  "started_at": "2026-09-08T06:40:45.249054+00:00",
+  "completion": true,
+  "metrics": {
+    "accuracy": 0.84,
+    "f1": 0.3684210526315789,
+    "precision": 0.7,
+    "recall": 0.25,
+    "balanced_accuracy": 0.6127049180327868,
+    "roc_auc": 0.8268442622950819,
+    "pr_auc": 0.5123174012682462
+  },
+  "partial_candidate_metrics": [
+    {
+      "candidate": "algorithm_random_forest__llm_proposed",
+      "status": "passed",
+      "metrics": {
+        "accuracy": 0.7966666666666666,
+        "f1": 0.5040650406504066,
+        "precision": 0.4626865671641791,
+        "recall": 0.5535714285714286,
+        "balanced_accuracy": 0.7030152224824355,
+        "roc_auc": 0.8001317330210772,
+        "pr_auc": 0.4847779360072607
+      }
+    },
+    {
+      "candidate": "algorithm_logistic_regression__llm_proposed",
+      "status": "passed",
+      "metrics": {
+        "accuracy": 0.84,
+        "f1": 0.3684210526315789,
+        "precision": 0.7,
+        "recall": 0.25,
+        "balanced_accuracy": 0.6127049180327868,
+        "roc_auc": 0.8268442622950819,
+        "pr_auc": 0.5123174012682462
+      }
+    },
+    {
+      "candidate": "algorithm_gradient_boosting__llm_proposed",
+      "status": "passed",
+      "metrics": {
+        "accuracy": 0.84,
+        "f1": 0.4285714285714286,
+        "precision": 0.6428571428571429,
+        "recall": 0.32142857142857145,
+        "balanced_accuracy": 0.6402224824355972,
+        "roc_auc": 0.8019247658079625,
+        "pr_auc": 0.49298503436217006
+      }
+    }
+  ],
+  "first_pass": true,
+  "first_pass_code_success_count": 3,
+  "first_pass_code_denominator": 3,
+  "first_validation_pass_count": 3,
+  "repair_triggered_candidates": 0,
+  "repair_success_count": 0,
+  "repair_success_rate": null,
+  "repair_rounds": 0,
+  "repair_module_triggered": false,
+  "candidate_success_coverage": true,
+  "candidate_pass_count": 3,
+  "candidate_count": 3,
+  "candidate_execution_count": 3,
+  "planner_rank_of_winner": 1,
+  "winner_id": "algorithm_logistic_regression__llm_proposed",
+  "winner_config": "llm_proposed",
+  "rank_one_failed_other_passed": false,
+  "beam_states_expanded": 15,
+  "beam_states_pruned": 12,
+  "graph_nodes": 0,
+  "graph_edges": 0,
+  "historical_cases": 0,
+  "failure_experiences": 0,
+  "document_evidence": 0,
+  "planner_cited_evidence": 0,
+  "planner_cited_evidence_ids": [],
+  "retrieved_evidence_count": 0,
+  "runtime": 321.6517362445593,
+  "llm_calls": 6,
+  "llm_latency_seconds": 265.43755,
+  "llm_error_calls": 0,
+  "repair_calls": 0,
+  "codegen_calls": 3,
+  "codegen_retry_calls": 0,
+  "peak_candidate_memory_mb": 224.03125,
+  "explanation_status": "ok",
+  "error": null,
+  "control_errors": [],
+  "model_mode": "real_llm_all_settings",
+  "extraction_mode": "frozen_previous_real_extraction",
+  "completed_at": "2026-09-08T06:46:08.341327+00:00",
+  "source_manifest": {
+    "workspace/generated/dc1fee97d643/algorithm_gradient_boosting__llm_proposed/algorithm.py": "55df8d7ae0a1b4e9bcfee1d5566c80c1e9838c32c59a1c0948313e76006bf760",
+    "workspace/generated/dc1fee97d643/algorithm_gradient_boosting__llm_proposed/algorithm_meta.json": "6f95fdf96db3939ca7936ee170407bd12939ed07783dc9d5125aa1db64f0345c",
+    "workspace/generated/dc1fee97d643/algorithm_gradient_boosting__llm_proposed/generation_attempt_1.txt": "55df8d7ae0a1b4e9bcfee1d5566c80c1e9838c32c59a1c0948313e76006bf760",
+    "workspace/generated/dc1fee97d643/algorithm_gradient_boosting__llm_proposed/versions/v1.py": "55df8d7ae0a1b4e9bcfee1d5566c80c1e9838c32c59a1c0948313e76006bf760",
+    "workspace/generated/dc1fee97d643/algorithm_logistic_regression__llm_proposed/algorithm.py": "f47afc170523fffeb2d9c977d0fb9b45a33859ce9dc7f33fac9781e33d8a9531",
+    "workspace/generated/dc1fee97d643/algorithm_logistic_regression__llm_proposed/algorithm_meta.json": "2901b95de50f48bc293005cb7eb292fe1e25a5e881eb758fbd742d1bd12a3448",
+    "workspace/generated/dc1fee97d643/algorithm_logistic_regression__llm_proposed/generation_attempt_1.txt": "f47afc170523fffeb2d9c977d0fb9b45a33859ce9dc7f33fac9781e33d8a9531",
+    "workspace/generated/dc1fee97d643/algorithm_logistic_regression__llm_proposed/versions/v1.py": "f47afc170523fffeb2d9c977d0fb9b45a33859ce9dc7f33fac9781e33d8a9531",
+    "workspace/generated/dc1fee97d643/algorithm_random_forest__llm_proposed/algorithm.py": "7229ef0cecc4af2d4971c3ac542126caf637ed653077d68e28340e722e1b029f",
+    "workspace/generated/dc1fee97d643/algorithm_random_forest__llm_proposed/algorithm_meta.json": "ae68af421748f1f70cedaf3ae565bd5d90495e2fdf892807eec68400f60ad021",
+    "workspace/generated/dc1fee97d643/algorithm_random_forest__llm_proposed/generation_attempt_1.txt": "7229ef0cecc4af2d4971c3ac542126caf637ed653077d68e28340e722e1b029f",
+    "workspace/generated/dc1fee97d643/algorithm_random_forest__llm_proposed/versions/v1.py": "7229ef0cecc4af2d4971c3ac542126caf637ed653077d68e28340e722e1b029f"
+  },
+  "frozen_guard_passed": true
+}

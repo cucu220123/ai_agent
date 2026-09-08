@@ -1,0 +1,156 @@
+{
+  "schema_version": "1.1",
+  "generated_at": "2026-09-08T05:42:02.563485+00:00",
+  "source_sha256": "a6c53983f7e26e33d6bef5b752166f08d73eaec03d25472f69c78d96360014b5",
+  "spec": {
+    "raw_description": "对客户评论进行情感二分类。领域 customer_reviews，任务 text_classification。输入 text，目标 label，输出 prediction；不要求概率。使用 TF-IDF + Logistic Regression，可以比较不同词表和正则化配置。评价 accuracy 和 weighted F1，两个指标均要求 >= 0.70。处理缺失文本、未见词和小批量。不要自行增加其他质量阈值。",
+    "domain": "customer_reviews",
+    "capability_name": "CustomerReviewSentimentClassifier",
+    "task_type": "text_classification",
+    "data_type": "text",
+    "target_column": "label",
+    "feature_columns": [
+      "text"
+    ],
+    "input_schema": {
+      "text": "string"
+    },
+    "output_schema": {
+      "prediction": "string"
+    },
+    "dataset_profile": {
+      "dataset_id": "dataset_f66de20a7a5a694a",
+      "sha256": "f66de20a7a5a694a73ef17d7b44168859dd9ec6c11c8c7ffa44c9f86ea618f5d",
+      "path": "/data3/xiaotianqi/ai_algorithm_factory/experiments/ablation/results/study_20260908/trials/A6_text_2026/workspace/data/train.csv",
+      "rows": 1675,
+      "row_count": 1675,
+      "column_count": 2,
+      "columns": [
+        "text",
+        "label"
+      ],
+      "feature_columns": [
+        "text"
+      ],
+      "feature_count": 1,
+      "dtypes": {
+        "text": "object",
+        "label": "int64"
+      },
+      "missing_rates": {
+        "text": 0.0,
+        "label": 0.0
+      },
+      "numeric_fraction": 0.0,
+      "class_count": 2,
+      "class_balance": {
+        "0": 0.5002985074626866,
+        "1": 0.49970149253731344
+      },
+      "minority_rate": 0.49970149253731344,
+      "positive_rate": 0.49970149253731344
+    },
+    "metrics": [
+      "accuracy",
+      "f1"
+    ],
+    "metric_thresholds": {
+      "accuracy": 0.7,
+      "f1": 0.7
+    },
+    "output_columns": [
+      "prediction"
+    ],
+    "constraints": [
+      "use TF-IDF + Logistic Regression",
+      "compare different vocabularies and regularization configurations",
+      "handle missing texts, out-of-vocabulary words, and small batches"
+    ],
+    "latency_requirement_ms": null,
+    "interpretability_requirement": null,
+    "resource_constraints": {},
+    "probability_output_required": false,
+    "class_imbalance": {
+      "positive_rate": 0.49970149253731344,
+      "is_imbalanced": false
+    },
+    "candidate_hints": [],
+    "uncertainty": [],
+    "understanding_confidence": 1.0,
+    "candidate_algorithms": [
+      "tfidf_logistic_regression"
+    ],
+    "dataset_path": "/data3/xiaotianqi/ai_algorithm_factory/experiments/ablation/results/study_20260908/trials/A6_text_2026/workspace/data/train.csv"
+  },
+  "plan": {
+    "algorithm_id": "algorithm_tfidf_logistic_regression__tfidf_bigram",
+    "algorithm_name": "TF-IDF Logistic Regression",
+    "rationale": "Meets the requirement for text classification with TF-IDF and Logistic Regression, supports comparison of different configurations.",
+    "preprocessing": [
+      "median imputation"
+    ],
+    "hyperparameters": {
+      "max_features": 5000,
+      "ngram_range": [
+        1,
+        2
+      ],
+      "max_iter": 500,
+      "C": 1.0,
+      "ngram_max": 2
+    },
+    "expected_metrics": {},
+    "priority": 0,
+    "base_algorithm_id": "algorithm_tfidf_logistic_regression",
+    "preprocessing_variant": "imputer=median;scaler=none",
+    "config_variant": "tfidf_bigram",
+    "search_score": 0.7200000000000001,
+    "evidence_ids": [
+      "current_user_requirement"
+    ],
+    "score_components": {
+      "performance_prior": 0.5,
+      "success": 0.05,
+      "stability": 0.02,
+      "exploration": 0.12,
+      "runtime_cost": -0.0,
+      "interpretability": 0,
+      "resource_fit": 0,
+      "llm_proposal": 0.03,
+      "historical_case_count": 0,
+      "llm_parameters": {}
+    }
+  },
+  "code_ir": null,
+  "generation": {
+    "provider": "local_openai_compatible",
+    "status": "llm_code_accepted",
+    "attempts": [
+      {
+        "attempt": 1,
+        "status": "accepted",
+        "reason": "generated code semantic contract passed"
+      }
+    ],
+    "model": "Qwen3-Coder-30B-A3B-Instruct",
+    "token_usage": {
+      "prompt_tokens": 2729,
+      "completion_tokens": 560,
+      "total_tokens": 3289
+    },
+    "generation": {
+      "purpose": "code_generation",
+      "max_new_tokens": 6400,
+      "requested_max_new_tokens": 6400,
+      "budget_adjustments": [],
+      "finish_reason": "stop",
+      "truncated": false,
+      "eos_reached": true,
+      "structured_transport": "text",
+      "application_schema_validation": false
+    }
+  },
+  "final_code_sha256": "a6c53983f7e26e33d6bef5b752166f08d73eaec03d25472f69c78d96360014b5",
+  "final_version": "15d438fe69c2_algorithm_tfidf_logistic_regression__tfidf_bigram_v1",
+  "validation_status": "passed"
+}

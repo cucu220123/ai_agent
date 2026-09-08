@@ -1,0 +1,133 @@
+{
+  "experiment": "no_repair",
+  "dataset": "text",
+  "seed": 42,
+  "trial_id": "A5_text_42",
+  "git_commit": "bfbba07ea60024096578ba60ddf065546c430d2d",
+  "working_git_head": "20f48f244c3b8a9e3c4f7edfd582aecdf9af0920",
+  "configuration": {
+    "id": "A5",
+    "name": "no_repair",
+    "rationale": "Disable runtime Critic/Repair and revalidation",
+    "controls": {
+      "enable_graph_retrieval": true,
+      "enable_semantic_retrieval": true,
+      "enable_experience_retrieval": true,
+      "enable_beam_search": true,
+      "enable_multi_candidate": true,
+      "enable_repair": false,
+      "enable_knowledge_context": true
+    }
+  },
+  "protocol_sha256": "b5dbf92809afc7c2b7c1053914ff30ae9f8cdf1d04abd271bc132c870050acee",
+  "started_at": "2026-09-08T05:16:12.154011+00:00",
+  "completion": true,
+  "metrics": {
+    "accuracy": 0.8014311270125224,
+    "f1": 0.801423501113699,
+    "precision": 0.8014620460839827,
+    "recall": 0.8014311270125224,
+    "balanced_accuracy": 0.80142089093702
+  },
+  "partial_candidate_metrics": [
+    {
+      "candidate": "algorithm_tfidf_logistic_regression__llm_proposed",
+      "status": "passed",
+      "metrics": {
+        "accuracy": 0.8014311270125224,
+        "f1": 0.801423501113699,
+        "precision": 0.8014620460839827,
+        "recall": 0.8014311270125224,
+        "balanced_accuracy": 0.80142089093702
+      }
+    },
+    {
+      "candidate": "algorithm_tfidf_logistic_regression__tfidf_unigram",
+      "status": "passed",
+      "metrics": {
+        "accuracy": 0.7942754919499105,
+        "f1": 0.7942741752161475,
+        "precision": 0.7942779422589037,
+        "recall": 0.7942754919499105,
+        "balanced_accuracy": 0.7942716333845365
+      }
+    },
+    {
+      "candidate": "algorithm_tfidf_logistic_regression__tfidf_bigram",
+      "status": "passed",
+      "metrics": {
+        "accuracy": 0.7996422182468694,
+        "f1": 0.7996383710327495,
+        "precision": 0.7996549971481065,
+        "recall": 0.7996422182468694,
+        "balanced_accuracy": 0.7996351766513057
+      }
+    }
+  ],
+  "first_pass": true,
+  "first_pass_code_success_count": 3,
+  "first_pass_code_denominator": 3,
+  "first_validation_pass_count": 3,
+  "repair_triggered_candidates": 0,
+  "repair_success_count": 0,
+  "repair_success_rate": null,
+  "repair_rounds": 0,
+  "repair_module_triggered": false,
+  "candidate_success_coverage": true,
+  "candidate_pass_count": 3,
+  "candidate_count": 3,
+  "candidate_execution_count": 3,
+  "planner_rank_of_winner": 1,
+  "winner_id": "algorithm_tfidf_logistic_regression__llm_proposed",
+  "winner_config": "llm_proposed",
+  "rank_one_failed_other_passed": false,
+  "beam_states_expanded": 4,
+  "beam_states_pruned": 1,
+  "graph_nodes": 64,
+  "graph_edges": 203,
+  "historical_cases": 10,
+  "failure_experiences": 8,
+  "document_evidence": 8,
+  "planner_cited_evidence": 9,
+  "planner_cited_evidence_ids": [
+    "a054aaacecab:algorithm_tfidf_logistic_regression__tfidf_unigram:v1",
+    "a054aaacecab:algorithm_tfidf_logistic_regression__tfidf_unigram:v2",
+    "a054aaacecab:algorithm_tfidf_logistic_regression__tfidf_unigram:v3",
+    "a054aaacecab:algorithm_tfidf_logistic_regression__tfidf_bigram:v1",
+    "a054aaacecab:algorithm_tfidf_logistic_regression__tfidf_bigram:v2",
+    "a054aaacecab:algorithm_tfidf_logistic_regression__llm_proposed:v1",
+    "a054aaacecab:algorithm_tfidf_logistic_regression__llm_proposed:v2",
+    "a054aaacecab:algorithm_tfidf_logistic_regression__llm_proposed:v3",
+    "a054aaacecab:algorithm_tfidf_logistic_regression__llm_proposed:v4"
+  ],
+  "retrieved_evidence_count": 90,
+  "runtime": 450.791773840785,
+  "llm_calls": 7,
+  "llm_latency_seconds": 308.71398,
+  "llm_error_calls": 0,
+  "repair_calls": 0,
+  "codegen_calls": 3,
+  "codegen_retry_calls": 0,
+  "peak_candidate_memory_mb": 1788.515625,
+  "explanation_status": "ok",
+  "error": null,
+  "control_errors": [],
+  "model_mode": "real_llm_all_settings",
+  "extraction_mode": "frozen_previous_real_extraction",
+  "completed_at": "2026-09-08T05:23:46.476596+00:00",
+  "source_manifest": {
+    "workspace/generated/fd92a254906a/algorithm_tfidf_logistic_regression__llm_proposed/algorithm.py": "acdf40e28c50004b797fb8cc3db18b07c3c5f9f40de6ff6e5325e9012062cd23",
+    "workspace/generated/fd92a254906a/algorithm_tfidf_logistic_regression__llm_proposed/algorithm_meta.json": "a3292686055c8a537a8f44484292b344a153db97b706f76cdf1477d91ce92142",
+    "workspace/generated/fd92a254906a/algorithm_tfidf_logistic_regression__llm_proposed/generation_attempt_1.txt": "acdf40e28c50004b797fb8cc3db18b07c3c5f9f40de6ff6e5325e9012062cd23",
+    "workspace/generated/fd92a254906a/algorithm_tfidf_logistic_regression__llm_proposed/versions/v1.py": "acdf40e28c50004b797fb8cc3db18b07c3c5f9f40de6ff6e5325e9012062cd23",
+    "workspace/generated/fd92a254906a/algorithm_tfidf_logistic_regression__tfidf_bigram/algorithm.py": "42f2a8c8efa8462869c5524f1d2f0c6d877e6a6fa212c22c36fb920a93a6047a",
+    "workspace/generated/fd92a254906a/algorithm_tfidf_logistic_regression__tfidf_bigram/algorithm_meta.json": "a489047543e744703f240cb05bc31fc93ef385adece5f135e2d9cd2641aed552",
+    "workspace/generated/fd92a254906a/algorithm_tfidf_logistic_regression__tfidf_bigram/generation_attempt_1.txt": "42f2a8c8efa8462869c5524f1d2f0c6d877e6a6fa212c22c36fb920a93a6047a",
+    "workspace/generated/fd92a254906a/algorithm_tfidf_logistic_regression__tfidf_bigram/versions/v1.py": "42f2a8c8efa8462869c5524f1d2f0c6d877e6a6fa212c22c36fb920a93a6047a",
+    "workspace/generated/fd92a254906a/algorithm_tfidf_logistic_regression__tfidf_unigram/algorithm.py": "24377a815f118b62d045a09f16a9872a870082bfa026e292f1800cefb7eacffe",
+    "workspace/generated/fd92a254906a/algorithm_tfidf_logistic_regression__tfidf_unigram/algorithm_meta.json": "ed6581b3f1da62758f1d9bb35d475cfb86634ae36767dd2a78c1e3c2ea447b5d",
+    "workspace/generated/fd92a254906a/algorithm_tfidf_logistic_regression__tfidf_unigram/generation_attempt_1.txt": "24377a815f118b62d045a09f16a9872a870082bfa026e292f1800cefb7eacffe",
+    "workspace/generated/fd92a254906a/algorithm_tfidf_logistic_regression__tfidf_unigram/versions/v1.py": "24377a815f118b62d045a09f16a9872a870082bfa026e292f1800cefb7eacffe"
+  },
+  "frozen_guard_passed": true
+}

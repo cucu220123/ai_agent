@@ -1,0 +1,43 @@
+[RequirementAgent] started {"tool": "understand"}
+[LLM] {"call_id": "llm_0001", "purpose": "requirement", "status": "ok", "provider": "local_openai_compatible", "model": "Qwen2.5-14B-Instruct", "latency_ms": 20911.62, "token_usage": {"prompt_tokens": 1116, "completion_tokens": 527, "total_tokens": 1643}, "retry_count": 0}
+[RequirementAgent] completed {"tool": "understand"}
+[RetrievalAgent] started {"tool": "retrieve"}
+[RetrievalAgent] completed {"tool": "retrieve"}
+[GraphSearch] ok {}
+[PlannerAgent] started {"tool": "advise"}
+[LLM] {"call_id": "llm_0002", "purpose": "planning", "status": "ok", "provider": "local_openai_compatible", "model": "Qwen2.5-14B-Instruct", "latency_ms": 17505.26, "token_usage": {"prompt_tokens": 1090, "completion_tokens": 443, "total_tokens": 1533}, "retry_count": 0}
+[PlannerAgent] completed {"tool": "advise"}
+[PlannerAgent] started {"tool": "plan"}
+[PlannerAgent] completed {"tool": "plan"}
+[PlannerAgent] started {"tool": "search"}
+[PlannerAgent] completed {"tool": "search"}
+[CoderAgent] started {"tool": "generate"}
+[LLM] {"call_id": "llm_0003", "purpose": "code_generation", "status": "ok", "provider": "local_openai_compatible", "model": "Qwen3-Coder-30B-A3B-Instruct", "latency_ms": 67808.95, "token_usage": {"prompt_tokens": 2952, "completion_tokens": 690, "total_tokens": 3642}, "retry_count": 0}
+[CoderAgent] completed {"tool": "generate"}
+[CoderAgent] llm_code_accepted {"algorithm": "algorithm_random_forest__llm_proposed"}
+[Sandbox] started {"algorithm": "algorithm_random_forest__llm_proposed", "version_id": "75a03c08bc2c_algorithm_random_forest__llm_proposed_v1"}
+[ValidatorAgent] started {"tool": "validate"}
+[ValidatorAgent] completed {"tool": "validate"}
+[ValidatorAgent] passed {"algorithm": "algorithm_random_forest__llm_proposed", "round": 0, "version_id": "75a03c08bc2c_algorithm_random_forest__llm_proposed_v1", "metrics": {"accuracy": 0.81, "f1": 0.6068965517241379, "precision": 0.4943820224719101, "recall": 0.7857142857142857, "balanced_accuracy": 0.8006440281030445, "roc_auc": 0.8816598360655739, "pr_auc": 0.5780393268114618}}
+[CoderAgent] started {"tool": "generate"}
+[LLM] {"call_id": "llm_0004", "purpose": "code_generation", "status": "ok", "provider": "local_openai_compatible", "model": "Qwen3-Coder-30B-A3B-Instruct", "latency_ms": 60585.51, "token_usage": {"prompt_tokens": 2898, "completion_tokens": 615, "total_tokens": 3513}, "retry_count": 0}
+[CoderAgent] completed {"tool": "generate"}
+[CoderAgent] llm_code_accepted {"algorithm": "algorithm_logistic_regression__llm_proposed"}
+[Sandbox] started {"algorithm": "algorithm_logistic_regression__llm_proposed", "version_id": "75a03c08bc2c_algorithm_logistic_regression__llm_proposed_v1"}
+[ValidatorAgent] started {"tool": "validate"}
+[ValidatorAgent] completed {"tool": "validate"}
+[ValidatorAgent] passed {"algorithm": "algorithm_logistic_regression__llm_proposed", "round": 0, "version_id": "75a03c08bc2c_algorithm_logistic_regression__llm_proposed_v1", "metrics": {"accuracy": 0.85, "f1": 0.4578313253012048, "precision": 0.7037037037037037, "recall": 0.3392857142857143, "balanced_accuracy": 0.6532494145199064, "roc_auc": 0.8768296252927401, "pr_auc": 0.5898040878107842}}
+[CoderAgent] started {"tool": "generate"}
+[LLM] {"call_id": "llm_0005", "purpose": "code_generation", "status": "ok", "provider": "local_openai_compatible", "model": "Qwen3-Coder-30B-A3B-Instruct", "latency_ms": 69477.08, "token_usage": {"prompt_tokens": 2936, "completion_tokens": 731, "total_tokens": 3667}, "retry_count": 0}
+[CoderAgent] completed {"tool": "generate"}
+[CoderAgent] llm_code_accepted {"algorithm": "algorithm_gradient_boosting__llm_proposed"}
+[Sandbox] started {"algorithm": "algorithm_gradient_boosting__llm_proposed", "version_id": "75a03c08bc2c_algorithm_gradient_boosting__llm_proposed_v1"}
+[ValidatorAgent] started {"tool": "validate"}
+[ValidatorAgent] completed {"tool": "validate"}
+[ValidatorAgent] passed {"algorithm": "algorithm_gradient_boosting__llm_proposed", "round": 0, "version_id": "75a03c08bc2c_algorithm_gradient_boosting__llm_proposed_v1", "metrics": {"accuracy": 0.8566666666666667, "f1": 0.5567010309278351, "precision": 0.6585365853658537, "recall": 0.48214285714285715, "balanced_accuracy": 0.7123829039812647, "roc_auc": 0.895418618266979, "pr_auc": 0.6934071294027732}}
+[CuratorAgent] started {"tool": "curate"}
+[CuratorAgent] completed {"tool": "curate"}
+[ExplanationAgent] started {"tool": "explain"}
+[LLM] {"call_id": "llm_0006", "purpose": "explanation", "status": "ok", "provider": "local_openai_compatible", "model": "Qwen2.5-14B-Instruct", "latency_ms": 19067.73, "token_usage": {"prompt_tokens": 3770, "completion_tokens": 447, "total_tokens": 4217}, "retry_count": 0}
+[LLM] {"call_id": "llm_0007", "purpose": "explanation", "status": "ok", "provider": "local_openai_compatible", "model": "Qwen2.5-14B-Instruct", "latency_ms": 16147.76, "token_usage": {"prompt_tokens": 3836, "completion_tokens": 402, "total_tokens": 4238}, "retry_count": 0}
+[ExplanationAgent] completed {"tool": "explain"}
