@@ -67,6 +67,7 @@ def run(output: Path, provider: str, stage: str, prior_workspace: Path | None = 
         result = json.loads(selection_path.read_text())
         assert_real(result)
         final = FinalHoldoutEvaluator(ValidationRunner(90)).evaluate(result, development, data_root / 'final_test.csv', output / 'final_evaluation')
+        save(work / 'reports' / f"{result['run_id']}.final-evaluation.json", final)
         print('[TextAcceptance] final ' + final['status'].upper(), json.dumps(final['validation']['metrics']), flush=True)
         assert final['status'] == 'passed', final['validation']['errors']
     return {'output': str(output), 'stage': stage}

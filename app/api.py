@@ -113,12 +113,17 @@ def ingest_knowledge(request: IngestRequest) -> dict:
 @app.get("/run/{run_id}")
 def run_detail(run_id: str) -> dict:
     report = json.loads(report_path(run_id).read_text())
+    original_digest = hashlib.sha256(json.dumps(report, sort_keys=True).encode()).hexdigest()
     review_path = get_settings().reports_dir / f"{run_id}.explanation-review.json"
     if review_path.is_file():
         review = json.loads(review_path.read_text())
-        digest = hashlib.sha256(json.dumps(report, sort_keys=True).encode()).hexdigest()
-        if review.get("status") == "passed" and review.get("source_report_semantic_sha256") == digest:
+        if review.get("status") == "passed" and review.get("source_report_semantic_sha256") == original_digest:
             report["explanation_review"] = review
+    final_path = get_settings().reports_dir / f"{run_id}.final-evaluation.json"
+    if final_path.is_file():
+        final = json.loads(final_path.read_text())
+        if final.get("commitment", {}).get("selection_report_sha256") == original_digest and final["commitment"].get("selection_run_id") == run_id:
+            report["final_holdout"] = final
     return sanitize(report)
 
 

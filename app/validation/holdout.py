@@ -45,7 +45,10 @@ class FinalHoldoutEvaluator:
             if previous["commitment"] != commitment:
                 raise ValueError("final evaluation already committed to different code/data/selection")
             if result_path.exists():
-                return json.loads(result_path.read_text())
+                cached = json.loads(result_path.read_text())
+                if cached.get("commitment") != commitment:
+                    raise ValueError("cached final evaluation commitment mismatch")
+                return cached
             raise RuntimeError("final evaluation was interrupted; ledger retained, automatic re-evaluation prohibited")
         # Exclusive creation prevents concurrent consumers of the same final test.
         with lock.open("x", encoding="utf-8") as handle:

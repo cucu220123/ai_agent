@@ -45,3 +45,23 @@ def test_review_attachment_is_bound_to_original_report_content(tmp_path, monkeyp
     report['changed'] = True
     (reports / f'{run_id}.json').write_text(json.dumps(report))
     assert 'explanation_review' not in api.run_detail(run_id)
+
+
+def test_final_evaluation_attachment_preserves_development_results_and_rejects_stale_data():
+    import hashlib, json
+    import app.api as api
+    from app.config import get_settings
+    reports = get_settings().reports_dir
+    run_id = 'abcdef012346'
+    report = {'run_id': run_id, 'validation': {'status': 'passed', 'metrics': {'accuracy': .9}}}
+    source = reports / f'{run_id}.json'
+    source.write_text(json.dumps(report))
+    digest = hashlib.sha256(json.dumps(report, sort_keys=True).encode()).hexdigest()
+    final = {'status': 'failed', 'validation': {'metrics': {'accuracy': .6}}, 'commitment': {'selection_report_sha256': digest, 'selection_run_id': run_id}}
+    (reports / f'{run_id}.final-evaluation.json').write_text(json.dumps(final))
+    result = api.run_detail(run_id)
+    assert result['validation']['metrics']['accuracy'] == .9
+    assert result['final_holdout']['status'] == 'failed'
+    report['validation']['metrics']['accuracy'] = .95
+    source.write_text(json.dumps(report))
+    assert 'final_holdout' not in api.run_detail(run_id)
