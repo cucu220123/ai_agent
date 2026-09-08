@@ -1,0 +1,23 @@
+{
+  "status": "passed",
+  "run_id": "683902e2a7cf",
+  "source_versions": 3,
+  "llm_calls": 7,
+  "development_metrics": {
+    "accuracy": 0.8014311270125224,
+    "f1": 0.801423501113699,
+    "precision": 0.8014620460839827,
+    "recall": 0.8014311270125224,
+    "balanced_accuracy": 0.80142089093702
+  },
+  "final_metrics": {
+    "accuracy": 0.8241610738255034,
+    "f1": 0.8241382606860495,
+    "precision": 0.8243561094615367,
+    "recall": 0.8241610738255034,
+    "balanced_accuracy": 0.8241769725273141
+  },
+  "training_rows": 2234,
+  "final_rows": 745,
+  "final_feedback_to_agents": false
+}

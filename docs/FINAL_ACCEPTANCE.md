@@ -1,5 +1,7 @@
 # 实际验收：从审计到真实闭环
 
+后续补充验收已加入公开文本语料、独立最终测试与 86 项通过的测试，见 [TEXT_ACCEPTANCE.md](TEXT_ACCEPTANCE.md)。以下保留上一轮四阶段的原始结果与当时服务状态。
+
 本页对应 `examples/acceptance_real_20260907/` 中的原始证据。运行跨越 2026-09-07 UTC 至次日北京时间。证据中的时间使用 UTC；算法版本 hash 绑定实际执行的代码，不把历史运行改标为最新 commit 的运行。
 
 ## A. Before / After

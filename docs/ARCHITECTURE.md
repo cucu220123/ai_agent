@@ -2,6 +2,8 @@
 
 本文件描述当前代码。基线缺陷见 [TECHNICAL_AUDIT.md](TECHNICAL_AUDIT.md)，实测验收见 [FINAL_ACCEPTANCE.md](FINAL_ACCEPTANCE.md)。
 
+公开文本的补充验收通过 `scripts/run_text_acceptance.py` 在下面的开发工作流之后追加独立测试：冻结开发阶段 winner/源码/数据 hash → 全部开发集重新训练 → 仅评估最终测试集 → 保存独立报告。最终结果不进入规划/修复循环；API 按原报告 hash 附加显示，开发指标不被覆盖。具体协议见 [TEXT_ACCEPTANCE.md](TEXT_ACCEPTANCE.md)。
+
 ## 端到端工作流
 
 ```mermaid

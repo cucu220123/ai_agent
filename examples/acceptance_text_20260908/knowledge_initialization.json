@@ -1,0 +1,5 @@
+{
+  "source_workspace": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace",
+  "graph_sha256": "658fb4e6fa6ab9aa44c01df424ce9f69b8d8d196474d3bd090c3ee5671286ad8",
+  "policy": "reuse previous measured runs and failures; no fabricated history"
+}

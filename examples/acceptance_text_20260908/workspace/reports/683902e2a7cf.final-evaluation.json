@@ -1,0 +1,283 @@
+{
+  "status": "passed",
+  "timestamp": "2026-09-08T02:02:48.789810+00:00",
+  "commitment": {
+    "selection_run_id": "683902e2a7cf",
+    "selection_report_sha256": "5d73a9769febff48a025d7eb65fa87b9469a26563989d7add6fbd21a1b840c4c",
+    "winner_id": "algorithm_tfidf_logistic_regression__tfidf_bigram",
+    "source_sha256": "11c99592db87628837a03ea541b0b08ca92767a74be3e7e760e2fdd804c437f2",
+    "development_sha256": "1eeb8a0dbf3a7287544f50afa026552c2ea4a05a585901bf883d05de44750483",
+    "final_test_sha256": "9da56771c58681b06ab75a2db8d4fa8401e2510668965553affa6e8241bc40f2"
+  },
+  "validation": {
+    "status": "passed",
+    "algorithm": "TF-IDF Logistic Regression",
+    "checks": {
+      "static_safety": {
+        "passed": true,
+        "category": "ok",
+        "message": "algorithm protocol passed"
+      },
+      "interface_import": {
+        "passed": true,
+        "errors": [],
+        "message": "algorithm protocol passed"
+      },
+      "semantic_contract": {
+        "passed": true,
+        "errors": [],
+        "message": "generated code semantic contract passed"
+      },
+      "target_leakage": {
+        "passed": true,
+        "duplicate_target_columns": [],
+        "scope": "exact duplicate label detection; semantic leakage needs domain review"
+      },
+      "evaluation_split": {
+        "passed": true,
+        "mode": "frozen_final",
+        "training_rows": 2234,
+        "evaluation_rows": 745,
+        "evaluation_profile": {
+          "dataset_id": "dataset_9da56771c58681b0",
+          "sha256": "9da56771c58681b06ab75a2db8d4fa8401e2510668965553affa6e8241bc40f2",
+          "path": "/data3/xiaotianqi/ai_algorithm_factory/data/uci_sentiment/final_test.csv",
+          "rows": 745,
+          "row_count": 745,
+          "column_count": 2,
+          "columns": [
+            "text",
+            "label"
+          ],
+          "feature_columns": [
+            "text"
+          ],
+          "feature_count": 1,
+          "dtypes": {
+            "text": "object",
+            "label": "int64"
+          },
+          "missing_rates": {
+            "text": 0.0,
+            "label": 0.0
+          },
+          "numeric_fraction": 0.0,
+          "class_count": 2,
+          "class_balance": {
+            "0": 0.5006711409395973,
+            "1": 0.4993288590604027
+          },
+          "minority_rate": 0.4993288590604027,
+          "positive_rate": 0.4993288590604027
+        }
+      },
+      "isolated_execution": {
+        "passed": true,
+        "timeout": false,
+        "message": "isolated execution passed",
+        "environment_sanitized": true,
+        "resource_limits_applied": true,
+        "runtime_seconds": 1.6017335951328278,
+        "prediction_rows": 745,
+        "resource_limits": {
+          "applied": true,
+          "cpu_seconds": 90,
+          "address_space_mb": 8192,
+          "max_file_mb": 16
+        },
+        "sandbox": {
+          "network_audit_blocked": true,
+          "filesystem_audit_whitelist": true,
+          "production_isolation": false,
+          "network_namespace": true
+        },
+        "robustness": {
+          "small_batch": true,
+          "missing_values_and_unseen_categories": true,
+          "empty_input": "explicitly_rejected",
+          "invalid_input": "rejected"
+        },
+        "max_rss_kb": 1781956,
+        "cpu_seconds": 1.6394129999999998
+      },
+      "metric_integrity": {
+        "passed": true,
+        "source": "parent_process_trusted_metrics",
+        "disagreements": {}
+      },
+      "metrics": {
+        "passed": true,
+        "per_metric": {
+          "f1": true,
+          "accuracy": true
+        },
+        "thresholds": {
+          "f1": 0.7,
+          "accuracy": 0.7
+        },
+        "actual": {
+          "accuracy": 0.8241610738255034,
+          "f1": 0.8241382606860495,
+          "precision": 0.8243561094615367,
+          "recall": 0.8241610738255034,
+          "balanced_accuracy": 0.8241769725273141
+        }
+      },
+      "stability": {
+        "passed": true,
+        "same_seed_drift": 0.0,
+        "seeds": [
+          42,
+          42,
+          9
+        ],
+        "metric_variance": {
+          "accuracy": 1.232595164407831e-32,
+          "f1": 1.232595164407831e-32,
+          "precision": 0.0,
+          "recall": 1.232595164407831e-32,
+          "balanced_accuracy": 0.0
+        },
+        "normalized_variance": {
+          "accuracy": 1.232595164407831e-32,
+          "f1": 1.232595164407831e-32,
+          "precision": 0.0,
+          "recall": 1.232595164407831e-32,
+          "balanced_accuracy": 0.0
+        },
+        "variance_limit": 0.02
+      },
+      "latency": {
+        "passed": true,
+        "ms_per_row": 0.02958876574599503,
+        "limit_ms_per_row": null
+      },
+      "resource_usage": {
+        "passed": true,
+        "max_rss_kb": 1781956,
+        "cpu_seconds": 1.6394129999999998,
+        "latency_ms_per_row": 0.02958876574599503,
+        "limits": {
+          "applied": true,
+          "cpu_seconds": 90,
+          "address_space_mb": 8192,
+          "max_file_mb": 16
+        },
+        "sandbox": {
+          "network_audit_blocked": true,
+          "filesystem_audit_whitelist": true,
+          "production_isolation": false,
+          "network_namespace": true
+        }
+      },
+      "functional": {
+        "passed": true,
+        "prediction_rows": 745
+      },
+      "output_contract": {
+        "passed": true,
+        "required_outputs": [
+          "prediction"
+        ],
+        "metadata": {
+          "algorithm": "TF-IDF Logistic Regression",
+          "rationale": "This configuration uses TF-IDF vectorization followed by Logistic Regression for text classification. It handles missing values by filling with empty strings and manages unseen vocabulary through the vectorizer.",
+          "evidence_ids": [
+            "a054aaacecab:algorithm_tfidf_logistic_regression__tfidf_bigram:v2",
+            "a054aaacecab:algorithm_tfidf_logistic_regression__tfidf_bigram:v1",
+            "a054aaacecab",
+            "a054aaacecab:algorithm_tfidf_logistic_regression__tfidf_unigram:v3",
+            "a054aaacecab:algorithm_tfidf_logistic_regression__tfidf_unigram:v2",
+            "a054aaacecab:algorithm_tfidf_logistic_regression__tfidf_unigram:v1",
+            "a054aaacecab:algorithm_tfidf_logistic_regression__llm_proposed:v4",
+            "a054aaacecab:algorithm_tfidf_logistic_regression__llm_proposed:v3",
+            "a054aaacecab:algorithm_tfidf_logistic_regression__llm_proposed:v2",
+            "a054aaacecab:algorithm_tfidf_logistic_regression__llm_proposed:v1",
+            "failure_a054aaacecab_algorithm_tfidf_logistic_regression__tfidf_unigram_v3",
+            "repair_a054aaacecab_algorithm_tfidf_logistic_regression__tfidf_unigram_v3"
+          ]
+        }
+      },
+      "robustness": {
+        "passed": true,
+        "small_batch": true,
+        "missing_values_and_unseen_categories": true,
+        "empty_input": "explicitly_rejected",
+        "invalid_input": "rejected"
+      },
+      "runtime_budget": {
+        "passed": true,
+        "runtime_seconds": 2.027351453900337,
+        "timeout_seconds": 90
+      }
+    },
+    "metrics": {
+      "accuracy": 0.8241610738255034,
+      "f1": 0.8241382606860495,
+      "precision": 0.8243561094615367,
+      "recall": 0.8241610738255034,
+      "balanced_accuracy": 0.8241769725273141
+    },
+    "runtime_seconds": 2.027351453900337,
+    "errors": [],
+    "warnings": [],
+    "stdout": "",
+    "stderr": "",
+    "repair_round": 0,
+    "task_type": "text_classification",
+    "dataset_profile": {
+      "dataset_id": "dataset_1eeb8a0dbf3a7287",
+      "sha256": "1eeb8a0dbf3a7287544f50afa026552c2ea4a05a585901bf883d05de44750483",
+      "path": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_text_20260908/workspace/data/development.csv",
+      "rows": 2234,
+      "row_count": 2234,
+      "column_count": 2,
+      "columns": [
+        "text",
+        "label"
+      ],
+      "feature_columns": [
+        "text"
+      ],
+      "feature_count": 1,
+      "dtypes": {
+        "text": "object",
+        "label": "int64"
+      },
+      "missing_rates": {
+        "text": 0.0,
+        "label": 0.0
+      },
+      "numeric_fraction": 0.0,
+      "class_count": 2,
+      "class_balance": {
+        "0": 0.5004476275738585,
+        "1": 0.4995523724261415
+      },
+      "minority_rate": 0.4995523724261415,
+      "positive_rate": 0.4995523724261415
+    },
+    "resource_usage": {
+      "max_rss_kb": 1781956,
+      "cpu_seconds": 1.6394129999999998,
+      "latency_ms_per_row": 0.02958876574599503,
+      "limits": {
+        "applied": true,
+        "cpu_seconds": 90,
+        "address_space_mb": 8192,
+        "max_file_mb": 16
+      },
+      "sandbox": {
+        "network_audit_blocked": true,
+        "filesystem_audit_whitelist": true,
+        "production_isolation": false,
+        "network_namespace": true
+      }
+    },
+    "failure_type": null,
+    "root_cause": null
+  },
+  "selection_policy": "winner fixed by development results before reading final metrics; no repair or candidate substitution after final evaluation",
+  "final_test_feedback_to_agents": false,
+  "cached_rerun_only": true
+}

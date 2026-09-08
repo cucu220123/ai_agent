@@ -1,0 +1,2864 @@
+{
+  "items": [
+    {
+      "name": "runtime_budget",
+      "requirement": {},
+      "id": "constraint_d431d68438640229"
+    },
+    {
+      "name": "robustness",
+      "requirement": {},
+      "id": "constraint_2a874b9046c61e42"
+    },
+    {
+      "name": "output_contract",
+      "requirement": {},
+      "id": "constraint_37dfad9d34128201"
+    },
+    {
+      "name": "functional",
+      "requirement": {},
+      "id": "constraint_853c7b8c6dcc8a1f"
+    },
+    {
+      "name": "resource_usage",
+      "requirement": {},
+      "id": "constraint_2c92f7254a618f95"
+    },
+    {
+      "name": "latency",
+      "requirement": {},
+      "id": "constraint_5cd4dde842e64e26"
+    },
+    {
+      "name": "stability",
+      "requirement": {},
+      "id": "constraint_d8d289dd7e024548"
+    },
+    {
+      "name": "metrics",
+      "requirement": {
+        "f1": 0.7,
+        "accuracy": 0.7
+      },
+      "id": "constraint_968895483de9c0a5"
+    },
+    {
+      "name": "metric_integrity",
+      "requirement": {},
+      "id": "constraint_a1c4d99e5d657c3d"
+    },
+    {
+      "name": "isolated_execution",
+      "requirement": {},
+      "id": "constraint_4758d9abbeb1a98a"
+    },
+    {
+      "name": "evaluation_split",
+      "requirement": {},
+      "id": "constraint_a5b12227159d677b"
+    },
+    {
+      "name": "target_leakage",
+      "requirement": {},
+      "id": "constraint_fa0889ca320d2750"
+    },
+    {
+      "name": "semantic_contract",
+      "requirement": {},
+      "id": "constraint_c971c5b357e330ee"
+    },
+    {
+      "name": "interface_import",
+      "requirement": {},
+      "id": "constraint_35548a7d4c450985"
+    },
+    {
+      "name": "static_safety",
+      "requirement": {},
+      "id": "constraint_c78a38c56bdbd3e9"
+    },
+    {
+      "id": "683902e2a7cf_algorithm_tfidf_logistic_regression__tfidf_bigram_v1",
+      "algorithm_id": "algorithm_tfidf_logistic_regression",
+      "version": 1,
+      "parent_version": null,
+      "code_hash": "11c99592db87628837a03ea541b0b08ca92767a74be3e7e760e2fdd804c437f2",
+      "code_source": "llm",
+      "algorithm_path": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_text_20260908/workspace/generated/683902e2a7cf/algorithm_tfidf_logistic_regression__tfidf_bigram/versions/v1.py",
+      "status": "passed",
+      "timestamp": "2026-09-08T02:02:11.931825+00:00"
+    },
+    {
+      "dataset_id": "dataset_1eeb8a0dbf3a7287",
+      "sha256": "1eeb8a0dbf3a7287544f50afa026552c2ea4a05a585901bf883d05de44750483",
+      "path": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_text_20260908/workspace/data/development.csv",
+      "rows": 2234,
+      "row_count": 2234,
+      "column_count": 2,
+      "columns": [
+        "text",
+        "label"
+      ],
+      "feature_columns": [
+        "text"
+      ],
+      "feature_count": 1,
+      "dtypes": {
+        "text": "object",
+        "label": "int64"
+      },
+      "missing_rates": {
+        "text": 0.0,
+        "label": 0.0
+      },
+      "numeric_fraction": 0.0,
+      "class_count": 2,
+      "class_balance": {
+        "0": 0.5004476275738585,
+        "1": 0.4995523724261415
+      },
+      "minority_rate": 0.4995523724261415,
+      "positive_rate": 0.4995523724261415,
+      "name": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_text_20260908/workspace/data/development.csv",
+      "task_type": "text_classification",
+      "id": "dataset_1eeb8a0dbf3a7287"
+    },
+    {
+      "name": "median imputation",
+      "id": "preprocessing_f3eff5a94df7aea4"
+    },
+    {
+      "algorithm_id": "algorithm_tfidf_logistic_regression",
+      "parameters": {
+        "max_features": 5000,
+        "ngram_range": [
+          1,
+          2
+        ],
+        "max_iter": 100,
+        "C": 1.0,
+        "ngram_max": 2
+      },
+      "preprocessing": [
+        "median imputation"
+      ],
+      "variant": "tfidf_bigram",
+      "id": "config_dfa487b1e32d4f74"
+    },
+    {
+      "id": "683902e2a7cf_algorithm_tfidf_logistic_regression__tfidf_unigram_v1",
+      "algorithm_id": "algorithm_tfidf_logistic_regression",
+      "version": 1,
+      "parent_version": null,
+      "code_hash": "95c6bfbb3ce3ba2d84113194b976037c9574107209812f70c1639febd87f1f50",
+      "code_source": "llm",
+      "algorithm_path": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_text_20260908/workspace/generated/683902e2a7cf/algorithm_tfidf_logistic_regression__tfidf_unigram/versions/v1.py",
+      "status": "passed",
+      "timestamp": "2026-09-08T02:02:06.677733+00:00"
+    },
+    {
+      "algorithm_id": "algorithm_tfidf_logistic_regression",
+      "parameters": {
+        "max_features": 3000,
+        "ngram_range": [
+          1,
+          2
+        ],
+        "max_iter": 100,
+        "C": 1.0,
+        "ngram_max": 1
+      },
+      "preprocessing": [
+        "median imputation"
+      ],
+      "variant": "tfidf_unigram",
+      "id": "config_cdf162c62cecc3c3"
+    },
+    {
+      "id": "683902e2a7cf_algorithm_tfidf_logistic_regression__llm_proposed_v1",
+      "algorithm_id": "algorithm_tfidf_logistic_regression",
+      "version": 1,
+      "parent_version": null,
+      "code_hash": "968d8d003ea319df370493744fa00756e8aa99435d659efcbb165ec7ab679d5d",
+      "code_source": "llm",
+      "algorithm_path": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_text_20260908/workspace/generated/683902e2a7cf/algorithm_tfidf_logistic_regression__llm_proposed/versions/v1.py",
+      "status": "passed",
+      "timestamp": "2026-09-08T02:02:00.183233+00:00"
+    },
+    {
+      "name": "Use TF-IDF vectorization to convert text into numerical features.",
+      "id": "preprocessing_a7ba449fb69f797f"
+    },
+    {
+      "name": "Apply logistic regression without additional preprocessing steps.",
+      "id": "preprocessing_9929dd86179e6047"
+    },
+    {
+      "name": "Handle missing or empty text by replacing them with a placeholder string.",
+      "id": "preprocessing_5f4db9089bef0887"
+    },
+    {
+      "algorithm_id": "algorithm_tfidf_logistic_regression",
+      "parameters": {
+        "max_features": 5000,
+        "ngram_range": [
+          1,
+          2
+        ],
+        "max_iter": 100,
+        "C": 1.0
+      },
+      "preprocessing": [
+        "Handle missing or empty text by replacing them with a placeholder string.",
+        "Apply logistic regression without additional preprocessing steps.",
+        "Use TF-IDF vectorization to convert text into numerical features."
+      ],
+      "variant": "llm_proposed",
+      "id": "config_45e2813ec9fb2311"
+    },
+    {
+      "python": "3.10.19",
+      "dependencies": {
+        "numpy": "1.26.4",
+        "pandas": "2.2.3",
+        "scikit-learn": "1.2.2",
+        "networkx": "3.4.2",
+        "pydantic": "2.11.10"
+      },
+      "id": "environment_a720b9282e861c0f"
+    },
+    {
+      "name": "text_classification",
+      "task_type": "text_classification",
+      "id": "task_text_classification"
+    },
+    {
+      "id": "dependency_scikit_learn",
+      "name": "scikit-learn",
+      "version": ">=1.2"
+    },
+    {
+      "id": "task_binary_classification",
+      "name": "binary_classification",
+      "task_type": "binary_classification"
+    },
+    {
+      "id": "task_regression",
+      "name": "regression",
+      "task_type": "regression"
+    },
+    {
+      "id": "task_anomaly_detection",
+      "name": "anomaly_detection",
+      "task_type": "anomaly_detection"
+    },
+    {
+      "id": "task_multiclass_classification",
+      "name": "multiclass_classification",
+      "task_type": "multiclass_classification"
+    },
+    {
+      "id": "environment_python_sklearn",
+      "python": "3.10+",
+      "dependencies": [
+        "pandas",
+        "numpy",
+        "scikit-learn"
+      ]
+    },
+    {
+      "id": "metric_f1",
+      "name": "f1",
+      "direction": "max",
+      "task_types": [
+        "binary_classification",
+        "multiclass_classification",
+        "text_classification",
+        "anomaly_detection"
+      ]
+    },
+    {
+      "id": "metric_recall",
+      "name": "recall",
+      "direction": "max",
+      "task_types": [
+        "binary_classification",
+        "text_classification",
+        "anomaly_detection"
+      ]
+    },
+    {
+      "id": "metric_precision",
+      "name": "precision",
+      "direction": "max",
+      "task_types": [
+        "binary_classification",
+        "text_classification",
+        "anomaly_detection"
+      ]
+    },
+    {
+      "id": "metric_r2",
+      "name": "r2",
+      "direction": "max",
+      "task_types": [
+        "regression"
+      ]
+    },
+    {
+      "id": "metric_mae",
+      "name": "mae",
+      "direction": "min",
+      "task_types": [
+        "regression"
+      ]
+    },
+    {
+      "id": "metric_rmse",
+      "name": "rmse",
+      "direction": "min",
+      "task_types": [
+        "regression"
+      ]
+    },
+    {
+      "id": "metric_accuracy",
+      "name": "accuracy",
+      "direction": "max",
+      "task_types": [
+        "binary_classification",
+        "multiclass_classification",
+        "text_classification"
+      ]
+    },
+    {
+      "id": "metric_balanced_accuracy",
+      "name": "balanced_accuracy",
+      "direction": "max",
+      "task_types": [
+        "binary_classification"
+      ]
+    },
+    {
+      "id": "metric_pr_auc",
+      "name": "pr_auc",
+      "direction": "max",
+      "task_types": [
+        "binary_classification"
+      ]
+    },
+    {
+      "id": "metric_roc_auc",
+      "name": "roc_auc",
+      "direction": "max",
+      "task_types": [
+        "binary_classification"
+      ]
+    },
+    {
+      "name": "metrics",
+      "requirement": {},
+      "id": "constraint_68bd5c28a5979aa2"
+    },
+    {
+      "id": "a054aaacecab_algorithm_tfidf_logistic_regression__tfidf_bigram_v2",
+      "algorithm_id": "algorithm_tfidf_logistic_regression",
+      "version": 2,
+      "parent_version": "a054aaacecab_algorithm_tfidf_logistic_regression__tfidf_bigram_v1",
+      "code_hash": "8486460f2e83c8812a58f0d3a9d0c645eafe5a2b2a8a9e61ac3a19550eb61aec",
+      "code_source": "repaired_llm",
+      "algorithm_path": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/generated/a054aaacecab/algorithm_tfidf_logistic_regression__tfidf_bigram/versions/v2.py",
+      "status": "passed",
+      "timestamp": "2026-09-07T17:51:49.863593+00:00"
+    },
+    {
+      "dataset_id": "dataset_3b129777b0fa5fd4",
+      "sha256": "3b129777b0fa5fd4d7a55e80fda1c53641d176597fa8254ab0e5ed5f281daa77",
+      "path": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/text_demo.csv",
+      "rows": 16,
+      "row_count": 16,
+      "column_count": 2,
+      "columns": [
+        "text",
+        "label"
+      ],
+      "feature_columns": [
+        "text"
+      ],
+      "feature_count": 1,
+      "dtypes": {
+        "text": "object",
+        "label": "int64"
+      },
+      "missing_rates": {
+        "text": 0.0,
+        "label": 0.0
+      },
+      "numeric_fraction": 0.0,
+      "class_count": 2,
+      "class_balance": {
+        "1": 0.5625,
+        "0": 0.4375
+      },
+      "minority_rate": 0.4375,
+      "positive_rate": 0.5625,
+      "name": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/text_demo.csv",
+      "task_type": "text_classification",
+      "id": "dataset_3b129777b0fa5fd4"
+    },
+    {
+      "id": "repair_a054aaacecab_algorithm_tfidf_logistic_regression__tfidf_bigram_v1",
+      "failure_id": "failure_a054aaacecab_algorithm_tfidf_logistic_regression__tfidf_bigram_v1",
+      "algorithm_id": "algorithm_tfidf_logistic_regression",
+      "task_type": "text_classification",
+      "strategy": "Change the F1 score calculation in evaluate() from average='binary' to average='weighted' to properly handle the binary classification case with class imbalance, and ensure consistent metric computation.",
+      "success": true,
+      "provider": "local_openai_compatible",
+      "from_version": "a054aaacecab_algorithm_tfidf_logistic_regression__tfidf_bigram_v1",
+      "to_version": "a054aaacecab_algorithm_tfidf_logistic_regression__tfidf_bigram_v2",
+      "timestamp": "2026-09-07T17:51:49.020199+00:00"
+    },
+    {
+      "id": "a054aaacecab_algorithm_tfidf_logistic_regression__tfidf_bigram_v1",
+      "algorithm_id": "algorithm_tfidf_logistic_regression",
+      "version": 1,
+      "parent_version": null,
+      "code_hash": "7977dd6efaf20877ce1b3a869e9860da57b4457dc9639e513249503a438b284a",
+      "code_source": "llm",
+      "algorithm_path": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/generated/a054aaacecab/algorithm_tfidf_logistic_regression__tfidf_bigram/versions/v1.py",
+      "status": "failed",
+      "timestamp": "2026-09-07T17:51:43.057269+00:00"
+    },
+    {
+      "id": "a054aaacecab_algorithm_tfidf_logistic_regression__tfidf_unigram_v4",
+      "algorithm_id": "algorithm_tfidf_logistic_regression",
+      "version": 4,
+      "parent_version": "a054aaacecab_algorithm_tfidf_logistic_regression__tfidf_unigram_v3",
+      "code_hash": "635af841cd2fff49f958d7781123dc28dc6a81e50095b40cd25c0793097e8cfb",
+      "code_source": "repaired_llm",
+      "algorithm_path": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/generated/a054aaacecab/algorithm_tfidf_logistic_regression__tfidf_unigram/versions/v4.py",
+      "status": "passed",
+      "timestamp": "2026-09-07T17:51:36.085007+00:00"
+    },
+    {
+      "id": "repair_a054aaacecab_algorithm_tfidf_logistic_regression__tfidf_unigram_v3",
+      "failure_id": "failure_a054aaacecab_algorithm_tfidf_logistic_regression__tfidf_unigram_v3",
+      "algorithm_id": "algorithm_tfidf_logistic_regression",
+      "task_type": "text_classification",
+      "strategy": "Change the F1 score calculation in the evaluate function from average='binary' to average='weighted' to correctly reflect the weighted F1 score for binary text classification as specified in the requirements.",
+      "success": true,
+      "provider": "local_openai_compatible",
+      "from_version": "a054aaacecab_algorithm_tfidf_logistic_regression__tfidf_unigram_v3",
+      "to_version": "a054aaacecab_algorithm_tfidf_logistic_regression__tfidf_unigram_v4",
+      "timestamp": "2026-09-07T17:51:35.237838+00:00"
+    },
+    {
+      "id": "a054aaacecab_algorithm_tfidf_logistic_regression__tfidf_unigram_v3",
+      "algorithm_id": "algorithm_tfidf_logistic_regression",
+      "version": 3,
+      "parent_version": "a054aaacecab_algorithm_tfidf_logistic_regression__tfidf_unigram_v2",
+      "code_hash": "77c9e184b78d627786b332d557fc221f6d98f6ebe84049bbc28b0eacf45d82be",
+      "code_source": "repaired_llm",
+      "algorithm_path": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/generated/a054aaacecab/algorithm_tfidf_logistic_regression__tfidf_unigram/versions/v3.py",
+      "status": "failed",
+      "timestamp": "2026-09-07T17:51:28.761451+00:00"
+    },
+    {
+      "id": "repair_a054aaacecab_algorithm_tfidf_logistic_regression__tfidf_unigram_v2",
+      "failure_id": "failure_a054aaacecab_algorithm_tfidf_logistic_regression__tfidf_unigram_v2",
+      "algorithm_id": "algorithm_tfidf_logistic_regression",
+      "task_type": "text_classification",
+      "strategy": "Remove the invalid 'ngram_max' parameter from the TfidfVectorizer initialization and adjust the ngram_range to match the intended configuration.",
+      "success": false,
+      "provider": "local_openai_compatible",
+      "from_version": "a054aaacecab_algorithm_tfidf_logistic_regression__tfidf_unigram_v2",
+      "to_version": "a054aaacecab_algorithm_tfidf_logistic_regression__tfidf_unigram_v3",
+      "timestamp": "2026-09-07T17:51:27.852733+00:00"
+    },
+    {
+      "id": "a054aaacecab_algorithm_tfidf_logistic_regression__tfidf_unigram_v2",
+      "algorithm_id": "algorithm_tfidf_logistic_regression",
+      "version": 2,
+      "parent_version": "a054aaacecab_algorithm_tfidf_logistic_regression__tfidf_unigram_v1",
+      "code_hash": "bdecc6fe79362a413501c41318f6f2790fc22617dc56244298013b38e62dabe3",
+      "code_source": "repaired_llm",
+      "algorithm_path": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/generated/a054aaacecab/algorithm_tfidf_logistic_regression__tfidf_unigram/versions/v2.py",
+      "status": "failed",
+      "timestamp": "2026-09-07T17:51:25.008140+00:00"
+    },
+    {
+      "id": "repair_a054aaacecab_algorithm_tfidf_logistic_regression__tfidf_unigram_v1",
+      "failure_id": "failure_a054aaacecab_algorithm_tfidf_logistic_regression__tfidf_unigram_v1",
+      "algorithm_id": "algorithm_tfidf_logistic_regression",
+      "task_type": "text_classification",
+      "strategy": "Remove the 'max_iter' parameter from the TfidfVectorizer configuration in the pipeline, since it's not a valid argument for that component.",
+      "success": false,
+      "provider": "local_openai_compatible",
+      "from_version": "a054aaacecab_algorithm_tfidf_logistic_regression__tfidf_unigram_v1",
+      "to_version": "a054aaacecab_algorithm_tfidf_logistic_regression__tfidf_unigram_v2",
+      "timestamp": "2026-09-07T17:51:24.475421+00:00"
+    },
+    {
+      "id": "a054aaacecab_algorithm_tfidf_logistic_regression__tfidf_unigram_v1",
+      "algorithm_id": "algorithm_tfidf_logistic_regression",
+      "version": 1,
+      "parent_version": null,
+      "code_hash": "cfb44e2892368d86e2cd0d4a718bc695a21e4c9ba54ce1dab0f3133ac870133b",
+      "code_source": "llm",
+      "algorithm_path": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/generated/a054aaacecab/algorithm_tfidf_logistic_regression__tfidf_unigram/versions/v1.py",
+      "status": "failed",
+      "timestamp": "2026-09-07T17:51:20.720746+00:00"
+    },
+    {
+      "id": "a054aaacecab_algorithm_tfidf_logistic_regression__llm_proposed_v4",
+      "algorithm_id": "algorithm_tfidf_logistic_regression",
+      "version": 4,
+      "parent_version": "a054aaacecab_algorithm_tfidf_logistic_regression__llm_proposed_v3",
+      "code_hash": "ba082e5292524dad53b31240f7d6ccd72eb4d91716520b53deaa5948c4260fcf",
+      "code_source": "repaired_llm",
+      "algorithm_path": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/generated/a054aaacecab/algorithm_tfidf_logistic_regression__llm_proposed/versions/v4.py",
+      "status": "failed",
+      "timestamp": "2026-09-07T17:51:16.258544+00:00"
+    },
+    {
+      "id": "repair_a054aaacecab_algorithm_tfidf_logistic_regression__llm_proposed_v3",
+      "failure_id": "failure_a054aaacecab_algorithm_tfidf_logistic_regression__llm_proposed_v3",
+      "algorithm_id": "algorithm_tfidf_logistic_regression",
+      "task_type": "text_classification",
+      "strategy": "Modify the text preprocessing function to return a 2D numpy array or DataFrame instead of a Series. This ensures compatibility with ColumnTransformer's validation requirements.",
+      "success": false,
+      "provider": "local_openai_compatible",
+      "from_version": "a054aaacecab_algorithm_tfidf_logistic_regression__llm_proposed_v3",
+      "to_version": "a054aaacecab_algorithm_tfidf_logistic_regression__llm_proposed_v4",
+      "timestamp": "2026-09-07T17:51:15.325033+00:00"
+    },
+    {
+      "id": "a054aaacecab_algorithm_tfidf_logistic_regression__llm_proposed_v3",
+      "algorithm_id": "algorithm_tfidf_logistic_regression",
+      "version": 3,
+      "parent_version": "a054aaacecab_algorithm_tfidf_logistic_regression__llm_proposed_v2",
+      "code_hash": "9eed9efc6a853680ee11018846dd7bbcaae46564b7ea8dbb550bb69635fbbcb6",
+      "code_source": "repaired_llm",
+      "algorithm_path": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/generated/a054aaacecab/algorithm_tfidf_logistic_regression__llm_proposed/versions/v3.py",
+      "status": "failed",
+      "timestamp": "2026-09-07T17:51:10.622389+00:00"
+    },
+    {
+      "id": "repair_a054aaacecab_algorithm_tfidf_logistic_regression__llm_proposed_v2",
+      "failure_id": "failure_a054aaacecab_algorithm_tfidf_logistic_regression__llm_proposed_v2",
+      "algorithm_id": "algorithm_tfidf_logistic_regression",
+      "task_type": "text_classification",
+      "strategy": "Fix the text preprocessing by ensuring the input to TfidfVectorizer is properly formatted as a list of strings. Remove the custom FunctionTransformer that was incorrectly reshaping the data and instead rely on direct column selection with proper string handling.",
+      "success": false,
+      "provider": "local_openai_compatible",
+      "from_version": "a054aaacecab_algorithm_tfidf_logistic_regression__llm_proposed_v2",
+      "to_version": "a054aaacecab_algorithm_tfidf_logistic_regression__llm_proposed_v3",
+      "timestamp": "2026-09-07T17:51:09.532135+00:00"
+    },
+    {
+      "id": "a054aaacecab_algorithm_tfidf_logistic_regression__llm_proposed_v2",
+      "algorithm_id": "algorithm_tfidf_logistic_regression",
+      "version": 2,
+      "parent_version": "a054aaacecab_algorithm_tfidf_logistic_regression__llm_proposed_v1",
+      "code_hash": "459deb5d06fd076eba4a06fd43939568fde39be8f2e78dfa43703e6329e5b038",
+      "code_source": "repaired_llm",
+      "algorithm_path": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/generated/a054aaacecab/algorithm_tfidf_logistic_regression__llm_proposed/versions/v2.py",
+      "status": "failed",
+      "timestamp": "2026-09-07T17:51:06.511032+00:00"
+    },
+    {
+      "id": "repair_a054aaacecab_algorithm_tfidf_logistic_regression__llm_proposed_v1",
+      "failure_id": "failure_a054aaacecab_algorithm_tfidf_logistic_regression__llm_proposed_v1",
+      "algorithm_id": "algorithm_tfidf_logistic_regression",
+      "task_type": "text_classification",
+      "strategy": "Replace the FunctionTransformer with a custom transformer that ensures the output is always a 2D numpy array or pandas DataFrame. This will make the ColumnTransformer happy by providing the correct dimensional output format.",
+      "success": false,
+      "provider": "local_openai_compatible",
+      "from_version": "a054aaacecab_algorithm_tfidf_logistic_regression__llm_proposed_v1",
+      "to_version": "a054aaacecab_algorithm_tfidf_logistic_regression__llm_proposed_v2",
+      "timestamp": "2026-09-07T17:51:05.751946+00:00"
+    },
+    {
+      "id": "a054aaacecab_algorithm_tfidf_logistic_regression__llm_proposed_v1",
+      "algorithm_id": "algorithm_tfidf_logistic_regression",
+      "version": 1,
+      "parent_version": null,
+      "code_hash": "3a7ca1083b885153a14dda35bfa91c68aafa87182e8c2da54b000e747f0e0160",
+      "code_source": "llm",
+      "algorithm_path": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/generated/a054aaacecab/algorithm_tfidf_logistic_regression__llm_proposed/versions/v1.py",
+      "status": "failed",
+      "timestamp": "2026-09-07T17:51:01.651301+00:00"
+    },
+    {
+      "algorithm_id": "algorithm_tfidf_logistic_regression",
+      "parameters": {
+        "max_features": 5000,
+        "ngram_range": [
+          1,
+          2
+        ],
+        "max_iter": 100,
+        "C": 1.0
+      },
+      "preprocessing": [
+        "Use TF-IDF vectorization to convert text into numerical features.",
+        "Handle missing or empty text by replacing them with a placeholder string.",
+        "Apply logistic regression without additional preprocessing steps."
+      ],
+      "variant": "llm_proposed",
+      "id": "config_6b248e467d0a42de"
+    },
+    {
+      "name": "metrics",
+      "requirement": {
+        "roc_auc": 0.8
+      },
+      "id": "constraint_92fda7bce69b57c8"
+    },
+    {
+      "id": "53ac387cea5c_algorithm_gradient_boosting__llm_proposed_v2",
+      "algorithm_id": "algorithm_gradient_boosting",
+      "version": 2,
+      "parent_version": "53ac387cea5c_algorithm_gradient_boosting__llm_proposed_v1",
+      "code_hash": "1d726e5712c0c51d27d4d7aa37f7143ac13d1043a8133eb42b67796c7699b0ba",
+      "code_source": "repaired_llm",
+      "algorithm_path": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/generated/53ac387cea5c/algorithm_gradient_boosting__llm_proposed/versions/v2.py",
+      "status": "passed",
+      "timestamp": "2026-09-07T17:26:03.079363+00:00"
+    },
+    {
+      "dataset_id": "dataset_4bf999a657407039",
+      "sha256": "4bf999a657407039780c32ce01e9ca9cd2d1fdafa131747b9ebb4e8ef8ef8e45",
+      "path": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/churn_first.csv",
+      "rows": 1200,
+      "row_count": 1200,
+      "column_count": 8,
+      "columns": [
+        "age",
+        "region",
+        "login_count_30d",
+        "total_spend",
+        "complaint_count",
+        "membership_level",
+        "tenure_months",
+        "churn"
+      ],
+      "feature_columns": [
+        "age",
+        "region",
+        "login_count_30d",
+        "total_spend",
+        "complaint_count",
+        "membership_level",
+        "tenure_months"
+      ],
+      "feature_count": 7,
+      "dtypes": {
+        "age": "int64",
+        "region": "object",
+        "login_count_30d": "float64",
+        "total_spend": "float64",
+        "complaint_count": "int64",
+        "membership_level": "object",
+        "tenure_months": "int64",
+        "churn": "int64"
+      },
+      "missing_rates": {
+        "age": 0.0,
+        "region": 0.015,
+        "login_count_30d": 0.01,
+        "total_spend": 0.025,
+        "complaint_count": 0.0,
+        "membership_level": 0.0,
+        "tenure_months": 0.0,
+        "churn": 0.0
+      },
+      "numeric_fraction": 0.7142857142857143,
+      "class_count": 2,
+      "class_balance": {
+        "0": 0.8475,
+        "1": 0.1525
+      },
+      "minority_rate": 0.1525,
+      "positive_rate": 0.1525,
+      "name": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/churn_first.csv",
+      "task_type": "binary_classification",
+      "id": "dataset_4bf999a657407039"
+    },
+    {
+      "id": "repair_53ac387cea5c_algorithm_gradient_boosting__llm_proposed_v1",
+      "failure_id": "failure_53ac387cea5c_algorithm_gradient_boosting__llm_proposed_v1",
+      "algorithm_id": "algorithm_gradient_boosting",
+      "task_type": "binary_classification",
+      "strategy": "1) Implement the missing 'predict' function that matches the required interface. 2) Fix the typo in the predict function name. 3) Ensure all required functions (train, predict, evaluate, predict_proba, metadata) are properly defined. 4) Maintain the existing functionality while ensuring compliance with the host execution contract.",
+      "success": true,
+      "provider": "local_openai_compatible",
+      "from_version": "53ac387cea5c_algorithm_gradient_boosting__llm_proposed_v1",
+      "to_version": "53ac387cea5c_algorithm_gradient_boosting__llm_proposed_v2",
+      "timestamp": "2026-09-07T17:26:01.921062+00:00"
+    },
+    {
+      "id": "53ac387cea5c_algorithm_gradient_boosting__llm_proposed_v1",
+      "algorithm_id": "algorithm_gradient_boosting",
+      "version": 1,
+      "parent_version": null,
+      "code_hash": "549c6f01870463641f0182babd499c84e755512ffdb171c5f7990e86f6f77df9",
+      "code_source": "llm",
+      "algorithm_path": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/generated/53ac387cea5c/algorithm_gradient_boosting__llm_proposed/versions/v1.py",
+      "status": "failed",
+      "timestamp": "2026-09-07T17:25:59.650279+00:00"
+    },
+    {
+      "name": "encode_categorical_variables",
+      "id": "preprocessing_e30ccf02b0837f02"
+    },
+    {
+      "name": "handle_missing_values",
+      "id": "preprocessing_8d29697f8be324cb"
+    },
+    {
+      "name": "handle_class_imbalance",
+      "id": "preprocessing_8817df495c5b2800"
+    },
+    {
+      "algorithm_id": "algorithm_gradient_boosting",
+      "parameters": {
+        "n_estimators": 100,
+        "learning_rate": 0.1,
+        "max_depth": 3,
+        "random_state": 42
+      },
+      "preprocessing": [
+        "handle_class_imbalance",
+        "handle_missing_values",
+        "encode_categorical_variables"
+      ],
+      "variant": "llm_proposed",
+      "id": "config_ac31cc3eeec188e3"
+    },
+    {
+      "id": "repair_0f7edacd5655_algorithm_logistic_regression__llm_proposed_v1",
+      "failure_id": "failure_0f7edacd5655_algorithm_logistic_regression__llm_proposed_v1",
+      "algorithm_id": "algorithm_logistic_regression",
+      "task_type": "binary_classification",
+      "strategy": [
+        "no accepted LLM revision; source unchanged"
+      ],
+      "success": false,
+      "provider": "openai",
+      "from_version": "0f7edacd5655_algorithm_logistic_regression__llm_proposed_v1",
+      "to_version": null,
+      "timestamp": "2026-09-07T17:17:06.261548+00:00"
+    },
+    {
+      "id": "0f7edacd5655_algorithm_logistic_regression__llm_proposed_v1",
+      "algorithm_id": "algorithm_logistic_regression",
+      "version": 1,
+      "parent_version": null,
+      "code_hash": "32361992c658628446e09cf2645c68e4d498a7e90486685b236b8189eff690bb",
+      "code_source": "llm",
+      "algorithm_path": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/generated/0f7edacd5655/algorithm_logistic_regression__llm_proposed/versions/v1.py",
+      "status": "failed",
+      "timestamp": "2026-09-07T17:17:03.866609+00:00"
+    },
+    {
+      "algorithm_id": "algorithm_logistic_regression",
+      "parameters": {
+        "C": 1.0,
+        "max_iter": 100,
+        "class_weight": "balanced"
+      },
+      "preprocessing": [
+        "handle_missing_values",
+        "encode_categorical_variables",
+        "handle_class_imbalance"
+      ],
+      "variant": "llm_proposed",
+      "id": "config_37acfd815bdf6f0e"
+    },
+    {
+      "id": "repair_2b2a3d8a9bac_algorithm_logistic_regression__llm_proposed_v1",
+      "failure_id": "failure_2b2a3d8a9bac_algorithm_logistic_regression__llm_proposed_v1",
+      "algorithm_id": "algorithm_logistic_regression",
+      "task_type": "binary_classification",
+      "strategy": [
+        "no accepted LLM revision; source unchanged"
+      ],
+      "success": false,
+      "provider": "openai",
+      "from_version": "2b2a3d8a9bac_algorithm_logistic_regression__llm_proposed_v1",
+      "to_version": null,
+      "timestamp": "2026-09-07T17:00:09.622802+00:00"
+    },
+    {
+      "id": "2b2a3d8a9bac_algorithm_logistic_regression__llm_proposed_v1",
+      "algorithm_id": "algorithm_logistic_regression",
+      "version": 1,
+      "parent_version": null,
+      "code_hash": "ef7b1b8b1ed5c6811b1689b4b260990980e21e5316d16a92cd8b6caf4d67942d",
+      "code_source": "llm",
+      "algorithm_path": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/generated/2b2a3d8a9bac/algorithm_logistic_regression__llm_proposed/versions/v1.py",
+      "status": "failed",
+      "timestamp": "2026-09-07T17:00:07.446703+00:00"
+    },
+    {
+      "id": "repair_9364e416a38a_algorithm_random_forest__llm_proposed_v1",
+      "failure_id": "failure_9364e416a38a_algorithm_random_forest__llm_proposed_v1",
+      "algorithm_id": "algorithm_random_forest",
+      "task_type": "binary_classification",
+      "strategy": [
+        "no accepted LLM revision; source unchanged"
+      ],
+      "success": false,
+      "provider": "openai",
+      "from_version": "9364e416a38a_algorithm_random_forest__llm_proposed_v1",
+      "to_version": null,
+      "timestamp": "2026-09-07T16:43:42.497707+00:00"
+    },
+    {
+      "id": "9364e416a38a_algorithm_random_forest__llm_proposed_v1",
+      "algorithm_id": "algorithm_random_forest",
+      "version": 1,
+      "parent_version": null,
+      "code_hash": "5bbd0b6132d22a8a5ab130e78274c0743d2060294e714d8591a07fab9be9cec4",
+      "code_source": "llm",
+      "algorithm_path": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/generated/9364e416a38a/algorithm_random_forest__llm_proposed/versions/v1.py",
+      "status": "failed",
+      "timestamp": "2026-09-07T16:43:38.846041+00:00"
+    },
+    {
+      "dataset_id": "dataset_b784a74053cc0c28",
+      "sha256": "b784a74053cc0c28eada41097a3e2c51cfcaa1970044a4c3a150d322db25ac4a",
+      "path": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/churn_second.csv",
+      "rows": 1050,
+      "row_count": 1050,
+      "column_count": 8,
+      "columns": [
+        "age",
+        "region",
+        "login_count_30d",
+        "total_spend",
+        "complaint_count",
+        "membership_level",
+        "tenure_months",
+        "churn"
+      ],
+      "feature_columns": [
+        "age",
+        "region",
+        "login_count_30d",
+        "total_spend",
+        "complaint_count",
+        "membership_level",
+        "tenure_months"
+      ],
+      "feature_count": 7,
+      "dtypes": {
+        "age": "int64",
+        "region": "object",
+        "login_count_30d": "float64",
+        "total_spend": "float64",
+        "complaint_count": "int64",
+        "membership_level": "object",
+        "tenure_months": "int64",
+        "churn": "int64"
+      },
+      "missing_rates": {
+        "age": 0.0,
+        "region": 0.014285714285714285,
+        "login_count_30d": 0.009523809523809525,
+        "total_spend": 0.024761904761904763,
+        "complaint_count": 0.0,
+        "membership_level": 0.0,
+        "tenure_months": 0.0,
+        "churn": 0.0
+      },
+      "numeric_fraction": 0.7142857142857143,
+      "class_count": 2,
+      "class_balance": {
+        "0": 0.8019047619047619,
+        "1": 0.1980952380952381
+      },
+      "minority_rate": 0.1980952380952381,
+      "positive_rate": 0.1980952380952381,
+      "name": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/churn_second.csv",
+      "task_type": "binary_classification",
+      "id": "dataset_b784a74053cc0c28"
+    },
+    {
+      "algorithm_id": "algorithm_random_forest",
+      "parameters": {
+        "n_estimators": 100,
+        "max_depth": 3,
+        "random_state": 42,
+        "min_samples_leaf": 1
+      },
+      "preprocessing": [
+        "handle_missing_values",
+        "encode_categorical_variables",
+        "handle_class_imbalance"
+      ],
+      "variant": "llm_proposed",
+      "id": "config_db6ef0c2abcb6241"
+    },
+    {
+      "id": "9364e416a38a_algorithm_gradient_boosting__llm_proposed_v1",
+      "algorithm_id": "algorithm_gradient_boosting",
+      "version": 1,
+      "parent_version": null,
+      "code_hash": "0567ba56e0a0a38e13cd1497f2a1023a0ab92916be115eb73627031dca832782",
+      "code_source": "llm",
+      "algorithm_path": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/generated/9364e416a38a/algorithm_gradient_boosting__llm_proposed/versions/v1.py",
+      "status": "passed",
+      "timestamp": "2026-09-07T16:43:31.285710+00:00"
+    },
+    {
+      "algorithm_id": "algorithm_gradient_boosting",
+      "parameters": {
+        "n_estimators": 100,
+        "learning_rate": 0.1,
+        "max_depth": 3,
+        "random_state": 42
+      },
+      "preprocessing": [
+        "handle_missing_values",
+        "encode_categorical_variables",
+        "handle_class_imbalance"
+      ],
+      "variant": "llm_proposed",
+      "id": "config_367b60aa3b6331a3"
+    },
+    {
+      "id": "9364e416a38a_algorithm_logistic_regression__llm_proposed_v1",
+      "algorithm_id": "algorithm_logistic_regression",
+      "version": 1,
+      "parent_version": null,
+      "code_hash": "b26d8a34f550dc936bca59d4ee25ab9299097c6864cb79042e41e7091f1f03a7",
+      "code_source": "llm",
+      "algorithm_path": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/generated/9364e416a38a/algorithm_logistic_regression__llm_proposed/versions/v1.py",
+      "status": "passed",
+      "timestamp": "2026-09-07T16:43:22.907175+00:00"
+    },
+    {
+      "algorithm_id": "algorithm_logistic_regression",
+      "parameters": {
+        "C": 1.0,
+        "max_iter": 100
+      },
+      "preprocessing": [
+        "handle_missing_values",
+        "encode_categorical_variables",
+        "handle_class_imbalance"
+      ],
+      "variant": "llm_proposed",
+      "id": "config_b3891182745c78ac"
+    },
+    {
+      "id": "metric_f1_score",
+      "name": "F1 Score",
+      "origin": "llm_extracted",
+      "confidence": 1.0,
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+        "evidence_span": "f1",
+        "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+        "char_start": 1679,
+        "line_start": 69
+      },
+      "provenance_records": [
+        {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+          "evidence_span": "f1",
+          "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+          "char_start": 1679,
+          "line_start": 69
+        }
+      ]
+    },
+    {
+      "rows": 1200,
+      "columns": 8,
+      "feature_columns": 7,
+      "numeric_fraction": 0.7142857142857143,
+      "class_balance": {
+        "0": 0.8475,
+        "1": 0.1525
+      },
+      "id": "dataset_churn_first",
+      "name": "Churn First",
+      "origin": "llm_extracted",
+      "confidence": 1.0,
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+        "evidence_span": "dataset_4bf999a657407039",
+        "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+        "char_start": 142,
+        "line_start": 6
+      },
+      "provenance_records": [
+        {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+          "evidence_span": "dataset_4bf999a657407039",
+          "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+          "char_start": 142,
+          "line_start": 6
+        }
+      ]
+    },
+    {
+      "entities": [
+        {
+          "id": "entity_e75abaafdd1b4be9",
+          "type": "ValidationRun",
+          "name": "Validation Run",
+          "properties": {
+            "status": "passed",
+            "metrics": {
+              "accuracy": 0.8766666666666667,
+              "f1": 0.39344262295081966,
+              "precision": 0.8,
+              "recall": 0.2608695652173913,
+              "balanced_accuracy": 0.6245292707976721,
+              "roc_auc": 0.9288770968846285,
+              "pr_auc": 0.7114689013236358
+            },
+            "runtime_seconds": 2.076532319188118,
+            "resource_usage": {
+              "max_rss_kb": 1715872,
+              "cpu_seconds": 1.670737,
+              "latency_ms_per_row": 0.037162850300470986
+            }
+          },
+          "evidence_span": "6bde3f2c39b8",
+          "confidence": 1.0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+            "evidence_span": "6bde3f2c39b8",
+            "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+            "char_start": 15,
+            "line_start": 2
+          },
+          "provenance_records": [
+            {
+              "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+              "evidence_span": "6bde3f2c39b8",
+              "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+              "char_start": 15,
+              "line_start": 2
+            }
+          ]
+        },
+        {
+          "id": "entity_c7da26b4e8224cd6",
+          "type": "Algorithm",
+          "name": "Logistic Regression",
+          "properties": {},
+          "evidence_span": "Logistic Regression",
+          "confidence": 1.0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+            "evidence_span": "Logistic Regression",
+            "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+            "char_start": 46,
+            "line_start": 3
+          },
+          "provenance_records": [
+            {
+              "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+              "evidence_span": "Logistic Regression",
+              "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+              "char_start": 46,
+              "line_start": 3
+            }
+          ]
+        },
+        {
+          "id": "entity_1b73346ad7a51fce",
+          "type": "Task",
+          "name": "Binary Classification",
+          "properties": {},
+          "evidence_span": "binary_classification",
+          "confidence": 1.0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+            "evidence_span": "binary_classification",
+            "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+            "char_start": 84,
+            "line_start": 4
+          },
+          "provenance_records": [
+            {
+              "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+              "evidence_span": "binary_classification",
+              "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+              "char_start": 84,
+              "line_start": 4
+            }
+          ]
+        },
+        {
+          "id": "entity_c203f7b6d5dddffb",
+          "type": "Dataset",
+          "name": "Churn First",
+          "properties": {
+            "rows": 1200,
+            "columns": 8,
+            "feature_columns": 7,
+            "numeric_fraction": 0.7142857142857143,
+            "class_balance": {
+              "0": 0.8475,
+              "1": 0.1525
+            }
+          },
+          "evidence_span": "dataset_4bf999a657407039",
+          "confidence": 1.0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+            "evidence_span": "dataset_4bf999a657407039",
+            "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+            "char_start": 142,
+            "line_start": 6
+          },
+          "provenance_records": [
+            {
+              "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+              "evidence_span": "dataset_4bf999a657407039",
+              "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+              "char_start": 142,
+              "line_start": 6
+            }
+          ]
+        },
+        {
+          "id": "entity_ea5034abd6bea671",
+          "type": "Metric",
+          "name": "Accuracy",
+          "properties": {},
+          "evidence_span": "accuracy",
+          "confidence": 1.0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+            "evidence_span": "accuracy",
+            "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+            "char_start": 1641,
+            "line_start": 68
+          },
+          "provenance_records": [
+            {
+              "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+              "evidence_span": "accuracy",
+              "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+              "char_start": 1641,
+              "line_start": 68
+            }
+          ]
+        },
+        {
+          "id": "entity_865106a346ef7b54",
+          "type": "Metric",
+          "name": "F1 Score",
+          "properties": {},
+          "evidence_span": "f1",
+          "confidence": 1.0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+            "evidence_span": "f1",
+            "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+            "char_start": 1679,
+            "line_start": 69
+          },
+          "provenance_records": [
+            {
+              "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+              "evidence_span": "f1",
+              "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+              "char_start": 1679,
+              "line_start": 69
+            }
+          ]
+        },
+        {
+          "id": "entity_1a2f4efee3a2cb10",
+          "type": "Metric",
+          "name": "Precision",
+          "properties": {},
+          "evidence_span": "precision",
+          "confidence": 1.0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+            "evidence_span": "precision",
+            "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+            "char_start": 1712,
+            "line_start": 70
+          },
+          "provenance_records": [
+            {
+              "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+              "evidence_span": "precision",
+              "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+              "char_start": 1712,
+              "line_start": 70
+            }
+          ]
+        },
+        {
+          "id": "entity_2813a73bb406d19a",
+          "type": "Metric",
+          "name": "Recall",
+          "properties": {},
+          "evidence_span": "recall",
+          "confidence": 1.0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+            "evidence_span": "recall",
+            "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+            "char_start": 1736,
+            "line_start": 71
+          },
+          "provenance_records": [
+            {
+              "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+              "evidence_span": "recall",
+              "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+              "char_start": 1736,
+              "line_start": 71
+            }
+          ]
+        },
+        {
+          "id": "entity_c40b17eaac5defaa",
+          "type": "Metric",
+          "name": "Balanced Accuracy",
+          "properties": {},
+          "evidence_span": "balanced_accuracy",
+          "confidence": 1.0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+            "evidence_span": "balanced_accuracy",
+            "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+            "char_start": 1772,
+            "line_start": 72
+          },
+          "provenance_records": [
+            {
+              "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+              "evidence_span": "balanced_accuracy",
+              "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+              "char_start": 1772,
+              "line_start": 72
+            }
+          ]
+        },
+        {
+          "id": "entity_701665ec00502874",
+          "type": "Metric",
+          "name": "ROC AUC",
+          "properties": {},
+          "evidence_span": "roc_auc",
+          "confidence": 1.0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+            "evidence_span": "roc_auc",
+            "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+            "char_start": 1819,
+            "line_start": 73
+          },
+          "provenance_records": [
+            {
+              "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+              "evidence_span": "roc_auc",
+              "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+              "char_start": 1819,
+              "line_start": 73
+            }
+          ]
+        },
+        {
+          "id": "entity_e30b8fcf40be0f57",
+          "type": "Metric",
+          "name": "PR AUC",
+          "properties": {},
+          "evidence_span": "pr_auc",
+          "confidence": 1.0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+            "evidence_span": "pr_auc",
+            "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+            "char_start": 1856,
+            "line_start": 74
+          },
+          "provenance_records": [
+            {
+              "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+              "evidence_span": "pr_auc",
+              "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+              "char_start": 1856,
+              "line_start": 74
+            }
+          ]
+        }
+      ],
+      "relations": [
+        {
+          "source": "entity_e75abaafdd1b4be9",
+          "relation": "VALIDATES",
+          "target": "entity_c7da26b4e8224cd6",
+          "evidence_span": "6bde3f2c39b8",
+          "confidence": 1.0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+            "evidence_span": "6bde3f2c39b8",
+            "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+            "char_start": 15,
+            "line_start": 2
+          }
+        },
+        {
+          "source": "entity_e75abaafdd1b4be9",
+          "relation": "ON_DATASET",
+          "target": "entity_c203f7b6d5dddffb",
+          "evidence_span": "dataset_4bf999a657407039",
+          "confidence": 1.0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+            "evidence_span": "dataset_4bf999a657407039",
+            "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+            "char_start": 142,
+            "line_start": 6
+          }
+        },
+        {
+          "source": "entity_c7da26b4e8224cd6",
+          "relation": "SUITABLE_FOR",
+          "target": "entity_1b73346ad7a51fce",
+          "evidence_span": "binary_classification",
+          "confidence": 1.0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+            "evidence_span": "binary_classification",
+            "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+            "char_start": 84,
+            "line_start": 4
+          }
+        }
+      ],
+      "summary": "The validation run with id 6bde3f2c39b8 passed using Logistic Regression on the Churn First dataset. The run achieved various performance metrics including accuracy of 0.8767.",
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+        "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1"
+      },
+      "extraction_trace": {
+        "provider": "openai",
+        "status": "ok",
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+        "chunk_count": 1,
+        "chunks": [
+          {
+            "chunk_id": "chunk-0",
+            "status": "accepted",
+            "attempts": [
+              {
+                "attempt": 1,
+                "status": "accepted"
+              }
+            ],
+            "semantic_corrections": [],
+            "entities": 11,
+            "relations": 3,
+            "token_usage": {
+              "prompt_tokens": 2980,
+              "completion_tokens": 1146,
+              "total_tokens": 4126
+            },
+            "generation": {
+              "purpose": "extraction",
+              "max_new_tokens": 6000,
+              "finish_reason": "stop",
+              "truncated": false,
+              "eos_reached": true,
+              "structured_transport": "json_object",
+              "application_schema_validation": true
+            }
+          }
+        ],
+        "accepted_chunks": 1,
+        "rejected_chunks": 0
+      },
+      "deterministic_facts": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+        "kind": "validation_report",
+        "run_id": "6bde3f2c39b8",
+        "algorithm": "Logistic Regression",
+        "status": "passed",
+        "metrics": {
+          "accuracy": 0.8766666666666667,
+          "f1": 0.39344262295081966,
+          "precision": 0.8,
+          "recall": 0.2608695652173913,
+          "balanced_accuracy": 0.6245292707976721,
+          "roc_auc": 0.9288770968846285,
+          "pr_auc": 0.7114689013236358
+        },
+        "runtime_seconds": 2.076532319188118,
+        "resource_usage": {
+          "max_rss_kb": 1715872,
+          "cpu_seconds": 1.670737,
+          "latency_ms_per_row": 0.037162850300470986,
+          "limits": {
+            "applied": true,
+            "cpu_seconds": 90,
+            "address_space_mb": 16384,
+            "max_file_mb": 16
+          },
+          "sandbox": {
+            "network_audit_blocked": true,
+            "filesystem_audit_whitelist": true,
+            "production_isolation": false,
+            "network_namespace": true
+          },
+          "code_hash": "a958c428a3e6305189ca9aa067f6f895a2f4ee61432b373cb61bf16577246a5a"
+        },
+        "errors": [],
+        "repair_history": []
+      },
+      "source_sha256": "cc8d2e1889396eb068aaf0c126e647faaa3712e7dc20f6eca33733e42e7b1ec1",
+      "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/measured_experiment.json",
+      "name": "measured_experiment.json",
+      "id": "source_measured_experiment_693b971c"
+    },
+    {
+      "id": "6bde3f2c39b8_algorithm_logistic_regression__llm_proposed_v1",
+      "algorithm_id": "algorithm_logistic_regression",
+      "version": 1,
+      "parent_version": null,
+      "code_hash": "a958c428a3e6305189ca9aa067f6f895a2f4ee61432b373cb61bf16577246a5a",
+      "code_source": "llm",
+      "algorithm_path": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/generated/6bde3f2c39b8/algorithm_logistic_regression__llm_proposed/versions/v1.py",
+      "status": "passed",
+      "timestamp": "2026-09-07T16:16:49.921474+00:00"
+    },
+    {
+      "name": "source_reference_preprocessing_56f7c1fe",
+      "id": "preprocessing_3b20f945c980b1ea"
+    },
+    {
+      "name": "preprocessingstrategy_build_preprocessor",
+      "id": "preprocessing_56a78a1499364981"
+    },
+    {
+      "algorithm_id": "algorithm_logistic_regression",
+      "parameters": {
+        "C": 1.0,
+        "max_iter": 500
+      },
+      "preprocessing": [
+        "preprocessingstrategy_build_preprocessor",
+        "source_reference_preprocessing_56f7c1fe"
+      ],
+      "variant": "llm_proposed",
+      "id": "config_c77817cbffc452d4"
+    },
+    {
+      "id": "6bde3f2c39b8_algorithm_random_forest__llm_proposed_v4",
+      "algorithm_id": "algorithm_random_forest",
+      "version": 4,
+      "parent_version": "6bde3f2c39b8_algorithm_random_forest__llm_proposed_v3",
+      "code_hash": "df399f74e9891287a487d373cf8ffd70a85da3968d978635ef614211d9cdd908",
+      "code_source": "repaired_llm",
+      "algorithm_path": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/generated/6bde3f2c39b8/algorithm_random_forest__llm_proposed/versions/v4.py",
+      "status": "failed",
+      "timestamp": "2026-09-07T16:16:44.367307+00:00"
+    },
+    {
+      "id": "repair_6bde3f2c39b8_algorithm_random_forest__llm_proposed_v3",
+      "failure_id": "failure_6bde3f2c39b8_algorithm_random_forest__llm_proposed_v3",
+      "algorithm_id": "algorithm_random_forest",
+      "task_type": "binary_classification",
+      "strategy": "Add an imputation step to the preprocessing pipeline to handle missing values before they reach the classifier. Use SimpleImputer for numerical features and MostFrequentImputer for categorical features.",
+      "success": false,
+      "provider": "local_openai_compatible",
+      "from_version": "6bde3f2c39b8_algorithm_random_forest__llm_proposed_v3",
+      "to_version": "6bde3f2c39b8_algorithm_random_forest__llm_proposed_v4",
+      "timestamp": "2026-09-07T16:16:43.830068+00:00"
+    },
+    {
+      "id": "6bde3f2c39b8_algorithm_random_forest__llm_proposed_v3",
+      "algorithm_id": "algorithm_random_forest",
+      "version": 3,
+      "parent_version": "6bde3f2c39b8_algorithm_random_forest__llm_proposed_v2",
+      "code_hash": "dc24dcf42d9e00ce2d8ee2aa7e70f022c2d55599638da534822d35f0af21330b",
+      "code_source": "repaired_llm",
+      "algorithm_path": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/generated/6bde3f2c39b8/algorithm_random_forest__llm_proposed/versions/v3.py",
+      "status": "failed",
+      "timestamp": "2026-09-07T16:16:39.644835+00:00"
+    },
+    {
+      "id": "repair_6bde3f2c39b8_algorithm_random_forest__llm_proposed_v2",
+      "failure_id": "failure_6bde3f2c39b8_algorithm_random_forest__llm_proposed_v2",
+      "algorithm_id": "algorithm_random_forest",
+      "task_type": "binary_classification",
+      "strategy": "To address this issue, the preprocessing step should include encoding categorical variables into numerical form using OneHotEncoder instead of 'passthrough'. This ensures all categorical features are properly converted to numerical format before being fed into the Random Forest model.",
+      "success": false,
+      "provider": "local_openai_compatible",
+      "from_version": "6bde3f2c39b8_algorithm_random_forest__llm_proposed_v2",
+      "to_version": "6bde3f2c39b8_algorithm_random_forest__llm_proposed_v3",
+      "timestamp": "2026-09-07T16:16:38.993239+00:00"
+    },
+    {
+      "id": "6bde3f2c39b8_algorithm_random_forest__llm_proposed_v2",
+      "algorithm_id": "algorithm_random_forest",
+      "version": 2,
+      "parent_version": "6bde3f2c39b8_algorithm_random_forest__llm_proposed_v1",
+      "code_hash": "bba6d0391f21a3b0ac72afb38a4e832f43ffed18daa38137c7532e500f3eac79",
+      "code_source": "repaired_llm",
+      "algorithm_path": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/generated/6bde3f2c39b8/algorithm_random_forest__llm_proposed/versions/v2.py",
+      "status": "failed",
+      "timestamp": "2026-09-07T16:16:35.027315+00:00"
+    },
+    {
+      "id": "repair_6bde3f2c39b8_algorithm_random_forest__llm_proposed_v1",
+      "failure_id": "failure_6bde3f2c39b8_algorithm_random_forest__llm_proposed_v1",
+      "algorithm_id": "algorithm_random_forest",
+      "task_type": "binary_classification",
+      "strategy": "Implement all required functions: train, predict, evaluate, metadata, and predict_proba with proper sklearn pipeline usage for binary classification.",
+      "success": false,
+      "provider": "local_openai_compatible",
+      "from_version": "6bde3f2c39b8_algorithm_random_forest__llm_proposed_v1",
+      "to_version": "6bde3f2c39b8_algorithm_random_forest__llm_proposed_v2",
+      "timestamp": "2026-09-07T16:16:34.085727+00:00"
+    },
+    {
+      "id": "6bde3f2c39b8_algorithm_random_forest__llm_proposed_v1",
+      "algorithm_id": "algorithm_random_forest",
+      "version": 1,
+      "parent_version": null,
+      "code_hash": "52dec76b0f4f4159034151dac6943353ab95b380e06ba69d7a602f3216dc76a7",
+      "code_source": "llm_code_rejected",
+      "algorithm_path": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/generated/6bde3f2c39b8/algorithm_random_forest__llm_proposed/versions/v1.py",
+      "status": "failed",
+      "timestamp": "2026-09-07T16:16:31.720248+00:00"
+    },
+    {
+      "algorithm_id": "algorithm_random_forest",
+      "parameters": {
+        "n_estimators": 100,
+        "max_depth": 5,
+        "random_state": 42
+      },
+      "preprocessing": [
+        "preprocessingstrategy_build_preprocessor",
+        "source_reference_preprocessing_56f7c1fe"
+      ],
+      "variant": "llm_proposed",
+      "id": "config_c5228ab2434b4391"
+    },
+    {
+      "id": "6bde3f2c39b8_algorithm_gradient_boosting__llm_proposed_v1",
+      "algorithm_id": "algorithm_gradient_boosting",
+      "version": 1,
+      "parent_version": null,
+      "code_hash": "261171835717c1245dc5110780f76a60e9716790d02844211cd5f360e8aa80c2",
+      "code_source": "llm",
+      "algorithm_path": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/generated/6bde3f2c39b8/algorithm_gradient_boosting__llm_proposed/versions/v1.py",
+      "status": "passed",
+      "timestamp": "2026-09-07T16:16:25.276546+00:00"
+    },
+    {
+      "algorithm_id": "algorithm_gradient_boosting",
+      "parameters": {
+        "n_estimators": 100,
+        "learning_rate": 0.1,
+        "max_depth": 3,
+        "random_state": 42
+      },
+      "preprocessing": [
+        "preprocessingstrategy_build_preprocessor",
+        "source_reference_preprocessing_56f7c1fe"
+      ],
+      "variant": "llm_proposed",
+      "id": "config_dbbf164024e5eb0d"
+    },
+    {
+      "id": "preprocessingstrategy_build_preprocessor",
+      "name": "build_preprocessor",
+      "origin": "llm_extracted",
+      "confidence": 1.0,
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/reference_preprocessing.py",
+        "evidence_span": "def build_preprocessor(features, scale=True):\n    \"\"\"Return an unfitted ColumnTransformer; fit on training features only.\"\"\"",
+        "source_sha256": "8166b78dbccfd398212a1ccd9f4504a73c472282a61c0b07f9cdbafbfaec510f",
+        "char_start": 563,
+        "line_start": 14
+      },
+      "provenance_records": [
+        {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/reference_preprocessing.py",
+          "evidence_span": "def build_preprocessor(features, scale=True):\n    \"\"\"Return an unfitted ColumnTransformer; fit on training features only.\"\"\"",
+          "source_sha256": "8166b78dbccfd398212a1ccd9f4504a73c472282a61c0b07f9cdbafbfaec510f",
+          "char_start": 563,
+          "line_start": 14
+        }
+      ]
+    },
+    {
+      "entities": [
+        {
+          "id": "entity_d00f035078916de6",
+          "type": "PreprocessingStrategy",
+          "name": "build_preprocessor",
+          "properties": {},
+          "evidence_span": "def build_preprocessor(features, scale=True):\n    \"\"\"Return an unfitted ColumnTransformer; fit on training features only.\"\"\"",
+          "confidence": 1.0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/reference_preprocessing.py",
+            "evidence_span": "def build_preprocessor(features, scale=True):\n    \"\"\"Return an unfitted ColumnTransformer; fit on training features only.\"\"\"",
+            "source_sha256": "8166b78dbccfd398212a1ccd9f4504a73c472282a61c0b07f9cdbafbfaec510f",
+            "char_start": 563,
+            "line_start": 14
+          },
+          "provenance_records": [
+            {
+              "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/reference_preprocessing.py",
+              "evidence_span": "def build_preprocessor(features, scale=True):\n    \"\"\"Return an unfitted ColumnTransformer; fit on training features only.\"\"\"",
+              "source_sha256": "8166b78dbccfd398212a1ccd9f4504a73c472282a61c0b07f9cdbafbfaec510f",
+              "char_start": 563,
+              "line_start": 14
+            }
+          ]
+        }
+      ],
+      "relations": [],
+      "summary": "The function build_preprocessor returns a preprocessing strategy that handles both numerical and categorical data using median imputation for numerical features and most frequent imputation followed by one-hot encoding for categorical features.",
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/reference_preprocessing.py",
+        "source_sha256": "8166b78dbccfd398212a1ccd9f4504a73c472282a61c0b07f9cdbafbfaec510f"
+      },
+      "extraction_trace": {
+        "provider": "openai",
+        "status": "ok",
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/reference_preprocessing.py",
+        "chunk_count": 1,
+        "chunks": [
+          {
+            "chunk_id": "function:build_preprocessor:14",
+            "status": "accepted",
+            "attempts": [
+              {
+                "attempt": 1,
+                "status": "rejected",
+                "error": "ValueError: ungrounded evidence_span: def build_preprocessor(features, scale=True):\\n \\\"\\\"\\\"Return an unfitted ColumnT"
+              },
+              {
+                "attempt": 2,
+                "status": "accepted"
+              }
+            ],
+            "semantic_corrections": [],
+            "entities": 1,
+            "relations": 0,
+            "token_usage": {
+              "prompt_tokens": 1577,
+              "completion_tokens": 135,
+              "total_tokens": 1712
+            },
+            "generation": {
+              "purpose": "extraction",
+              "max_new_tokens": 6000,
+              "finish_reason": "stop",
+              "truncated": false,
+              "eos_reached": true,
+              "structured_transport": "json_object",
+              "application_schema_validation": true
+            }
+          }
+        ],
+        "accepted_chunks": 1,
+        "rejected_chunks": 0
+      },
+      "deterministic_facts": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/reference_preprocessing.py",
+        "kind": "python",
+        "module_docstring": "Reference capability: mixed numeric/categorical tabular preprocessing.\n\nSuitable for binary classification and regression. Numerical missing values\nuse median imputation, categories use most-frequent imputation and one-hot\nencoding with unseen category handling. Requires scikit-learn and numpy.\nThe supervised target must be excluded before calling this function.",
+        "functions": [
+          {
+            "name": "build_preprocessor",
+            "line": 14,
+            "signature": "build_preprocessor(features, scale=True)",
+            "doc": "Return an unfitted ColumnTransformer; fit on training features only.",
+            "source": "def build_preprocessor(features, scale=True):\n    \"\"\"Return an unfitted ColumnTransformer; fit on training features only.\"\"\"\n    numeric = features.select_dtypes(include=\"number\").columns.tolist()\n    categorical = [c for c in features.columns if c not in numeric]\n    steps = [(\"impute\", SimpleImputer(strategy=\"median\"))]\n    if scale:\n        steps.append((\"scale\", StandardScaler()))\n    return ColumnTransformer([\n        (\"numeric\", Pipeline(steps), numeric),\n        (\"categorical\", Pipeline([\n            (\"impute\", SimpleImputer(strategy=\"most_frequent\")),\n            (\"encode\", OneHotEncoder(handle_unknown=\"ignore\", sparse_output=False)),\n        ]), categorical),\n    ])"
+          }
+        ],
+        "classes": [],
+        "imports": [
+          "sklearn.compose",
+          "sklearn.impute",
+          "sklearn.pipeline",
+          "sklearn.preprocessing"
+        ],
+        "has_algorithm_interface": false,
+        "inferred_task_types": [],
+        "character_count": 1247
+      },
+      "source_sha256": "8166b78dbccfd398212a1ccd9f4504a73c472282a61c0b07f9cdbafbfaec510f",
+      "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/reference_preprocessing.py",
+      "name": "reference_preprocessing.py",
+      "id": "source_reference_preprocessing_56f7c1fe"
+    },
+    {
+      "id": "metric_weighted_f1",
+      "name": "weighted F1",
+      "origin": "llm_extracted",
+      "confidence": 1.0,
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/text_material.md",
+        "evidence_span": "Evaluate with weighted F1 and accuracy;",
+        "source_sha256": "ec6dc1154474c781b568089c7926fce68183b5eb0b090543bf8cc452ce199ad2",
+        "char_start": 249,
+        "line_start": 3
+      },
+      "provenance_records": [
+        {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/text_material.md",
+          "evidence_span": "Evaluate with weighted F1 and accuracy;",
+          "source_sha256": "ec6dc1154474c781b568089c7926fce68183b5eb0b090543bf8cc452ce199ad2",
+          "char_start": 249,
+          "line_start": 3
+        }
+      ]
+    },
+    {
+      "id": "target_supervised_sentiment_target",
+      "name": "supervised_sentiment_target",
+      "origin": "llm_extracted",
+      "confidence": 1.0,
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/text_material.md",
+        "evidence_span": "label is the supervised sentiment target.",
+        "source_sha256": "ec6dc1154474c781b568089c7926fce68183b5eb0b090543bf8cc452ce199ad2",
+        "char_start": 171,
+        "line_start": 3
+      },
+      "provenance_records": [
+        {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/text_material.md",
+          "evidence_span": "label is the supervised sentiment target.",
+          "source_sha256": "ec6dc1154474c781b568089c7926fce68183b5eb0b090543bf8cc452ce199ad2",
+          "char_start": 171,
+          "line_start": 3
+        }
+      ]
+    },
+    {
+      "id": "feature_customer_comments",
+      "name": "customer_comments",
+      "origin": "llm_extracted",
+      "confidence": 1.0,
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/text_material.md",
+        "evidence_span": "The text column contains customer comments;",
+        "source_sha256": "ec6dc1154474c781b568089c7926fce68183b5eb0b090543bf8cc452ce199ad2",
+        "char_start": 127,
+        "line_start": 3
+      },
+      "provenance_records": [
+        {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/text_material.md",
+          "evidence_span": "The text column contains customer comments;",
+          "source_sha256": "ec6dc1154474c781b568089c7926fce68183b5eb0b090543bf8cc452ce199ad2",
+          "char_start": 127,
+          "line_start": 3
+        }
+      ]
+    },
+    {
+      "id": "dataset_customer_reviews",
+      "name": "customer_reviews",
+      "origin": "llm_extracted",
+      "confidence": 1.0,
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/text_material.md",
+        "evidence_span": "Domain: customer_reviews.",
+        "source_sha256": "ec6dc1154474c781b568089c7926fce68183b5eb0b090543bf8cc452ce199ad2",
+        "char_start": 101,
+        "line_start": 3
+      },
+      "provenance_records": [
+        {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/text_material.md",
+          "evidence_span": "Domain: customer_reviews.",
+          "source_sha256": "ec6dc1154474c781b568089c7926fce68183b5eb0b090543bf8cc452ce199ad2",
+          "char_start": 101,
+          "line_start": 3
+        }
+      ]
+    },
+    {
+      "entities": [
+        {
+          "id": "entity_cf386a5ff2eb0711",
+          "type": "Task",
+          "name": "text_classification",
+          "properties": {},
+          "evidence_span": "Task: text_classification.",
+          "confidence": 1.0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/text_material.md",
+            "evidence_span": "Task: text_classification.",
+            "source_sha256": "ec6dc1154474c781b568089c7926fce68183b5eb0b090543bf8cc452ce199ad2",
+            "char_start": 74,
+            "line_start": 3
+          },
+          "provenance_records": [
+            {
+              "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/text_material.md",
+              "evidence_span": "Task: text_classification.",
+              "source_sha256": "ec6dc1154474c781b568089c7926fce68183b5eb0b090543bf8cc452ce199ad2",
+              "char_start": 74,
+              "line_start": 3
+            }
+          ]
+        },
+        {
+          "id": "entity_43eaf8c9706fbe91",
+          "type": "Dataset",
+          "name": "customer_reviews",
+          "properties": {},
+          "evidence_span": "Domain: customer_reviews.",
+          "confidence": 1.0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/text_material.md",
+            "evidence_span": "Domain: customer_reviews.",
+            "source_sha256": "ec6dc1154474c781b568089c7926fce68183b5eb0b090543bf8cc452ce199ad2",
+            "char_start": 101,
+            "line_start": 3
+          },
+          "provenance_records": [
+            {
+              "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/text_material.md",
+              "evidence_span": "Domain: customer_reviews.",
+              "source_sha256": "ec6dc1154474c781b568089c7926fce68183b5eb0b090543bf8cc452ce199ad2",
+              "char_start": 101,
+              "line_start": 3
+            }
+          ]
+        },
+        {
+          "id": "entity_6c5f0dcd38e95831",
+          "type": "Feature",
+          "name": "customer_comments",
+          "properties": {},
+          "evidence_span": "The text column contains customer comments;",
+          "confidence": 1.0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/text_material.md",
+            "evidence_span": "The text column contains customer comments;",
+            "source_sha256": "ec6dc1154474c781b568089c7926fce68183b5eb0b090543bf8cc452ce199ad2",
+            "char_start": 127,
+            "line_start": 3
+          },
+          "provenance_records": [
+            {
+              "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/text_material.md",
+              "evidence_span": "The text column contains customer comments;",
+              "source_sha256": "ec6dc1154474c781b568089c7926fce68183b5eb0b090543bf8cc452ce199ad2",
+              "char_start": 127,
+              "line_start": 3
+            }
+          ]
+        },
+        {
+          "id": "entity_4581c0c0ac1e7f12",
+          "type": "Target",
+          "name": "supervised_sentiment_target",
+          "properties": {},
+          "evidence_span": "label is the supervised sentiment target.",
+          "confidence": 1.0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/text_material.md",
+            "evidence_span": "label is the supervised sentiment target.",
+            "source_sha256": "ec6dc1154474c781b568089c7926fce68183b5eb0b090543bf8cc452ce199ad2",
+            "char_start": 171,
+            "line_start": 3
+          },
+          "provenance_records": [
+            {
+              "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/text_material.md",
+              "evidence_span": "label is the supervised sentiment target.",
+              "source_sha256": "ec6dc1154474c781b568089c7926fce68183b5eb0b090543bf8cc452ce199ad2",
+              "char_start": 171,
+              "line_start": 3
+            }
+          ]
+        },
+        {
+          "id": "entity_f60364eb9d433e14",
+          "type": "Algorithm",
+          "name": "TF-IDF Logistic Regression",
+          "properties": {},
+          "evidence_span": "TF-IDF Logistic Regression uses TF-IDF text features followed by Logistic Regression.",
+          "confidence": 1.0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/text_material.md",
+            "evidence_span": "TF-IDF Logistic Regression uses TF-IDF text features followed by Logistic Regression.",
+            "source_sha256": "ec6dc1154474c781b568089c7926fce68183b5eb0b090543bf8cc452ce199ad2",
+            "char_start": 370,
+            "line_start": 5
+          },
+          "provenance_records": [
+            {
+              "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/text_material.md",
+              "evidence_span": "TF-IDF Logistic Regression uses TF-IDF text features followed by Logistic Regression.",
+              "source_sha256": "ec6dc1154474c781b568089c7926fce68183b5eb0b090543bf8cc452ce199ad2",
+              "char_start": 370,
+              "line_start": 5
+            }
+          ]
+        },
+        {
+          "id": "entity_a1f4f5d49b19ade1",
+          "type": "Metric",
+          "name": "weighted F1",
+          "properties": {},
+          "evidence_span": "Evaluate with weighted F1 and accuracy;",
+          "confidence": 1.0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/text_material.md",
+            "evidence_span": "Evaluate with weighted F1 and accuracy;",
+            "source_sha256": "ec6dc1154474c781b568089c7926fce68183b5eb0b090543bf8cc452ce199ad2",
+            "char_start": 249,
+            "line_start": 3
+          },
+          "provenance_records": [
+            {
+              "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/text_material.md",
+              "evidence_span": "Evaluate with weighted F1 and accuracy;",
+              "source_sha256": "ec6dc1154474c781b568089c7926fce68183b5eb0b090543bf8cc452ce199ad2",
+              "char_start": 249,
+              "line_start": 3
+            }
+          ]
+        },
+        {
+          "id": "entity_ea5034abd6bea671",
+          "type": "Metric",
+          "name": "accuracy",
+          "properties": {},
+          "evidence_span": "Evaluate with weighted F1 and accuracy;",
+          "confidence": 1.0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/text_material.md",
+            "evidence_span": "Evaluate with weighted F1 and accuracy;",
+            "source_sha256": "ec6dc1154474c781b568089c7926fce68183b5eb0b090543bf8cc452ce199ad2",
+            "char_start": 249,
+            "line_start": 3
+          },
+          "provenance_records": [
+            {
+              "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/text_material.md",
+              "evidence_span": "Evaluate with weighted F1 and accuracy;",
+              "source_sha256": "ec6dc1154474c781b568089c7926fce68183b5eb0b090543bf8cc452ce199ad2",
+              "char_start": 249,
+              "line_start": 3
+            }
+          ]
+        }
+      ],
+      "relations": [
+        {
+          "source": "entity_cf386a5ff2eb0711",
+          "relation": "HAS_INPUT",
+          "target": "entity_43eaf8c9706fbe91",
+          "evidence_span": "Domain: customer_reviews.",
+          "confidence": 1.0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/text_material.md",
+            "evidence_span": "Domain: customer_reviews.",
+            "source_sha256": "ec6dc1154474c781b568089c7926fce68183b5eb0b090543bf8cc452ce199ad2",
+            "char_start": 101,
+            "line_start": 3
+          }
+        },
+        {
+          "source": "entity_cf386a5ff2eb0711",
+          "relation": "HAS_INPUT",
+          "target": "entity_6c5f0dcd38e95831",
+          "evidence_span": "The text column contains customer comments;",
+          "confidence": 1.0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/text_material.md",
+            "evidence_span": "The text column contains customer comments;",
+            "source_sha256": "ec6dc1154474c781b568089c7926fce68183b5eb0b090543bf8cc452ce199ad2",
+            "char_start": 127,
+            "line_start": 3
+          }
+        },
+        {
+          "source": "entity_cf386a5ff2eb0711",
+          "relation": "PREDICTS",
+          "target": "entity_4581c0c0ac1e7f12",
+          "evidence_span": "label is the supervised sentiment target.",
+          "confidence": 1.0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/text_material.md",
+            "evidence_span": "label is the supervised sentiment target.",
+            "source_sha256": "ec6dc1154474c781b568089c7926fce68183b5eb0b090543bf8cc452ce199ad2",
+            "char_start": 171,
+            "line_start": 3
+          }
+        },
+        {
+          "source": "entity_f60364eb9d433e14",
+          "relation": "USES_ALGORITHM",
+          "target": "entity_cf386a5ff2eb0711",
+          "evidence_span": "TF-IDF Logistic Regression uses TF-IDF text features followed by Logistic Regression.",
+          "confidence": 1.0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/text_material.md",
+            "evidence_span": "TF-IDF Logistic Regression uses TF-IDF text features followed by Logistic Regression.",
+            "source_sha256": "ec6dc1154474c781b568089c7926fce68183b5eb0b090543bf8cc452ce199ad2",
+            "char_start": 370,
+            "line_start": 5
+          }
+        },
+        {
+          "source": "entity_cf386a5ff2eb0711",
+          "relation": "EVALUATED_BY",
+          "target": "entity_a1f4f5d49b19ade1",
+          "evidence_span": "Evaluate with weighted F1 and accuracy;",
+          "confidence": 1.0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/text_material.md",
+            "evidence_span": "Evaluate with weighted F1 and accuracy;",
+            "source_sha256": "ec6dc1154474c781b568089c7926fce68183b5eb0b090543bf8cc452ce199ad2",
+            "char_start": 249,
+            "line_start": 3
+          }
+        },
+        {
+          "source": "entity_cf386a5ff2eb0711",
+          "relation": "EVALUATED_BY",
+          "target": "entity_ea5034abd6bea671",
+          "evidence_span": "Evaluate with weighted F1 and accuracy;",
+          "confidence": 1.0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/text_material.md",
+            "evidence_span": "Evaluate with weighted F1 and accuracy;",
+            "source_sha256": "ec6dc1154474c781b568089c7926fce68183b5eb0b090543bf8cc452ce199ad2",
+            "char_start": 249,
+            "line_start": 3
+          }
+        }
+      ],
+      "summary": "Customer review sentiment classification (synthetic business material)",
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/text_material.md",
+        "source_sha256": "ec6dc1154474c781b568089c7926fce68183b5eb0b090543bf8cc452ce199ad2"
+      },
+      "extraction_trace": {
+        "provider": "openai",
+        "status": "ok",
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/text_material.md",
+        "chunk_count": 1,
+        "chunks": [
+          {
+            "chunk_id": "chunk-0",
+            "status": "accepted",
+            "attempts": [
+              {
+                "attempt": 1,
+                "status": "accepted"
+              }
+            ],
+            "semantic_corrections": [],
+            "entities": 7,
+            "relations": 6,
+            "token_usage": {
+              "prompt_tokens": 1439,
+              "completion_tokens": 747,
+              "total_tokens": 2186
+            },
+            "generation": {
+              "purpose": "extraction",
+              "max_new_tokens": 6000,
+              "finish_reason": "stop",
+              "truncated": false,
+              "eos_reached": true,
+              "structured_transport": "json_object",
+              "application_schema_validation": true
+            }
+          }
+        ],
+        "accepted_chunks": 1,
+        "rejected_chunks": 0
+      },
+      "deterministic_facts": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/text_material.md",
+        "kind": "markdown",
+        "headings": [
+          "Customer review sentiment classification (synthetic business material)"
+        ],
+        "heading_hierarchy": [
+          {
+            "level": 1,
+            "title": "Customer review sentiment classification (synthetic business material)"
+          }
+        ],
+        "metrics": [
+          "F1"
+        ],
+        "fields": [],
+        "character_count": 860,
+        "summary": "# Customer review sentiment classification (synthetic business material)\n\nTask: text_classification. Domain: customer_reviews. The text column contains customer comments; label is the supervised sentiment target. Output prediction is a class label. Evaluate with weighted F1 and accuracy; probability is optional and means positive-class probability for binary labels.\n\nTF-IDF Logistic Regression uses TF-IDF text features followed by Logistic Regression. It requires scikit-learn and is suitable for short text classification when labeled examples are available. Fill missing text with an empty string. Unseen words are ignored by the fitted vocabulary. Keep vectorizer fitting inside the training split to avoid leakage. Unigram/bigram vocabulary and regularization C are tunable. This lightweight baseline does not understand long-range context or sarcasm.\n"
+      },
+      "source_sha256": "ec6dc1154474c781b568089c7926fce68183b5eb0b090543bf8cc452ce199ad2",
+      "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/text_material.md",
+      "name": "text_material.md",
+      "id": "source_text_material_84554427"
+    },
+    {
+      "id": "target_churn",
+      "name": "churn",
+      "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md"
+    },
+    {
+      "id": "feature_tenure_months",
+      "name": "tenure_months",
+      "origin": "llm_extracted",
+      "confidence": 1.0,
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+        "evidence_span": "tenure_months | 数值 | 使用时长（月）",
+        "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+        "char_start": 347,
+        "line_start": 15
+      },
+      "provenance_records": [
+        {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+          "evidence_span": "tenure_months | 数值 | 使用时长（月）",
+          "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+          "char_start": 347,
+          "line_start": 15
+        }
+      ]
+    },
+    {
+      "id": "feature_membership_level",
+      "name": "membership_level",
+      "origin": "llm_extracted",
+      "confidence": 1.0,
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+        "evidence_span": "membership_level | 类别 | 会员等级",
+        "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+        "char_start": 314,
+        "line_start": 14
+      },
+      "provenance_records": [
+        {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+          "evidence_span": "membership_level | 类别 | 会员等级",
+          "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+          "char_start": 314,
+          "line_start": 14
+        }
+      ]
+    },
+    {
+      "id": "feature_complaint_count",
+      "name": "complaint_count",
+      "origin": "llm_extracted",
+      "confidence": 1.0,
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+        "evidence_span": "complaint_count | 数值 | 历史投诉次数",
+        "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+        "char_start": 280,
+        "line_start": 13
+      },
+      "provenance_records": [
+        {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+          "evidence_span": "complaint_count | 数值 | 历史投诉次数",
+          "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+          "char_start": 280,
+          "line_start": 13
+        }
+      ]
+    },
+    {
+      "id": "feature_total_spend",
+      "name": "total_spend",
+      "origin": "llm_extracted",
+      "confidence": 1.0,
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+        "evidence_span": "total_spend | 数值 | 历史累计消费金额",
+        "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+        "char_start": 248,
+        "line_start": 12
+      },
+      "provenance_records": [
+        {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+          "evidence_span": "total_spend | 数值 | 历史累计消费金额",
+          "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+          "char_start": 248,
+          "line_start": 12
+        }
+      ]
+    },
+    {
+      "id": "feature_login_count_30d",
+      "name": "login_count_30d",
+      "origin": "llm_extracted",
+      "confidence": 1.0,
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+        "evidence_span": "login_count_30d | 数值 | 近 30 天登录次数",
+        "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+        "char_start": 210,
+        "line_start": 11
+      },
+      "provenance_records": [
+        {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+          "evidence_span": "login_count_30d | 数值 | 近 30 天登录次数",
+          "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+          "char_start": 210,
+          "line_start": 11
+        }
+      ]
+    },
+    {
+      "id": "feature_region",
+      "name": "region",
+      "origin": "llm_extracted",
+      "confidence": 1.0,
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+        "evidence_span": "region | 类别 | 客户所在区域",
+        "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+        "char_start": 185,
+        "line_start": 10
+      },
+      "provenance_records": [
+        {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+          "evidence_span": "region | 类别 | 客户所在区域",
+          "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+          "char_start": 185,
+          "line_start": 10
+        }
+      ]
+    },
+    {
+      "id": "feature_age",
+      "name": "age",
+      "origin": "llm_extracted",
+      "confidence": 1.0,
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+        "evidence_span": "age | 数值 | 客户年龄",
+        "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+        "char_start": 165,
+        "line_start": 9
+      },
+      "provenance_records": [
+        {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+          "evidence_span": "age | 数值 | 客户年龄",
+          "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+          "char_start": 165,
+          "line_start": 9
+        }
+      ]
+    },
+    {
+      "id": "task_客户流失预测",
+      "name": "客户流失预测",
+      "origin": "llm_extracted",
+      "confidence": 1.0,
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+        "evidence_span": "业务目标：根据客户近 30 天行为预测未来 30 天是否流失，用于客户召回活动排序。",
+        "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+        "char_start": 18,
+        "line_start": 3
+      },
+      "provenance_records": [
+        {
+          "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+          "evidence_span": "业务目标：根据客户近 30 天行为预测未来 30 天是否流失，用于客户召回活动排序。",
+          "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+          "char_start": 18,
+          "line_start": 3
+        }
+      ]
+    },
+    {
+      "entities": [
+        {
+          "id": "entity_94ee7bd3653c8266",
+          "type": "Task",
+          "name": "客户流失预测",
+          "properties": {},
+          "evidence_span": "业务目标：根据客户近 30 天行为预测未来 30 天是否流失，用于客户召回活动排序。",
+          "confidence": 1.0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+            "evidence_span": "业务目标：根据客户近 30 天行为预测未来 30 天是否流失，用于客户召回活动排序。",
+            "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+            "char_start": 18,
+            "line_start": 3
+          },
+          "provenance_records": [
+            {
+              "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+              "evidence_span": "业务目标：根据客户近 30 天行为预测未来 30 天是否流失，用于客户召回活动排序。",
+              "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+              "char_start": 18,
+              "line_start": 3
+            }
+          ]
+        },
+        {
+          "id": "entity_3c1ecc64ee01cf4e",
+          "type": "Feature",
+          "name": "age",
+          "properties": {},
+          "evidence_span": "age | 数值 | 客户年龄",
+          "confidence": 1.0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+            "evidence_span": "age | 数值 | 客户年龄",
+            "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+            "char_start": 165,
+            "line_start": 9
+          },
+          "provenance_records": [
+            {
+              "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+              "evidence_span": "age | 数值 | 客户年龄",
+              "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+              "char_start": 165,
+              "line_start": 9
+            }
+          ]
+        },
+        {
+          "id": "entity_1137d2aa29237729",
+          "type": "Feature",
+          "name": "region",
+          "properties": {},
+          "evidence_span": "region | 类别 | 客户所在区域",
+          "confidence": 1.0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+            "evidence_span": "region | 类别 | 客户所在区域",
+            "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+            "char_start": 185,
+            "line_start": 10
+          },
+          "provenance_records": [
+            {
+              "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+              "evidence_span": "region | 类别 | 客户所在区域",
+              "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+              "char_start": 185,
+              "line_start": 10
+            }
+          ]
+        },
+        {
+          "id": "entity_c4f708c7553390f0",
+          "type": "Feature",
+          "name": "login_count_30d",
+          "properties": {},
+          "evidence_span": "login_count_30d | 数值 | 近 30 天登录次数",
+          "confidence": 1.0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+            "evidence_span": "login_count_30d | 数值 | 近 30 天登录次数",
+            "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+            "char_start": 210,
+            "line_start": 11
+          },
+          "provenance_records": [
+            {
+              "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+              "evidence_span": "login_count_30d | 数值 | 近 30 天登录次数",
+              "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+              "char_start": 210,
+              "line_start": 11
+            }
+          ]
+        },
+        {
+          "id": "entity_c2f0ca13fbf89e32",
+          "type": "Feature",
+          "name": "total_spend",
+          "properties": {},
+          "evidence_span": "total_spend | 数值 | 历史累计消费金额",
+          "confidence": 1.0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+            "evidence_span": "total_spend | 数值 | 历史累计消费金额",
+            "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+            "char_start": 248,
+            "line_start": 12
+          },
+          "provenance_records": [
+            {
+              "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+              "evidence_span": "total_spend | 数值 | 历史累计消费金额",
+              "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+              "char_start": 248,
+              "line_start": 12
+            }
+          ]
+        },
+        {
+          "id": "entity_c6a132f9f336f296",
+          "type": "Feature",
+          "name": "complaint_count",
+          "properties": {},
+          "evidence_span": "complaint_count | 数值 | 历史投诉次数",
+          "confidence": 1.0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+            "evidence_span": "complaint_count | 数值 | 历史投诉次数",
+            "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+            "char_start": 280,
+            "line_start": 13
+          },
+          "provenance_records": [
+            {
+              "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+              "evidence_span": "complaint_count | 数值 | 历史投诉次数",
+              "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+              "char_start": 280,
+              "line_start": 13
+            }
+          ]
+        },
+        {
+          "id": "entity_1a8685312875db6f",
+          "type": "Feature",
+          "name": "membership_level",
+          "properties": {},
+          "evidence_span": "membership_level | 类别 | 会员等级",
+          "confidence": 1.0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+            "evidence_span": "membership_level | 类别 | 会员等级",
+            "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+            "char_start": 314,
+            "line_start": 14
+          },
+          "provenance_records": [
+            {
+              "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+              "evidence_span": "membership_level | 类别 | 会员等级",
+              "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+              "char_start": 314,
+              "line_start": 14
+            }
+          ]
+        },
+        {
+          "id": "entity_f77e61aa140779c1",
+          "type": "Feature",
+          "name": "tenure_months",
+          "properties": {},
+          "evidence_span": "tenure_months | 数值 | 使用时长（月）",
+          "confidence": 1.0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+            "evidence_span": "tenure_months | 数值 | 使用时长（月）",
+            "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+            "char_start": 347,
+            "line_start": 15
+          },
+          "provenance_records": [
+            {
+              "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+              "evidence_span": "tenure_months | 数值 | 使用时长（月）",
+              "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+              "char_start": 347,
+              "line_start": 15
+            }
+          ]
+        },
+        {
+          "id": "entity_e99504635c9197ad",
+          "type": "Target",
+          "name": "churn",
+          "properties": {},
+          "evidence_span": "churn | 0/1 | 未来 30 天是否流失",
+          "confidence": 1.0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+            "evidence_span": "churn | 0/1 | 未来 30 天是否流失",
+            "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+            "char_start": 380,
+            "line_start": 16
+          },
+          "provenance_records": [
+            {
+              "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+              "evidence_span": "churn | 0/1 | 未来 30 天是否流失",
+              "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+              "char_start": 380,
+              "line_start": 16
+            }
+          ]
+        },
+        {
+          "id": "entity_855a5f08b3042d54",
+          "type": "Metric",
+          "name": "F1",
+          "properties": {},
+          "evidence_span": "重点关注 ROC-AUC，同时保留 F1、Precision、Recall 供运营团队分析。",
+          "confidence": 1.0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+            "evidence_span": "重点关注 ROC-AUC，同时保留 F1、Precision、Recall 供运营团队分析。",
+            "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+            "char_start": 77,
+            "line_start": 3
+          },
+          "provenance_records": [
+            {
+              "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+              "evidence_span": "重点关注 ROC-AUC，同时保留 F1、Precision、Recall 供运营团队分析。",
+              "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+              "char_start": 77,
+              "line_start": 3
+            }
+          ]
+        },
+        {
+          "id": "entity_1a2f4efee3a2cb10",
+          "type": "Metric",
+          "name": "Precision",
+          "properties": {},
+          "evidence_span": "重点关注 ROC-AUC，同时保留 F1、Precision、Recall 供运营团队分析。",
+          "confidence": 1.0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+            "evidence_span": "重点关注 ROC-AUC，同时保留 F1、Precision、Recall 供运营团队分析。",
+            "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+            "char_start": 77,
+            "line_start": 3
+          },
+          "provenance_records": [
+            {
+              "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+              "evidence_span": "重点关注 ROC-AUC，同时保留 F1、Precision、Recall 供运营团队分析。",
+              "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+              "char_start": 77,
+              "line_start": 3
+            }
+          ]
+        },
+        {
+          "id": "entity_a13d74aecd9ddf0b",
+          "type": "Metric",
+          "name": "ROC-AUC",
+          "properties": {},
+          "evidence_span": "重点关注 ROC-AUC，同时保留 F1、Precision、Recall 供运营团队分析。",
+          "confidence": 1.0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+            "evidence_span": "重点关注 ROC-AUC，同时保留 F1、Precision、Recall 供运营团队分析。",
+            "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+            "char_start": 77,
+            "line_start": 3
+          },
+          "provenance_records": [
+            {
+              "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+              "evidence_span": "重点关注 ROC-AUC，同时保留 F1、Precision、Recall 供运营团队分析。",
+              "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+              "char_start": 77,
+              "line_start": 3
+            }
+          ]
+        },
+        {
+          "id": "entity_2813a73bb406d19a",
+          "type": "Metric",
+          "name": "Recall",
+          "properties": {},
+          "evidence_span": "重点关注 ROC-AUC，同时保留 F1、Precision、Recall 供运营团队分析。",
+          "confidence": 1.0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+            "evidence_span": "重点关注 ROC-AUC，同时保留 F1、Precision、Recall 供运营团队分析。",
+            "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+            "char_start": 77,
+            "line_start": 3
+          },
+          "provenance_records": [
+            {
+              "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+              "evidence_span": "重点关注 ROC-AUC，同时保留 F1、Precision、Recall 供运营团队分析。",
+              "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+              "char_start": 77,
+              "line_start": 3
+            }
+          ]
+        }
+      ],
+      "relations": [
+        {
+          "source": "entity_94ee7bd3653c8266",
+          "relation": "HAS_INPUT",
+          "target": "entity_3c1ecc64ee01cf4e",
+          "evidence_span": "age | 数值 | 客户年龄",
+          "confidence": 1.0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+            "evidence_span": "age | 数值 | 客户年龄",
+            "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+            "char_start": 165,
+            "line_start": 9
+          }
+        },
+        {
+          "source": "entity_94ee7bd3653c8266",
+          "relation": "HAS_INPUT",
+          "target": "entity_1137d2aa29237729",
+          "evidence_span": "region | 类别 | 客户所在区域",
+          "confidence": 1.0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+            "evidence_span": "region | 类别 | 客户所在区域",
+            "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+            "char_start": 185,
+            "line_start": 10
+          }
+        },
+        {
+          "source": "entity_94ee7bd3653c8266",
+          "relation": "HAS_INPUT",
+          "target": "entity_c4f708c7553390f0",
+          "evidence_span": "login_count_30d | 数值 | 近 30 天登录次数",
+          "confidence": 1.0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+            "evidence_span": "login_count_30d | 数值 | 近 30 天登录次数",
+            "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+            "char_start": 210,
+            "line_start": 11
+          }
+        },
+        {
+          "source": "entity_94ee7bd3653c8266",
+          "relation": "HAS_INPUT",
+          "target": "entity_c2f0ca13fbf89e32",
+          "evidence_span": "total_spend | 数值 | 历史累计消费金额",
+          "confidence": 1.0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+            "evidence_span": "total_spend | 数值 | 历史累计消费金额",
+            "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+            "char_start": 248,
+            "line_start": 12
+          }
+        },
+        {
+          "source": "entity_94ee7bd3653c8266",
+          "relation": "HAS_INPUT",
+          "target": "entity_c6a132f9f336f296",
+          "evidence_span": "complaint_count | 数值 | 历史投诉次数",
+          "confidence": 1.0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+            "evidence_span": "complaint_count | 数值 | 历史投诉次数",
+            "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+            "char_start": 280,
+            "line_start": 13
+          }
+        },
+        {
+          "source": "entity_94ee7bd3653c8266",
+          "relation": "HAS_INPUT",
+          "target": "entity_1a8685312875db6f",
+          "evidence_span": "membership_level | 类别 | 会员等级",
+          "confidence": 1.0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+            "evidence_span": "membership_level | 类别 | 会员等级",
+            "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+            "char_start": 314,
+            "line_start": 14
+          }
+        },
+        {
+          "source": "entity_94ee7bd3653c8266",
+          "relation": "HAS_INPUT",
+          "target": "entity_f77e61aa140779c1",
+          "evidence_span": "tenure_months | 数值 | 使用时长（月）",
+          "confidence": 1.0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+            "evidence_span": "tenure_months | 数值 | 使用时长（月）",
+            "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+            "char_start": 347,
+            "line_start": 15
+          }
+        },
+        {
+          "source": "entity_94ee7bd3653c8266",
+          "relation": "PREDICTS",
+          "target": "entity_e99504635c9197ad",
+          "evidence_span": "churn | 0/1 | 未来 30 天是否流失",
+          "confidence": 1.0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+            "evidence_span": "churn | 0/1 | 未来 30 天是否流失",
+            "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+            "char_start": 380,
+            "line_start": 16
+          }
+        },
+        {
+          "source": "entity_94ee7bd3653c8266",
+          "relation": "EVALUATED_BY",
+          "target": "entity_855a5f08b3042d54",
+          "evidence_span": "重点关注 ROC-AUC，同时保留 F1、Precision、Recall 供运营团队分析。",
+          "confidence": 1.0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+            "evidence_span": "重点关注 ROC-AUC，同时保留 F1、Precision、Recall 供运营团队分析。",
+            "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+            "char_start": 77,
+            "line_start": 3
+          }
+        },
+        {
+          "source": "entity_94ee7bd3653c8266",
+          "relation": "EVALUATED_BY",
+          "target": "entity_1a2f4efee3a2cb10",
+          "evidence_span": "重点关注 ROC-AUC，同时保留 F1、Precision、Recall 供运营团队分析。",
+          "confidence": 1.0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+            "evidence_span": "重点关注 ROC-AUC，同时保留 F1、Precision、Recall 供运营团队分析。",
+            "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+            "char_start": 77,
+            "line_start": 3
+          }
+        },
+        {
+          "source": "entity_94ee7bd3653c8266",
+          "relation": "EVALUATED_BY",
+          "target": "entity_a13d74aecd9ddf0b",
+          "evidence_span": "重点关注 ROC-AUC，同时保留 F1、Precision、Recall 供运营团队分析。",
+          "confidence": 1.0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+            "evidence_span": "重点关注 ROC-AUC，同时保留 F1、Precision、Recall 供运营团队分析。",
+            "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+            "char_start": 77,
+            "line_start": 3
+          }
+        },
+        {
+          "source": "entity_94ee7bd3653c8266",
+          "relation": "EVALUATED_BY",
+          "target": "entity_2813a73bb406d19a",
+          "evidence_span": "重点关注 ROC-AUC，同时保留 F1、Precision、Recall 供运营团队分析。",
+          "confidence": 1.0,
+          "provenance": {
+            "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+            "evidence_span": "重点关注 ROC-AUC，同时保留 F1、Precision、Recall 供运营团队分析。",
+            "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+            "char_start": 77,
+            "line_start": 3
+          }
+        }
+      ],
+      "summary": "客户流失预测业务材料（模拟）\n\n业务目标：根据客户近 30 天行为预测未来 30 天是否流失，用于客户召回活动排序。模型必须输出二分类标签和流失概率，重点关注 ROC-AUC，同时保留 F1、Precision、Recall 供运营团队分析。\n\n字段说明：\n\n| 字段 | 类型 | 含义 |\n|---|---|---|\n| age | 数值 | 客户年龄 |\n| region | 类别 | 客户所在区域 |\n| login_count_30d | 数值 | 近 30 天登录次数 |\n| total_spend | 数值 | 历史累计消费金额 |\n| complaint_count | 数值 | 历史投诉次数 |\n| membership_level | 类别 | 会员等级 |\n| tenure_months | 数值 | 使用时长（月） |\n| churn | 0/1 | 未来 30 天是否流失 |\n\n历史经验：登录较少、投诉较多、低会员等级和较短使用时长通常对应较高流失风险；类别字段需要未知值兼容，数值字段需要缺失值填充。",
+      "provenance": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+        "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8"
+      },
+      "extraction_trace": {
+        "provider": "openai",
+        "status": "ok",
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+        "chunk_count": 1,
+        "chunks": [
+          {
+            "chunk_id": "chunk-0",
+            "status": "accepted",
+            "attempts": [
+              {
+                "attempt": 1,
+                "status": "accepted"
+              }
+            ],
+            "semantic_corrections": [],
+            "entities": 13,
+            "relations": 12,
+            "token_usage": {
+              "prompt_tokens": 1746,
+              "completion_tokens": 1861,
+              "total_tokens": 3607
+            },
+            "generation": {
+              "purpose": "extraction",
+              "max_new_tokens": 6000,
+              "finish_reason": "stop",
+              "truncated": false,
+              "eos_reached": true,
+              "structured_transport": "json_object",
+              "application_schema_validation": true
+            }
+          }
+        ],
+        "accepted_chunks": 1,
+        "rejected_chunks": 0
+      },
+      "deterministic_facts": {
+        "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+        "kind": "markdown",
+        "headings": [
+          "客户流失预测业务材料（模拟）"
+        ],
+        "heading_hierarchy": [
+          {
+            "level": 1,
+            "title": "客户流失预测业务材料（模拟）"
+          }
+        ],
+        "metrics": [
+          "F1",
+          "Precision",
+          "ROC-AUC",
+          "Recall"
+        ],
+        "fields": [
+          "age",
+          "region",
+          "login_count_30d",
+          "total_spend",
+          "complaint_count",
+          "membership_level",
+          "tenure_months",
+          "churn"
+        ],
+        "character_count": 473,
+        "summary": "# 客户流失预测业务材料（模拟）\n\n业务目标：根据客户近 30 天行为预测未来 30 天是否流失，用于客户召回活动排序。模型必须输出二分类标签和流失概率，重点关注 ROC-AUC，同时保留 F1、Precision、Recall 供运营团队分析。\n\n字段说明：\n\n| 字段 | 类型 | 含义 |\n|---|---|---|\n| age | 数值 | 客户年龄 |\n| region | 类别 | 客户所在区域 |\n| login_count_30d | 数值 | 近 30 天登录次数 |\n| total_spend | 数值 | 历史累计消费金额 |\n| complaint_count | 数值 | 历史投诉次数 |\n| membership_level | 类别 | 会员等级 |\n| tenure_months | 数值 | 使用时长（月） |\n| churn | 0/1 | 未来 30 天是否流失 |\n\n历史经验：登录较少、投诉较多、低会员等级和较短使用时长通常对应较高流失风险；类别字段需要未知值兼容，数值字段需要缺失值填充。\n\n"
+      },
+      "source_sha256": "316ea5f4c5bba2913a3c0eede86d6b994a0501f7e0473845a818bbe540cc8ae8",
+      "source": "/data3/xiaotianqi/ai_algorithm_factory/examples/acceptance_real_20260907/workspace/data/business_material.md",
+      "name": "business_material.md",
+      "id": "source_business_material_1c1a6f4d"
+    }
+  ]
+}

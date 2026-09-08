@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-09-08T02:09:16.348124+00:00",
+  "method": "CUA browser accessibility tree via SSH forward; read-only saved report",
+  "run_id": "683902e2a7cf",
+  "separate_final_heading_visible": true,
+  "final_accuracy_visible": 0.8241610738255034,
+  "final_f1_visible": 0.8241382606860495,
+  "development_metrics_retained": true,
+  "scope": "Manual report display check, not a full browser suite"
+}

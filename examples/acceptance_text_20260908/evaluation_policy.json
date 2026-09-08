@@ -1,0 +1,13 @@
+{
+  "dataset_archive_sha256": "afc26626d710899948693e1a61405dce197f57ffa719fa1130d346b4cc095343",
+  "development_sha256": "1eeb8a0dbf3a7287544f50afa026552c2ea4a05a585901bf883d05de44750483",
+  "final_test_sha256": "9da56771c58681b06ab75a2db8d4fa8401e2510668965553affa6e8241bc40f2",
+  "metric_thresholds": {
+    "accuracy": 0.7,
+    "f1": 0.7
+  },
+  "beam_width": 3,
+  "max_repair_rounds": 3,
+  "selection": "development validation only",
+  "final_test": "evaluate frozen winner once; no repair or winner replacement from final metrics"
+}

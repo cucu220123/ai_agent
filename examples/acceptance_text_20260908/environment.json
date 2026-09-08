@@ -1,0 +1,20 @@
+{
+  "timestamp": "2026-09-08T02:09:16.328306+00:00",
+  "git_head_at_archive": "b06dc1ae636bcf4aceb9546a4753dcbec313f964",
+  "provider": "local_openai_compatible",
+  "models": [
+    "Qwen2.5-14B-Instruct",
+    "Qwen3-Coder-30B-A3B-Instruct"
+  ],
+  "serving": "vLLM 0.17.1, BF16, max context 32768; coder tensor parallel 2",
+  "application_versions": {
+    "numpy": "1.26.4",
+    "pandas": "2.2.3",
+    "scikit-learn": "1.2.2",
+    "pydantic": "2.11.10",
+    "openai": "1.77.0",
+    "networkx": "3.4.2",
+    "pytest": "9.1.1"
+  },
+  "note": "Serving commands match previous real-model setup; actual per-call model/tokens/latency remain in development.json."
+}
