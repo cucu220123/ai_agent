@@ -1,0 +1,14 @@
+{
+  "id": "A1",
+  "name": "no_graph",
+  "rationale": "Remove graph traversal only",
+  "controls": {
+    "enable_graph_retrieval": false,
+    "enable_semantic_retrieval": true,
+    "enable_experience_retrieval": true,
+    "enable_beam_search": true,
+    "enable_multi_candidate": true,
+    "enable_repair": true,
+    "enable_knowledge_context": true
+  }
+}

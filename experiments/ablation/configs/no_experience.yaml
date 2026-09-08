@@ -1,0 +1,14 @@
+{
+  "id": "A2",
+  "name": "no_experience",
+  "rationale": "Remove measured and cold numeric history across all channels",
+  "controls": {
+    "enable_graph_retrieval": true,
+    "enable_semantic_retrieval": true,
+    "enable_experience_retrieval": false,
+    "enable_beam_search": true,
+    "enable_multi_candidate": true,
+    "enable_repair": true,
+    "enable_knowledge_context": true
+  }
+}

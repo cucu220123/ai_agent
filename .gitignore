@@ -18,6 +18,7 @@ htmlcov/
 generated/*
 reports/*
 docs/evidence/*.json
+!docs/evidence/ablation_summary.json
 !docs/evidence/local_model_benchmark.json
 !docs/evidence/controlled_prior_injection.json
 !docs/evidence/empty_kg_bootstrap.json

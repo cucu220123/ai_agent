@@ -1,0 +1,14 @@
+{
+  "id": "A4",
+  "name": "single_candidate",
+  "rationale": "Execute original Planner rank-1 algorithm only",
+  "controls": {
+    "enable_graph_retrieval": true,
+    "enable_semantic_retrieval": true,
+    "enable_experience_retrieval": true,
+    "enable_beam_search": true,
+    "enable_multi_candidate": false,
+    "enable_repair": true,
+    "enable_knowledge_context": true
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "id": "A6",
+  "name": "no_knowledge",
+  "rationale": "Current requirement and execution contract only",
+  "controls": {
+    "enable_graph_retrieval": false,
+    "enable_semantic_retrieval": false,
+    "enable_experience_retrieval": false,
+    "enable_beam_search": true,
+    "enable_multi_candidate": true,
+    "enable_repair": true,
+    "enable_knowledge_context": false
+  }
+}
