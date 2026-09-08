@@ -7,6 +7,32 @@ from sklearn.model_selection import train_test_split
 from typing import Any
 
 
+def feature_fingerprints(frame: pd.DataFrame, target: str) -> set[int]:
+    """Compare feature rows independently of labels, index and text whitespace."""
+    features = frame.drop(columns=[target]).copy()
+    for column in features:
+        if pd.api.types.is_numeric_dtype(features[column]):
+            features[column] = features[column].astype(float)
+        else:
+            features[column] = features[column].fillna('').astype(str).str.normalize('NFKC').str.casefold().str.split().str.join(' ')
+    return set(pd.util.hash_pandas_object(features, index=False).tolist())
+
+
+def evaluation_frames(frame: pd.DataFrame, target: str, task_type: str, final_frame: pd.DataFrame | None = None):
+    """Default development split, or fit on all development rows for a frozen test."""
+    if final_frame is None:
+        return split_frames(frame, target, task_type)
+    if not target or target not in frame or target not in final_frame:
+        raise ValueError('explicit final evaluation requires labeled development and test data')
+    if tuple(frame.columns) != tuple(final_frame.columns):
+        raise ValueError('final evaluation schema differs from development data')
+    if final_frame.empty or final_frame[target].isna().any():
+        raise ValueError('final evaluation data is empty or has missing labels')
+    if feature_fingerprints(frame, target) & feature_fingerprints(final_frame, target):
+        raise ValueError('development/final feature overlap detected; split duplicate groups together')
+    return frame.copy(), final_frame.copy()
+
+
 def split_frames(frame: pd.DataFrame, target: str, task_type: str):
     if not target:
         return frame.copy(), frame.copy()

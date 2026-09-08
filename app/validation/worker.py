@@ -51,10 +51,11 @@ def main() -> None:
     import numpy as np
     import pandas as pd
     from sklearn.model_selection import StratifiedKFold, KFold
-    from app.validation.evaluation import split_frames, validate_outputs
+    from app.validation.evaluation import evaluation_frames, validate_outputs
     frame = pd.read_csv(request["data_path"])
     target, task = request["target"], request["task_type"]
-    train, test = split_frames(frame, target, task)
+    final_frame = pd.read_csv(request["evaluation_data_path"]) if request.get("evaluation_data_path") else None
+    train, test = evaluation_frames(frame, target, task, final_frame)
     features = test.drop(columns=[target]) if target else test.copy()
     guard = install_audit_guard(Path.cwd().resolve())
     module_spec = importlib.util.spec_from_file_location("generated_algorithm", request["algorithm_path"])

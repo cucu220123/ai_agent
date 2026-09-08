@@ -9,7 +9,7 @@ from app.models import CapabilitySpec, ValidationResult
 from app.validation.checks import static_check, import_check
 from app.validation.isolate import run_isolated
 from app.validation.dataset import profile_dataset
-from app.validation.evaluation import split_frames, trusted_metrics
+from app.validation.evaluation import evaluation_frames, trusted_metrics
 from app.validation.semantic import GeneratedCodeSemanticValidator
 from app.metrics.registry import METRIC_REGISTRY
 
@@ -22,7 +22,7 @@ class ValidationRunner:
         self.repeats = repeats
         self.cv_folds = cv_folds
 
-    def run(self, algorithm_path: str | Path, data_path: str | Path, spec: CapabilitySpec, algorithm_name: str, repair_round: int = 0, config: dict | None = None) -> ValidationResult:
+    def run(self, algorithm_path: str | Path, data_path: str | Path, spec: CapabilitySpec, algorithm_name: str, repair_round: int = 0, config: dict | None = None, *, evaluation_data_path: str | Path | None = None) -> ValidationResult:
         started = time.perf_counter()
         result = ValidationResult(status="failed", algorithm=algorithm_name, task_type=spec.task_type, repair_round=repair_round)
         checks, errors = result.checks, result.errors
@@ -53,14 +53,16 @@ class ValidationRunner:
             checks["target_leakage"] = {"passed": not duplicates, "duplicate_target_columns": duplicates, "scope": "exact duplicate label detection; semantic leakage needs domain review"}
             if duplicates:
                 raise ValueError(f"target leakage detected: {duplicates}")
-            _, test = split_frames(frame, spec.target_column, spec.task_type)
+            final_frame = pd.read_csv(evaluation_data_path) if evaluation_data_path is not None else None
+            _, test = evaluation_frames(frame, spec.target_column, spec.task_type, final_frame)
+            checks["evaluation_split"] = {"passed": True, "mode": "frozen_final" if final_frame is not None else "development_holdout", "training_rows": len(frame) if final_frame is not None else len(frame) - len(test), "evaluation_rows": len(test), "evaluation_profile": profile_dataset(evaluation_data_path, spec.target_column) if final_frame is not None else None}
             timeout = min(self.timeout_seconds, int(spec.resource_constraints.get("max_runtime_seconds", self.timeout_seconds)))
             memory = min(self.memory_mb, int(spec.resource_constraints.get("max_memory_mb", self.memory_mb)))
             probability_required = spec.probability_output_required and spec.task_type in {"binary_classification", "text_classification", "multiclass_classification"}
             outputs = list(spec.output_schema) or spec.output_columns or ["prediction"]
             if probability_required and "probability" not in outputs:
                 outputs.append("probability")
-            isolated = run_isolated(algorithm_path, data_path, spec.target_column, max(1, timeout), max(64, memory), outputs, spec.task_type, config=config, repeats=self.repeats, cv_folds=self.cv_folds, require_probability=probability_required)
+            isolated = run_isolated(algorithm_path, data_path, spec.target_column, max(1, timeout), max(64, memory), outputs, spec.task_type, config=config, repeats=self.repeats, cv_folds=self.cv_folds, require_probability=probability_required, evaluation_data_path=evaluation_data_path)
             result.stdout, result.stderr = isolated.get("stdout", ""), isolated.get("stderr", "")
             checks["isolated_execution"] = {k: v for k, v in isolated.items() if k not in {"stdout", "stderr", "records", "cv_records", "metrics", "metadata"}}
             if not isolated["passed"]:

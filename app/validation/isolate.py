@@ -24,7 +24,7 @@ def network_namespace_available() -> bool:
         return False
 
 
-def run_isolated(algorithm_path: str | Path, data_path: str | Path, target_col: str, timeout_seconds: int, memory_mb: int = 8192, expected_outputs: list[str] | None = None, task_type: str = "binary_classification", *, config: dict | None = None, repeats: int = 3, cv_folds: int = 0, require_probability: bool = False) -> dict[str, Any]:
+def run_isolated(algorithm_path: str | Path, data_path: str | Path, target_col: str, timeout_seconds: int, memory_mb: int = 8192, expected_outputs: list[str] | None = None, task_type: str = "binary_classification", *, config: dict | None = None, repeats: int = 3, cv_folds: int = 0, require_probability: bool = False, evaluation_data_path: str | Path | None = None) -> dict[str, Any]:
     # Never inherit the API credential, user HOME, PYTHONPATH or proxy configuration.
     env = {key: os.environ[key] for key in ("PATH", "SYSTEMROOT", "WINDIR", "LD_LIBRARY_PATH") if key in os.environ}
     env.update(OMP_NUM_THREADS="1", OPENBLAS_NUM_THREADS="1", MKL_NUM_THREADS="1", NUMEXPR_NUM_THREADS="1", PYTHONDONTWRITEBYTECODE="1", PYTHONHASHSEED="0")
@@ -34,6 +34,9 @@ def run_isolated(algorithm_path: str | Path, data_path: str | Path, target_col: 
         shutil.copyfile(data_path, root / "dataset.csv")
         output = root / (uuid.uuid4().hex + ".json")
         request = {"algorithm_path": str(root / "algorithm.py"), "data_path": str(root / "dataset.csv"), "target": target_col, "task_type": task_type, "outputs": expected_outputs or ["prediction"], "timeout_seconds": timeout_seconds, "memory_mb": memory_mb, "config": config or {}, "repeats": max(2, repeats), "cv_folds": cv_folds, "require_probability": require_probability, "result_path": str(output)}
+        if evaluation_data_path is not None:
+            shutil.copyfile(evaluation_data_path, root / "final_test.csv")
+            request["evaluation_data_path"] = str(root / "final_test.csv")
         request_path = root / "request.json"
         request_path.write_text(json.dumps(request))
         worker = Path(__file__).with_name("worker.py").resolve()
@@ -59,8 +62,8 @@ def run_isolated(algorithm_path: str | Path, data_path: str | Path, target_col: 
         result["sandbox"]["network_namespace"] = namespaced
         # Compatibility metrics are independently recomputed here in the parent.
         import pandas as pd
-        from app.validation.evaluation import split_frames, trusted_metrics
-        _, test = split_frames(pd.read_csv(data_path), target_col, task_type)
+        from app.validation.evaluation import evaluation_frames, trusted_metrics
+        _, test = evaluation_frames(pd.read_csv(data_path), target_col, task_type, pd.read_csv(evaluation_data_path) if evaluation_data_path is not None else None)
         metrics = trusted_metrics(test, result["records"][0]["prediction"], target_col, task_type)
         return {"passed": True, "timeout": False, "message": "isolated execution passed", "stdout": stdout, "stderr": stderr, "metrics": metrics, "environment_sanitized": True, "resource_limits_applied": result["resource_limits"]["applied"], **result}
 
